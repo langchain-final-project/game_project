@@ -134,7 +134,7 @@
     "id": "C",
     "spawn_position": [14, 7],
     "initial_countdown": 5,
-    "ticks_per_move": 1
+    "ticks_per_move": 2
   },
   "shortcuts": [
     {
