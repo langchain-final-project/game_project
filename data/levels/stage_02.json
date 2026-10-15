@@ -135,12 +135,12 @@
   "validation_scope": "v0.2: see validation/upgrade_report.json for replay evidence",
   "quest": {
     "id": "memory_02",
-    "name": "안내 지도",
+    "name": "발자국 지도",
     "kind": "map",
     "position": [
       4,
       6
     ],
-    "restoration": "낮은 안내판에 정원으로 가는 길이 나타나요."
+    "restoration": "발자국 지도에 정원으로 가는 길과 따뜻한 난로로 돌아오는 길이 나타나요."
   }
 }

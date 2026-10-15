@@ -141,12 +141,12 @@
   "validation_scope": "v0.2: see validation/upgrade_report.json for replay evidence",
   "quest": {
     "id": "memory_04",
-    "name": "정원 안내서",
+    "name": "할머니의 돌봄 일지",
     "kind": "book",
     "position": [
       11,
       7
     ],
-    "restoration": "보송이 책을 펼치고 까망이와 함께 읽어요."
+    "restoration": "돌봄 일지에 적힌 이름을 읽자 할머니가 세 고양이를 돌보던 기억이 돌아와요."
   }
 }

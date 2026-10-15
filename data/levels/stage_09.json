@@ -173,12 +173,12 @@
   "validation_scope": "v0.2: see validation/upgrade_report.json for replay evidence",
   "quest": {
     "id": "memory_09",
-    "name": "커튼 끈",
-    "kind": "window",
+    "name": "묶인 커튼끈",
+    "kind": "cord",
     "position": [
       13,
       4
     ],
-    "restoration": "커튼이 열리고 까망이의 창가 자리가 생겨요."
+    "restoration": "묶인 커튼끈을 풀자 할머니가 집을 떠나던 날의 기억이 돌아와요."
   }
 }

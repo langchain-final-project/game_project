@@ -155,12 +155,12 @@
   "validation_scope": "v0.2: see validation/upgrade_report.json for replay evidence",
   "quest": {
     "id": "memory_05",
-    "name": "스카프 고리",
-    "kind": "scarf",
+    "name": "보송의 이름표 목걸이",
+    "kind": "collar",
     "position": [
       11,
       1
     ],
-    "restoration": "까망이 눈높이에 스카프를 걸 자리가 생겨요."
+    "restoration": "방울이 울리자 천둥을 무서워하던 보송을 친구들이 찾아오던 기억이 돌아와요."
   }
 }

@@ -108,8 +108,10 @@ def _background(surface, assets, name='title_background.png', shade=0, ctx=None,
     ctx = ctx or {}
     data = _data(ctx)
     shelter(surface, data.get('completed', []), data.get('cosmetics', {}),
-            float(ctx.get('elapsed', 0)), before=ctx.get('home_view')=='before',
-            focus_stage=ctx.get('stage') if ctx.get('story_kind')=='memory' else None,show_actors=actors)
+            float(ctx.get('elapsed', 0)),
+            before=ctx.get('scene')=='home' and ctx.get('home_view')=='before',
+            focus_stage=ctx.get('stage') if ctx.get('story_kind')=='memory' else None,
+            show_actors=actors, released=ctx.get('released', False))
     if shade:
         _overlay(surface, (0, 0, W, H), alpha=min(shade,140))
 
@@ -357,12 +359,17 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         _header(surface, assets, title, subtitle,
                 f'기억 {len(photos)} / 12 · 별 {int(ctx.get("total_stars", 0))} / 36')
         _lanterns(surface, assets, completed, (662, 124, 575, 65))
+        if len(completed) == 12:
+            _chip(surface, assets, f'되찾은 온기  {ctx.get("warmth_count", 0)} / 12개 방',
+                  (662, 205, 322, 38), size=17)
+            ui.control('ending', (1004, 253, 233, 40),
+                       '결말과 후일담 보기')
         if completed:
             latest = _story(ctx, max(completed))
-            _overlay(surface, (37, 123, 570, 98), alpha=190, radius=16)
+            _overlay(surface, (37, 123, 570, 118), alpha=190, radius=16)
             text(surface, assets, '이 집에 돌아온 변화', (57, 139), size=16, color=GOLD)
             wrapped(surface, assets, latest.get('restoration', ''),
-                    pygame.Rect(57, 166, 530, 50), size=19, color=CREAM)
+                    pygame.Rect(57, 166, 530, 70), size=19, color=CREAM)
             ui.control('toggle_home_view', (1004, 205, 233, 38),
                        '지금의 쉼터 보기' if old_view else '처음의 쉼터 보기')
         else:
@@ -377,7 +384,9 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             pygame.draw.circle(surface, (235, 209, 148), (int(x),int(y)), 2)
         _home_keepsakes(surface,assets,ctx,data)
         _overlay(surface, (0, 560, W, 160), alpha=190)
-        note = '열두 방의 불빛이 돌아왔어요. 언제든 다시 만나요.' if len(completed)==12 else '방의 소중한 물건과 온기 4점 이상을 가져오면, 연결등이 켜져요.'
+        note = ('네 고양이가 함께 맞는 아침. 언제든 떠나고 돌아올 수 있어요.' if ctx.get('released') else
+                '열두 방에서 온기 10점 이상 귀환하면, 기억의 결말 뒤 온기 회복 후일담이 열려요.' if len(completed)==12 else
+                '방의 소중한 물건과 온기 4점 이상을 가져오면, 잊힌 기억과 연결등이 돌아와요.')
         text(surface, assets, note, (40, 575), size=18)
         ui.control('explore', (38, 613, 300, 52), '기억 속으로 다시 걷기' if len(completed)==12 else '다음 방으로 걷기', primary=True)
         ui.control('album', (352, 613, 215, 52), '기억 앨범')
@@ -425,7 +434,8 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
                 _icon(surface,assets,'badge_unhurt',(rect.right-42,rect.y+8,29,29))
             ui.control(f'stage:{n}', rect, st.get('name', ''), disabled=not unlocked, custom=True)
         ui.control('back', (38, 626, 174, 40), '쉼터로')
-        text(surface,assets,'완료한 방은 다시 도전해 별과 최고 점수를 높일 수 있어요.',(240,635),size=17)
+        _fit_text(surface,assets,'다시 도전해 별과 최고 점수를 높여요. 온기 10점 × 열두 방은 온기 회복 후일담을 열어요.',
+                  (240,628,998,33),size=17,color=CREAM)
         _footer(surface, assets)
 
     elif screen == 'briefing':
@@ -450,7 +460,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         for i,(lab,val) in enumerate(rows):
             y=311+i*39
             text(surface,assets,lab,(889,y),size=17,color=(131,112,112))
-            text(surface,assets,val,(1216,y),size=18,color=INK,anchor='topright',bold=True)
+            _fit_text(surface,assets,val,(988,y,228,28),size=18,color=INK,anchor='topright',bold=True)
         wrapped(surface,assets,'물건 + 온기 4점 이상 → 귀환\n같은 칸에서 E: 수집 · 장치 · 귀환',pygame.Rect(889,482,326,70),size=17,color=INK)
         _chip(surface,assets,'멈춰 있어도 탐사 시간은 흘러요',(888,568,327,32),fill=(228,217,196),color=INK,size=15)
         ui.control('back',(38,630,165,39),'방 선택으로')
@@ -497,9 +507,12 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             msg='새 기억을 앨범에 담았어요.' if reward.get('new_photo') else '다시 걸은 밤도 기록에 남겼어요.'
             if reward.get('new_stars',0): msg+=f' 별 {reward["new_stars"]}개가 늘었어요!'
             if reward.get('new_cosmetics'):msg+=' 새 꾸미기도 열렸어요!'
+            if reward.get('new_ending'):
+                msg='열두 방의 온기를 되찾았어요. 온기 회복 후일담과 새벽이 열렸어요!'
             next_points=int(score.get('next_star_points',0))
             star_note='세 개의 별을 모두 얻었어요.' if score.get('stars',0)>=3 else f'다음 별까지 {next_points}점'
-            text(surface,assets,star_note+' · '+msg,(79,551),size=17,color=(135,99,98))
+            text(surface,assets,star_note,(79,536),size=16,color=(135,99,98))
+            _fit_text(surface,assets,msg,(79,559,645,32),size=17,color=(135,99,98))
         else:
             msg=('완료 목표는 한 번에 온기 4점 이상 귀환이에요.\n가져온 온기는 기록되고, 다음 방은 아직 닫혀 있어요.' if low else
                  '용기를 모두 잃었어요. 보송과 쉼터에서 쉬어 가요.' if outcome.get('reason')=='courage' else
@@ -518,19 +531,31 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         ui.control('retry',(42,624,206,44),'같은 방 다시 걷기')
         ui.control('home',(264,624,173,44),'쉼터로')
         if success:
-            label='새 기억 펼치기' if reward.get('new_photo') else ('정원으로' if stage==12 else '다음 방으로')
-            ui.control('view_memory' if reward.get('new_photo') or stage==12 else 'next_stage',
-                       (964,624,243,44),label,primary=True)
+            if reward.get('new_photo'):
+                ident,label='view_memory','새 기억 펼치기'
+            elif reward.get('new_ending'):
+                ident,label='ending','온기 회복 후일담 보기'
+            elif stage==12:
+                ident,label='ending','정원으로'
+            else:
+                ident,label='next_stage','다음 방으로'
+            ui.control(ident,(964,624,243,44),label,primary=True)
         else:
             ui.control('rooms',(964,624,243,44),'다른 방 살펴보기',primary=True)
         _footer(surface,assets)
 
     elif screen == 'ending':
         content = ctx.get('ending_content') or {}
+        extended=ctx.get('ending_variant')=='extended'
         _background(surface,assets,content.get('art', 'ending_scene.png'),ctx=ctx)
-        if content.get('art') and (assets.root / 'art' / content['art']).is_file():
+        # Once warmth returns, keep the live dawn and restored cats visible.
+        if not ctx.get('released') and content.get('art') and (assets.root / 'art' / content['art']).is_file():
             _art(surface, assets, content['art'], (0, 0, W, H))
-        _header(surface,assets,content.get('title', '함께 남긴 밤'),content.get('subtitle', '열두 방의 기억 · 평가 전 공통 이야기'),'기억 12 / 12')
+        title=content.get('title', '함께 맞는 아침' if extended else '문은 열어 둘게')
+        subtitle=content.get('subtitle', '열두 방의 기억').replace(' · 임시 엔딩', '')
+        epilogue='온기 회복 후일담 · 함께 맞는 아침' if extended else '후일담 · 문은 열어 둘게'
+        _header(surface,assets,title,f'{subtitle} · {epilogue}',
+                '온기 12 / 12' if extended else '기억 12 / 12')
         panel(surface,(38,488,1204,179),fill=PAPER,border=GOLD,radius=18)
         speaker,line=ctx.get('dialogue') or ('이야기','다음 비 오는 날, 까망이는 다시 저택을 찾아왔어요.')
         text(surface,assets,speaker,(64,508),size=21,color=(145,99,104),bold=True)
@@ -540,7 +565,8 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         text(surface,assets,f'{min(index,total)} / {total}',(1214,510),size=16,color=(138,119,113),anchor='topright')
         ui.control('ending_continue',(1032,579,184,57),'다음 이야기' if index<total else '쉼터로 돌아가기',primary=True)
         ui.control('story_skip',(1041,123,199,38),'쉼터로 돌아가기')
-        _footer(surface,assets,'완료한 방과 기억 앨범은 언제든 다시 찾아갈 수 있어요')
+        _footer(surface,assets,'쉼터에서 친구들과 다시 만날 수 있어요' if extended else
+                '기억의 결말은 호감도로 정해져요 · 온기 10점 × 열두 방은 온기 회복 후일담을 열어요')
 
     elif screen == 'story':
         ending=False

@@ -57469,62 +57469,62 @@
     {
       "id": "stage_01",
       "file": "levels/stage_01.json",
-      "sha256": "b513a7563a1faf514d4518297d9f778b41c36367a4394048bd66d3b4cf4366b2"
+      "sha256": "2225ba06dcf20ead3013370e110815e94a659851c2c7239f34fbe3ded7a3dbed"
     },
     {
       "id": "stage_02",
       "file": "levels/stage_02.json",
-      "sha256": "965779f8b963dfac510f81f5b03b5dc689c27590200a25ec3c323dad34d76f23"
+      "sha256": "e223d64e51f3129d538163be1fdf7491816c457cb4582c37c379a388ecb6faa4"
     },
     {
       "id": "stage_03",
       "file": "levels/stage_03.json",
-      "sha256": "66c825fad53f07c51059ee4ea407491ad9cea9fff6b93e63d60b75091189383b"
+      "sha256": "e79164eaf49d7aa661d1ba5481c223d89b8e6ebd540e9c4cefa7c6167ef13966"
     },
     {
       "id": "stage_04",
       "file": "levels/stage_04.json",
-      "sha256": "a52da3ddf76f475a2cf6255d8eb332431498f112aa1e0831c9deb9fd12a20f71"
+      "sha256": "739a97a9fba4776bb416cf86534f0815fb7b25d6286101ae7fe565bc588c2a75"
     },
     {
       "id": "stage_05",
       "file": "levels/stage_05.json",
-      "sha256": "e3f07910940c4686c16bf5ef3acc3f59f2a26e15d59a7911f4c3f8e363d555ae"
+      "sha256": "aeb0463f04add9f06762078a3f24ef6b2186062ab787bd3f4d885a25ed463af6"
     },
     {
       "id": "stage_06",
       "file": "levels/stage_06.json",
-      "sha256": "9d8e5d31a96762084c846cd76dd42d56c9cf8e5814b2087e4de4bd811b0ed5f2"
+      "sha256": "f9885cf033b539e7e225f4b426314868a1ff2cdf2aed1c32883bae6c9398ab00"
     },
     {
       "id": "stage_07",
       "file": "levels/stage_07.json",
-      "sha256": "1eee666e0f307103d08411d3b3956e186d3272c0eca0d38f94182f922c28b866"
+      "sha256": "c9a935ef26b7b3b58fad6446d274e4c9370edfc40966ae028d9394bcc701bf10"
     },
     {
       "id": "stage_08",
       "file": "levels/stage_08.json",
-      "sha256": "373801acc99cf78b8cfa32deb34d89ddd462f244afe57cd8166e67ce5f84e0a4"
+      "sha256": "b4724a0772d3a12782a488e0cde421d67e1f9e41e0a896ec1e887a09a17ecb58"
     },
     {
       "id": "stage_09",
       "file": "levels/stage_09.json",
-      "sha256": "ba9d789403c0bfc117689298c5347b1e6a770796ece9c8a7b5aea2581f901889"
+      "sha256": "48bb71839ea82090af9ae7abd1ecb0c12352954606a184895f720667a8a340bd"
     },
     {
       "id": "stage_10",
       "file": "levels/stage_10.json",
-      "sha256": "457e2bf34661eca6e0ab6c7f9a4a2d44b2417ab3aa2db937a1c73df659eb4780"
+      "sha256": "76efecd32ecb72df785aee55de6e72f5980af1d7da58a0c48c25e29842a89734"
     },
     {
       "id": "stage_11",
       "file": "levels/stage_11.json",
-      "sha256": "d1a2acb2c18826a678697db3e5022349562327e94a8ce55b0e5864f33e5f59c9"
+      "sha256": "642db5fe76f69378a7c34b2f86a8a056f3426f0fb17db20177060c9982a8b13e"
     },
     {
       "id": "stage_12",
       "file": "levels/stage_12.json",
-      "sha256": "d44c6f2660862ced62a6971c8f03ee6af780a0667fcac23d8dd0f97c692d595d"
+      "sha256": "7485f156cac7d5c080d09ea2263d7f8fad464323d8e2085ec83f4b498ef77c99"
     }
   ]
 }

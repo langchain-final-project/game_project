@@ -124,12 +124,12 @@
   "validation_scope": "v0.2: see validation/upgrade_report.json for replay evidence",
   "quest": {
     "id": "memory_01",
-    "name": "수건",
+    "name": "낡은 수건",
     "kind": "towel",
     "position": [
       8,
       1
     ],
-    "restoration": "수건 선반에 빛이 돌아오고 보송이 수건을 말려요."
+    "restoration": "할머니가 어린 보송의 젖은 몸을 수건으로 감싸 주던 기억이 돌아와요."
   }
 }

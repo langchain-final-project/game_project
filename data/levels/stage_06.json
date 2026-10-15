@@ -155,12 +155,12 @@
   "validation_scope": "v0.2: see validation/upgrade_report.json for replay evidence",
   "quest": {
     "id": "memory_06",
-    "name": "씨앗 주머니",
-    "kind": "plant",
+    "name": "봄의 씨앗 주머니",
+    "kind": "seeds",
     "position": [
       12,
       2
     ],
-    "restoration": "이파리가 작은 화분에 씨앗을 심어요."
+    "restoration": "봄의 씨앗에서 작은 싹이 돋고 이파리가 정원을 돌보던 기억이 돌아와요."
   }
 }

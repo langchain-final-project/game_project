@@ -159,12 +159,12 @@
   "validation_scope": "v0.2: see validation/upgrade_report.json for replay evidence",
   "quest": {
     "id": "memory_08",
-    "name": "찻잔 받침",
-    "kind": "tea",
+    "name": "금이 간 세 번째 밥그릇",
+    "kind": "bowl",
     "position": [
       12,
       2
     ],
-    "restoration": "주민들이 따뜻한 찻상에 둘러앉아요."
+    "restoration": "세 고양이가 처음 함께 식사하던 기억이 돌아오고 까망이의 네 번째 자리가 생겨요."
   }
 }

@@ -178,12 +178,12 @@
   "validation_scope": "v0.2: see validation/upgrade_report.json for replay evidence",
   "quest": {
     "id": "memory_10",
-    "name": "포근한 담요",
-    "kind": "towel",
+    "name": "셋이 함께 덮던 담요",
+    "kind": "cushion",
     "position": [
       11,
       6
     ],
-    "restoration": "보송이 담요를 펴고 까망이가 꾹꾹이를 해요."
+    "restoration": "마지막 겨울밤, 세 고양이가 담요 아래 모여 흩어지지 않기를 바라던 기억이 돌아와요."
   }
 }

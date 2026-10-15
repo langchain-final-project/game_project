@@ -2,7 +2,7 @@
 
 import math
 import pygame
-from .theme import text, wrapped, panel, CREAM, INK, NIGHT, PAPER, GOLD, SAGE
+from .theme import text, fit_text, wrapped, panel, CREAM, INK, NIGHT, PAPER, GOLD, SAGE
 from .illustration import cat, ghost, prop, glow
 
 # PNG가 준비 되기 전에는 None 유지 (필요한 PNG: 바닥 러그, 온기, 벽, 바닥)
@@ -670,13 +670,14 @@ def draw_game(
         radius=14,
     )
     prop(surface, q['kind'], (505, 29, 42, 42))
-    text(
+    fit_text(
         surface,
         assets,
         q['name'] + ('  회수 완료' if q['collected'] else '  찾아오기'),
-        (558, 39),
+        (558, 30, 324, 39),
         19,
         CREAM,
+        anchor='midleft',
     )
 
     # ── 상단: 현재 온기와 목표 온기 ──
@@ -726,6 +727,10 @@ def draw_game(
         mood,
         player_interpolation=player_interpolation,
     )
+    if s['protection']:
+        # A cold-memory cue only: collisions and animation timing stay in core.
+        d.rect(surface, (170, 211, 225), (29, 104, 982, 554), 3,
+               border_radius=9)
 
     # ── 오른쪽: 필수 물건과 복원 설명 ──
     panel(
@@ -750,11 +755,11 @@ def draw_game(
         (1098, 154, 102, 102),
         q['collected'],
     )
-    text(
+    fit_text(
         surface,
         assets,
         q['name'],
-        (1149, 269),
+        (1056, 256, 188, 38),
         21,
         INK,
         True,
@@ -765,9 +770,9 @@ def draw_game(
         assets,
         q['restoration'],
         (1060, 303, 178, 104),
-        17,
+        15,
         INK,
-        5,
+        4,
     )
 
     # ── 오른쪽: 추가 목표와 보상 안내 ──
@@ -792,11 +797,11 @@ def draw_game(
     wrapped(
         surface,
         assets,
-        '온기 10점 귀환\n수집 배지와 꾸미기 해금\n\n무피격 완료\n조용한 발걸음 배지',
-        (1060, 465, 175, 139),
-        15,
+        '온기 10점 귀환\n수집 배지 · 열두 방 달성 시\n온기 회복 후일담\n\n무피해 완료\n조용한 발걸음 배지',
+        (1060, 465, 175, 154),
+        14,
         INK,
-        5,
+        4,
     )
     text(
         surface,

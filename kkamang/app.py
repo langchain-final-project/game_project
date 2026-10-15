@@ -10,7 +10,7 @@ from .paths import user_data_dir
 from .core import GameCore
 from .levels import load_levels
 from .campaign import Campaign, SaveStore
-from .story import STAGES, PROLOGUE, ENDING
+from .story import STAGES, PROLOGUE, ENDING, EXTENDED_ENDING
 from . import likes
 from .ending_content import ENDING_CONTENT
 from .input import InputAdapter
@@ -69,6 +69,7 @@ class GameApp:
         self.dialogue_index = 0
         self.dialogue_time = 0.
         self.story_kind = None
+        self.ending_variant = 'basic'
         self.story_return = 'home'
         self.replaying_story = False
         self.photo_selected = self.campaign.data['photos'][-1] if self.campaign.data['photos'] else 1
@@ -187,7 +188,10 @@ class GameApp:
             return
         self.ending_id = likes.select_ending(self.campaign.data['likes'], self.campaign.data['completed'])
         content = ENDING_CONTENT.get(self.ending_id)
-        self.dialogues = list(content['lines'] if content else ENDING)
+        self.ending_variant = 'extended' if self.campaign.extended_ending_unlocked() else 'basic'
+        # Affection selects the main ending; recovered warmth adds its epilogue.
+        epilogue = EXTENDED_ENDING if self.ending_variant == 'extended' else ENDING
+        self.dialogues = (list(content['lines']) if content else []) + list(epilogue)
         self.dialogue_index=0
         self.dialogue_time=0.
         self.story_kind='ending'
@@ -313,12 +317,14 @@ class GameApp:
         elif ident == 'next_stage':
             if self.scene == 'result' and (self.last_reward or {}).get('new_photo'):
                 self.start_memory()
-            elif self.stage == 12:
+            elif self.stage == 12 or (self.last_reward or {}).get('new_ending'):
                 self.start_ending()
             else:
                 self.prepare(self.stage+1)
         elif ident in ('memory','view_memory'):
             self.start_memory()
+        elif ident == 'ending':
+            self.start_ending()
         elif ident == 'story_next':
             self.next_dialogue()
         elif ident == 'story_skip':
@@ -543,7 +549,7 @@ class GameApp:
                 self.mood_timer = .9
                 self.audio.play('damage')
                 self.toast = (
-                    '괜찮아, 잠깐 숨을 고르자 · 다음 3틱 보호'
+                    '차가운 기억에 놀랐어요 · 다음 3틱 보호'
                 )
                 self.toast_timer = 1.5
                 self.shake_timer = .2
@@ -680,13 +686,15 @@ class GameApp:
             'restart':('같은 방에 다시 들어갈까요?','이번 판의 온기는 포기하고, 같은 배치와 순찰 박자로 시작해요.'),
             'home':('쉼터로 돌아갈까요?','귀환문에서 돌아온 것이 아니므로 이번 판의 온기는 기록되지 않아요.')}
         title,message=confirm_messages.get(self.confirm_kind,('확인','계속할까요?'))
-        return dict(campaign=self.campaign,levels=self.levels,stories=STAGES,stage=self.stage,mode=self.mode,
+        return dict(scene=self.scene,campaign=self.campaign,levels=self.levels,stories=STAGES,stage=self.stage,mode=self.mode,
             snapshot=snapshot,outcome=self.last_outcome,reward=self.last_reward,story=story,dialogue=dialogue,
             photo_selected=self.photo_selected,appearance_kind=self.appearance_kind,has_save=self.store.has_save,
             preferred_photo=self.campaign.data.get('favorite_photo'),
             message=('저장되지 않은 진행이 있어요. 다시 저장해 주세요.' if self.store.error else ''),from_game=self.scene=='pause',background_snapshot=snapshot,
             elapsed=self.elapsed,dialogue_index=self.dialogue_index,total_dialogue=len(self.dialogues),
-            story_kind=self.story_kind,
+            story_kind=self.story_kind, ending_variant=self.ending_variant,
+            warmth_count=len(self.campaign.warmth_memories()),
+            released=self.campaign.extended_ending_unlocked() and self.scene != 'story',
             confirm_kind=self.confirm_kind,confirm_title=title,confirm_text=message,save_error=self.store.error,
             replay=self.replaying_story,settings_return=self.settings_return,home_view=self.home_view,
             total_stars=self.campaign.total_stars(),
@@ -735,7 +743,7 @@ class GameApp:
             screen='settings' if self.scene == 'pause' else self.scene
             self.controls=render_menu(self.canvas,self.assets,screen,self.context(),self.focus,self.mouse)
             if self.needs_focus:
-                preferred={'result':['view_memory','next_stage','retry'], 'pause':['resume'],
+                preferred={'result':['view_memory','ending','show_ending','next_stage','retry'], 'pause':['resume'],
                     'memory_choice':['memory_keep'], 'likes':['home'],
                     'settings':['back'], 'briefing':['start'], 'rooms':[f'stage:{min(12,len(self.campaign.data["completed"])+1)}'],
                     'home':['explore'], 'friends':['back'], 'story':['story_next'], 'ending':['ending_continue'],

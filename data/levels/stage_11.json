@@ -178,12 +178,12 @@
   "validation_scope": "v0.2: see validation/upgrade_report.json for replay evidence",
   "quest": {
     "id": "memory_11",
-    "name": "마지막 악보",
-    "kind": "music",
+    "name": "떨어진 시곗바늘",
+    "kind": "clock_hand",
     "position": [
       14,
       7
     ],
-    "restoration": "도레와 주민들이 한 곡을 끝까지 연주해요."
+    "restoration": "시곗바늘을 되돌리자 보호 마법이 바람을 오해해 고양이들의 온기를 흩어 놓은 밤이 드러나요."
   }
 }

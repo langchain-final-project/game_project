@@ -159,12 +159,12 @@
   "validation_scope": "v0.2: see validation/upgrade_report.json for replay evidence",
   "quest": {
     "id": "memory_07",
-    "name": "잃어버린 악보",
+    "name": "밤의 자장가 악보",
     "kind": "music",
     "position": [
       12,
       2
     ],
-    "restoration": "도레가 악보를 펼치고 새로운 선율을 연주해요."
+    "restoration": "도레의 세 음에 까망이의 엉뚱한 한 음이 더해져 새로운 자장가가 끝까지 흘러요."
   }
 }

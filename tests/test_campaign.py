@@ -278,7 +278,7 @@ def test_twelve_story_entries_match_levels_and_real_assets():
         else:
             assert story['emblem']
     assert len(STAGES) == 12 and PROLOGUE and ENDING
-    assert STAGES[-1]['lines'][-1] == ('보송', '오늘은 문, 열어 둘게.')
+    assert ('보송', '문은 열어 둘게.') in STAGES[-1]['lines']
 
 
 def test_parseable_but_damaged_records_are_preserved_as_corrupt(tmp_path):

@@ -297,6 +297,16 @@ class Campaign:
                 'total': score['total'], 'stars': score['stars']}
         return likes.choose_memory(self.data['likes'], replace)
 
+    def warmth_memories(self) -> list[int]:
+        """Rooms whose warmth was recovered, including existing save badges."""
+        badges = set(self.data['badges'])
+        return [stage for stage in range(1, 13)
+                if self.completed(stage) and f'stage_{stage:02d}:rich' in badges]
+
+    def extended_ending_unlocked(self) -> bool:
+        """Unlock the warmth-recovery epilogue independently of affection endings."""
+        return len(self.warmth_memories()) == 12
+
     def unlocked_cosmetics(self, kind: str) -> list[str]:
         if kind not in COSMETICS:
             raise ValueError(f'Unknown cosmetic kind: {kind}')
@@ -314,7 +324,7 @@ class Campaign:
                settlement_id: str, controller: str = 'human', memory_record=None) -> dict:
         if not isinstance(settlement_id, str) or not settlement_id:
             raise ValueError('settlement_id must be a non-empty string')
-        empty = {'first_complete': False, 'new_photo': False, 'new_badges': [],
+        empty = {'first_complete': False, 'new_photo': False, 'new_ending': False, 'new_badges': [],
                  'new_cosmetics': [], 'new_stars': 0, 'best_star_improved': False,
                  'new_friend_memory': False, 'score': None}
         if settlement_id in self.data['settled_ids']:
@@ -362,6 +372,7 @@ class Campaign:
                     or memory_record['banked'] != numbers['banked']
                     or memory_record['ticks_used'] != numbers['ticks_used']):
                 raise ValueError('memory does not match this settlement')
+        had_extended_ending = self.extended_ending_unlocked()
         before_cosmetics = {f'{k}:{v}' for k in COSMETICS for v in self.unlocked_cosmetics(k)}
         # Build updates in a copy: a malformed record cannot partially pay rewards.
         updated = deepcopy(self.data)
@@ -417,6 +428,7 @@ class Campaign:
                 result['memory_status'] = likes.offer_memory(updated['likes'], memory_record)
         updated['settled_ids'].append(settlement_id)
         self.data = updated
+        result['new_ending'] = not had_extended_ending and self.extended_ending_unlocked()
         after_cosmetics = {f'{k}:{v}' for k in COSMETICS for v in self.unlocked_cosmetics(k)}
         result['new_cosmetics'] = sorted(after_cosmetics - before_cosmetics)
         return result

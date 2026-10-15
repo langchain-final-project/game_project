@@ -136,12 +136,12 @@
   "validation_scope": "v0.2: see validation/upgrade_report.json for replay evidence",
   "quest": {
     "id": "memory_03",
-    "name": "발자국 사진",
-    "kind": "frame",
+    "name": "오래된 단체사진",
+    "kind": "photo",
     "position": [
       11,
       7
     ],
-    "restoration": "까망이의 발자국 사진이 쉼터 벽에 걸려요."
+    "restoration": "사진 속 세 고양이의 모습이 드러나고 보송과 닮은 접힌 귀가 눈에 들어와요."
   }
 }
