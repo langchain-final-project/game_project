@@ -30,7 +30,7 @@ def test_quest_pickup_once_reset_and_snapshot_isolation():
 def test_quest_observation_cannot_alias_uncollected_state():
     g=GameCore(load_level(1));s=g.snapshot();a=encode_observation(s)
     s['quest']['collected']=True;b=encode_observation(s)
-    assert OBSERVATION_SIZE==602 and b[601]==1 and a[601]==0
+    assert OBSERVATION_SIZE==610 and b[601]==1 and a[601]==0
     np.testing.assert_array_equal(a[:601],b[:601])
     assert a[599]==pytest.approx(s['quest']['position'][0]/15)
     assert a[600]==pytest.approx(s['quest']['position'][1]/8)

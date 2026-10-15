@@ -92,14 +92,49 @@ class AppIntegrationTests(unittest.TestCase):
             self.app.dispatch('tutorial_done')
         self.assert_rendered('game')
 
-    def apply_action(self, action):
+    # def apply_action(self, action):
+    #     self.assertEqual(self.app.scene, 'game')
+    #     key = ACTION_KEYS.get(int(action))
+    #     if key is not None:
+    #         self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=key, mod=0))
+    #     self.app.advance(0.3)
+    #     if key is not None:
+    #         self.app.handle_event(pygame.event.Event(pygame.KEYUP, key=key, mod=0))
+    def apply_action(self, action, *, short_tap=False):
         self.assertEqual(self.app.scene, 'game')
+
+        before_tick = self.app.core.snapshot()['tick']
+        tick_seconds = float(
+            self.app.core.config.get('tick_seconds', 0.3)
+        )
         key = ACTION_KEYS.get(int(action))
+
         if key is not None:
-            self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=key, mod=0))
-        self.app.advance(0.3)
-        if key is not None:
-            self.app.handle_event(pygame.event.Event(pygame.KEYUP, key=key, mod=0))
+            self.app.handle_event(pygame.event.Event(
+                pygame.KEYDOWN, key=key, mod=0,
+            ))
+
+            if short_tap:
+                self.app.handle_event(pygame.event.Event(
+                    pygame.KEYUP, key=key, mod=0,
+                ))
+
+        # 키를 누른 순간 행동했다면 추가로 시간을 보내지 않습니다.
+        if self.app.core.snapshot()['tick'] == before_tick:
+            self.app.advance(
+                max(0., tick_seconds - self.app.accumulator)
+            )
+
+        if key is not None and not short_tap:
+            self.app.handle_event(pygame.event.Event(
+                pygame.KEYUP, key=key, mod=0,
+            ))
+
+        # 함수 한 번에 행동이 정확히 한 번 실행됐는지 확인합니다.
+        self.assertEqual(
+            self.app.core.snapshot()['tick'],
+            before_tick + 1,
+        )
 
     def complete_stage(self, stage, target=4):
         route = ROUTES[(f'stage_{stage:02}', target)]
@@ -191,17 +226,35 @@ class AppIntegrationTests(unittest.TestCase):
         self.assertEqual(self.app.core.snapshot(), before)
         self.app.dispatch('resume')
         self.app.advance(0.3)
-        self.assertEqual(self.app.core.snapshot()['position'], [1, 1])
-        self.assertEqual(self.app.core.snapshot()['tick'], 1)
+        self.assertEqual(
+            self.app.core.snapshot()['position'],
+            before['position'],
+        )
+        self.assertEqual(
+            self.app.core.snapshot()['tick'],
+            before['tick'] + 1,
+        )
         self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_RIGHT, mod=0))
         self.app.handle_event(pygame.event.Event(pygame.WINDOWFOCUSLOST))
         self.assert_rendered('pause')
         before = self.app.core.snapshot()
         self.app.advance(30)
+
+        # 일시정지 중에는 모든 상태가 그대로여야 합니다.
         self.assertEqual(self.app.core.snapshot(), before)
+
         self.app.dispatch('resume')
         self.app.advance(0.3)
-        self.assertEqual(self.app.core.snapshot()['position'], [1, 1])
+
+        # 재개 후 방향키가 풀려 있어 이동 없이 한 틱 대기합니다.
+        self.assertEqual(
+            self.app.core.snapshot()['position'],
+            before['position'],
+        )
+        self.assertEqual(
+            self.app.core.snapshot()['tick'],
+            before['tick'] + 1,
+        )
 
     def test_pause_preserves_partial_tick_and_resume_has_no_backward_interpolation(self):
         self.first_start()
@@ -228,11 +281,13 @@ class AppIntegrationTests(unittest.TestCase):
         self.first_start()
         self.enter_stage(1)
         for action in ROUTES[('stage_01', 4)]['actions']:
-            key = ACTION_KEYS.get(action)
-            if key is not None:
-                self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=key, mod=0))
-                self.app.handle_event(pygame.event.Event(pygame.KEYUP, key=key, mod=0))
-            self.app.advance(0.3)
+            self.apply_action(action, short_tap=True)
+        # for action in ROUTES[('stage_01', 4)]['actions']:
+        #     key = ACTION_KEYS.get(action)
+        #     if key is not None:
+        #         self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=key, mod=0))
+        #         self.app.handle_event(pygame.event.Event(pygame.KEYUP, key=key, mod=0))
+        #     self.app.advance(0.3)
         self.assertEqual(self.app.last_outcome['status'], 'COMPLETE')
         self.assert_rendered('result')
         self.assertEqual(self.app.controls[self.app.focus]['id'], 'view_memory')

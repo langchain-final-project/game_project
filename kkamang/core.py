@@ -414,7 +414,7 @@ class GameCore:
         return {
             "replay_version": "1.0",
             "rules_version": self._config["rules_version"],
-            "observation_version": "vector_v2_quest",
+            "observation_version": "vector_v3_chaser",
             "stage_id": self._config["id"], "stage": self._config["stage"],
             "config_hash": self.config_hash, "config_hash_algorithm": "sha256-canonical-json-utf8",
             "mode": self.mode, "seed": self.seed, "randomize_phase": self.randomize_phase,

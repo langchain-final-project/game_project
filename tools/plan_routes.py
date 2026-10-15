@@ -7,45 +7,267 @@ if str(ROOT) not in sys.path:sys.path.insert(0,str(ROOT))
 from kkamang.core import GameCore
 from kkamang.levels import load_levels
 from tools.evaluate import safe_path
+from collections import deque
+from functools import lru_cache
 
-def plan(game,target=4,width=18,allow_shortcuts=True,forbid_rich=False):
- beam=[(game,[])];best=None
- for depth in range(15):
-  candidates={}
-  for core,actions in beam:
-   s=core.snapshot()
-   if s['quest']['collected'] and s['carried']>=target:
-    path=safe_path(s,tuple(s['exit']))
-    if path and (best is None or len(actions)+len(path)<len(best)):
-     test=deepcopy(core)
-     for a in path:res=test.step(a)
-     if res.outcome and res.outcome['status']=='COMPLETE':best=actions+path
-    continue
-   goals=[]
-   if not s['quest']['collected']:goals.append(('q',s['quest']['position']))
-   if s['carried']<target:goals += [(i['id'],i['position']) for i in s['items'] if i['active'] and not(forbid_rich and i['value']==3)]
-   if allow_shortcuts:goals += [('s'+g['id'],g['terminal']) for g in s['shortcuts'] if not g['opened']]
-   for ident,pos in goals:
-    path=safe_path(s,tuple(pos))
-    if not path or len(actions)+len(path)>s['initial_ticks']-2:continue
-    test=deepcopy(core)
-    for a in path:
-     res=test.step(a)
-     if res.terminated:break
-    if res.terminated:continue
-    n=res.snapshot;p=n['position'];e=n['exit'];home=abs(p[0]-e[0])+abs(p[1]-e[1])+1
-    if n['remaining_ticks']<home:continue
-    if best is not None and len(actions)+len(path)+home>=len(best):continue
-    key=(tuple(p),tuple(i['active'] for i in n['items']),n['quest']['collected'],tuple(g['opened'] for g in n['shortcuts']),tuple((g['route_index'],g['countdown']) for g in n['ghosts']))
-    aa=actions+path
-    if key not in candidates or len(aa)<len(candidates[key][1]):candidates[key]=(test,aa)
-  def rank(pair):
-   s=pair[0].snapshot();q=s['quest'];p=s['position']
-   qdist=0 if q['collected'] else abs(p[0]-q['position'][0])+abs(p[1]-q['position'][1])+1
-   return (len(pair[1])+qdist+max(0,target-s['carried'])*2,-s['carried'])
-  beam=sorted(candidates.values(),key=rank)[:width]
-  if not beam:break
- return best
+def rollout(core, path):
+    """원본 게임을 보존하고, 후보 경로의 안전성을 확인합니다."""
+    test = deepcopy(core)
+    result = None
+
+    for index, action in enumerate(path):
+        result = test.step(action)
+
+        # 보호 상태여도 유령과 접촉한 경로는 제외합니다.
+        if any(event['type'] == 'contact' for event in result.events):
+            return None
+
+        # 경로를 끝내기 전에 게임이 종료됐다면 제외합니다.
+        if result.terminated and index != len(path) - 1:
+            return None
+
+    if result is None:
+        return None
+
+    return test, result
+
+def make_lower_bound(game, target, forbid_rich):
+    """남은 임무에 필요한 최소 틱 수를 낙관적으로 추정합니다."""
+    initial = game.snapshot()
+
+    items = [
+        item for item in initial['items']
+        if not (forbid_rich and item['value'] == 3)
+    ]
+
+    points = (
+        [tuple(item['position']) for item in items]
+        + [tuple(initial['quest']['position'])]
+    )
+    values = [item['value'] for item in items] + [0]
+    item_ids = [item['id'] for item in items]
+    quest_bit = 1 << len(items)
+    exit_pos = tuple(initial['exit'])
+
+    @lru_cache(None)
+    def distances(origin):
+        queue = deque([origin])
+        found = {origin: 0}
+
+        while queue:
+            x, y = queue.popleft()
+
+            for dx, dy in ((0, 1), (1, 0), (0, -1), (-1, 0)):
+                point = (x + dx, y + dy)
+                nx, ny = point
+
+                if point in found:
+                    continue
+                if not (0 <= nx < initial['width'] and 0 <= ny < initial['height']):
+                    continue
+                if initial['grid'][ny][nx] == '#':
+                    continue
+
+                found[point] = found[(x, y)] + 1
+                queue.append(point)
+
+        return found
+
+    @lru_cache(None)
+    def cost(position, mask, needed):
+        if needed <= 0 and not (mask & quest_bit):
+            return distances(position).get(exit_pos, 10000) + 1
+
+        best = 10000
+
+        for index, point in enumerate(points):
+            bit = 1 << index
+
+            if not (mask & bit):
+                continue
+            if index < len(items) and needed <= 0:
+                continue
+
+            travel = distances(position).get(point, 10000)
+            remaining = cost(
+                point,
+                mask ^ bit,
+                max(0, needed - values[index]),
+            )
+            best = min(best, travel + 1 + remaining)
+
+        return best
+
+    def estimate(snapshot):
+        active = {
+            item['id']
+            for item in snapshot['items']
+            if item['active']
+        }
+
+        mask = sum(
+            1 << index
+            for index, ident in enumerate(item_ids)
+            if ident in active
+        )
+
+        if not snapshot['quest']['collected']:
+            mask |= quest_bit
+
+        return cost(
+            tuple(snapshot['position']),
+            mask,
+            max(0, target - snapshot['carried']),
+        )
+
+    return estimate
+
+# def plan(game,target=4,width=18,allow_shortcuts=True,forbid_rich=False):
+#  beam=[(game,[])];best=None
+#  for depth in range(15):
+#   candidates={}
+#   for core,actions in beam:
+#    s=core.snapshot()
+#    if s['quest']['collected'] and s['carried']>=target:
+#     path=safe_path(s,tuple(s['exit']))
+#     if path and (best is None or len(actions)+len(path)<len(best)):
+#      test=deepcopy(core)
+#      for a in path:res=test.step(a)
+#      if res.outcome and res.outcome['status']=='COMPLETE':best=actions+path
+#     continue
+#    goals=[]
+#    if not s['quest']['collected']:goals.append(('q',s['quest']['position']))
+#    if s['carried']<target:goals += [(i['id'],i['position']) for i in s['items'] if i['active'] and not(forbid_rich and i['value']==3)]
+#    if allow_shortcuts:goals += [('s'+g['id'],g['terminal']) for g in s['shortcuts'] if not g['opened']]
+#    for ident,pos in goals:
+#     path=safe_path(s,tuple(pos))
+#     if not path or len(actions)+len(path)>s['initial_ticks']-2:continue
+#     test=deepcopy(core)
+#     for a in path:
+#      res=test.step(a)
+#      if res.terminated:break
+#     if res.terminated:continue
+#     n=res.snapshot;p=n['position'];e=n['exit'];home=abs(p[0]-e[0])+abs(p[1]-e[1])+1
+#     if n['remaining_ticks']<home:continue
+#     if best is not None and len(actions)+len(path)+home>=len(best):continue
+#     key=(tuple(p),tuple(i['active'] for i in n['items']),n['quest']['collected'],tuple(g['opened'] for g in n['shortcuts']),tuple((g['route_index'],g['countdown']) for g in n['ghosts']))
+#     aa=actions+path
+#     if key not in candidates or len(aa)<len(candidates[key][1]):candidates[key]=(test,aa)
+#   def rank(pair):
+#    s=pair[0].snapshot();q=s['quest'];p=s['position']
+#    qdist=0 if q['collected'] else abs(p[0]-q['position'][0])+abs(p[1]-q['position'][1])+1
+#    return (len(pair[1])+qdist+max(0,target-s['carried'])*2,-s['carried'])
+#   beam=sorted(candidates.values(),key=rank)[:width]
+#   if not beam:break
+#  return best
+
+def plan(game, target=4, width=18, allow_shortcuts=True, forbid_rich=False):
+    lower_bound = make_lower_bound(game, target, forbid_rich)
+    beam = [(game, [])]
+    best = None
+
+    for depth in range(15):
+        candidates = {}
+
+        for core, actions in beam:
+            s = core.snapshot()
+
+            # 필수 물건과 목표 온기를 모았다면 귀환 경로를 검사합니다.
+            if s['quest']['collected'] and s['carried'] >= target:
+                path = safe_path(s, tuple(s['exit']))
+
+                if path and (best is None or len(actions) + len(path) < len(best)):
+                    checked = rollout(core, path)
+
+                    if checked is not None:
+                        _, result = checked
+                        if result.outcome and result.outcome['status'] == 'COMPLETE':
+                            best = actions + path
+
+                continue
+
+            goals = []
+
+            if not s['quest']['collected']:
+                goals.append(('q', s['quest']['position']))
+
+            if s['carried'] < target:
+                goals += [
+                    (item['id'], item['position'])
+                    for item in s['items']
+                    if item['active'] and not (forbid_rich and item['value'] == 3)
+                ]
+
+            if allow_shortcuts:
+                goals += [
+                    ('s' + gate['id'], gate['terminal'])
+                    for gate in s['shortcuts']
+                    if not gate['opened']
+                ]
+
+            for ident, position in goals:
+                path = safe_path(s, tuple(position))
+
+                if not path or len(actions) + len(path) > s['initial_ticks'] - 2:
+                    continue
+
+                # 실제 게임으로 실행해 안전한 후보만 남깁니다.
+                checked = rollout(core, path)
+                if checked is None:
+                    continue
+
+                test, result = checked
+                if result.terminated:
+                    continue
+
+                n = result.snapshot
+                p = n['position']
+                e = n['exit']
+                home = abs(p[0] - e[0]) + abs(p[1] - e[1]) + 1
+
+                if n['remaining_ticks'] < home:
+                    continue
+                if best is not None and len(actions) + len(path) + home >= len(best):
+                    continue
+
+                # 추격 유령의 상태가 다르면 서로 다른 후보로 취급합니다.
+                chaser = n.get('chaser')
+                chase_key = None if chaser is None else (
+                    chaser['active'],
+                    tuple(chaser['position']),
+                    chaser['countdown'],
+                )
+
+                key = (
+                    tuple(p),
+                    tuple(item['active'] for item in n['items']),
+                    n['quest']['collected'],
+                    tuple(gate['opened'] for gate in n['shortcuts']),
+                    tuple((g['route_index'], g['countdown']) for g in n['ghosts']),
+                    chase_key,
+                )
+
+                new_actions = actions + path
+                if key not in candidates or len(new_actions) < len(candidates[key][1]):
+                    candidates[key] = (test, new_actions)
+
+        # def rank(pair):
+        #     s = pair[0].snapshot()
+        #     q = s['quest']
+        #     p = s['position']
+        #     qdist = 0 if q['collected'] else (abs(p[0] - q['position'][0]) + abs(p[1] - q['position'][1]) + 1)
+        #     return (len(pair[1]) + qdist + max(0, target - s['carried']) * 2,-s['carried'],)
+        def rank(pair):
+            s = pair[0].snapshot()
+            return (
+                len(pair[1]) + lower_bound(s),
+                -s['carried'],
+            )
+        beam = sorted(candidates.values(), key=rank)[:width]
+        if not beam:
+            break
+
+    return best
 
 def trace(s):
  return {'tick':s['tick'],'player':s['position'],'carried':s['carried'],'quest_collected':s['quest']['collected'],

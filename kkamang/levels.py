@@ -31,7 +31,7 @@ def _integer(value: object) -> bool:
 def validate_level(config: dict) -> None:
     """Reject ambiguous, malformed, or unsupported level configurations.
 
-    IDs and slot order are stable because the 602-value observation contract
+    IDs and slot order are stable because the 610-value observation contract
     relies on them. Modified maps may use fewer patrols or shortcuts; their
     number is not implicitly inferred from the stage number.
     """

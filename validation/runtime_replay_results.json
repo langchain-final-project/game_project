@@ -5,89 +5,89 @@
     "No claim about human difficulty, real-time input, UI or Windows execution.",
     "All tested phase combinations use the authored routes and directions."
   ],
-  "reference_fixture_sha256": "e9f5a5d4cb96bee020b6703a9045e2c1dc6021acbcd2256e9609a9a67e3dccbf",
+  "reference_fixture_sha256": "c67390ddaa4b40d947e875a460fdad039eeced6983415e798ce40ababb4e013a",
   "original_results_sha256": null,
   "implementation_sha256": {
-    "core.py": "5619ef7e2b1225761c76a4bf8b81e4fdba2d1fbb37fde4382cca26e91803e601",
-    "levels.py": "993b2f82106781181d442e74a8be9cd7071a4762b7661dc3abaac2fb07a51267"
+    "core.py": "1f9d24622cb046d81508e9ce4f29715c9abd7a4bbdb34dcb9e92f425b05bb112",
+    "levels.py": "8f4b81698cd35cd828d4d8c1840a35a3d2bac5515a75f3f2a08d6b7d85fcfad6"
   },
   "representative_only": false,
   "route_count": 36,
   "passed": 36,
   "phase_configurations": 12,
   "representative_trace_routes": 36,
-  "representative_trace_states": 1809,
+  "representative_trace_states": 1757,
   "level_hashes": [
     {
       "stage_id": "stage_01",
-      "expected_sha256": "6ba74b5bbebbadb568fd6f7f94b3159a6d6e7f906df167ad653668e208c056b1",
-      "actual_sha256": "6ba74b5bbebbadb568fd6f7f94b3159a6d6e7f906df167ad653668e208c056b1",
+      "expected_sha256": "6b9d46013daa1e22cf8cfbad7dbc08ac675a74aa639ca37c866752da37c9b9ba",
+      "actual_sha256": "6b9d46013daa1e22cf8cfbad7dbc08ac675a74aa639ca37c866752da37c9b9ba",
       "passed": true
     },
     {
       "stage_id": "stage_02",
-      "expected_sha256": "f5e5cbab1b7f4467b2f9689be1ea7cebac8b0579cacd0e54dd67d223557a8fd0",
-      "actual_sha256": "f5e5cbab1b7f4467b2f9689be1ea7cebac8b0579cacd0e54dd67d223557a8fd0",
+      "expected_sha256": "7a990f8cff1651156267aeaf2a91f1480fbd36f9a975681190fa2bb42cb41a1c",
+      "actual_sha256": "7a990f8cff1651156267aeaf2a91f1480fbd36f9a975681190fa2bb42cb41a1c",
       "passed": true
     },
     {
       "stage_id": "stage_03",
-      "expected_sha256": "283925dd6f035b7510cb24f34cdb2ddf0cfc0747cf7717a34679d0da7e8f4854",
-      "actual_sha256": "283925dd6f035b7510cb24f34cdb2ddf0cfc0747cf7717a34679d0da7e8f4854",
+      "expected_sha256": "d7a0b1d57bd0ac9b59b016fdaae127dbcd4c245c80a0309bdcb124df836652f8",
+      "actual_sha256": "d7a0b1d57bd0ac9b59b016fdaae127dbcd4c245c80a0309bdcb124df836652f8",
       "passed": true
     },
     {
       "stage_id": "stage_04",
-      "expected_sha256": "5b76920f624d35b440280a5212f137a9a311c1238f223cbb16075f3aaa61c1f2",
-      "actual_sha256": "5b76920f624d35b440280a5212f137a9a311c1238f223cbb16075f3aaa61c1f2",
+      "expected_sha256": "ec903f209cc4a385d119dd26651b8d702b68843a921f48181916172f73c3096f",
+      "actual_sha256": "ec903f209cc4a385d119dd26651b8d702b68843a921f48181916172f73c3096f",
       "passed": true
     },
     {
       "stage_id": "stage_05",
-      "expected_sha256": "af0e44f34a87634be999c5dc3542b907e919ccf572f468efcaa638d6fc647a22",
-      "actual_sha256": "af0e44f34a87634be999c5dc3542b907e919ccf572f468efcaa638d6fc647a22",
+      "expected_sha256": "107dfa1bfd3d49729fc22353ee274cced44027d27472af506b04b79349d443f6",
+      "actual_sha256": "107dfa1bfd3d49729fc22353ee274cced44027d27472af506b04b79349d443f6",
       "passed": true
     },
     {
       "stage_id": "stage_06",
-      "expected_sha256": "d1ad61ff36c5fa37e2d964a66b1f28a4381e161b06639ad8e693a063a0709229",
-      "actual_sha256": "d1ad61ff36c5fa37e2d964a66b1f28a4381e161b06639ad8e693a063a0709229",
+      "expected_sha256": "bada518cf4876ec27c5625f74b6177452ec8f557746679c4bd8ab5b33d4c88ca",
+      "actual_sha256": "bada518cf4876ec27c5625f74b6177452ec8f557746679c4bd8ab5b33d4c88ca",
       "passed": true
     },
     {
       "stage_id": "stage_07",
-      "expected_sha256": "d631a8e83b6a2199ba130ec7eccd80bce12c924e279c6443be92f9debd29344a",
-      "actual_sha256": "d631a8e83b6a2199ba130ec7eccd80bce12c924e279c6443be92f9debd29344a",
+      "expected_sha256": "652d68facb32919e76f07aa8ece6d0e667db2654e676ac788c2a199830e5dccc",
+      "actual_sha256": "652d68facb32919e76f07aa8ece6d0e667db2654e676ac788c2a199830e5dccc",
       "passed": true
     },
     {
       "stage_id": "stage_08",
-      "expected_sha256": "ce5349121d0361d276967457e3c55e4481996aac8873734ebb60b3d40e8be6e7",
-      "actual_sha256": "ce5349121d0361d276967457e3c55e4481996aac8873734ebb60b3d40e8be6e7",
+      "expected_sha256": "b8cde690260be6224a7f0917e791ab734590f3423b3a4eda87264765649d650b",
+      "actual_sha256": "b8cde690260be6224a7f0917e791ab734590f3423b3a4eda87264765649d650b",
       "passed": true
     },
     {
       "stage_id": "stage_09",
-      "expected_sha256": "d46cc2076e6eb76fe7db59617bf9ea5ad92856ccd09d9e60a38bdc07fdacda26",
-      "actual_sha256": "d46cc2076e6eb76fe7db59617bf9ea5ad92856ccd09d9e60a38bdc07fdacda26",
+      "expected_sha256": "2ad585d931aa24694fbee5fc476deaf0a20105c44b4a3d79004f70e4a6c3a6e0",
+      "actual_sha256": "2ad585d931aa24694fbee5fc476deaf0a20105c44b4a3d79004f70e4a6c3a6e0",
       "passed": true
     },
     {
       "stage_id": "stage_10",
-      "expected_sha256": "684d8ab8ac4c1a81b8a49e7cae7828536394ccf631e71f338bb533fcdae73eb1",
-      "actual_sha256": "684d8ab8ac4c1a81b8a49e7cae7828536394ccf631e71f338bb533fcdae73eb1",
+      "expected_sha256": "2887e6792678c1739c730059746097c2da32da404a7a8751822018f72f4a7f8b",
+      "actual_sha256": "2887e6792678c1739c730059746097c2da32da404a7a8751822018f72f4a7f8b",
       "passed": true
     },
     {
       "stage_id": "stage_11",
-      "expected_sha256": "97d3de2fe3b7ef0875b32a157dfbb0252232a61472e90ac59ae3c8fc76a859c3",
-      "actual_sha256": "97d3de2fe3b7ef0875b32a157dfbb0252232a61472e90ac59ae3c8fc76a859c3",
+      "expected_sha256": "715fc64eba955c9d7de46759a3e558abe5fc113276c7b65b3d42ea880826f9a2",
+      "actual_sha256": "715fc64eba955c9d7de46759a3e558abe5fc113276c7b65b3d42ea880826f9a2",
       "passed": true
     },
     {
       "stage_id": "stage_12",
-      "expected_sha256": "cbce9789cb3bbf21a5c442917da134d830b30430fbf4c30d0683cd0bf93228ce",
-      "actual_sha256": "cbce9789cb3bbf21a5c442917da134d830b30430fbf4c30d0683cd0bf93228ce",
+      "expected_sha256": "ed087fd8b21f7c029a6b90f5fc6938c2039b8adedbf7fcd8adec2add220accf8",
+      "actual_sha256": "ed087fd8b21f7c029a6b90f5fc6938c2039b8adedbf7fcd8adec2add220accf8",
       "passed": true
     }
   ],
@@ -95,65 +95,65 @@
     "stage_01": {
       "routes": 3,
       "passed": 3,
-      "trace_steps": 89
+      "trace_steps": 87
     },
     "stage_02": {
       "routes": 3,
       "passed": 3,
-      "trace_steps": 97
+      "trace_steps": 89
     },
     "stage_03": {
       "routes": 3,
       "passed": 3,
-      "trace_steps": 181
+      "trace_steps": 177
     },
     "stage_04": {
       "routes": 3,
       "passed": 3,
-      "trace_steps": 181
+      "trace_steps": 177
     },
     "stage_05": {
       "routes": 3,
       "passed": 3,
-      "trace_steps": 164
+      "trace_steps": 143
     },
     "stage_06": {
       "routes": 3,
       "passed": 3,
-      "trace_steps": 159
+      "trace_steps": 148
     },
     "stage_07": {
       "routes": 3,
       "passed": 3,
-      "trace_steps": 149
+      "trace_steps": 145
     },
     "stage_08": {
       "routes": 3,
       "passed": 3,
-      "trace_steps": 149
+      "trace_steps": 145
     },
     "stage_09": {
       "routes": 3,
       "passed": 3,
-      "trace_steps": 176
+      "trace_steps": 187
     },
     "stage_10": {
       "routes": 3,
       "passed": 3,
-      "trace_steps": 156
+      "trace_steps": 159
     },
     "stage_11": {
       "routes": 3,
       "passed": 3,
-      "trace_steps": 154
+      "trace_steps": 147
     },
     "stage_12": {
       "routes": 3,
       "passed": 3,
-      "trace_steps": 154
+      "trace_steps": 153
     }
   },
   "failures": [],
-  "elapsed_seconds": 0.176,
+  "elapsed_seconds": 0.16,
   "all_passed": true
 }

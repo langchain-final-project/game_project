@@ -122,7 +122,7 @@
   ],
     "chaser": {
     "id": "C",
-    "spawn_position": [6,1],
+    "spawn_position": [14,3],
     "initial_countdown": 4,
     "ticks_per_move": 2
   },
