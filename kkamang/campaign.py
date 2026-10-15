@@ -1,5 +1,4 @@
 """Human campaign progression and defensive, atomic JSON saves.
-
 This module has no Pygame/Gym imports. Episode scores stay in the game core;
 settlement only turns a finished human episode into persistent presentation data.
 """

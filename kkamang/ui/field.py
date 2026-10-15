@@ -1,122 +1,822 @@
 """Readable, layered room rendering. Art never changes collision or timing."""
+
 import math
 import pygame
 from .theme import text, wrapped, panel, CREAM, INK, NIGHT, PAPER, GOLD, SAGE
 from .illustration import cat, ghost, prop, glow
 
+# PNG가 준비 되기 전에는 None 유지 (필요한 PNG: 바닥 러그, 온기, 벽, 바닥)
+# 경로 지정은 assets 폴더 기준
+# PNG가 준비되면 None 대신 경로만 넣으면 됨! 예) RUG_IMAGE_PATH = 'art/rug.png'
 
-def draw_field(surface,assets,snapshot,rect,elapsed=0.,previous=None,interpolation=1.,cosmetics=None,facing='down',mood='idle'):
-    s=snapshot;r=pygame.Rect(rect);tile=min(r.w/16,r.h/9);ox=r.x+(r.w-tile*16)/2;oy=r.y+(r.h-tile*9)/2
-    cosmetics=cosmetics or {};d=pygame.draw
-    def box(p):return pygame.Rect(round(ox+p[0]*tile),round(oy+p[1]*tile),math.ceil(tile),math.ceil(tile))
-    def foot(p):return (ox+(p[0]+.5)*tile,oy+(p[1]+.95)*tile)
-    tasks=[]
-    # Thin floor seams, broad continuous walls; collision grid is still exact.
-    for y,row in enumerate(s['grid']):
-        for x,c in enumerate(row):
-            rr=box((x,y))
-            if c=='.':
-                color=(130+(x+y)%3*3,107+(x+y)%3*2,103+(x+y)%3*2)
-                d.rect(surface,color,rr);d.line(surface,(145,121,113),rr.topleft,rr.topright,1)
-                if (x+y)%4==0:d.line(surface,(121,99,98),(rr.x+8,rr.bottom-12),(rr.right-7,rr.bottom-12),1)
+FIELD_IMAGES = {
+    'floor': None,              # 바닥 타일
+    'wall': None,               # 벽 타일
+    'rug': None,                # 러그
+
+    'warmth_1': None,           # 1점 온기
+    'warmth_3': None,           # 3점 온기
+
+    'return_base': None,        # 귀환 지점의 바닥 표시
+    'gate_closed': None,        # 닫힌 샛문
+    'gate_open': None,          # 열린 샛문
+    'terminal_a': None,         # A 조작 장치
+    'terminal_b': None,         # B 조작 장치
+
+    'quest_frame': None,        # 필수 물건 주변 테두리
+    'quest_badge': None,        # 느낌표 뒤의 원형 배경
+    'protection': None,         # 플레이어 보호 표시
+    'interaction_background': None,  # 상호작용 안내 배경
+
+    'game_background': None,    # 게임 전체 화면 배경
+    'heart_full': None,         # 남아 있는 용기
+    'heart_empty': None,        # 소진된 용기
+    'info_divider': None,       # 오른쪽 설명 패널의 구분선
+}
+
+def _draw_png(surface, assets, key, rect):
+    """PNG를 표시했으면 True, 경로가 없으면 False를 반환합니다."""
+
+    path = FIELD_IMAGES[key]
+
+    if path is None:
+        return False
+
+    rect = pygame.Rect(rect)
+
+    # 기존 이미지 로더가 파일 읽기와 크기별 캐시를 담당합니다.
+    image = assets.image(path, rect.size)
+    surface.blit(image, rect.topleft)
+
+    return True
+
+def _draw_rug(surface, assets, rr):
+    """PNG 경로가 있으면 이미지로, 없으면 기존 도형으로 러그를 그립니다."""
+
+    # PNG를 그렸다면 여기서 함수를 끝냅니다.
+    if _draw_png(surface, assets, 'rug', rr):
+        return
+
+    # PNG가 없을 때 사용하는 기존 러그 그림입니다.
+    d = pygame.draw
+
+    d.rect(
+        surface,
+        (149, 117, 139),
+        rr,
+        border_radius=9,
+    )
+    d.rect(
+        surface,
+        (191, 158, 163),
+        rr.inflate(-5, -5),
+        1,
+        border_radius=6,
+    )
+
+    # 러그 위아래의 장식 선입니다.
+    for dx in range(5, rr.w - 4, 6):
+        d.line(
+            surface,
+            (191, 158, 163),
+            (rr.x + dx, rr.y - 3),
+            (rr.x + dx, rr.y + 2),
+            1,
+        )
+        d.line(
+            surface,
+            (191, 158, 163),
+            (rr.x + dx, rr.bottom - 2),
+            (rr.x + dx, rr.bottom + 3),
+            1,
+        )
+
+
+def _draw_warmth(surface, assets, center, tile, value):
+    """온기의 그림과 빛 효과, +3 표시를 그립니다."""
+
+    cx, cy = center
+
+    # 빛 효과는 PNG를 사용해도 유지합니다.
+    glow(surface, (cx, cy), int(tile * .6))
+
+    # value가 1이면 warmth_1, 3이면 warmth_3을 사용합니다.
+    key = f'warmth_{value}'
+
+    # 기존 온기 원의 지름에 맞춰 표시합니다.
+    radius = int(tile * (.16 if value == 1 else .22))
+    size = max(1, radius * 2)
+
+    image_rect = pygame.Rect(0, 0, size, size)
+    image_rect.center = (int(cx), int(cy))
+
+    if _draw_png(surface, assets, key, image_rect):
+        pass
+
+    else:
+        # PNG가 없을 때 사용하는 기존 온기 그림입니다.
+        pygame.draw.circle(
+            surface,
+            GOLD,
+            (int(cx), int(cy)),
+            int(tile * (.16 if value == 1 else .22)),
+        )
+        pygame.draw.circle(
+            surface,
+            CREAM,
+            (int(cx - 2), int(cy - 3)),
+            int(tile * .09),
+        )
+
+    # 점수 안내는 이미지와 별도로 표시합니다.
+    if value == 3:
+        text(
+            surface,
+            assets,
+            '+3',
+            (cx, cy + 12),
+            14,
+            CREAM,
+            True,
+            'midtop',
+        )
+
+def draw_field(
+    surface,
+    assets,
+    snapshot,
+    rect,
+    elapsed=0.,
+    previous=None,
+    interpolation=1.,
+    cosmetics=None,
+    facing='down',
+    mood='idle',
+    player_interpolation=None,
+):
+    # 게임 상태와 탐사 화면 영역을 준비
+    s = snapshot
+    r = pygame.Rect(rect)
+
+    # 16열 × 9행 맵을 화면 영역 안에 맞춥니다.
+    # tile: 한 칸의 크기
+    # ox, oy: 맵이 화면 중앙에 놓이도록 계산한 시작 좌표
+    tile = min(r.w / 16, r.h / 9)
+    ox = r.x + (r.w - tile * 16) / 2
+    oy = r.y + (r.h - tile * 9) / 2
+
+    cosmetics = cosmetics or {}
+    d = pygame.draw
+
+    # 맵 좌표 [x, y]를 해당 칸의 화면 사각형으로 바꿉니다.
+    def box(p):
+        return pygame.Rect(
+            round(ox + p[0] * tile),
+            round(oy + p[1] * tile),
+            math.ceil(tile),
+            math.ceil(tile),
+        )
+
+    # 캐릭터의 발이 놓일 화면 좌표를 계산
+    def foot(p):
+        return (
+            ox + (p[0] + .5) * tile,
+            oy + (p[1] + .95) * tile,
+        )
+
+    # 나중에 높이 순서대로 그릴 가구와 캐릭터를 보관합니다.
+    # 각 항목은 (화면의 y좌표, 그리기 함수) 형태입니다.
+    tasks = []
+
+    # ── 바닥과 벽 ──
+    # 장식만 그리며, 실제 이동 가능 여부는 게임의 grid가 결정합니다.
+    for y, row in enumerate(s['grid']):
+        for x, c in enumerate(row):
+            rr = box((x, y))
+
+            # 먼저 현재 칸이 바닥인지 확인합니다.
+            if c == '.':
+                if not _draw_png(surface, assets, 'floor', rr):
+                    color = (
+                        130 + (x + y) % 3 * 3,
+                        107 + (x + y) % 3 * 2,
+                        103 + (x + y) % 3 * 2,
+                    )
+
+                    d.rect(surface, color, rr)
+                    d.line(
+                        surface,
+                        (145, 121, 113),
+                        rr.topleft,
+                        rr.topright,
+                        1,
+                    )
+
+                    if (x + y) % 4 == 0:
+                        d.line(
+                            surface,
+                            (121, 99, 98),
+                            (rr.x + 8, rr.bottom - 12),
+                            (rr.right - 7, rr.bottom - 12),
+                            1,
+                        )
+
             else:
-                d.rect(surface,(78,69,87),rr)
-                if y in (0,8):
-                    d.line(surface,(100,82,98),(rr.x+tile/2,rr.y+6),(rr.x+tile/2,rr.bottom-6),1)
-                    d.line(surface,(167,127,106),(rr.x,rr.bottom-5),(rr.right,rr.bottom-5),3)
-                # Furnish wall cells only: never decorate an empty walkable cell as blocked.
-                if y>0 and y<8 and x not in (0,15):
-                    kind=('shelf','plant','table')[(x+y+s['stage'])%3]
-                    tasks.append((rr.bottom,lambda rr=rr,kind=kind:prop(surface,kind,rr.inflate(-2,8))))
-                elif y==0 and x in (3,8,12):prop(surface,'window',rr.inflate(-5,-4))
-                elif y==0 and x in (5,10):prop(surface,'lantern',rr.inflate(-10,-9));glow(surface,rr.center,65)
-    # Rugs are flat decorative floor coverings, away from every object.
-    for y,row in enumerate(s['grid']):
-        for x,c in enumerate(row):
-            if c=='.' and (x+y*3+s['stage'])%23==0:
-                rr=box((x,y)).inflate(-8,-12);d.rect(surface,(149,117,139),rr,border_radius=9);d.rect(surface,(191,158,163),rr.inflate(-5,-5),1,border_radius=6)
-                for dx in range(5,rr.w-4,6):
-                    d.line(surface,(191,158,163),(rr.x+dx,rr.y-3),(rr.x+dx,rr.y+2),1)
-                    d.line(surface,(191,158,163),(rr.x+dx,rr.bottom-2),(rr.x+dx,rr.bottom+3),1)
-    ex=box(s['exit']);d.rect(surface,(145,174,151),ex.inflate(-7,-7),border_radius=12)
-    prop(surface,'garden',ex.inflate(-9,-4))
+                if not _draw_png(surface, assets, 'wall', rr):
+                    d.rect(surface, (78, 69, 87), rr)
+
+                    if y in (0, 8):
+                        d.line(
+                            surface,
+                            (100, 82, 98),
+                            (rr.x + tile / 2, rr.y + 6),
+                            (rr.x + tile / 2, rr.bottom - 6),
+                            1,
+                        )
+                        d.line(
+                            surface,
+                            (167, 127, 106),
+                            (rr.x, rr.bottom - 5),
+                            (rr.right, rr.bottom - 5),
+                            3,
+                        )
+
+                # 가구는 벽 칸에만 배치합니다.
+                if y > 0 and y < 8 and x not in (0, 15):
+                    kind = (
+                        'shelf',
+                        'plant',
+                        'table',
+                    )[(x + y + s['stage']) % 3]
+
+                    # 기본 인자에 현재 rr, kind를 보관하여
+                    # 나중에 함수를 실행해도 이 칸의 가구를 그립니다.
+                    tasks.append(
+                        (
+                            rr.bottom,
+                            lambda rr=rr, kind=kind: prop(
+                                surface,
+                                kind,
+                                rr.inflate(-2, 8),
+                            ),
+                        )
+                    )
+
+                elif y == 0 and x in (3, 8, 12):
+                    prop(surface, 'window', rr.inflate(-5, -4))
+
+                elif y == 0 and x in (5, 10):
+                    prop(surface, 'lantern', rr.inflate(-10, -9))
+                    glow(surface, rr.center, 65)
+
+    # ── 바닥의 러그 장식 ──
+    # 바닥과 벽을 모두 그린 뒤 러그를 그립니다.
+    for y, row in enumerate(s['grid']):
+        for x, c in enumerate(row):
+            if c == '.' and (x + y * 3 + s['stage']) % 23 == 0:
+                rr = box((x, y)).inflate(-8, -12)
+                _draw_rug(surface, assets, rr)
+
+    # ── 귀환 지점 ──
+    ex = box(s['exit'])
+    return_rect = ex.inflate(-7, -7)
+
+    if not _draw_png(surface, assets, 'return_base', return_rect):
+        d.rect(
+            surface,
+            (145, 174, 151),
+            return_rect,
+            border_radius=12,
+        )
+
+    prop(surface, 'garden', ex.inflate(-9, -4))
+
+    # ── 샛문과 조작 장치 ──
     for sc in s['shortcuts']:
-        gate=box(sc['gate']);term=box(sc['terminal'])
+        gate = box(sc['gate'])
+        term = box(sc['terminal'])
+
         if not sc['opened']:
-            d.rect(surface,(91,72,82),gate.inflate(-7,-2),border_radius=10)
-            for k in range(3):d.line(surface,GOLD,(gate.x+15+k*12,gate.y+8),(gate.x+15+k*12,gate.bottom-8),2)
-        else:d.rect(surface,SAGE,gate.inflate(-7,-7),2,border_radius=10)
-        d.circle(surface,SAGE,term.center,int(tile*.29));text(surface,assets,sc['id'],term.center,18,INK,True,'center')
-    veil=pygame.Surface(r.size,pygame.SRCALPHA);veil.fill((28,25,42,20));surface.blit(veil,r)
-    # Next tile and route remain visible: the art change is not a visibility nerf.
-    for g in s['ghosts']:
-        points=[box(p).center for p in g['route']]
-        d.lines(surface,(169,148,184),True,points,1)
-        nextbox=box(g['next_position']).inflate(-7,-7);d.rect(surface,(210,185,228),nextbox,2,border_radius=9)
-        for k in range(g['countdown']):d.circle(surface,(235,207,237),(nextbox.centerx-5+k*10,nextbox.centery),3)
+            gate_rect = gate.inflate(-7, -2)
+
+            if not _draw_png(
+                surface, assets, 'gate_closed', gate_rect
+            ):
+                d.rect(
+                    surface,
+                    (91, 72, 82),
+                    gate_rect,
+                    border_radius=10,
+                )
+
+                for k in range(3):
+                    d.line(
+                        surface,
+                        GOLD,
+                        (gate.x + 15 + k * 12, gate.y + 8),
+                        (gate.x + 15 + k * 12, gate.bottom - 8),
+                        2,
+                    )
+
+        else:
+            gate_rect = gate.inflate(-7, -7)
+
+            if not _draw_png(
+                surface, assets, 'gate_open', gate_rect
+            ):
+                d.rect(
+                    surface,
+                    SAGE,
+                    gate_rect,
+                    2,
+                    border_radius=10,
+                )
+
+        # 조작 장치는 기존 원의 지름에 맞춥니다.
+        radius = int(tile * .29)
+        terminal_rect = pygame.Rect(0, 0, radius * 2, radius * 2)
+        terminal_rect.center = term.center
+
+        key = f"terminal_{sc['id'].lower()}"
+
+        if not _draw_png(surface, assets, key, terminal_rect):
+            d.circle(surface, SAGE, term.center, radius)
+
+        # A/B 글자는 계속 코드로 표시합니다.
+        text(
+            surface,
+            assets,
+            sc['id'],
+            term.center,
+            18,
+            INK,
+            True,
+            'center',
+        )
+
+    # ── 배경 위에 반투명 색상 덧씌우기 ──
+    # veil = pygame.Surface(r.size, pygame.SRCALPHA)
+    # veil.fill((28, 25, 42, 20))
+    # surface.blit(veil, r)
+
+    # ── 수집할 온기 ──
+    # 유령 반복문 밖에서 온기를 그립니다.
     for item in s['items']:
         if item['active']:
-            rr=box(item['position']);cx,cy=rr.center;cy+=math.sin(elapsed*3+cx)*2
-            glow(surface,(cx,cy),int(tile*.6))
-            d.circle(surface,GOLD,(int(cx),int(cy)),int(tile*(.16 if item['value']==1 else .22)))
-            d.circle(surface,CREAM,(int(cx-2),int(cy-3)),int(tile*.09))
-            if item['value']==3:text(surface,assets,'+3',(cx,cy+12),14,CREAM,True,'midtop')
-    q=s['quest']
+            rr = box(item['position'])
+            cx, cy = rr.center
+
+            # PNG를 사용해도 위아래 움직임은 유지합니다.
+            cy += math.sin(elapsed * 3 + cx) * 2
+
+            _draw_warmth(
+                surface,
+                assets,
+                (cx, cy),
+                tile,
+                item['value'],
+            )
+                
+    # ── 필수 물건 ──
+    q = s['quest']
+
     if not q['collected']:
-        rr=box(q['position']);d.rect(surface,(238,213,164),rr.inflate(-4,-4),2,border_radius=12)
-        prop(surface,q['kind'],rr.inflate(-10,-10));glow(surface,rr.center,60)
-        d.circle(surface,GOLD,(rr.right-9,rr.y+8),7);text(surface,assets,'!',(rr.right-9,rr.y+7),11,INK,True,'center')
-    for i,g in enumerate(s['ghosts']):
-        pos=list(g['position'])
-        if previous and i<len(previous['ghosts']):
-            old=previous['ghosts'][i]['position'];pos=[old[k]+(pos[k]-old[k])*interpolation for k in (0,1)]
-        pt=foot(pos)
-        def draw_patrol(pt=pt,ident=g['id']):
-            ghost(surface,pt,int(tile*.75),elapsed)
-            text(surface,assets,ident,(pt[0],pt[1]-tile*.9),12,CREAM,True,'midbottom')
-        tasks.append((pt[1],draw_patrol))
-    pos=list(s['position']);moving=False
+        rr = box(q['position'])
+
+        quest_rect = rr.inflate(-4, -4)
+
+        if not _draw_png(surface, assets, 'quest_frame', quest_rect):
+            d.rect(
+                surface,
+                (238, 213, 164),
+                quest_rect,
+                2,
+                border_radius=12,
+            )
+
+        prop(surface, q['kind'], rr.inflate(-10, -10))
+        glow(surface, rr.center, 60)
+
+        badge_rect = pygame.Rect(0, 0, 14, 14)
+        badge_rect.center = (rr.right - 9, rr.y + 8)
+
+        if not _draw_png(surface, assets, 'quest_badge', badge_rect):
+            d.circle(
+                surface,
+                GOLD,
+                (rr.right - 9, rr.y + 8),
+                7,
+            )
+
+        text(
+            surface,
+            assets,
+            '!',
+            (rr.right - 9, rr.y + 7),
+            11,
+            INK,
+            True,
+            'center',
+        )
+
+    # ── 유령 캐릭터 ──
+    for i, g in enumerate(s['ghosts']):
+        pos = list(g['position'])
+
+        # 이전 위치와 현재 위치 사이를 보간하여 부드럽게 보이게 합니다.
+        # 화면에 그릴 좌표만 계산하며 게임 상태의 위치는 바꾸지 않습니다.
+        if previous and i < len(previous['ghosts']):
+            old = previous['ghosts'][i]['position']
+            pos = [
+                old[k] + (pos[k] - old[k]) * interpolation
+                for k in (0, 1)
+            ]
+
+        pt = foot(pos)
+
+        # 현재 유령의 좌표와 ID를 기본 인자에 보관합니다.
+
+        # 나중에 그릴 순찰형의 화면 좌표를 보관합니다.
+        def draw_patrol(pt=pt):
+            ghost(surface, pt, int(tile * .75), elapsed)
+
+        tasks.append((pt[1], draw_patrol))
+
+    # ── 추격형 유령 ──
+    chaser = s.get('chaser')
+
+    # 설정이 있고, 필수 물건 획득 후 활성화된 경우에만 그립니다.
+    if chaser is not None and chaser['active']:
+        pos = list(chaser['position'])
+
+        previous_chaser = (
+            previous.get('chaser') if previous else None
+        )
+
+        # 이전 화면에서도 활성화되어 있었을 때만 이동을 보간합니다.
+        if (
+            previous_chaser is not None
+            and previous_chaser['active']
+            and previous_chaser['id'] == chaser['id']
+        ):
+            old = previous_chaser['position']
+            pos = [
+                old[k] + (pos[k] - old[k]) * interpolation
+                for k in (0, 1)
+            ]
+
+        pt = foot(pos)
+
+        # 나중에 실행할 때도 추격형의 좌표와 ID를 사용하도록 보관합니다.
+        def draw_chaser(pt=pt):
+            ghost(surface, pt, int(tile * .75), elapsed)
+
+        tasks.append((pt[1], draw_chaser))
+
+    # ── 플레이어 캐릭터 ──
+    pos = list(s['position'])
+    moving = False
+
+    player_alpha = (
+        interpolation
+        if player_interpolation is None
+        else player_interpolation
+    )
+
     if previous:
-        old=previous['position'];moving=old!=pos
-        pos=[old[k]+(pos[k]-old[k])*interpolation for k in (0,1)]
-    pt=foot(pos)
-    cm='surprised' if s['protection'] else 'walk' if moving and mood=='idle' else mood
-    tasks.append((pt[1],lambda:cat(surface,pt,int(tile*.87),facing,elapsed,cm,cosmetics.get('scarf','default'))))
-    for _,draw in sorted(tasks,key=lambda t:t[0]):draw()
-    if s['protection']:d.ellipse(surface,(225,210,240),box(s['position']).inflate(-4,-5),2)
-    # A compact contextual interaction prompt, drawn above scenery.
-    label=None
-    if s['position']==s['exit']:label='E 귀환' if q['collected'] and s['carried']>=s['target'] else '물건 + 온기 필요'
-    elif s['position']==q['position'] and not q['collected']:label='E '+q['name']
-    elif any(i['active'] and i['position']==s['position'] for i in s['items']):label='E 온기 회수'
-    elif any(not g['opened'] and g['terminal']==s['position'] for g in s['shortcuts']):label='E 샛문 열기'
+        old = previous['position']
+        moving = old != pos and player_alpha < 1.
+
+        pos = [
+            old[k] + (pos[k] - old[k]) * player_alpha
+            for k in (0, 1)
+        ]
+
+    pt = foot(pos)
+
+    # 보호 중이면 놀란 표정, 이동 중이며 기본 상태이면 걷기,
+    # 그 외에는 전달받은 mood를 사용합니다.
+    cm = (
+        'surprised'
+        if s['protection']
+        else 'walk'
+        if moving # and mood == 'idle'
+        else mood
+    )
+
+    tasks.append(
+        (
+            pt[1],
+            lambda: cat(
+                surface,
+                pt,
+                int(tile * .87),
+                facing,
+                elapsed,
+                cm,
+                cosmetics.get('scarf', 'default'),
+            ),
+        )
+    )
+
+    # y좌표가 작은 대상부터 그립니다.
+    # 화면 아래쪽 대상이 나중에 그려져 앞에 있는 것처럼 보입니다.
+    for _, draw in sorted(tasks, key=lambda t: t[0]):
+        draw()
+
+    # 피해를 받은 뒤 보호 상태임을 나타내는 표시입니다.
+    if s['protection']:
+        protection_rect = box(s['position']).inflate(-4, -5)
+
+        if not _draw_png(
+            surface, assets, 'protection', protection_rect
+        ):
+            d.ellipse(
+                surface,
+                (225, 210, 240),
+                protection_rect,
+                2,
+            )
+
+    # ── 현재 위치에서 가능한 상호작용 안내 ──
+    label = None
+
+    if s['position'] == s['exit']:
+        label = (
+            'E 귀환'
+            if q['collected'] and s['carried'] >= s['target']
+            else '물건 + 온기 필요'
+        )
+
+    elif s['position'] == q['position'] and not q['collected']:
+        label = 'E ' + q['name']
+
+    elif any(
+        i['active'] and i['position'] == s['position']
+        for i in s['items']
+    ):
+        label = 'E 온기 회수'
+
+    elif any(
+        not g['opened'] and g['terminal'] == s['position']
+        for g in s['shortcuts']
+    ):
+        label = 'E 샛문 열기'
+
     if label:
-        p=foot(s['position']);ww=assets.font(14).size(label)[0]+20;rr=pygame.Rect(p[0]-ww/2,p[1]-tile-23,ww,26)
-        rr.clamp_ip(r);d.rect(surface,NIGHT,rr,border_radius=9);text(surface,assets,label,rr.center,14,CREAM,False,'center')
+        p = foot(s['position'])
+
+        # 글자 너비에 여백을 더해 안내 상자의 크기를 정합니다.
+        ww = assets.font(14).size(label)[0] + 20
+        rr = pygame.Rect(
+            p[0] - ww / 2,
+            p[1] - tile - 23,
+            ww,
+            26,
+        )
+
+        # 안내 상자가 탐사 화면 밖으로 나가지 않도록 맞춥니다.
+        rr.clamp_ip(r)
+
+        if not _draw_png(
+            surface, assets, 'interaction_background', rr
+        ):
+            d.rect(surface, NIGHT, rr, border_radius=9)
+        text(
+            surface,
+            assets,
+            label,
+            rr.center,
+            14,
+            CREAM,
+            False,
+            'center',
+        )
 
 
-def draw_game(surface,assets,snapshot,stage_story,elapsed=0.,previous=None,interpolation=1.,toast='',cosmetics=None,facing='down',mood='idle'):
-    s=snapshot;surface.fill((36,34,49));d=pygame.draw
-    text(surface,assets,'THE SLEEPLESS MANOR',(26,16),12,(177,160,177))
-    text(surface,assets,f'{s["stage"]:02d}  {s["name"]}',(25,38),27,CREAM,True)
+def draw_game(
+    surface,
+    assets,
+    snapshot,
+    stage_story,
+    elapsed=0.,
+    previous=None,
+    interpolation=1.,
+    toast='',
+    cosmetics=None,
+    facing='down',
+    mood='idle',
+    player_interpolation=None,
+):
+    # 게임 전체 화면의 배경을 채웁니다.
+    s = snapshot
+    if not _draw_png(
+        surface, assets, 'game_background', surface.get_rect()
+    ):
+        surface.fill((36, 34, 49))
+    d = pygame.draw
+
+    # ── 상단: 게임 이름과 스테이지 ──
+    text(
+        surface,
+        assets,
+        'THE SLEEPLESS MANOR',
+        (26, 16),
+        12,
+        (177, 160, 177),
+    )
+    text(
+        surface,
+        assets,
+        f'{s["stage"]:02d}  {s["name"]}',
+        (25, 38),
+        27,
+        CREAM,
+        True,
+    )
+
+    # ── 상단: 용기 하트 3칸 ──
     for i in range(3):
-        c=(208,148,157) if i<s['courage'] else (81,71,88)
-        d.circle(surface,c,(350+i*31,52),9);d.circle(surface,c,(362+i*31,52),9);d.polygon(surface,c,[(341+i*31,53),(371+i*31,53),(356+i*31,71)])
-    q=s['quest'];panel(surface,(492,21,405,58),fill=(69,61,78),border=(118,102,113),radius=14)
-    prop(surface,q['kind'],(505,29,42,42));text(surface,assets,q['name']+('  회수 완료' if q['collected'] else '  찾아오기'),(558,39),19,CREAM)
-    text(surface,assets,f'온기  {s["carried"]} / {s["target"]}',(925,40),22,GOLD,True)
-    remaining=s['remaining_ticks']*.3;text(surface,assets,f'{remaining:04.1f} 초',(1245,40),25,ROSE if remaining<6 else CREAM,True,'topright')
-    panel(surface,(19,94,1002,575),fill=(77,63,73),border=(149,118,103),radius=18)
-    draw_field(surface,assets,s,(31,106,978,550),elapsed,previous,interpolation,cosmetics,facing,mood)
-    panel(surface,(1039,94,221,575),fill=PAPER,border=(182,148,116),radius=18)
-    text(surface,assets,'오늘 되찾을 기억',(1058,115),18,INK,True)
-    prop(surface,q['kind'],(1098,154,102,102),q['collected'])
-    text(surface,assets,q['name'],(1149,269),21,INK,True,'center')
-    wrapped(surface,assets,q['restoration'],(1060,303,178,104),17,INK,5)
-    d.line(surface,(203,177,144),(1059,416),(1240,416))
-    text(surface,assets,'조금 더 탐험하면',(1060,433),17,INK,True)
-    wrapped(surface,assets,'온기 10점 귀환\n수집 배지와 꾸미기 해금\n\n무피격 완료\n조용한 발걸음 배지',(1060,465,175,139),15,INK,5)
-    text(surface,assets,'큰 온기는 순찰을 조심!',(1060,631),13,(131,91,100))
-    text(surface,assets,toast or '방향키 / WASD 이동   ·   E 회수 / 귀환   ·   Space 대기   ·   Esc 일시정지',(28,689),16,CREAM)
+        key = 'heart_full' if i < s['courage'] else 'heart_empty'
+        heart_rect = pygame.Rect(341 + i * 31, 43, 31, 29)
 
-ROSE=(235,151,156)
+        if not _draw_png(surface, assets, key, heart_rect):
+            c = (
+                (208, 148, 157)
+                if i < s['courage']
+                else (81, 71, 88)
+            )
+
+            d.circle(surface, c, (350 + i * 31, 52), 9)
+            d.circle(surface, c, (362 + i * 31, 52), 9)
+            d.polygon(
+                surface,
+                c,
+                [
+                    (341 + i * 31, 53),
+                    (371 + i * 31, 53),
+                    (356 + i * 31, 71),
+                ],
+            )
+
+    # ── 상단: 필수 물건의 회수 상태 ──
+    q = s['quest']
+
+    panel(
+        surface,
+        (492, 21, 405, 58),
+        fill=(69, 61, 78),
+        border=(118, 102, 113),
+        radius=14,
+    )
+    prop(surface, q['kind'], (505, 29, 42, 42))
+    text(
+        surface,
+        assets,
+        q['name'] + ('  회수 완료' if q['collected'] else '  찾아오기'),
+        (558, 39),
+        19,
+        CREAM,
+    )
+
+    # ── 상단: 현재 온기와 목표 온기 ──
+    text(
+        surface,
+        assets,
+        f'온기  {s["carried"]} / {s["target"]}',
+        (925, 40),
+        22,
+        GOLD,
+        True,
+    )
+
+    # ── 상단: 남은 시간 ──
+    # 남은 틱에 0.3초를 곱하여 초 단위로 표시합니다.
+    remaining = s['remaining_ticks'] * .3
+
+    text(
+        surface,
+        assets,
+        f'{remaining:04.1f} 초',
+        (1245, 40),
+        25,
+        ROSE if remaining < 6 else CREAM,
+        True,
+        'topright',
+    )
+
+    # ── 왼쪽: 탐사 화면의 테두리와 실제 맵 ──
+    panel(
+        surface,
+        (19, 94, 1002, 575),
+        fill=(77, 63, 73),
+        border=(149, 118, 103),
+        radius=18,
+    )
+    draw_field(
+        surface,
+        assets,
+        s,
+        (31, 106, 978, 550),
+        elapsed,
+        previous,
+        interpolation,
+        cosmetics,
+        facing,
+        mood,
+        player_interpolation=player_interpolation,
+    )
+
+    # ── 오른쪽: 필수 물건과 복원 설명 ──
+    panel(
+        surface,
+        (1039, 94, 221, 575),
+        fill=PAPER,
+        border=(182, 148, 116),
+        radius=18,
+    )
+    text(
+        surface,
+        assets,
+        '오늘 되찾을 기억',
+        (1058, 115),
+        18,
+        INK,
+        True,
+    )
+    prop(
+        surface,
+        q['kind'],
+        (1098, 154, 102, 102),
+        q['collected'],
+    )
+    text(
+        surface,
+        assets,
+        q['name'],
+        (1149, 269),
+        21,
+        INK,
+        True,
+        'center',
+    )
+    wrapped(
+        surface,
+        assets,
+        q['restoration'],
+        (1060, 303, 178, 104),
+        17,
+        INK,
+        5,
+    )
+
+    # ── 오른쪽: 추가 목표와 보상 안내 ──
+    divider_rect = pygame.Rect(1059, 416, 182, 1)
+
+    if not _draw_png(surface, assets, 'info_divider', divider_rect):
+        d.line(
+            surface,
+            (203, 177, 144),
+            (1059, 416),
+            (1240, 416),
+        )
+    text(
+        surface,
+        assets,
+        '조금 더 탐험하면',
+        (1060, 433),
+        17,
+        INK,
+        True,
+    )
+    wrapped(
+        surface,
+        assets,
+        '온기 10점 귀환\n수집 배지와 꾸미기 해금\n\n무피격 완료\n조용한 발걸음 배지',
+        (1060, 465, 175, 139),
+        15,
+        INK,
+        5,
+    )
+    text(
+        surface,
+        assets,
+        '큰 온기는 순찰을 조심!',
+        (1060, 631),
+        13,
+        (131, 91, 100),
+    )
+
+    # ── 하단: 알림 또는 기본 조작 안내 ──
+    text(
+        surface,
+        assets,
+        toast or '방향키 / WASD 이동   ·   E 회수 / 귀환   ·   Space 대기   ·   Esc 일시정지',
+        (28, 689),
+        16,
+        CREAM,
+    )
+
+
+# 남은 시간이 6초 미만일 때 사용하는 글자 색입니다.
+ROSE = (235, 151, 156)

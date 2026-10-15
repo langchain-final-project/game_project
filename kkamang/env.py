@@ -17,8 +17,10 @@ import numpy as np
 from .core import GameCore
 from .levels import load_level
 
-OBSERVATION_VERSION = "vector_v2_quest"
-OBSERVATION_SIZE = 602
+# OBSERVATION_VERSION = "vector_v2_quest"
+# OBSERVATION_SIZE = 602
+OBSERVATION_VERSION = "vector_v3_chaser"
+OBSERVATION_SIZE = 610
 TIME_BOUND = 512
 
 
@@ -36,7 +38,7 @@ def _position(value: Any, name: str) -> tuple[int, int]:
 
 
 def encode_observation(snapshot: dict) -> np.ndarray:
-    """Encode the documented, fixed-slot 602-float fully observed state.
+    """Encode the documented, fixed-slot 610-float fully observed state.
 
     Invalid semantic values fail visibly rather than being clipped into a valid
     Box. Stable IDs prevent collecting an item from shifting later item slots.
@@ -44,7 +46,7 @@ def encode_observation(snapshot: dict) -> np.ndarray:
     """
     s = snapshot
     if s['width'] != 16 or s['height'] != 9:
-        raise ValueError('vector_v2_quest requires a 16 × 9 map')
+        raise ValueError('vector_v3_chaser requires a 16 × 9 map')
     grid = s['grid']
     if len(grid) != 9 or any(len(row) != 16 or set(row) - {'#', '.'} for row in grid):
         raise ValueError('grid must have 9 rows of 16 #/. cells')
@@ -91,17 +93,27 @@ def encode_observation(snapshot: dict) -> np.ndarray:
         index = _integer(ghost['route_index'], 0, length - 1, 'route_index')
         if ghost['direction'] not in (-1, 1) or type(ghost['direction']) is bool:
             raise ValueError('ghost direction must be -1 or +1')
-        if ghost['ticks_per_move'] != 2:
-            raise ValueError('vector_v2_quest requires ticks_per_move=2')
-        countdown = _integer(ghost['countdown'], 1, 2, 'countdown')
+        speed = _integer(
+            ghost['ticks_per_move'], 1, TIME_BOUND, 'ghost ticks_per_move'
+        )
+        countdown = _integer(
+            ghost['countdown'], 1, TIME_BOUND, 'ghost countdown'
+        )
         obs[base] = 1
         for j, position in enumerate(route):
             gx, gy = _position(position, f'ghost route {j}')
             obs[base + 1 + 3*j:base + 4 + 3*j] = (gx / 15, gy / 8, 1)
         if _position(ghost['position'], 'ghost position') != tuple(route[index]):
             raise ValueError('ghost position and route_index disagree')
-        obs[base + 49:base + 53] = (length / 16, index / 15,
-                                   int(ghost['direction'] == 1), countdown / 2)
+        # obs[base + 49:base + 53] = (length / 16, index / 15, int(ghost['direction'] == 1), countdown / 2)
+        obs[base + 49:base + 53] = (
+            length / 16,
+            index / 15,
+            int(ghost['direction'] == 1),
+            countdown / TIME_BOUND,
+        )
+        speed_slot = 602 + ('A', 'B').index(ghost['id'])
+        obs[speed_slot] = speed / TIME_BOUND
 
     shortcuts = s['shortcuts']
     if len(shortcuts) > 2 or len({g['id'] for g in shortcuts}) != len(shortcuts):
@@ -120,6 +132,33 @@ def encode_observation(snapshot: dict) -> np.ndarray:
     if type(q['collected']) is not bool:
         raise ValueError('quest.collected must be boolean')
     obs[599:602] = (qx / 15, qy / 8, int(q['collected']))
+
+    chaser = s.get('chaser')
+    if chaser is not None:
+        if not isinstance(chaser, dict) or chaser.get('id') != 'C':
+            raise ValueError('chaser must use ID C')
+
+        if type(chaser['active']) is not bool:
+            raise ValueError('chaser.active must be boolean')
+
+        cx, cy = _position(chaser['position'], 'chaser position')
+
+        countdown = _integer(
+            chaser['countdown'], 1, TIME_BOUND, 'chaser countdown'
+        )
+        speed = _integer(
+            chaser['ticks_per_move'], 1, TIME_BOUND, 'chaser ticks_per_move'
+        )
+
+        obs[604:610] = (
+            1,
+            int(chaser['active']),
+            cx / 15,
+            cy / 8,
+            countdown / TIME_BOUND,
+            speed / TIME_BOUND,
+        )
+
     if not np.isfinite(obs).all() or not ((obs >= 0) & (obs <= 1)).all():
         raise ValueError('observation encoding escaped the declared bounds')
     return obs

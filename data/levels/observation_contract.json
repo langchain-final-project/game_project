@@ -1,9 +1,9 @@
 {
   "status": "implemented",
-  "observation_version": "vector_v2_quest",
+  "observation_version": "vector_v3_chaser",
   "dtype": "float32",
   "shape": [
-    602
+    610
   ],
   "bounds": [
     0,
@@ -56,7 +56,7 @@
       "name": "ghosts",
       "offset": 481,
       "length": 106,
-      "normalization": "2 slots x [active,16 triples(x/15,y/8,path_mask),path_length/16,index/15,direction_bit,countdown/2]",
+      "normalization": "2 slots x [active,16 triples(x/15,y/8,path_mask),path_length/16,index/15,direction_bit,countdown/512]",
       "meaning": "direction_bit 0=-1,1=+1; inactive zero; current position derived from route[index]"
     },
     {
@@ -72,6 +72,20 @@
       "length": 3,
       "normalization": "x/15, y/8, collected (0/1)",
       "meaning": "Mandatory object position and possession; item type is cosmetic only"
+    },
+    {
+      "name": "patrol_speeds",
+      "offset": 602,
+      "length": 2,
+      "normalization": "A ticks_per_move/512, B ticks_per_move/512",
+      "meaning": "Stable A/B slots; absent patrol is zero"
+    },
+    {
+      "name": "chaser",
+      "offset": 604,
+      "length": 6,
+      "normalization": "present,active,x/15,y/8,countdown/512,ticks_per_move/512",
+      "meaning": "Absent chaser is all zero; configured inactive chaser retains its spawn and timing"
     }
   ],
   "action_enum": {
@@ -97,6 +111,6 @@
     "A policy with a different observation version must not be silently loaded",
     "For finite-horizon game timeout, terminated=true",
     "External experiment cutoff is truncated=true, not game failure",
-    "No GymAdapter or training implementation is included"
+    "Gymnasium adapter is implemented; no RL training is included"
   ]
 }

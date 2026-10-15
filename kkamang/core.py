@@ -4,7 +4,7 @@ No wall clock, UI, input device, filesystem, campaign save, or ML dependency is
 consulted by a transition. One accepted action always consumes exactly one tick.
 """
 from __future__ import annotations
-
+from collections import deque
 from copy import deepcopy
 from dataclasses import dataclass
 from enum import IntEnum
@@ -95,9 +95,14 @@ class GameCore:
             if (not isinstance(index, Integral) or isinstance(index, bool)
                     or not 0 <= index < len(ghost_configs[ghost_id]["route"])):
                 raise ValueError(f"phase override {ghost_id} index is out of range")
-            if (not isinstance(countdown, Integral) or isinstance(countdown, bool)
-                    or countdown not in (1, 2)):
-                raise ValueError(f"phase override {ghost_id} countdown must be 1 or 2")
+            if (
+                not isinstance(countdown, Integral)
+                or isinstance(countdown, bool)
+                or not 1 <= countdown <= MAX_TICKS
+            ):
+                raise ValueError(
+                    f"phase override {ghost_id} countdown must be an integer in 1..{MAX_TICKS}"
+                )
         if seed is not None:
             self.seed = int(seed)
             self._rng.seed(self.seed)
@@ -142,6 +147,18 @@ class GameCore:
                            "gate": list(shortcut["gate"]), "opened": False}
                           for shortcut in config["shortcuts"]],
         }
+        # 추격형 설정이 없는 스테이지에서는 None입니다.
+        self._state["chaser"] = None
+        chaser_config = config.get("chaser")
+
+        if chaser_config is not None:
+            self._state["chaser"] = {
+                "id": chaser_config["id"],
+                "position": list(chaser_config["spawn_position"]),
+                "active": False,
+                "countdown": chaser_config["initial_countdown"],
+                "ticks_per_move": chaser_config["ticks_per_move"],
+            }
         self._actions = []
         self._initial_phase = initial_phase
         self._damage_count = 0
@@ -154,6 +171,97 @@ class GameCore:
         if self._state["terminal"]:
             raise RuntimeError("Episode has ended; call reset() before stepping again")
 
+    def _next_chaser_position(self, origin: list[int]) -> list[int]:
+        """벽과 닫힌 문을 피해 고양이에게 가는 최단 경로의 첫 칸을 찾습니다."""
+        state = self._state
+        start = tuple(origin)
+        target = tuple(state["position"])
+
+        blocked = {
+            tuple(shortcut["gate"])
+            for shortcut in state["shortcuts"]
+            if not shortcut["opened"]
+        }
+
+        queue = deque([start])
+
+        # 각 칸에 도달하려면 출발점에서 첫 번째로 어디로 가야 하는지 기록합니다.
+        first_steps = {start: start}
+
+        while queue:
+            current = queue.popleft()
+
+            if current == target:
+                return list(first_steps[current])
+
+            x, y = current
+
+            # 같은 길이의 경로가 여러 개라면 이 순서로 선택합니다.
+            neighbors = (
+                (x, y - 1),
+                (x, y + 1),
+                (x - 1, y),
+                (x + 1, y),
+            )
+
+            for point in neighbors:
+                nx, ny = point
+
+                if point in first_steps:
+                    continue
+
+                if not (
+                    0 <= nx < state["width"]
+                    and 0 <= ny < state["height"]
+                ):
+                    continue
+
+                if state["grid"][ny][nx] != "." or point in blocked:
+                    continue
+
+                first_steps[point] = (
+                    point if current == start else first_steps[current]
+                )
+                queue.append(point)
+
+        # 갈 수 있는 경로가 없으면 현재 칸에 머뭅니다.
+        return list(start)
+
+    def _update_chaser(self, events: list[dict]) -> None:
+        """필수 물건 획득 후 추격형을 활성화하고 이동시킵니다."""
+        state = self._state
+        chaser = state["chaser"]
+
+        if chaser is None or not state["quest"]["collected"]:
+            return
+
+        if not chaser["active"]:
+            chaser["active"] = True
+            events.append({
+                "type": "chaser_spawn",
+                "ghost_id": chaser["id"],
+                "position": list(chaser["position"]),
+                "countdown": chaser["countdown"],
+            })
+
+            # 등장한 틱에는 대기 시간을 줄이거나 움직이지 않습니다.
+            return
+
+        chaser["countdown"] -= 1
+
+        if chaser["countdown"] == 0:
+            old_position = list(chaser["position"])
+            chaser["position"] = self._next_chaser_position(old_position)
+            chaser["countdown"] = chaser["ticks_per_move"]
+
+            if chaser["position"] != old_position:
+                events.append({
+                    "type": "chaser_move",
+                    "ghost_id": chaser["id"],
+                    "from": old_position,
+                    "to": list(chaser["position"]),
+                })
+    
     def step(self, action: int) -> StepResult:
         self._ensure_active()
         if not isinstance(action, Integral) or isinstance(action, bool) or not 0 <= action <= 5:
@@ -164,6 +272,12 @@ class GameCore:
         events: list[dict] = []
         previous_position = list(state["position"])
         previous_ghosts = [list(ghost["position"]) for ghost in state["ghosts"]]
+        chaser = state["chaser"]
+        previous_chaser = (
+            list(chaser["position"])
+            if chaser is not None and chaser["active"]
+            else None
+        )
         previous_protection = state["protection"]
         requested_return = False
 
@@ -220,12 +334,30 @@ class GameCore:
                 ghost["countdown"] = ghost["ticks_per_move"]
             ghost["position"] = list(ghost["route"][ghost["route_index"]])
             ghost["next_position"] = list(ghost["route"][(ghost["route_index"] + ghost["direction"]) % len(ghost["route"])])
+        self._update_chaser(events)
         contacts = []
         for old_ghost, ghost in zip(previous_ghosts, state["ghosts"]):
             final_overlap = state["position"] == ghost["position"]
             swap = state["position"] == old_ghost and previous_position == ghost["position"]
             if final_overlap or swap:
                 contacts.append({"ghost_id": ghost["id"], "kind": "overlap" if final_overlap else "swap"})
+        
+        # 추격형도 순찰형과 같은 충돌 기준을 사용합니다.
+        if chaser is not None and chaser["active"]:
+            final_overlap = state["position"] == chaser["position"]
+
+            swap = (
+                previous_chaser is not None
+                and state["position"] == previous_chaser
+                and previous_position == chaser["position"]
+            )
+
+            if final_overlap or swap:
+                contacts.append({
+                    "ghost_id": chaser["id"],
+                    "kind": "overlap" if final_overlap else "swap",
+                })
+        
         if contacts:
             events.append({"type": "contact", "ghost_ids": [contact["ghost_id"] for contact in contacts],
                            "contacts": contacts, "protected": previous_protection > 0,
@@ -282,7 +414,7 @@ class GameCore:
         return {
             "replay_version": "1.0",
             "rules_version": self._config["rules_version"],
-            "observation_version": "vector_v2_quest",
+            "observation_version": "vector_v3_chaser",
             "stage_id": self._config["id"], "stage": self._config["stage"],
             "config_hash": self.config_hash, "config_hash_algorithm": "sha256-canonical-json-utf8",
             "mode": self.mode, "seed": self.seed, "randomize_phase": self.randomize_phase,

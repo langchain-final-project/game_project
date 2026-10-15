@@ -31,7 +31,7 @@ def _integer(value: object) -> bool:
 def validate_level(config: dict) -> None:
     """Reject ambiguous, malformed, or unsupported level configurations.
 
-    IDs and slot order are stable because the 602-value observation contract
+    IDs and slot order are stable because the 610-value observation contract
     relies on them. Modified maps may use fewer patrols or shortcuts; their
     number is not implicitly inferred from the stage number.
     """
@@ -133,7 +133,8 @@ def validate_level(config: dict) -> None:
         _require(isinstance(route, list) and 2 <= len(route) <= 16,
                  f"ghost {ghost['id']} route must contain 2..16 tiles")
         points = [position(point, f"ghost {ghost['id']} route") for point in route]
-        _require(len(set(points)) == len(points), f"ghost {ghost['id']} route repeats a tile")
+        # 직선 왕복을 표현할 수 있도록 중복 좌표 허용
+        # _require(len(set(points)) == len(points), f"ghost {ghost['id']} route repeats a tile")
         _require(not set(points) & gate_positions and exit_position not in points,
                  f"ghost {ghost['id']} route crosses a gate or exit")
         _require(all(abs(a[0] - b[0]) + abs(a[1] - b[1]) == 1
@@ -143,10 +144,13 @@ def validate_level(config: dict) -> None:
                  f"ghost {ghost['id']} initial_index is outside its route")
         _require(_integer(ghost["direction"]) and ghost["direction"] in (-1, 1),
                  f"ghost {ghost['id']} direction must be -1 or 1")
-        _require(_integer(ghost["ticks_per_move"]) and ghost["ticks_per_move"] == 2,
-                 f"ghost {ghost['id']} ticks_per_move must be 2")
-        _require(_integer(ghost["initial_countdown"]) and ghost["initial_countdown"] in (1, 2),
-                 f"ghost {ghost['id']} initial_countdown must be 1 or 2")
+        # 첫 이동 대기 시간과 이후 이동 간격을 각각 설정할 수 있습니다.
+        for key in ("initial_countdown", "ticks_per_move"):
+            value = ghost[key]
+            _require(
+                _integer(value) and 1 <= value <= MAX_TICKS,
+                f"ghost {ghost['id']} {key} must be an integer in 1..{MAX_TICKS}",
+            )
 
     def reachable(blocked: set[tuple[int, int]]) -> set[tuple[int, int]]:
         seen = {start}
@@ -167,7 +171,57 @@ def validate_level(config: dict) -> None:
     all_open_reachable = reachable(set())
     _require(all(point in all_open_reachable for point in item_positions + terminal_positions),
              "an item or terminal is disconnected even with all gates open")
+    
+    # ── 추격형 유령 설정 검증 ──
+    # 설정이 없는 스테이지에서는 이 블록을 실행하지 않습니다.
+    if "chaser" in config:
+        chaser = config["chaser"]
 
+        _require(
+            isinstance(chaser, dict),
+            "chaser must be an object",
+        )
+
+        # 스키마에 정의한 네 항목이 모두 있어야 합니다.
+        fields = {
+            "id",
+            "spawn_position",
+            "initial_countdown",
+            "ticks_per_move",
+        }
+        _require(
+            fields <= chaser.keys(),
+            "chaser is missing required fields",
+        )
+        _require(
+            chaser.keys() <= fields,
+            "chaser contains unknown fields",
+        )
+
+        _require(chaser["id"] == "C", "chaser id must be C")
+
+        # bool, 소수, 0, 음수와 상한을 넘는 값은 허용하지 않습니다.
+        for key in ("initial_countdown", "ticks_per_move"):
+            value = chaser[key]
+            _require(
+                _integer(value) and 1 <= value <= MAX_TICKS,
+                f"chaser {key} must be an integer in 1..{MAX_TICKS}",
+            )
+
+        # 기존 position()으로 좌표 형식·범위·바닥 여부를 검사합니다.
+        spawn = position(chaser["spawn_position"], "chaser spawn")
+
+        # 기존 물건·장치·귀환점, 샛문, 필수 물건과 겹치지 않게 합니다.
+        _require(
+            spawn not in occupied | gate_positions | {quest_point},
+            "chaser spawn overlaps an object, gate, or quest",
+        )
+
+        # 샛문이 닫혀 있어도 고양이와 같은 연결 영역이어야 합니다.
+        _require(
+            spawn in closed_reachable,
+            "chaser spawn must be reachable with shortcuts closed",
+        )
 
 def _level_root(root: Path | None) -> Path:
     if root is not None:

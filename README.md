@@ -40,7 +40,7 @@ python main.py
 | `kkamang/ui/field.py`, `menus.py`, `theme.py` | 탐사 화면·메뉴·공통 버튼·텍스트 |
 | `kkamang/app.py` | 입력·0.3초 틱·장면·저장 연결 |
 | `kkamang/campaign.py`, `story.py` | 지속 보상·세이브·대사 |
-| `kkamang/env.py` | 같은 코어를 쓰는 6행동·602차원 학습 환경 |
+| `kkamang/env.py` | 같은 코어를 쓰는 6행동·610차원 학습 환경 |
 
 새 그림에는 글자를 굽지 않습니다. PNG 원본은 보존했지만 주요 배경·캐릭터는 동일한 코드 기반 일러스트로 표시합니다. 독립적인 새 게임 판정은 UI에 추가하지 않습니다.
 

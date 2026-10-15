@@ -112,52 +112,22 @@
     {
       "id": "A",
       "route": [
-        [
-          10,
-          3
-        ],
-        [
-          11,
-          3
-        ],
-        [
-          11,
-          4
-        ],
-        [
-          10,
-          4
-        ]
+        [10,3], [11,3], [11,4], [10,4]
       ],
       "initial_index": 0,
       "direction": 1,
       "initial_countdown": 2,
-      "ticks_per_move": 2
+      "ticks_per_move": 1
     },
     {
       "id": "B",
       "route": [
-        [
-          2,
-          3
-        ],
-        [
-          3,
-          3
-        ],
-        [
-          3,
-          4
-        ],
-        [
-          2,
-          4
-        ]
+        [7,7], [8,7], [9,7], [10,7], [9,7], [8,7]
       ],
       "initial_index": 1,
       "direction": 1,
       "initial_countdown": 2,
-      "ticks_per_move": 2
+      "ticks_per_move": 1
     }
   ],
   "shortcuts": [

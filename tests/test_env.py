@@ -20,7 +20,7 @@ class EnvironmentTests(unittest.TestCase):
                     env = MansionEnv(stage, mode=mode, randomize_phase=True)
                     check_env(env, skip_render_check=True)
                     obs, _ = env.reset(seed=123)
-                    self.assertEqual(obs.shape, (602,))
+                    self.assertEqual(obs.shape, (610,))
                     self.assertEqual(obs.dtype, np.float32)
                     self.assertTrue(env.observation_space.contains(obs))
                     env.action_space.seed(444)
