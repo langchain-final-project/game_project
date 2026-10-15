@@ -1,0 +1,159 @@
+{
+  "schema_version": "1.0",
+  "rules_version": "cat_mansion_0_2",
+  "id": "stage_02",
+  "stage": 2,
+  "name": "긴 복도",
+  "width": 16,
+  "height": 9,
+  "coordinate_system": "zero-indexed x-right y-down",
+  "grid": [
+    "################",
+    "#........#######",
+    "#...#....#######",
+    "#...#....#######",
+    "#...#....#######",
+    "#........#######",
+    "#........#######",
+    "################",
+    "################"
+  ],
+  "start": [
+    1,
+    1
+  ],
+  "exit": [
+    1,
+    1
+  ],
+  "items": [
+    {
+      "id": "heat_00",
+      "position": [
+        2,
+        1
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_01",
+      "position": [
+        3,
+        1
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_02",
+      "position": [
+        2,
+        3
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_03",
+      "position": [
+        3,
+        5
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_04",
+      "position": [
+        5,
+        1
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_05",
+      "position": [
+        7,
+        1
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_06",
+      "position": [
+        7,
+        5
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_07",
+      "position": [
+        6,
+        6
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_08",
+      "position": [
+        6,
+        3
+      ],
+      "value": 3
+    },
+    {
+      "id": "heat_09",
+      "position": [
+        6,
+        2
+      ],
+      "value": 3
+    }
+  ],
+  "ghosts": [
+    {
+      "id": "A",
+      "route": [
+        [
+          5,
+          2
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          5,
+          3
+        ]
+      ],
+      "initial_index": 0,
+      "direction": 1,
+      "initial_countdown": 2,
+      "ticks_per_move": 2
+    }
+  ],
+  "shortcuts": [],
+  "target_value": 4,
+  "total_item_value": 14,
+  "initial_courage": 3,
+  "protection_future_ticks": 3,
+  "tick_seconds": 0.3,
+  "time_budget_ticks": 80,
+  "time_budget_status": "draft_requires_human_playtest",
+  "difficulty_focus": "필수 기억 회수 + 안전한 기본 수집 / 순찰 위 고가치 온기",
+  "controlled_pair": "01_02",
+  "validation_scope": "v0.2: see validation/upgrade_report.json for replay evidence",
+  "quest": {
+    "id": "memory_02",
+    "name": "안내 지도",
+    "kind": "map",
+    "position": [
+      4,
+      6
+    ],
+    "restoration": "낮은 안내판에 정원으로 가는 길이 나타나요."
+  }
+}

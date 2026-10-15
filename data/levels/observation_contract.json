@@ -1,0 +1,102 @@
+{
+  "status": "implemented",
+  "observation_version": "vector_v2_quest",
+  "dtype": "float32",
+  "shape": [
+    602
+  ],
+  "bounds": [
+    0,
+    1
+  ],
+  "fields": [
+    {
+      "name": "map_walls",
+      "offset": 0,
+      "length": 144,
+      "normalization": "0/1, row-major y*16+x",
+      "meaning": "Static wall; closed shortcut doors are not walls"
+    },
+    {
+      "name": "map_closed_doors",
+      "offset": 144,
+      "length": 144,
+      "normalization": "0/1, row-major y*16+x",
+      "meaning": "Current closed gate cells"
+    },
+    {
+      "name": "map_exit",
+      "offset": 288,
+      "length": 144,
+      "normalization": "0/1, row-major y*16+x",
+      "meaning": "Return cell"
+    },
+    {
+      "name": "cat",
+      "offset": 432,
+      "length": 5,
+      "normalization": "x/15,y/8,courage/3,protection_ticks/3,carried/14",
+      "meaning": "Cat position and resources"
+    },
+    {
+      "name": "time_and_goal",
+      "offset": 437,
+      "length": 4,
+      "normalization": "remaining_ticks/512,initial_ticks/512,target/14,mode_id",
+      "meaning": "mode_id 0 basic or 1 relaxed; reject budgets over 512"
+    },
+    {
+      "name": "items",
+      "offset": 441,
+      "length": 40,
+      "normalization": "10 slots x [active,x/15,y/8,value/3]",
+      "meaning": "Stable heat_00..09 slots; inactive all zero"
+    },
+    {
+      "name": "ghosts",
+      "offset": 481,
+      "length": 106,
+      "normalization": "2 slots x [active,16 triples(x/15,y/8,path_mask),path_length/16,index/15,direction_bit,countdown/2]",
+      "meaning": "direction_bit 0=-1,1=+1; inactive zero; current position derived from route[index]"
+    },
+    {
+      "name": "shortcuts",
+      "offset": 587,
+      "length": 12,
+      "normalization": "2 slots x [active,terminal_x/15,terminal_y/8,gate_x/15,gate_y/8,opened]",
+      "meaning": "A then B. Stable slot binds terminal to gate; inactive zero"
+    },
+    {
+      "name": "quest",
+      "offset": 599,
+      "length": 3,
+      "normalization": "x/15, y/8, collected (0/1)",
+      "meaning": "Mandatory object position and possession; item type is cosmetic only"
+    }
+  ],
+  "action_enum": {
+    "UP": 0,
+    "DOWN": 1,
+    "LEFT": 2,
+    "RIGHT": 3,
+    "INTERACT": 4,
+    "WAIT": 5
+  },
+  "time_upper_bound_ticks": 512,
+  "exclusions": [
+    "art",
+    "sound",
+    "photos",
+    "cosmetics",
+    "story_progress",
+    "future_chosen_actions"
+  ],
+  "rules": [
+    "Snapshot is immutable or copy-on-read",
+    "Semantic state must be validated before encoding",
+    "A policy with a different observation version must not be silently loaded",
+    "For finite-horizon game timeout, terminated=true",
+    "External experiment cutoff is truncated=true, not game failure",
+    "No GymAdapter or training implementation is included"
+  ]
+}

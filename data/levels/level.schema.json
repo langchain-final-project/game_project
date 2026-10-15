@@ -1,0 +1,256 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cat mansion runtime v0.2 level",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "rules_version",
+    "id",
+    "stage",
+    "name",
+    "width",
+    "height",
+    "grid",
+    "start",
+    "exit",
+    "items",
+    "ghosts",
+    "shortcuts",
+    "target_value",
+    "total_item_value",
+    "initial_courage",
+    "protection_future_ticks",
+    "tick_seconds",
+    "time_budget_ticks",
+    "time_budget_status",
+    "quest"
+  ],
+  "$defs": {
+    "position": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        },
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8
+        }
+      ],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "item": {
+      "type": "object",
+      "required": [
+        "id",
+        "position",
+        "value"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "position": {
+          "$ref": "#/$defs/position"
+        },
+        "value": {
+          "enum": [
+            1,
+            3
+          ]
+        }
+      }
+    },
+    "ghost": {
+      "type": "object",
+      "required": [
+        "id",
+        "route",
+        "initial_index",
+        "direction",
+        "initial_countdown",
+        "ticks_per_move"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "route": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 16,
+          "items": {
+            "$ref": "#/$defs/position"
+          }
+        },
+        "initial_index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        },
+        "direction": {
+          "enum": [
+            -1,
+            1
+          ]
+        },
+        "initial_countdown": {
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "ticks_per_move": {
+          "const": 2
+        }
+      }
+    },
+    "shortcut": {
+      "type": "object",
+      "required": [
+        "id",
+        "terminal",
+        "gate",
+        "initially_open"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "terminal": {
+          "$ref": "#/$defs/position"
+        },
+        "gate": {
+          "$ref": "#/$defs/position"
+        },
+        "initially_open": {
+          "const": false
+        }
+      }
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "rules_version": {
+      "const": "cat_mansion_0_2"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^stage_(0[1-9]|1[0-2])$"
+    },
+    "stage": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 12
+    },
+    "name": {
+      "type": "string"
+    },
+    "width": {
+      "const": 16
+    },
+    "height": {
+      "const": 9
+    },
+    "grid": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "type": "string",
+        "pattern": "^[#.]{16}$"
+      }
+    },
+    "start": {
+      "$ref": "#/$defs/position"
+    },
+    "exit": {
+      "$ref": "#/$defs/position"
+    },
+    "items": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": {
+        "$ref": "#/$defs/item"
+      }
+    },
+    "ghosts": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "$ref": "#/$defs/ghost"
+      }
+    },
+    "shortcuts": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "$ref": "#/$defs/shortcut"
+      }
+    },
+    "target_value": {
+      "const": 4
+    },
+    "total_item_value": {
+      "const": 14
+    },
+    "initial_courage": {
+      "const": 3
+    },
+    "protection_future_ticks": {
+      "const": 3
+    },
+    "tick_seconds": {
+      "const": 0.3
+    },
+    "time_budget_ticks": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 512
+    },
+    "time_budget_status": {
+      "enum": [
+        "pending_path_validation",
+        "draft_requires_human_playtest"
+      ]
+    },
+    "quest": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "kind",
+        "position",
+        "restoration"
+      ],
+      "properties": {
+        "position": {
+          "$ref": "#/$defs/position"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "restoration": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

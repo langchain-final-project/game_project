@@ -1,0 +1,211 @@
+{
+  "schema_version": "1.0",
+  "rules_version": "cat_mansion_0_2",
+  "id": "stage_11",
+  "stage": 11,
+  "name": "시계 아래 복도",
+  "width": 16,
+  "height": 9,
+  "coordinate_system": "zero-indexed x-right y-down",
+  "grid": [
+    "################",
+    "#..............#",
+    "#....#....#....#",
+    "#....#....#....#",
+    "#......##......#",
+    "#....#....#....#",
+    "#....#....#....#",
+    "#..............#",
+    "################"
+  ],
+  "start": [
+    1,
+    4
+  ],
+  "exit": [
+    1,
+    4
+  ],
+  "items": [
+    {
+      "id": "heat_00",
+      "position": [
+        2,
+        2
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_01",
+      "position": [
+        2,
+        6
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_02",
+      "position": [
+        4,
+        1
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_03",
+      "position": [
+        6,
+        2
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_04",
+      "position": [
+        6,
+        6
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_05",
+      "position": [
+        9,
+        7
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_06",
+      "position": [
+        11,
+        1
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_07",
+      "position": [
+        14,
+        4
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_08",
+      "position": [
+        8,
+        3
+      ],
+      "value": 3
+    },
+    {
+      "id": "heat_09",
+      "position": [
+        13,
+        6
+      ],
+      "value": 3
+    }
+  ],
+  "ghosts": [
+    {
+      "id": "A",
+      "route": [
+        [
+          7,
+          2
+        ],
+        [
+          8,
+          2
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          7,
+          3
+        ]
+      ],
+      "initial_index": 1,
+      "direction": 1,
+      "initial_countdown": 1,
+      "ticks_per_move": 2
+    },
+    {
+      "id": "B",
+      "route": [
+        [
+          12,
+          5
+        ],
+        [
+          13,
+          5
+        ],
+        [
+          13,
+          6
+        ],
+        [
+          12,
+          6
+        ]
+      ],
+      "initial_index": 3,
+      "direction": 1,
+      "initial_countdown": 1,
+      "ticks_per_move": 2
+    }
+  ],
+  "shortcuts": [
+    {
+      "id": "A",
+      "terminal": [
+        6,
+        4
+      ],
+      "gate": [
+        5,
+        4
+      ],
+      "initially_open": false,
+      "design_note": "정적 비교: (8, 3)→(1, 4) 구간에서 조작 1틱 포함 3틱 단축"
+    },
+    {
+      "id": "B",
+      "terminal": [
+        13,
+        4
+      ],
+      "gate": [
+        10,
+        4
+      ],
+      "initially_open": false,
+      "design_note": "정적 비교: (14, 4)→(8, 3) 구간에서 조작 1틱 포함 3틱 단축"
+    }
+  ],
+  "target_value": 4,
+  "total_item_value": 14,
+  "initial_courage": 3,
+  "protection_future_ticks": 3,
+  "tick_seconds": 0.3,
+  "time_budget_ticks": 90,
+  "time_budget_status": "draft_requires_human_playtest",
+  "difficulty_focus": "필수 기억 회수 + 안전한 기본 수집 / 순찰 위 고가치 온기",
+  "controlled_pair": "11_12",
+  "validation_scope": "v0.2: see validation/upgrade_report.json for replay evidence",
+  "quest": {
+    "id": "memory_11",
+    "name": "마지막 악보",
+    "kind": "music",
+    "position": [
+      14,
+      7
+    ],
+    "restoration": "도레와 주민들이 한 곡을 끝까지 연주해요."
+  }
+}

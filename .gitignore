@@ -1,0 +1,28 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+build/
+dist/
+*.log
+save*.json
+save*.json.*
+replays/
+reports/local/
+.DS_Store
+Thumbs.db
+
+# Keep personal archive out of main branch
+historical_v01/
+
+# Runtime evaluation outputs (reproducible artifacts)
+reports/evaluation*/
+
+# Local editor settings
+.vscode/
+.idea/
+
+# Test and coverage artifacts
+.coverage
+coverage.xml
+htmlcov/

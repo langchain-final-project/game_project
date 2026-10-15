@@ -1,0 +1,198 @@
+{
+  "schema_version": "1.0",
+  "rules_version": "cat_mansion_0_2",
+  "id": "stage_07",
+  "stage": 7,
+  "name": "음악실",
+  "width": 16,
+  "height": 9,
+  "coordinate_system": "zero-indexed x-right y-down",
+  "grid": [
+    "################",
+    "#......#.......#",
+    "#..............#",
+    "#...####.......#",
+    "#...#.##.......#",
+    "#...#.##.......#",
+    "#......#.......#",
+    "#..............#",
+    "################"
+  ],
+  "start": [
+    1,
+    1
+  ],
+  "exit": [
+    1,
+    1
+  ],
+  "items": [
+    {
+      "id": "heat_00",
+      "position": [
+        8,
+        7
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_01",
+      "position": [
+        9,
+        7
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_02",
+      "position": [
+        8,
+        6
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_03",
+      "position": [
+        9,
+        6
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_04",
+      "position": [
+        10,
+        4
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_05",
+      "position": [
+        13,
+        4
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_06",
+      "position": [
+        10,
+        6
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_07",
+      "position": [
+        13,
+        6
+      ],
+      "value": 1
+    },
+    {
+      "id": "heat_08",
+      "position": [
+        11,
+        3
+      ],
+      "value": 3
+    },
+    {
+      "id": "heat_09",
+      "position": [
+        3,
+        4
+      ],
+      "value": 3
+    }
+  ],
+  "ghosts": [
+    {
+      "id": "A",
+      "route": [
+        [
+          10,
+          3
+        ],
+        [
+          11,
+          3
+        ],
+        [
+          11,
+          4
+        ],
+        [
+          10,
+          4
+        ]
+      ],
+      "initial_index": 0,
+      "direction": 1,
+      "initial_countdown": 2,
+      "ticks_per_move": 2
+    },
+    {
+      "id": "B",
+      "route": [
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          2,
+          4
+        ]
+      ],
+      "initial_index": 1,
+      "direction": 1,
+      "initial_countdown": 2,
+      "ticks_per_move": 2
+    }
+  ],
+  "shortcuts": [
+    {
+      "id": "A",
+      "terminal": [
+        11,
+        2
+      ],
+      "gate": [
+        7,
+        2
+      ],
+      "initially_open": false,
+      "design_note": "정적 비교: (12, 2)→(1, 1) 구간에서 조작 1틱 포함 9틱 단축"
+    }
+  ],
+  "target_value": 4,
+  "total_item_value": 14,
+  "initial_courage": 3,
+  "protection_future_ticks": 3,
+  "tick_seconds": 0.3,
+  "time_budget_ticks": 95,
+  "time_budget_status": "draft_requires_human_playtest",
+  "difficulty_focus": "필수 기억 회수 + 안전한 기본 수집 / 순찰 위 고가치 온기",
+  "controlled_pair": "07_08",
+  "validation_scope": "v0.2: see validation/upgrade_report.json for replay evidence",
+  "quest": {
+    "id": "memory_07",
+    "name": "잃어버린 악보",
+    "kind": "music",
+    "position": [
+      12,
+      2
+    ],
+    "restoration": "도레가 악보를 펼치고 새로운 선율을 연주해요."
+  }
+}
