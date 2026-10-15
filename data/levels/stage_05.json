@@ -112,22 +112,7 @@
     {
       "id": "A",
       "route": [
-        [
-          10,
-          3
-        ],
-        [
-          11,
-          3
-        ],
-        [
-          11,
-          4
-        ],
-        [
-          10,
-          4
-        ]
+        [10,3], [11,3], [11,4], [10,4]
       ],
       "initial_index": 0,
       "direction": 1,
@@ -135,6 +120,12 @@
       "ticks_per_move": 2
     }
   ],
+    "chaser": {
+    "id": "C",
+    "spawn_position": [14, 3],
+    "initial_countdown": 5,
+    "ticks_per_move": 1
+  },
   "shortcuts": [
     {
       "id": "A",

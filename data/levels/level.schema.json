@@ -99,13 +99,14 @@
           ]
         },
         "initial_countdown": {
-          "enum": [
-            1,
-            2
-          ]
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 512
         },
         "ticks_per_move": {
-          "const": 2
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 512
         }
       }
     },
@@ -129,6 +130,35 @@
         },
         "initially_open": {
           "const": false
+        }
+      }
+    },
+
+    "chaser": { 
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "spawn_position",
+        "initial_countdown",
+        "ticks_per_move"
+      ],
+      "properties": {
+        "id": {
+          "const": "C"
+        },
+        "spawn_position": {
+          "$ref": "#/$defs/position"
+        },
+        "initial_countdown": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 512
+        },
+        "ticks_per_move": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 512
         }
       }
     }
@@ -187,6 +217,9 @@
       "items": {
         "$ref": "#/$defs/ghost"
       }
+    },
+    "chaser": {
+      "$ref": "#/$defs/chaser"
     },
     "shortcuts": {
       "type": "array",

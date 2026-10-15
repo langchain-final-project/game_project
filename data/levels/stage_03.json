@@ -112,27 +112,13 @@
     {
       "id": "A",
       "route": [
-        [
-          7,
-          3
-        ],
-        [
-          8,
-          3
-        ],
-        [
-          8,
-          4
-        ],
-        [
-          7,
-          4
-        ]
+        [6,3],[7,3], [8,3], [9,3],
+        [9,4],[8,4], [7,4], [6,4]
       ],
       "initial_index": 0,
       "direction": 1,
       "initial_countdown": 2,
-      "ticks_per_move": 2
+      "ticks_per_move": 1
     }
   ],
   "shortcuts": [],

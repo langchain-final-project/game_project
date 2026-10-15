@@ -88,13 +88,17 @@ def test_equal_timestamps_follow_declared_priority(keys, expected):
     assert adapter.consume() == expected
 
 
-def test_later_direction_can_supersede_pending_interaction():
+def test_pending_interaction_wins_over_later_direction():
     adapter = InputAdapter()
     adapter.handle(keydown(pygame.K_e, 50))
     adapter.handle(keydown(pygame.K_RIGHT, 51))
-    assert adapter.consume() == 3
+
+    # 방향키가 나중에 들어와도 E를 먼저 처리합니다.
+    assert adapter.consume() == 4
+
+    # E를 누르고 있는 것만으로 상호작용을 반복하지 않습니다.
     adapter.handle(keyup(pygame.K_RIGHT))
-    assert adapter.consume() == 5  # E is never repeated merely because it is held.
+    assert adapter.consume() == 5
 
 
 def test_same_action_aliases_release_independently():
@@ -121,3 +125,35 @@ def test_non_game_keys_are_ignored():
     adapter.handle(keydown(pygame.K_ESCAPE))
     adapter.handle(pygame.event.Event(pygame.MOUSEBUTTONDOWN, {"button": 1}))
     assert adapter.consume() == 5
+
+def test_separate_interaction_preserves_held_movement():
+    adapter = InputAdapter()
+    adapter.handle(keydown(pygame.K_RIGHT))
+    adapter.handle(keydown(pygame.K_e))
+
+    # E를 처리해도 누르고 있는 방향키는 유지됩니다.
+    assert adapter.consume_interaction() is True
+    assert adapter.consume_movement() == 3
+    assert adapter.consume_movement() == 3
+
+    # E를 누른 채로 있어도 자동 반복하지 않습니다.
+    assert adapter.consume_interaction() is False
+    adapter.handle(keydown(pygame.K_e))
+    assert adapter.consume_interaction() is False
+
+
+def test_short_movement_and_interaction_are_preserved_separately():
+    adapter = InputAdapter()
+
+    adapter.handle(keydown(pygame.K_RIGHT))
+    adapter.handle(keyup(pygame.K_RIGHT))
+    adapter.handle(keydown(pygame.K_e))
+    adapter.handle(keyup(pygame.K_e))
+
+    # 짧게 누른 입력도 각각 한 번씩 가져올 수 있습니다.
+    assert adapter.consume_movement() == 3
+    assert adapter.consume_interaction() is True
+
+    # 처리한 입력은 다시 실행되지 않습니다.
+    assert adapter.consume_movement() == 5
+    assert adapter.consume_interaction() is False

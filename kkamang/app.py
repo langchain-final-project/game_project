@@ -21,6 +21,8 @@ SIZE = (1280, 720)
 
 class GameApp:
     def __init__(self, save_path=None, headless=False, no_audio=False, size=SIZE, seed=0):
+        self.accumulator = 0.
+        self.ghost_elapsed = 0.3
         pygame.display.init()
         pygame.font.init()
         self.window = pygame.display.set_mode(size, pygame.RESIZABLE | (pygame.HIDDEN if headless else 0))
@@ -95,7 +97,10 @@ class GameApp:
         self.input.clear()
         self.accumulator = self.pause_accumulator if scene == 'game' else 0.
         if scene == 'game' and self.core is not None:
-            self.previous=self.core.snapshot()
+            self.previous = self.core.snapshot()
+            self.ghost_elapsed = float(
+                self.core.config.get('tick_seconds', 0.3)
+            )
 
     def persist(self, next_scene=None):
         ok = self.store.save(self.campaign)
@@ -239,6 +244,9 @@ class GameApp:
                 self.campaign = Campaign()
                 self.stage = 1
                 self.start_prologue()
+        # 엔딩 조건
+        elif ident == 'ending_conditions':
+            self.transition('ending_conditions')
         elif ident in ('explore','rooms'):
             self.transition('rooms')
         elif ident.startswith('stage:'):
@@ -370,6 +378,127 @@ class GameApp:
         else:
             self.transition('home')
 
+    def _perform_action(self, action, animation_age=0.):
+        """행동을 실행하되, E는 고양이의 이동 애니메이션을 유지합니다."""
+        if self.scene != 'game' or self.core is None:
+            return
+
+        tick_seconds = float(
+            self.core.config.get('tick_seconds', 0.3)
+        )
+        before = self.core.snapshot()
+
+        if self.previous is not None:
+            # 유령은 현재 화면에 보이는 위치에서 다음 이동을 시작합니다.
+            alpha = min(1., self.ghost_elapsed / tick_seconds)
+
+            old_ghosts = {
+                ghost['id']: ghost
+                for ghost in self.previous['ghosts']
+            }
+
+            for ghost in before['ghosts']:
+                old = old_ghosts.get(ghost['id'])
+
+                if old is not None:
+                    ghost['position'] = [
+                        old['position'][k]
+                        + (
+                            ghost['position'][k]
+                            - old['position'][k]
+                        ) * alpha
+                        for k in (0, 1)
+                    ]
+
+            chaser = before.get('chaser')
+            old_chaser = self.previous.get('chaser')
+
+            if (
+                chaser is not None
+                and old_chaser is not None
+                and chaser['active']
+                and old_chaser['active']
+                and chaser['id'] == old_chaser['id']
+            ):
+                chaser['position'] = [
+                    old_chaser['position'][k]
+                    + (
+                        chaser['position'][k]
+                        - old_chaser['position'][k]
+                    ) * alpha
+                    for k in (0, 1)
+                ]
+
+            # E를 눌러도 고양이의 이동 시작 좌표를 바꾸지 않습니다.
+            if action == 4:
+                before['position'] = list(
+                    self.previous['position']
+                )
+
+        self.previous = before
+        result = self.core.step(action)
+        self.ghost_elapsed = animation_age
+
+        for event in result.events:
+            kind = event['type']
+
+            if kind == 'move':
+                dx = event['to'][0] - event['from'][0]
+                dy = event['to'][1] - event['from'][1]
+                self.facing = (
+                    'right' if dx > 0
+                    else 'left' if dx < 0
+                    else 'down' if dy > 0
+                    else 'up'
+                )
+
+            if kind in ('collect', 'quest_collect'):
+                self.cat_mood = 'collect'
+                self.mood_timer = .5
+
+            if kind == 'quest_collect':
+                self.audio.play('collect')
+                self.toast = (
+                    event['name']
+                    + ' 회수! 온기와 함께 문으로 돌아가요.'
+                )
+                self.toast_timer = 2.
+
+            elif kind == 'return_blocked':
+                self.toast = (
+                    '필수 물건과 온기를 모두 챙겨야 해요. '
+                    '탐사는 계속할 수 있어요.'
+                )
+                self.toast_timer = 2.
+
+            if kind == 'collect':
+                self.audio.play('collect')
+                self.toast = (
+                    f'온기를 모았어요 · 보유 '
+                    f'{result.snapshot["carried"]}점'
+                )
+                self.toast_timer = 1.5
+
+            elif kind == 'open':
+                self.audio.play('open')
+                self.toast = '낮은 샛문이 열렸어요'
+                self.toast_timer = 1.5
+
+            elif kind == 'damage':
+                self.cat_mood = 'surprised'
+                self.mood_timer = .9
+                self.audio.play('damage')
+                self.toast = (
+                    '괜찮아, 잠깐 숨을 고르자 · 다음 3틱 보호'
+                )
+                self.toast_timer = 1.5
+                self.shake_timer = .2
+
+        if result.terminated:
+            self.finish_run(result)
+
+        return result
+    
     def handle_event(self, event):
         if event.type == pygame.QUIT:
             self.request_confirm('quit')
@@ -385,11 +514,39 @@ class GameApp:
         if event.type in (pygame.MOUSEMOTION,pygame.MOUSEBUTTONDOWN):
             self.mouse=self.to_canvas(event.pos)
         if self.scene == 'game':
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            if (
+                event.type == pygame.KEYDOWN
+                and event.key == pygame.K_ESCAPE
+            ):
                 self.transition('pause')
-            else:
-                self.input.handle(event)
+                return
+
+            self.input.handle(event)
+
+            # E는 다음 정기 틱까지 기다리지 않고 실행합니다.
+            if self.input.consume_interaction():
+                self._perform_action(4)
+
+            # 귀환·실패로 화면이 바뀌었다면 입력 처리를 끝냅니다.
+            if self.scene != 'game':
+                return
+
+            position = self.core.snapshot()['position']
+            moving = (
+                self.previous is not None
+                and self.previous['position'] != position
+            )
+
+            # 멈춰 있을 때 누른 방향키는 즉시 이동을 시작합니다.
+            if not moving:
+                action = self.input.consume_movement()
+
+                if 0 <= action <= 3:
+                    self.accumulator = 0.
+                    self._perform_action(action)
+
             return
+        
         if event.type == pygame.MOUSEMOTION:
             for i,button in enumerate(self.controls):
                 if not button.get('disabled') and button['rect'].collidepoint(self.mouse):
@@ -421,39 +578,37 @@ class GameApp:
     def advance(self, dt):
         self.elapsed += dt
         self.dialogue_time += dt
-        self.toast_timer=max(0.,self.toast_timer-dt)
-        self.mood_timer=max(0.,self.mood_timer-dt)
-        self.shake_timer=max(0.,self.shake_timer-dt)
+
+        self.toast_timer = max(0., self.toast_timer - dt)
+        self.mood_timer = max(0., self.mood_timer - dt)
+        self.shake_timer = max(0., self.shake_timer - dt)
+
         if self.scene != 'game' or self.core is None:
             return
-        self.accumulator += dt
-        tick_seconds=float(self.core.config.get('tick_seconds',.3))
-        while self.accumulator + 1e-9 >= tick_seconds and self.scene == 'game':
-            self.accumulator=max(0.,self.accumulator-tick_seconds)
-            self.previous=self.core.snapshot()
-            result=self.core.step(self.input.consume())
-            for event in result.events:
-                kind=event['type']
-                if kind == 'move':
-                    dx=event['to'][0]-event['from'][0];dy=event['to'][1]-event['from'][1]
-                    self.facing='right' if dx>0 else 'left' if dx<0 else 'down' if dy>0 else 'up'
-                if kind in ('collect','quest_collect'):
-                    self.cat_mood='collect';self.mood_timer=.5
-                if kind == 'quest_collect':
-                    self.audio.play('collect');self.toast=event['name']+' 회수! 온기와 함께 문으로 돌아가요.';self.toast_timer=2.
-                elif kind == 'return_blocked':
-                    self.toast='필수 물건과 온기를 모두 챙겨야 해요. 탐사는 계속할 수 있어요.';self.toast_timer=2.
-                if kind == 'collect':
-                    self.audio.play('collect');self.toast=f'온기를 모았어요 · 보유 {result.snapshot["carried"]}점';self.toast_timer=1.5
-                elif kind == 'open':
-                    self.audio.play('open');self.toast='낮은 샛문이 열렸어요';self.toast_timer=1.5
-                elif kind == 'damage':
-                    self.cat_mood='surprised';self.mood_timer=.9
-                    self.audio.play('damage');self.toast='괜찮아, 잠깐 숨을 고르자 · 다음 3틱 보호';self.toast_timer=1.5;self.shake_timer=.2
-            if result.terminated:
-                self.finish_run(result)
-                break
 
+        self.accumulator += dt
+        self.ghost_elapsed += dt
+
+        tick_seconds = float(
+            self.core.config.get('tick_seconds', 0.3)
+        )
+
+        # 누르고 있는 방향키의 이동과 자동 대기를 처리합니다.
+        while (
+            self.scene == 'game'
+            and self.accumulator + 1e-9 >= tick_seconds
+        ):
+            self.accumulator = max(
+                0.,
+                self.accumulator - tick_seconds,
+            )
+
+            action = self.input.consume_movement()
+
+            self._perform_action(
+                action,
+                animation_age=self.accumulator,
+            )
     def context(self):
         snapshot = self.core.snapshot() if self.core else self.preview
         if self.scene == 'briefing':
@@ -487,9 +642,36 @@ class GameApp:
         self.canvas.fill(NIGHT)
         if self.scene == 'game':
             snapshot=self.core.snapshot()
-            draw_game(self.canvas,self.assets,snapshot,self.story,elapsed=self.elapsed,
-                previous=self.previous,interpolation=min(1.,self.accumulator/.3),
-                toast=self.toast if self.toast_timer>0 else '',cosmetics=self.campaign.data['cosmetics'], facing=self.facing, mood=self.cat_mood if self.mood_timer>0 else 'idle')
+            tick_seconds = float(
+                self.core.config.get('tick_seconds', 0.3)
+            )
+
+            draw_game(
+                self.canvas,
+                self.assets,
+                snapshot,
+                self.story,
+                elapsed=self.elapsed,
+                previous=self.previous,
+                interpolation=min(
+                    1.,
+                    self.ghost_elapsed / tick_seconds,
+                ),
+                player_interpolation=min(
+                    1.,
+                    self.accumulator / tick_seconds,
+                ),
+                toast=(
+                    self.toast if self.toast_timer > 0 else ''
+                ),
+                cosmetics=self.campaign.data['cosmetics'],
+                facing=self.facing,
+                mood=(
+                    self.cat_mood
+                    if self.mood_timer > 0
+                    else 'idle'
+                ),
+            )
             self.controls=[]
         else:
             screen='settings' if self.scene == 'pause' else self.scene
@@ -538,12 +720,15 @@ class GameApp:
         self.draw()
         while self.running:
             dt=clock.tick(60)/1000
-            before_events=self.transition_counter
+            before_events = self.transition_counter
+
+            # 멈췄던 프레임에서는 즉시 입력 실행보다 일시정지가 먼저입니다.
+            if self.scene == 'game' and dt > 1.0:
+                self.transition('pause')
+
             for event in pygame.event.get():
                 self.handle_event(event)
-            if self.scene == 'game' and dt > 1.0 and self.transition_counter == before_events:
-                # A dragged/stalled window must not consume a whole run invisibly.
-                self.transition('pause')
+                
             self.advance(0. if self.transition_counter != before_events else dt)
             self.draw()
             frames+=1

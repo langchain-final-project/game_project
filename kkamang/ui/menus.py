@@ -375,8 +375,80 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         ui.control('explore', (38, 613, 300, 52), '기억 속으로 다시 걷기' if len(completed)==12 else '다음 방으로 걷기', primary=True)
         ui.control('album', (352, 613, 215, 52), '기억 앨범')
         ui.control('appearance', (581, 613, 215, 52), '쉼터 꾸미기')
-        ui.control('rooms', (810, 613, 215, 52), '구역 살펴보기')
+        # ui.control('rooms', (810, 613, 215, 52), '구역 살펴보기')
+        ui.control('ending_conditions', (810, 613, 215, 52), '엔딩 조건')
         ui.control('settings', (1039, 613, 199, 52), '설정')
+        _footer(surface, assets)
+    elif screen == 'ending_conditions':
+        _background(
+            surface,
+            assets,
+            _home_art(completed),
+            140,
+            ctx=ctx,
+            actors=False,
+        )
+
+        _header(
+            surface,
+            assets,
+            '엔딩 조건',
+            '세 유령의 엔딩 조건을 확인하는 곳이에요.',
+        )
+
+        for index, name in enumerate(('A', 'B', 'C')):
+            card = pygame.Rect(
+                50 + index * 410,
+                140,
+                360,
+                455,
+            )
+
+            panel(
+                surface,
+                card,
+                fill=PAPER,
+                border=GOLD,
+                radius=22,
+            )
+
+            text(
+                surface,
+                assets,
+                f'{name} 유령',
+                (card.centerx, card.y + 30),
+                size=24,
+                color=INK,
+                bold=True,
+                anchor='midtop',
+            )
+
+            ghost(
+                surface,
+                (card.centerx, card.y + 255),
+                size=150,
+                time=elapsed,
+                resident=True,
+                variant=index,
+            )
+
+            text(
+                surface,
+                assets,
+                '조건 준비 중',
+                (card.centerx, card.y + 330),
+                size=20,
+                color=INK,
+                anchor='midtop',
+            )
+
+        ui.control(
+            'home',
+            (465, 612, 350, 50),
+            '쉼터로',
+            primary=True,
+        )
+
         _footer(surface, assets)
 
     elif screen == 'rooms':

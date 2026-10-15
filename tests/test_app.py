@@ -371,6 +371,84 @@ class AppIntegrationTests(unittest.TestCase):
         for _ in range(9):
             self.app.advance(1 / 30)
         self.assertEqual(self.app.core.snapshot(), after_60fps)
+    def test_starts_moving_on_keydown(self):
+        self.first_start()
+        self.enter_stage(1)
+
+        before = self.app.core.snapshot()
+
+        self.app.handle_event(pygame.event.Event(
+            pygame.KEYDOWN,
+            key=pygame.K_RIGHT,
+            mod=0,
+        ))
+
+        after = self.app.core.snapshot()
+
+        # advance()를 호출하기 전부터 이동 행동이 실행되어야 합니다.
+        self.assertEqual(after['position'], [2, 1])
+        self.assertEqual(after['tick'], before['tick'] + 1)
+        self.app.draw()
+
+    def test_interaction_does_not_interrupt_movement(self):
+        self.first_start()
+        self.enter_stage(1)
+
+        self.app.handle_event(pygame.event.Event(
+            pygame.KEYDOWN,
+            key=pygame.K_RIGHT,
+            mod=0,
+        ))
+        self.app.advance(0.1)
+
+        with patch('kkamang.ui.field.cat') as draw_cat:
+            self.app.draw()
+            foot_before = draw_cat.call_args[0][1]
+
+        before = self.app.core.snapshot()
+        progress_before = self.app.accumulator
+
+        self.app.handle_event(pygame.event.Event(
+            pygame.KEYDOWN,
+            key=pygame.K_e,
+            mod=0,
+        ))
+
+        after = self.app.core.snapshot()
+
+        # 기다리지 않아도 획득되고, 이동 진행 시간은 유지됩니다.
+        self.assertGreater(after['carried'], before['carried'])
+        self.assertEqual(after['tick'], before['tick'] + 1)
+        self.assertAlmostEqual(
+            self.app.accumulator,
+            progress_before,
+        )
+
+        with patch('kkamang.ui.field.cat') as draw_cat:
+            self.app.draw()
+            foot_after = draw_cat.call_args[0][1]
+            mood_after = draw_cat.call_args[0][5]
+
+        self.assertEqual(foot_after, foot_before)
+        self.assertEqual(mood_after, 'walk')
+
+        # E를 누른 채로 있어도 획득 행동을 반복하지 않습니다.
+        self.app.handle_event(pygame.event.Event(
+            pygame.KEYDOWN,
+            key=pygame.K_e,
+            mod=0,
+        ))
+        self.assertEqual(
+            self.app.core.snapshot()['tick'],
+            after['tick'],
+        )
+
+        # 기존 이동 일정대로 다음 칸으로 계속 이동합니다.
+        self.app.advance(0.2)
+        self.assertEqual(
+            self.app.core.snapshot()['position'],
+            [3, 1],
+        )
 
 
 if __name__ == '__main__':
