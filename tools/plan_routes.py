@@ -293,7 +293,7 @@ def main():
    routes.append({'level_id':l['id'],'target':target,'actions':actions,'ticks':len(actions),'banked':o['banked'],'phase_offsets':[0]*len(l['ghosts']),'constraint':'unconstrained','trace':tt})
    print(l['id'],target,len(actions),'/',l['time_budget_ticks'],flush=True)
   p=ROOT/'data'/'levels'/f"{l['id']}.json"
-  hashes.append({'id':l['id'],'file':'levels/'+p.name,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})
+  hashes.append({'id':l['id'],'file':'levels/'+p.name,'sha256':hashlib.sha256(p.read_text(encoding='utf-8').encode('utf-8')).hexdigest()})
  result={'source':'v0.2 beam planner + GameCore rollout; traces are regression fixtures, not independent oracle','source_results_sha256':None,'routes':routes,'level_hashes':hashes}
  (ROOT/'validation/reference_routes.json').write_text(json.dumps(result,ensure_ascii=False,indent=2))
  if args.include_safe:

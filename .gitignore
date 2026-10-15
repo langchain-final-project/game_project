@@ -11,6 +11,7 @@ replays/
 reports/local/
 .DS_Store
 Thumbs.db
+.pytest_tmp/
 
 # Keep personal archive out of main branch
 historical_v01/
@@ -26,3 +27,4 @@ reports/evaluation*/
 .coverage
 coverage.xml
 htmlcov/
+

@@ -98,7 +98,9 @@ def validate(representative=False):
     hashes = []
     for expected in fixture['level_hashes']:
         file_path = ROOT / 'data' / expected['file']
-        actual = hashlib.sha256(file_path.read_bytes()).hexdigest()
+        actual = hashlib.sha256(
+            file_path.read_text(encoding='utf-8').encode('utf-8')
+        ).hexdigest()
         hashes.append({'stage_id': expected['id'], 'expected_sha256': expected['sha256'],
                        'actual_sha256': actual, 'passed': actual == expected['sha256']})
     routes = fixture['routes']
