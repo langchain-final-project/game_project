@@ -70,6 +70,7 @@ class EnvironmentTests(unittest.TestCase):
     def test_game_timeout_is_terminal_external_cutoff_is_truncation(self):
         config = load_level(1)
         config['time_budget_ticks'] = 1
+        config['star_fast_ticks'] = 0
         timeout = MansionEnv(config=config)
         timeout.reset(seed=0)
         _, reward, terminated, truncated, info = timeout.step(5)

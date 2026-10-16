@@ -293,6 +293,8 @@ class GameApp:
             self.home_view = 'before' if self.home_view == 'current' else 'current'
         elif ident == 'album':
             self.transition('album')
+        elif ident == 'friends':
+            self.transition('friends')
         elif ident.startswith('photo:'):
             self.photo_selected = int(ident.split(':')[1])
         elif ident == 'replay_memory':
@@ -311,6 +313,14 @@ class GameApp:
             _,kind,value=ident.split(':')
             self.campaign.set_cosmetic(kind,value)
             self.persist()
+        elif ident == 'remember_friend':
+            if self.core and self.last_outcome and self.campaign.remember_friend_run(self.core.config, self.last_outcome):
+                if self.last_reward is not None:
+                    self.last_reward['friend_memory_replaced'] = True
+                self.persist('result')
+        elif ident == 'keep_friend':
+            if self.last_reward is not None:
+                self.last_reward['friend_memory_kept'] = True
         elif ident == 'settings':
             self.settings_return = self.scene
             self.transition('settings')
@@ -635,6 +645,8 @@ class GameApp:
             story_kind=self.story_kind,
             confirm_kind=self.confirm_kind,confirm_title=title,confirm_text=message,save_error=self.store.error,
             replay=self.replaying_story,settings_return=self.settings_return,home_view=self.home_view,
+            total_stars=self.campaign.total_stars(), friendship=self.campaign.friendship_scores(),
+            friendship_maximums=self.campaign.friendship_maximums(),
             audio_available=self.audio.available,ending_lines=ENDING)
 
     def draw(self):
@@ -679,7 +691,7 @@ class GameApp:
             if self.needs_focus:
                 preferred={'result':['view_memory','next_stage','retry'], 'pause':['resume'],
                     'settings':['back'], 'briefing':['start'], 'rooms':[f'stage:{min(12,len(self.campaign.data["completed"])+1)}'],
-                    'home':['explore'], 'story':['story_next'], 'ending':['ending_continue'],
+                    'home':['explore'], 'friends':['back'], 'story':['story_next'], 'ending':['ending_continue'],
                     'tutorial':['tutorial_done'], 'confirm':['confirm_no'], 'save_error':['save_retry'],
                     'album':[f'photo:{self.photo_selected}'], 'appearance':[f'appearance_tab:{self.appearance_kind}']}.get(self.scene,[])
                 for ident in preferred:

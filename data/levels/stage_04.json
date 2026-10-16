@@ -133,6 +133,8 @@
   "protection_future_ticks": 3,
   "tick_seconds": 0.3,
   "time_budget_ticks": 100,
+  "star_warmth_cap": 14,
+  "star_fast_ticks": 70,
   "time_budget_status": "draft_requires_human_playtest",
   "difficulty_focus": "필수 기억 회수 + 안전한 기본 수집 / 순찰 위 고가치 온기",
   "controlled_pair": "03_04",
