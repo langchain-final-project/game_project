@@ -50,17 +50,36 @@ class CoreContractTests(unittest.TestCase):
         self.assertEqual(result.snapshot['tick'],1)
         self.assertEqual(result.events[0]['type'],'return_blocked')
 
-    def test_collection_requires_same_cell_interact_and_cannot_repeat(self):
+    def test_warmth_is_collected_on_entry_and_cannot_repeat(self):
         game = GameCore(load_level(1))
-        moved = game.step(Action.RIGHT).snapshot
-        self.assertEqual(moved['position'], [2, 1])
-        self.assertEqual(moved['carried'], 0)
-        first = game.step(Action.INTERACT)
-        second = game.step(Action.INTERACT)
+
+        # 오른쪽 온기 칸에 들어가면 E 없이 바로 획득합니다.
+        first = game.step(Action.RIGHT)
+
+        self.assertEqual(first.snapshot['position'], [2, 1])
         self.assertEqual(first.snapshot['carried'], 1)
-        self.assertEqual(second.snapshot['carried'], 1)
-        self.assertEqual(second.snapshot['tick'], 3)
-        self.assertFalse(any(e['type'] == 'collect' for e in second.events))
+        self.assertEqual(first.snapshot['tick'], 1)
+        self.assertEqual(
+            sum(e['type'] == 'collect' for e in first.events),
+            1,
+        )
+
+        # 같은 칸에서 E를 눌러도 다시 획득하지 않습니다.
+        interaction = game.step(Action.INTERACT)
+
+        self.assertEqual(interaction.snapshot['carried'], 1)
+        self.assertFalse(
+            any(e['type'] == 'collect' for e in interaction.events)
+        )
+
+        # 나갔다가 다시 들어와도 중복 획득하지 않습니다.
+        game.step(Action.LEFT)
+        revisit = game.step(Action.RIGHT)
+
+        self.assertEqual(revisit.snapshot['carried'], 1)
+        self.assertFalse(
+            any(e['type'] == 'collect' for e in revisit.events)
+        )
 
     def test_bank_value_is_actual_total_not_total_minus_target(self):
         game = GameCore(fixture())

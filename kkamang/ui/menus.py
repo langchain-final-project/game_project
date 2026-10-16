@@ -451,7 +451,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             y=311+i*39
             text(surface,assets,lab,(889,y),size=17,color=(131,112,112))
             text(surface,assets,val,(1216,y),size=18,color=INK,anchor='topright',bold=True)
-        wrapped(surface,assets,'물건 + 온기 4점 이상 → 귀환\n같은 칸에서 E: 수집 · 장치 · 귀환',pygame.Rect(889,482,326,70),size=17,color=INK)
+        wrapped(surface,assets,'물건 + 온기 4점 이상 → 귀환\n E: 수집 · 장치 · 귀환',pygame.Rect(889,482,326,70),size=17,color=INK)
         _chip(surface,assets,'멈춰 있어도 탐사 시간은 흘러요',(888,568,327,32),fill=(228,217,196),color=INK,size=15)
         ui.control('back',(38,630,165,39),'방 선택으로')
         ui.control('tutorial',(218,630,202,39),'조작 다시 보기')
@@ -713,7 +713,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         _background(surface,assets,'shelter_before.png',160,ctx=ctx)
         _header(surface,assets,'까망이의 첫 탐사','천천히 읽고 출발해도 괜찮아요. 지금은 시간이 흐르지 않아요.')
         cards=[('01','작은 발걸음','방향키 / WASD로 한 칸씩 이동해요.\n움직이지 않아도 시간은 흘러요.','paw_cursor'),
-               ('02','같은 칸에서 E','온기 위에서 E로 주워요.\n장치와 귀환점도 같은 칸에서 E!','warmth_3'),
+               ('02','온기는 자동 획득','온기는 자동 획득!\n물건·장치·귀환은 같은 칸에서 E!','warmth_3'),
                ('03','물건과 온기 함께','방의 필수 물건 + 온기 4점.\n둘을 모두 챙겨 귀환해야 해요.','lantern_on'),
                ('04','돌아올 자리','목표를 채운 뒤 귀환점에서 E!\n조건 부족 시 탐사는 계속돼요.','return_portal'),
                ('05','순찰 잔상을 조심','다음 칸과 이동 예고를 살펴요.\n닿으면 용기가 한 칸 줄어요.','echo_body'),

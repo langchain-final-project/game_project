@@ -551,11 +551,11 @@ def draw_field(
     elif s['position'] == q['position'] and not q['collected']:
         label = 'E ' + q['name']
 
-    elif any(
-        i['active'] and i['position'] == s['position']
-        for i in s['items']
-    ):
-        label = 'E 온기 회수'
+    # elif any(
+    #     i['active'] and i['position'] == s['position']
+    #     for i in s['items']
+    # ):
+    #     label = 'E 온기 회수'
 
     elif any(
         not g['opened'] and g['terminal'] == s['position']
@@ -811,7 +811,7 @@ def draw_game(
     text(
         surface,
         assets,
-        toast or '방향키 / WASD 이동   ·   E 회수 / 귀환   ·   Space 대기   ·   Esc 일시정지',
+        toast or '방향키 / WASD 이동   ·   E 아이템 회수/ 상호작용 ·    Esc 일시정지',
         (28, 689),
         16,
         CREAM,

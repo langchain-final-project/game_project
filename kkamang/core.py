@@ -298,8 +298,34 @@ class GameCore:
                 events.append({"type": "blocked", "from": previous_position,
                                "to": destination, "reason": reason})
             else:
+                # 이동 가능한 칸이면 플레이어 위치를 갱신합니다.
                 state["position"] = destination
-                events.append({"type": "move", "from": previous_position, "to": list(destination)})
+                events.append({
+                    "type": "move",
+                    "from": previous_position,
+                    "to": list(destination),
+                })
+
+                # 이동한 칸에 아직 획득하지 않은 온기가 있으면 수집합니다.
+                for item in state["items"]:
+                    if (
+                        item["active"]
+                        and item["position"] == state["position"]
+                    ):
+                        # 획득한 온기는 다시 수집되지 않도록 비활성화합니다.
+                        item["active"] = False
+                        state["carried"] += item["value"]
+
+                        # 기존 이벤트를 유지하여 소리와 알림도 연결합니다.
+                        events.append({
+                            "type": "collect",
+                            "item_id": item["id"],
+                            "value": item["value"],
+                            "carried": state["carried"],
+                            "position": list(state["position"]),
+                        })
+                        break
+                    
         elif chosen == Action.INTERACT:
             if state["position"] == state["exit"]:
                 if state['carried'] >= state['target'] and state['quest']['collected']:
@@ -310,14 +336,14 @@ class GameCore:
                 if state['position'] == state['quest']['position'] and not state['quest']['collected']:
                     state['quest']['collected'] = True
                     events.append({'type':'quest_collect', 'name':state['quest']['name']})
-                for item in state["items"]:
-                    if item["active"] and item["position"] == state["position"]:
-                        item["active"] = False
-                        state["carried"] += item["value"]
-                        events.append({"type": "collect", "item_id": item["id"],
-                                       "value": item["value"], "carried": state["carried"],
-                                       "position": list(state["position"])})
-                        break
+                # for item in state["items"]:
+                #     if item["active"] and item["position"] == state["position"]:
+                #         item["active"] = False
+                #         state["carried"] += item["value"]
+                #         events.append({"type": "collect", "item_id": item["id"],
+                #                        "value": item["value"], "carried": state["carried"],
+                #                        "position": list(state["position"])})
+                #         break
                 for shortcut in state["shortcuts"]:
                     if not shortcut["opened"] and shortcut["terminal"] == state["position"]:
                         shortcut["opened"] = True
