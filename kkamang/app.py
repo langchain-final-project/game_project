@@ -11,6 +11,8 @@ from .core import GameCore
 from .levels import load_levels
 from .campaign import Campaign, SaveStore
 from .story import STAGES, PROLOGUE, ENDING
+from . import likes
+from .ending_content import ENDING_CONTENT
 from .input import InputAdapter
 from .audio import AudioEngine
 from .ui.theme import Assets, text, panel, CREAM, INK, NIGHT
@@ -20,7 +22,11 @@ from .ui.menus import render_menu
 SIZE = (1280, 720)
 
 class GameApp:
-    def __init__(self, save_path=None, headless=False, no_audio=False, size=SIZE, seed=0):
+    def __init__(self, save_path=None, headless=False, no_audio=False, size=SIZE, seed=0,
+                 score_provider=None):
+        # Owner-supplied callable(level, outcome, snapshot, mode) -> score_breakdown | None.
+        self.score_provider = score_provider
+        self.ending_id = None
         self.accumulator = 0.
         self.ghost_elapsed = 0.3
         pygame.display.init()
@@ -121,6 +127,9 @@ class GameApp:
         self.transition('briefing')
 
     def start_run(self):
+        if self.campaign.data['likes']['pending'] is not None:
+            self.transition('memory_choice')
+            return
         if not self.campaign.is_unlocked(self.stage):
             return
         self.core = GameCore(self.levels[self.stage-1], mode=self.mode, seed=self.seed)
@@ -170,11 +179,23 @@ class GameApp:
             self.transition(self.story_return)
 
     def start_ending(self):
-        self.dialogues=list(ENDING)
+        if self.campaign.data['likes']['pending'] is not None:
+            self.transition('memory_choice')
+            return
+        if len(self.campaign.data['completed']) != likes.ROOM_COUNT:
+            self.transition('likes')
+            return
+        self.ending_id = likes.select_ending(self.campaign.data['likes'], self.campaign.data['completed'])
+        content = ENDING_CONTENT.get(self.ending_id)
+        self.dialogues = list(content['lines'] if content else ENDING)
         self.dialogue_index=0
         self.dialogue_time=0.
         self.story_kind='ending'
-        self.transition('ending')
+        if self.ending_id and self.ending_id not in self.campaign.data['likes']['seen_endings']:
+            self.campaign.data['likes']['seen_endings'].append(self.ending_id)
+            self.persist('ending')
+        else:
+            self.transition('ending')
 
     def next_dialogue(self):
         if self.dialogue_index >= len(self.dialogues):
@@ -215,11 +236,20 @@ class GameApp:
 
     def finish_run(self, result):
         self.last_outcome = result.outcome
+        memory = None
+        if (result.outcome['status'] == 'COMPLETE'
+                and self.run_id not in self.campaign.data['settled_ids']):
+            scores = (self.score_provider(self.core.config, result.outcome,
+                                         result.snapshot, self.core.mode)
+                      if self.score_provider else result.outcome.get('score_breakdown'))
+            memory = likes.make_record(self.core.config, result.outcome, result.snapshot,
+                                       self.core.mode, self.run_id, self.core.config_hash, scores)
         self.last_reward = self.campaign.settle(self.core.config, result.outcome,
-             self.core.config_hash, self.core.mode, self.run_id, controller='human')
+             self.core.config_hash, self.core.mode, self.run_id, controller='human',
+             memory_record=memory)
         self.write_replay()
         self.audio.play('return' if result.outcome['status'] in ('COMPLETE','RETURN_LOW') else 'fail')
-        self.persist('result')
+        self.persist('memory_choice' if self.campaign.data['likes']['pending'] else 'result')
 
     def abandon(self):
         if self.core and not self.core.snapshot()['terminal']:
@@ -228,10 +258,18 @@ class GameApp:
 
     def dispatch(self, ident):
         self.audio.play('select')
-        if ident == 'quit':
+        if ident in ('memory_keep', 'memory_replace'):
+            self.resolve_memory(ident == 'memory_replace')
+        elif ident == 'show_ending':
+            self.start_ending()
+        elif ident == 'choose_memory':
+            self.transition('memory_choice')
+        elif ident == 'quit':
             self.request_confirm('quit')
         elif ident == 'continue':
-            if self.campaign.data.get('intro_seen'):
+            if self.campaign.data['likes']['pending'] is not None:
+                self.transition('memory_choice')
+            elif self.campaign.data.get('intro_seen'):
                 self.transition('home')
             else:
                 self.start_prologue()
@@ -245,8 +283,8 @@ class GameApp:
                 self.stage = 1
                 self.start_prologue()
         # 엔딩 조건
-        elif ident == 'ending_conditions':
-            self.transition('ending_conditions')
+        elif ident in ('ending_conditions', 'likes'):
+            self.transition('likes')
         elif ident in ('explore','rooms'):
             self.transition('rooms')
         elif ident.startswith('stage:'):
@@ -359,7 +397,9 @@ class GameApp:
 
     def go_back(self):
         s=self.scene
-        if s == 'game':
+        if s == 'memory_choice':
+            self.resolve_memory(False)
+        elif s == 'game':
             self.transition('pause')
         elif s == 'pause':
             self.persist('game')
@@ -377,6 +417,11 @@ class GameApp:
             self.transition('rooms' if s == 'briefing' else self.tutorial_return)
         else:
             self.transition('home')
+
+    def resolve_memory(self, replace):
+        if likes.choose_memory(self.campaign.data['likes'], replace):
+            # A reloaded pending choice has no transient result-screen context.
+            self.persist('result' if self.last_outcome is not None else 'likes')
 
     def _perform_action(self, action, animation_age=0.):
         """행동을 실행하되, E는 고양이의 이동 애니메이션을 유지합니다."""
@@ -635,7 +680,10 @@ class GameApp:
             story_kind=self.story_kind,
             confirm_kind=self.confirm_kind,confirm_title=title,confirm_text=message,save_error=self.store.error,
             replay=self.replaying_story,settings_return=self.settings_return,home_view=self.home_view,
-            audio_available=self.audio.available,ending_lines=ENDING)
+            audio_available=self.audio.available,ending_lines=ENDING,
+            likes_totals=likes.totals(self.campaign.data['likes']),
+            memory_comparison=likes.comparison(self.campaign.data['likes']),
+            ending_id=self.ending_id, ending_content=ENDING_CONTENT.get(self.ending_id))
 
     def draw(self):
         self.audio.configure(self.campaign.data['settings'])
@@ -678,6 +726,7 @@ class GameApp:
             self.controls=render_menu(self.canvas,self.assets,screen,self.context(),self.focus,self.mouse)
             if self.needs_focus:
                 preferred={'result':['view_memory','next_stage','retry'], 'pause':['resume'],
+                    'memory_choice':['memory_keep'], 'likes':['home'],
                     'settings':['back'], 'briefing':['start'], 'rooms':[f'stage:{min(12,len(self.campaign.data["completed"])+1)}'],
                     'home':['explore'], 'story':['story_next'], 'ending':['ending_continue'],
                     'tutorial':['tutorial_done'], 'confirm':['confirm_no'], 'save_error':['save_retry'],

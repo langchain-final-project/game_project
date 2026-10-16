@@ -12,6 +12,7 @@ from .theme import (CREAM, INK, NIGHT, PAPER, GOLD, LAVENDER, SAGE,
                     text, wrapped, panel, button)
 
 from .illustration import shelter, cat as draw_cat, ghost, prop
+from .likes import draw_likes, draw_choice
 
 W, H = 1280, 720
 _COVER_CACHE: dict = {}
@@ -376,80 +377,20 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         ui.control('album', (352, 613, 215, 52), '기억 앨범')
         ui.control('appearance', (581, 613, 215, 52), '쉼터 꾸미기')
         # ui.control('rooms', (810, 613, 215, 52), '구역 살펴보기')
-        ui.control('ending_conditions', (810, 613, 215, 52), '엔딩 조건')
+        ui.control('likes', (810, 613, 215, 52), '유령 호감도')
         ui.control('settings', (1039, 613, 199, 52), '설정')
         _footer(surface, assets)
-    elif screen == 'ending_conditions':
-        _background(
-            surface,
-            assets,
-            _home_art(completed),
-            140,
-            ctx=ctx,
-            actors=False,
-        )
-
-        _header(
-            surface,
-            assets,
-            '엔딩 조건',
-            '세 유령의 엔딩 조건을 확인하는 곳이에요.',
-        )
-
-        for index, name in enumerate(('A', 'B', 'C')):
-            card = pygame.Rect(
-                50 + index * 410,
-                140,
-                360,
-                455,
-            )
-
-            panel(
-                surface,
-                card,
-                fill=PAPER,
-                border=GOLD,
-                radius=22,
-            )
-
-            text(
-                surface,
-                assets,
-                f'{name} 유령',
-                (card.centerx, card.y + 30),
-                size=24,
-                color=INK,
-                bold=True,
-                anchor='midtop',
-            )
-
-            ghost(
-                surface,
-                (card.centerx, card.y + 255),
-                size=150,
-                time=elapsed,
-                resident=True,
-                variant=index,
-            )
-
-            text(
-                surface,
-                assets,
-                '조건 준비 중',
-                (card.centerx, card.y + 330),
-                size=20,
-                color=INK,
-                anchor='midtop',
-            )
-
-        ui.control(
-            'home',
-            (465, 612, 350, 50),
-            '쉼터로',
-            primary=True,
-        )
-
+    elif screen in ('likes', 'ending_conditions'):
+        _background(surface, assets, ctx=ctx, actors=False)
+        _header(surface, assets, '유령 호감도', '이 방에 남긴 기억이 친구들의 마음에 쌓여요.')
+        draw_likes(surface, assets, ctx, ui)
         _footer(surface, assets)
+
+    elif screen == 'memory_choice':
+        _background(surface, assets, ctx=ctx, actors=False)
+        _header(surface, assets, '이 방에 남길 기억', '두 번의 발걸음 중 어떤 기억을 남길까요?')
+        draw_choice(surface, assets, ctx, ui)
+        _footer(surface, assets, '방향키 선택 · Enter 확인 · Esc 기존 기억 유지')
 
     elif screen == 'rooms':
         _background(surface, assets, _home_art(completed), 140,ctx=ctx)
@@ -562,8 +503,11 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         _footer(surface,assets)
 
     elif screen == 'ending':
-        _background(surface,assets,'ending_scene.png',ctx=ctx)
-        _header(surface,assets,'떠날 수 있기에, 다시 오고 싶은 집','까망이와 잠 못 드는 저택 · 첫 번째 밤의 끝','기억 12 / 12')
+        content = ctx.get('ending_content') or {}
+        _background(surface,assets,content.get('art', 'ending_scene.png'),ctx=ctx)
+        if content.get('art') and (assets.root / 'art' / content['art']).is_file():
+            _art(surface, assets, content['art'], (0, 0, W, H))
+        _header(surface,assets,content.get('title', '함께 남긴 밤'),content.get('subtitle', '열두 방의 기억 · 평가 전 공통 이야기'),'기억 12 / 12')
         panel(surface,(38,488,1204,179),fill=PAPER,border=GOLD,radius=18)
         speaker,line=ctx.get('dialogue') or ('이야기','다음 비 오는 날, 까망이는 다시 저택을 찾아왔어요.')
         text(surface,assets,speaker,(64,508),size=21,color=(145,99,104),bold=True)

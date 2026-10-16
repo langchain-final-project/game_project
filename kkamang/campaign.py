@@ -12,8 +12,9 @@ import os
 from pathlib import Path
 import tempfile
 import uuid
+from . import likes
 
-SAVE_VERSION = 1
+SAVE_VERSION = 2
 COSMETICS = {
     'scarf': (4, ('default', 'peach', 'lavender')),
     'rug': (8, ('default', 'stars', 'leaves')),
@@ -37,6 +38,7 @@ def _default() -> dict:
         'cosmetics': {'scarf': 'default', 'rug': 'default', 'frame': 'default'},
         'intro_seen': False, 'tutorial_seen': False, 'records': {},
         'settled_ids': [], 'favorite_photo': None,
+        'likes': likes.empty_state(),
     }
 
 
@@ -62,7 +64,7 @@ def _normalized(data: dict) -> dict:
     if not isinstance(data, dict):
         raise SaveFormatError('저장 파일의 구조가 올바르지 않아요.')
     version = data.get('save_version', data.get('version', 0))
-    if version not in (0, SAVE_VERSION) or isinstance(version, bool):
+    if version not in (0, 1, SAVE_VERSION) or isinstance(version, bool):
         raise UnsupportedSaveVersion(f'지원하지 않는 저장 버전({version})이에요. 원본을 보존했어요.')
     # v0 is the pre-release format. Complete stages and unique badges determine
     # photos, restored rooms and cosmetics once, without granting new currency.
@@ -148,6 +150,15 @@ def _normalized(data: dict) -> dict:
         favorite = _stage_number(favorite)
         if favorite in result['photos']:
             result['favorite_photo'] = favorite
+    try:
+        result['likes'] = likes.normalize_state(data.get('likes', likes.empty_state()))
+        memories = list(result['likes']['representatives'].values())
+        if result['likes']['pending'] is not None:
+            memories.append(result['likes']['pending'])
+        if any(r['stage'] not in result['completed'] for r in memories):
+            raise ValueError('memory belongs to an incomplete room')
+    except (ValueError, TypeError) as exc:
+        raise SaveFormatError(f'호감도 기록을 읽을 수 없어요: {exc}') from exc
     return result
 
 
@@ -178,7 +189,7 @@ class Campaign:
         return True
 
     def settle(self, level: dict, outcome: dict, config_hash: str, mode: str,
-               settlement_id: str, controller: str = 'human') -> dict:
+               settlement_id: str, controller: str = 'human', memory_record=None) -> dict:
         if not isinstance(settlement_id, str) or not settlement_id:
             raise ValueError('settlement_id must be a non-empty string')
         empty = {'first_complete': False, 'new_photo': False,
@@ -214,6 +225,13 @@ class Campaign:
         if status in ('FAILED', 'ABORTED') and numbers['banked'] != 0:
             raise ValueError('Failed or aborted runs cannot bank warmth')
         eligible = controller == 'human' and self.is_unlocked(stage) and status != 'ABORTED'
+        if memory_record is not None:
+            memory_record = likes.validate_record(memory_record)
+            if (memory_record['stage'] != stage or memory_record['run_id'] != settlement_id
+                    or memory_record['config_hash'] != config_hash or memory_record['mode'] != mode
+                    or memory_record['banked'] != numbers['banked']
+                    or memory_record['ticks_used'] != numbers['ticks_used']):
+                raise ValueError('memory does not match this settlement')
         before_cosmetics = {f'{k}:{v}' for k in COSMETICS for v in self.unlocked_cosmetics(k)}
         # Build updates in a copy: a malformed record cannot partially pay rewards.
         updated = deepcopy(self.data)
@@ -248,6 +266,8 @@ class Campaign:
                 earned.append(f'{stage_key}:quiet')
             result['new_badges'] = [b for b in earned if b not in updated['badges']]
             updated['badges'] = sorted(set(updated['badges']) | set(earned))
+            if memory_record is not None:
+                result['memory_status'] = likes.offer_memory(updated['likes'], memory_record)
         updated['settled_ids'].append(settlement_id)
         self.data = updated
         after_cosmetics = {f'{k}:{v}' for k in COSMETICS for v in self.unlocked_cosmetics(k)}
