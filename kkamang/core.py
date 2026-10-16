@@ -384,6 +384,11 @@ class GameCore:
                     "ghost_id": chaser["id"],
                     "kind": "overlap" if final_overlap else "swap",
                 })
+
+                # 이전 틱에는 떨어져 있었다면 새로운 충돌입니다.
+                if previous_chaser != previous_position:
+                    # 다음 2틱은 정지하고, 3번째 틱에 다시 이동합니다.
+                    chaser["countdown"] = 4
         
         if contacts:
             events.append({"type": "contact", "ghost_ids": [contact["ghost_id"] for contact in contacts],
