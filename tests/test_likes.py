@@ -97,6 +97,31 @@ def test_corrupt_affection_save_is_rejected():
         Campaign(data)
 
 
+def test_main_v3_memories_migrate_without_inventing_run_details():
+    scores = {'warmth': 36, 'speed': 25, 'courage': 15, 'total': 76, 'stars': 2}
+    campaign = Campaign({'save_version': 3, 'completed': [1],
+                         'friend_memories': {'stage_01': scores},
+                         'star_records': {'stage_01': {'score': 85, 'stars': 3}}})
+    record = campaign.data['likes']['representatives']['1']
+    assert record['scores']['life'] == 15
+    assert record['banked'] is None and record['ticks_used'] is None
+    assert campaign.data['likes']['best_stars']['1'] == 3
+    assert Campaign(campaign.data).data == campaign.data
+
+
+def test_likes_v2_preserves_representative_and_cosmetic_unlocks():
+    data = Campaign().data
+    data['save_version'] = 2
+    data['completed'] = [1, 2]
+    data['badges'] = ['stage_01:rich', 'stage_01:quiet', 'stage_02:rich', 'stage_02:quiet']
+    data['cosmetics']['scarf'] = 'peach'
+    del data['legacy_cosmetic_stars']
+    likes.offer_memory(data['likes'], sample_record(1, (60, 10, 15)))
+    loaded = Campaign(data)
+    assert loaded.data['cosmetics']['scarf'] == 'peach'
+    assert loaded.data['likes']['representatives'] == data['likes']['representatives']
+
+
 def test_settlement_is_atomic_and_idempotent_and_excludes_failed_ai():
     from kkamang.levels import load_level
     level = load_level(1)

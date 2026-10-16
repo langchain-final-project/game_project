@@ -41,6 +41,7 @@ def validate_level(config: dict) -> None:
         "height", "grid", "start", "exit", "items", "ghosts", "shortcuts",
         "quest", "target_value", "total_item_value", "initial_courage",
         "protection_future_ticks", "tick_seconds", "time_budget_ticks",
+        "star_warmth_cap", "star_fast_ticks",
     )
     missing = [key for key in required if key not in config]
     _require(not missing, f"missing fields: {', '.join(missing)}")
@@ -61,6 +62,12 @@ def validate_level(config: dict) -> None:
     budget = config["time_budget_ticks"]
     _require(_integer(budget) and 1 <= budget <= MAX_TICKS,
              f"time_budget_ticks must be an integer in 1..{MAX_TICKS}")
+    warmth_cap = config["star_warmth_cap"]
+    _require(_integer(warmth_cap) and config['target_value'] < warmth_cap <= config['total_item_value'],
+             "star_warmth_cap must be above the return target and within available warmth")
+    fast_ticks = config["star_fast_ticks"]
+    _require(_integer(fast_ticks) and 0 <= fast_ticks < budget,
+             "star_fast_ticks must be from zero up to the time limit")
 
     grid = config["grid"]
     _require(isinstance(grid, list) and len(grid) == HEIGHT, "grid must have 9 rows")

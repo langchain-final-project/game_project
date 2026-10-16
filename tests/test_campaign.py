@@ -10,12 +10,15 @@ from kkamang.story import STAGES, PROLOGUE, ENDING
 
 
 def level(stage=1):
-    return {'stage': stage, 'id': f'stage_{stage:02d}', 'target_value': 4, 'total_item_value': 14}
+    return {'stage': stage, 'id': f'stage_{stage:02d}', 'target_value': 4, 'total_item_value': 14,
+            'star_warmth_cap': 14, 'time_budget_ticks': 80, 'star_fast_ticks': 56,
+            'initial_courage': 3}
 
 
 def outcome(status='COMPLETE', banked=10, damage=0):
     return {'status': status, 'reason': 'returned' if status in ('COMPLETE', 'RETURN_LOW') else 'timeout',
             'banked': banked, 'carried': banked if banked else 10, 'damage_count': damage,
+            'remaining_courage': 3 - damage,
             'ticks_used': 40, 'remaining_ticks': 20}
 
 
@@ -59,9 +62,11 @@ def test_unique_badges_cross_modes_and_cosmetics_thresholds():
     assert not c.set_cosmetic('scarf', 'peach')
     result = clear(c, 2)
     assert c.optional_badges() == 4
+    assert result['new_cosmetics'] == []
+    result = clear(c, 3)
     assert result['new_cosmetics'] == ['scarf:lavender', 'scarf:peach']
     assert c.set_cosmetic('scarf', 'peach')
-    for stage in range(3, 13):
+    for stage in range(4, 13):
         clear(c, stage)
     assert c.optional_badges() == 24
     assert len(c.unlocked_cosmetics('rug')) == 3
@@ -70,6 +75,34 @@ def test_unique_badges_cross_modes_and_cosmetics_thresholds():
     c2 = Campaign(c.data)
     assert c2.optional_badges() == 24
     assert c2.data['cosmetics']['scarf'] == 'peach'
+
+
+def test_stars_keep_only_a_room_best_score_and_friend_memory_is_independent():
+    c = Campaign()
+    first = outcome(banked=4, damage=0)
+    first['ticks_used'] = 0
+    first['remaining_courage'] = 3
+    reward = c.settle(level(), first, 'hash-A', 'basic', 'first')
+    assert reward['score']['total'] == 40
+    assert c.stars_for_stage(1) == 0
+    original_memory = deepcopy(c.data['friend_memories']['stage_01'])
+    retry = outcome(banked=14, damage=2)
+    retry['ticks_used'] = 80
+    retry['remaining_courage'] = 1
+    reward = c.settle(level(), retry, 'hash-A', 'basic', 'retry')
+    assert reward['best_star_improved'] and c.stars_for_stage(1) == 2
+    assert c.data['friend_memories']['stage_01'] == original_memory
+    assert c.remember_friend_run(level(), retry)
+    assert c.data['friend_memories']['stage_01'] != original_memory
+
+
+def test_friendship_normalises_the_three_score_ranges_to_the_same_scale():
+    c = Campaign()
+    c.data['friend_memories'] = {'stage_01': {
+        'warmth': 36, 'speed': 20, 'courage': 15, 'total': 71, 'stars': 2,
+    }}
+    assert c.friendship_scores() == {'bosong': 60, 'ipari': 100, 'dore': 80}
+    assert c.friendship_maximums() == {'bosong': 1200, 'ipari': 1200, 'dore': 1200}
 
 
 def test_failed_low_aborted_locked_and_ai_runs_do_not_unlock_story():

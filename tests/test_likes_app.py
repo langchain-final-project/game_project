@@ -1,4 +1,4 @@
-"""Actual core completion, scoring adapter, save/reload, and new menu flows."""
+# 테스트 케이스 호감도 관련 기능
 from copy import deepcopy
 import json
 import os
@@ -61,10 +61,12 @@ def test_real_completion_provider_choice_escape_and_no_star_loss(app):
     assert SaveStore(app.store.path).load().data == app.campaign.data
 
 
-def test_unscored_first_run_persists_and_reload_resumes_choice(app):
+def test_real_scores_persist_and_reload_resumes_choice(app):
     complete(app)
-    assert app.campaign.data['likes']['representatives']['1']['scores'] is None
-    assert app.campaign.data['likes']['best_stars'] == {}
+    score = app.campaign.data['likes']['representatives']['1']['scores']
+    assert score['total'] == app.last_outcome['score']['total']
+    assert score['life'] == app.last_outcome['score']['courage']
+    assert app.campaign.data['likes']['best_stars']['1'] == app.campaign.stars_for_stage(1)
     complete(app)
     restored = GameApp(save_path=app.store.path, headless=True, no_audio=True)
     try:
@@ -77,6 +79,30 @@ def test_unscored_first_run_persists_and_reload_resumes_choice(app):
         assert restored.campaign.data['likes']['pending'] is None
     finally:
         restored.close()
+
+
+def test_real_replay_keeps_star_best_and_syncs_memory(app):
+    complete(app)
+    first = deepcopy(app.campaign.data['likes']['representatives']['1'])
+    app.start_run()
+    route = next(r for r in ROUTES if r['level_id'] == 'stage_01' and r['target'] == 14)
+    for action in route['actions']:
+        result = app.core.step(action)
+    app.finish_run(result)
+    best = app.campaign.star_record(1)
+    assert app.scene == 'memory_choice'
+    app.dispatch('memory_keep')
+    assert app.campaign.data['likes']['representatives']['1'] == first
+    assert app.campaign.star_record(1) == best
+    complete(app)
+    app.dispatch('memory_replace')
+    selected = app.campaign.data['likes']['representatives']['1']['scores']
+    legacy = app.campaign.data['friend_memories']['stage_01']
+    assert legacy['courage'] == selected['life']
+    assert legacy['total'] == selected['total']
+    assert app.campaign.star_record(1) == best
+    app.draw()
+    assert not {'remember_friend', 'keep_friend'} & {c['id'] for c in app.controls}
 
 
 def test_save_failure_retains_choice_then_can_retry(app):

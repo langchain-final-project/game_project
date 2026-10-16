@@ -47,6 +47,23 @@ def validate_scores(value):
     return result
 
 
+def from_game_score(score):
+    """Adapt scoring.py's courage field without recalculating any points."""
+    if score is None:
+        return None
+    return validate_scores({'version': 'score_v1', 'warmth': score['warmth'],
+                            'speed': score['speed'], 'life': score['courage'],
+                            'total': score['total'], 'stars': score['stars']})
+
+
+def legacy_record(stage, score):
+    """Older main saves have scores, but no raw run details; do not invent them."""
+    return validate_record({'stage': stage, 'run_id': f'legacy-{stage}',
+                            'mode': 'legacy', 'config_hash': 'legacy', 'rules_version': 'legacy',
+                            'banked': None, 'ticks_used': None, 'initial_courage': None,
+                            'remaining_courage': None, 'scores': from_game_score(score)})
+
+
 def validate_record(value):
     if not isinstance(value, dict):
         raise ValueError('memory record must be a dictionary')
@@ -56,12 +73,15 @@ def validate_record(value):
             raise ValueError(f'memory requires {key}')
         result[key] = value[key]
     result['stage'] = _int(value.get('stage'), 1, ROOM_COUNT, 'stage')
-    if value.get('mode') not in ('basic', 'relaxed'):
+    if value.get('mode') not in ('basic', 'relaxed', 'legacy'):
         raise ValueError('unknown memory mode')
     result['mode'] = value['mode']
     for key in ('banked', 'ticks_used', 'initial_courage', 'remaining_courage'):
-        result[key] = _int(value.get(key), 0, 1000000, key)
-    if not 0 < result['remaining_courage'] <= result['initial_courage']:
+        if result['mode'] == 'legacy' and value.get(key) is None:
+            result[key] = None
+        else:
+            result[key] = _int(value.get(key), 0, 1000000, key)
+    if result['mode'] != 'legacy' and not 0 < result['remaining_courage'] <= result['initial_courage']:
         raise ValueError('a completed memory requires remaining courage')
     result['scores'] = validate_scores(value.get('scores'))
     return result

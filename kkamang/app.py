@@ -241,7 +241,8 @@ class GameApp:
                 and self.run_id not in self.campaign.data['settled_ids']):
             scores = (self.score_provider(self.core.config, result.outcome,
                                          result.snapshot, self.core.mode)
-                      if self.score_provider else result.outcome.get('score_breakdown'))
+                      if self.score_provider else
+                      (result.outcome.get('score_breakdown') or likes.from_game_score(result.outcome.get('score'))))
             memory = likes.make_record(self.core.config, result.outcome, result.snapshot,
                                        self.core.mode, self.run_id, self.core.config_hash, scores)
         self.last_reward = self.campaign.settle(self.core.config, result.outcome,
@@ -331,6 +332,8 @@ class GameApp:
             self.home_view = 'before' if self.home_view == 'current' else 'current'
         elif ident == 'album':
             self.transition('album')
+        elif ident == 'friends':
+            self.transition('likes')
         elif ident.startswith('photo:'):
             self.photo_selected = int(ident.split(':')[1])
         elif ident == 'replay_memory':
@@ -349,6 +352,10 @@ class GameApp:
             _,kind,value=ident.split(':')
             self.campaign.set_cosmetic(kind,value)
             self.persist()
+        elif ident == 'remember_friend':
+            self.resolve_memory(True)
+        elif ident == 'keep_friend':
+            self.resolve_memory(False)
         elif ident == 'settings':
             self.settings_return = self.scene
             self.transition('settings')
@@ -419,7 +426,9 @@ class GameApp:
             self.transition('home')
 
     def resolve_memory(self, replace):
-        if likes.choose_memory(self.campaign.data['likes'], replace):
+        if self.campaign.choose_friend_memory(replace):
+            if self.last_reward is not None:
+                self.last_reward['friend_memory_replaced' if replace else 'friend_memory_kept'] = True
             # A reloaded pending choice has no transient result-screen context.
             self.persist('result' if self.last_outcome is not None else 'likes')
 
@@ -680,6 +689,7 @@ class GameApp:
             story_kind=self.story_kind,
             confirm_kind=self.confirm_kind,confirm_title=title,confirm_text=message,save_error=self.store.error,
             replay=self.replaying_story,settings_return=self.settings_return,home_view=self.home_view,
+            total_stars=self.campaign.total_stars(),
             audio_available=self.audio.available,ending_lines=ENDING,
             likes_totals=likes.totals(self.campaign.data['likes']),
             memory_comparison=likes.comparison(self.campaign.data['likes']),
@@ -728,7 +738,7 @@ class GameApp:
                 preferred={'result':['view_memory','next_stage','retry'], 'pause':['resume'],
                     'memory_choice':['memory_keep'], 'likes':['home'],
                     'settings':['back'], 'briefing':['start'], 'rooms':[f'stage:{min(12,len(self.campaign.data["completed"])+1)}'],
-                    'home':['explore'], 'story':['story_next'], 'ending':['ending_continue'],
+                    'home':['explore'], 'friends':['back'], 'story':['story_next'], 'ending':['ending_continue'],
                     'tutorial':['tutorial_done'], 'confirm':['confirm_no'], 'save_error':['save_retry'],
                     'album':[f'photo:{self.photo_selected}'], 'appearance':[f'appearance_tab:{self.appearance_kind}']}.get(self.scene,[])
                 for ident in preferred:

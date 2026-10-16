@@ -61,9 +61,11 @@ def draw_choice(surface, assets, ctx, ui):
         r = pygame.Rect(40 + i * 620, 132, 580, 345)
         panel(surface, r, fill=PAPER, border=GOLD, radius=22)
         text(surface, assets, label, (r.x + 28, 150), 27, INK, True)
-        mode = '기본' if record['mode'] == 'basic' else '여유'
+        mode = {'basic': '기본', 'relaxed': '여유', 'legacy': '이전 기록'}[record['mode']]
         text(surface, assets, f'{record["stage"]:02d}번 방 · {mode} 모드', (r.right - 28, 159), 17, INK, anchor='topright')
         summary = f'온기 {record["banked"]}점  ·  {record["ticks_used"]}틱  ·  용기 {record["remaining_courage"]}/{record["initial_courage"]}'
+        if record['mode'] == 'legacy':
+            summary = '이전 버전에서 남긴 기억 · 세부 탐사 기록 없음'
         text(surface, assets, summary, (r.x + 28, 207), 19, INK)
         scores = record['scores']
         text(surface, assets, '점수 평가 대기' if scores is None else f'이 판의 점수 {scores["total"]} · 별 {scores["stars"]}개',
