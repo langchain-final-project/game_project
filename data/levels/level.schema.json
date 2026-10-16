@@ -22,6 +22,8 @@
     "protection_future_ticks",
     "tick_seconds",
     "time_budget_ticks",
+    "star_warmth_cap",
+    "star_fast_ticks",
     "time_budget_status",
     "quest"
   ],
@@ -247,6 +249,16 @@
       "type": "integer",
       "minimum": 1,
       "maximum": 512
+    },
+    "star_warmth_cap": {
+      "type": "integer",
+      "minimum": 5,
+      "maximum": 14
+    },
+    "star_fast_ticks": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 511
     },
     "time_budget_status": {
       "enum": [

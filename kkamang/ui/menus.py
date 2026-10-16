@@ -302,6 +302,11 @@ class _UI:
         return focused
 
 
+def _stars(count) -> str:
+    count = max(0, min(3, int(count)))
+    return '★' * count + '☆' * (3 - count)
+
+
 def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
     """Draw one logical 1280×720 screen; return all focusable controls."""
     ui = _UI(surface, assets, focus, mouse)
@@ -348,7 +353,8 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         _background(surface, assets, 'shelter_before.png' if old_view else _home_art(completed),ctx=ctx)
         title = '처음 만났던 밤' if old_view else '까망이의 쉼터'
         subtitle = '비를 피할 자리는 처음부터 여기 있었어요.' if not completed else '작은 일이 모여, 돌아오고 싶은 집이 되었어요.'
-        _header(surface, assets, title, subtitle, f'기억 {len(photos)} / 12')
+        _header(surface, assets, title, subtitle,
+                f'기억 {len(photos)} / 12 · 별 {int(ctx.get("total_stars", 0))} / 36')
         _lanterns(surface, assets, completed, (662, 124, 575, 65))
         if completed:
             latest = _story(ctx, max(completed))
@@ -372,12 +378,42 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         _overlay(surface, (0, 560, W, 160), alpha=190)
         note = '열두 방의 불빛이 돌아왔어요. 언제든 다시 만나요.' if len(completed)==12 else '방의 소중한 물건과 온기 4점 이상을 가져오면, 연결등이 켜져요.'
         text(surface, assets, note, (40, 575), size=18)
-        ui.control('explore', (38, 613, 300, 52), '기억 속으로 다시 걷기' if len(completed)==12 else '다음 방으로 걷기', primary=True)
-        ui.control('album', (352, 613, 215, 52), '기억 앨범')
-        ui.control('appearance', (581, 613, 215, 52), '쉼터 꾸미기')
-        # ui.control('rooms', (810, 613, 215, 52), '구역 살펴보기')
-        ui.control('ending_conditions', (810, 613, 215, 52), '엔딩 조건')
-        ui.control('settings', (1039, 613, 199, 52), '설정')
+        ui.control('explore', (38, 613, 260, 52), '기억 속으로 다시 걷기' if len(completed)==12 else '다음 방으로 걷기', primary=True)
+        ui.control('album', (308, 613, 170, 52), '기억 앨범')
+        ui.control('appearance', (488, 613, 170, 52), '쉼터 꾸미기')
+        ui.control('friends', (668, 613, 185, 52), '저택의 친구들')
+        ui.control('ending_conditions', (863, 613, 185, 52), '엔딩 조건')
+        ui.control('settings', (1058, 613, 180, 52), '설정')
+        _footer(surface, assets)
+
+    elif screen == 'friends':
+        _background(surface, assets, _home_art(completed), 150, ctx=ctx)
+        total_stars = int(ctx.get('total_stars', 0))
+        _header(surface, assets, '저택의 친구들',
+                '방마다 고른 한 번의 탐험이 세 친구와의 관계를 남겨요.', f'별 {total_stars} / 36')
+        scores = ctx.get('friendship', {})
+        maximums = ctx.get('friendship_maximums', {})
+        memories = data.get('friend_memories', {})
+        friends = (
+            ('보송', 'bosong', '무사히 돌아온 용기', '네가 다치지 않고 돌아와서 안심했어.', (221, 166, 181)),
+            ('이파리', 'ipari', '되찾아 온 온기', '네가 모은 온기로 더 많은 것을 돌볼 수 있어.', (151, 184, 146)),
+            ('도레', 'dore', '약속한 귀환의 박자', '종이 울리기 전, 함께할 준비를 했구나.', (166, 151, 207)),
+        )
+        for index, (name, key, metric, quote, color) in enumerate(friends):
+            rect = pygame.Rect(38 + index * 405, 154, 379, 386)
+            panel(surface, rect, fill=PAPER, border=GOLD, radius=18)
+            ghost(surface, (rect.centerx, 250), 105, time=elapsed + index * .8, resident=True, variant=index)
+            text(surface, assets, name, (rect.centerx, 322), size=28, color=INK, bold=True, anchor='center')
+            text(surface, assets, metric, (rect.centerx, 357), size=17, color=(139, 112, 111), anchor='center')
+            score = int(scores.get(key, 0)); maximum = max(1, int(maximums.get(key, 1)))
+            progress = max(0., min(1., score / maximum)); bar = pygame.Rect(rect.x + 34, 399, rect.w - 68, 20)
+            pygame.draw.rect(surface, (224, 214, 197), bar, border_radius=10)
+            pygame.draw.rect(surface, color, (bar.x, bar.y, round(bar.w * progress), bar.h), border_radius=10)
+            text(surface, assets, f'♥ {(score + 5) // 10}', (rect.centerx, 431), size=23, color=(184, 87, 104), bold=True, anchor='center')
+            wrapped(surface, assets, quote, pygame.Rect(rect.x + 35, 463, rect.w - 70, 46), size=16, color=(112, 95, 97), line_gap=5)
+        text(surface, assets, f'대표 기억 {len(memories)} / 12 · 재도전 뒤 이번 탐험을 기억으로 바꿀 수 있어요.',
+             (640, 577), size=19, color=CREAM, anchor='center')
+        ui.control('back', (38, 626, 190, 40), '쉼터로')
         _footer(surface, assets)
     elif screen == 'ending_conditions':
         _background(
@@ -453,7 +489,8 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
 
     elif screen == 'rooms':
         _background(surface, assets, _home_art(completed), 140,ctx=ctx)
-        _header(surface, assets, '열두 방을 잇는 불빛', '가까운 방에서 시작해, 천천히 저택 안쪽으로.', f'{len(completed)} / 12 구역 완료')
+        _header(surface, assets, '열두 방을 잇는 불빛', '가까운 방에서 시작해, 천천히 저택 안쪽으로.',
+                f'{len(completed)} / 12 완료 · 별 {int(ctx.get("total_stars", 0))} / 36')
         for n in range(1, 13):
             col, row = (n-1)%4, (n-1)//4
             rect = pygame.Rect(38+col*304, 128+row*160, 288, 143)
@@ -466,7 +503,9 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
                  color=(128,104,105) if unlocked else (208,196,210), bold=True)
             _fit_text(surface, assets, st.get('name', f'{n}번째 방'), (rect.x+69,rect.y+45,207,31),
                       size=24, color=INK if unlocked else CREAM, bold=True)
-            badge_text = '불빛이 돌아온 방' if n in completed else ('이제 들어갈 수 있어요' if unlocked else '앞방의 연결등을 켜 주세요')
+            record = data.get('star_records', {}).get(f'stage_{n:02d}', {})
+            badge_text = (f'완료  {_stars(record.get("stars", 0))}  최고 {record.get("score", 0)}점'
+                          if n in completed else ('이제 들어갈 수 있어요' if unlocked else '앞방의 연결등을 켜 주세요'))
             text(surface, assets, badge_text, (rect.x+16,rect.y+96), size=16,
                  color=(124,103,108) if unlocked else (210,198,213))
             if f'stage_{n:02d}:rich' in badges:
@@ -475,7 +514,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
                 _icon(surface,assets,'badge_unhurt',(rect.right-42,rect.y+8,29,29))
             ui.control(f'stage:{n}', rect, st.get('name', ''), disabled=not unlocked, custom=True)
         ui.control('back', (38, 626, 174, 40), '쉼터로')
-        text(surface,assets,'완료한 방은 다시 도전해 선택 배지를 모을 수 있어요.',(240,635),size=17)
+        text(surface,assets,'완료한 방은 다시 도전해 별과 최고 점수를 높일 수 있어요.',(240,635),size=17)
         _footer(surface, assets)
 
     elif screen == 'briefing':
@@ -522,6 +561,10 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         _icon(surface,assets,'badge_complete' if success else 'lantern_off',(73,151,76,76))
         text(surface,assets,'연결등이 켜졌어요' if success else ('이번엔 조금 일찍 돌아왔어요' if low else '이번 온기는 남기지 못했어요'),
              (164,163),size=27,color=INK,bold=True)
+        score=outcome.get('score') or reward.get('score') or {}
+        if success:
+            text(surface,assets,_stars(score.get('stars',0)),(520,171),size=34,color=GOLD,bold=True)
+            text(surface,assets,f'{score.get("total",0)}점 / 100점',(520,210),size=23,color=INK,bold=True)
         text(surface,assets,'귀환해서 확정한 온기',(78,253),size=20,color=(134,109,102))
         text(surface,assets,str(outcome.get('banked',0)),(80,291),size=72,color=(174,116,43),bold=True)
         text(surface,assets,'점',(183,334),size=26,color=INK)
@@ -534,14 +577,18 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             text(surface,assets,val,(721,y),size=22,color=INK,bold=True,anchor='topright')
         pygame.draw.line(surface,(202,181,153),(79,397),(726,397),1)
         if success:
-            text(surface,assets,'이번 밤의 발자국',(79,417),size=20,color=INK,bold=True)
-            _icon(surface,assets,'badge_warmth' if outcome.get('banked',0)>=10 else 'badge_locked',(78,460,52,52))
-            text(surface,assets,'풍성한 귀환 · 10점',(143,473),size=18,color=INK)
-            _icon(surface,assets,'badge_unhurt' if outcome.get('damage_count',1)==0 else 'badge_locked',(397,460,52,52))
-            text(surface,assets,'조용한 발걸음 · 무피해',(461,473),size=18,color=INK)
+            text(surface,assets,'별 점수 구성',(79,417),size=20,color=INK,bold=True)
+            rows=[('되찾은 온기',score.get('warmth',0),60),('귀환 속도',score.get('speed',0),25),('남은 용기',score.get('courage',0),15)]
+            for i,(label,value,maximum) in enumerate(rows):
+                x=79+i*210
+                text(surface,assets,label,(x,456),size=17,color=(132,111,109))
+                text(surface,assets,f'{value} / {maximum}',(x,483),size=21,color=INK,bold=True)
             msg='새 기억을 앨범에 담았어요.' if reward.get('new_photo') else '다시 걸은 밤도 기록에 남겼어요.'
+            if reward.get('new_stars',0): msg+=f' 별 {reward["new_stars"]}개가 늘었어요!'
             if reward.get('new_cosmetics'):msg+=' 새 꾸미기도 열렸어요!'
-            text(surface,assets,msg,(79,551),size=17,color=(135,99,98))
+            next_points=int(score.get('next_star_points',0))
+            star_note='세 개의 별을 모두 얻었어요.' if score.get('stars',0)>=3 else f'다음 별까지 {next_points}점'
+            text(surface,assets,star_note+' · '+msg,(79,551),size=17,color=(135,99,98))
         else:
             msg=('완료 목표는 한 번에 온기 4점 이상 귀환이에요.\n가져온 온기는 기록되고, 다음 방은 아직 닫혀 있어요.' if low else
                  '용기를 모두 잃었어요. 보송과 쉼터에서 쉬어 가요.' if outcome.get('reason')=='courage' else
@@ -550,7 +597,23 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         char=(assets.cat((300,350),data.get('cosmetics',{}).get('scarf','default')) if hasattr(assets,'cat')
               else assets.icon('art/kkamang_character.png',(300,350)))
         surface.blit(char,(863,169+int(math.sin(elapsed*2)*4)))
-        _chip(surface,assets,'다시 와 줘서 고마워.' if success else '온기보다 네가 먼저야.',(831,522,376,49),size=22)
+        if success:
+            stage_key=f'stage_{stage:02d}'
+            current_memory={key: score.get(key) for key in ('warmth','speed','courage','total','stars')}
+            saved_memory=data.get('friend_memories',{}).get(stage_key)
+            choosing_memory=(saved_memory != current_memory and not reward.get('friend_memory_kept') and not reward.get('friend_memory_replaced'))
+            if choosing_memory:
+                _chip(surface,assets,'이번 탐험을 친구들의 대표 기억으로 바꿀까요?',(831,522,376,42),size=17)
+                ui.control('keep_friend',(831,572,181,38),'기존 기억 유지')
+                ui.control('remember_friend',(1026,572,181,38),'이번 기록으로 교체',primary=True)
+            else:
+                note=('이번 탐험이 첫 번째 대표 기억이 되었어요.' if reward.get('new_friend_memory') else
+                      '이번 탐험을 친구들의 대표 기억으로 남겼어요.' if reward.get('friend_memory_replaced') else
+                      '기존 대표 기억을 그대로 간직해요.' if reward.get('friend_memory_kept') else
+                      '이 탐험은 이미 친구들의 대표 기억이에요.')
+                _chip(surface,assets,note,(831,522,376,49),size=18)
+        else:
+            _chip(surface,assets,'온기보다 네가 먼저야.',(831,522,376,49),size=22)
         ui.control('retry',(42,624,206,44),'같은 방 다시 걷기')
         ui.control('home',(264,624,173,44),'쉼터로')
         if success:
@@ -639,7 +702,8 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
 
     elif screen == 'appearance':
         _background(surface,assets,_home_art(completed),130,ctx=ctx)
-        _header(surface,assets,'까망이의 작은 취향','꾸미기는 모습만 바꿔요. 탐사의 능력과 기록 조건은 같아요.',f'선택 배지 {len(badges)} / 24')
+        cosmetic_stars=max(int(ctx.get('total_stars',0)),int(data.get('legacy_cosmetic_stars',0)))
+        _header(surface,assets,'까망이의 작은 취향','꾸미기는 모습만 바꿔요. 탐사의 능력과 기록 조건은 같아요.',f'모은 별 {cosmetic_stars} / 36')
         panel(surface,(37,125,474,485),fill=(70,57,82),border=GOLD,radius=20)
         # The selected rug and scarf are live shapes, not baked into the art.
         cosmetic=data.get('cosmetics',{})
@@ -670,12 +734,12 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         choices={'scarf':[('default','세이지'),('peach','복숭아'),('lavender','라벤더')],
                  'rug':[('default','첫 러그'),('stars','별빛 무늬'),('leaves','잎사귀 무늬')],
                  'frame':[('default','나무 액자'),('leaves','잎사귀 액자'),('stars','별빛 액자')]}
-        threshold={'scarf':4,'rug':8,'frame':12}.get(kind,4)
+        threshold={'scarf':6,'rug':12,'frame':18}.get(kind,6)
         current=cosmetic.get(kind,'default')
         text(surface,assets,dict(tabs).get(kind,'목도리')+' 고르기',(564,213),size=25,color=INK,bold=True)
         for i,(value,label) in enumerate(choices.get(kind,choices['scarf'])):
             r=pygame.Rect(562+i*220,268,201,219)
-            unlocked=value=='default' or len(badges)>=threshold
+            unlocked=value=='default' or cosmetic_stars>=threshold
             panel(surface,r,fill=(245,232,205) if unlocked else (221,210,193),border=GOLD if current==value else (192,171,149),radius=12)
             if kind=='scarf':
                 c=colors.get(value,SAGE)
@@ -692,11 +756,11 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
                 pygame.draw.rect(surface,(94,73,112),(r.x+52,r.y+35,97,90),border_radius=3)
                 _icon(surface,assets,'paw_cursor',(r.x+70,r.y+51,61,61))
             text(surface,assets,label,(r.centerx,r.y+146),size=21,color=INK,anchor='midtop',bold=True)
-            text(surface,assets,'사용 중' if current==value else ('선택하기' if unlocked else f'배지 {threshold}개 필요'),
+            text(surface,assets,'사용 중' if current==value else ('선택하기' if unlocked else f'별 {threshold}개 필요'),
                  (r.centerx,r.y+180),size=16,color=(134,107,99),anchor='midtop')
             if not unlocked:_icon(surface,assets,'badge_locked',(r.right-40,r.y+8,30,30))
             ui.control(f'cosmetic:{kind}:{value}',r,label,disabled=not unlocked,custom=True)
-        wrapped(surface,assets,'선택 배지는 각 방에서 두 가지를 얻을 수 있어요.\n온기 10점 이상 귀환 / 한 번도 놀라지 않고 완료',pygame.Rect(566,519,639,67),size=18,color=INK)
+        wrapped(surface,assets,'별은 소비하지 않아요. 방마다 최고 별만 합산되며,\n6개·12개·18개에서 새로운 꾸미기가 열려요.',pygame.Rect(566,519,639,67),size=18,color=INK)
         ui.control('back',(38,630,181,39),'쉼터로')
         _footer(surface,assets)
 

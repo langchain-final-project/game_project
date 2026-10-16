@@ -14,6 +14,7 @@ from numbers import Integral
 import random
 
 from .levels import MAX_TICKS, validate_level
+from .scoring import score_outcome
 
 
 class Action(IntEnum):
@@ -391,9 +392,11 @@ class GameCore:
             "status": status, "reason": reason,
             "banked": state["carried"] if status in ("COMPLETE", "RETURN_LOW") else 0,
             "carried": state["carried"], "damage_count": self._damage_count,
+            "remaining_courage": state["courage"],
             "quest_collected": state["quest"]["collected"],
             "ticks_used": state["tick"], "remaining_ticks": state["remaining_ticks"],
         }
+        state["outcome"]["score"] = score_outcome(self._config, state["outcome"])
         events.append({"type": "end", **deepcopy(state["outcome"])})
 
     def _result(self, events: list[dict]) -> StepResult:

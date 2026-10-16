@@ -13,12 +13,20 @@ from pathlib import Path
 import tempfile
 import uuid
 
-SAVE_VERSION = 1
+from .scoring import COURAGE_POINTS, SPEED_POINTS, STAR_THRESHOLDS, WARMTH_POINTS, score_outcome
+
+SAVE_VERSION = 3
 COSMETICS = {
-    'scarf': (4, ('default', 'peach', 'lavender')),
-    'rug': (8, ('default', 'stars', 'leaves')),
-    'frame': (12, ('default', 'leaves', 'stars')),
+    'scarf': (6, ('default', 'peach', 'lavender')),
+    'rug': (12, ('default', 'stars', 'leaves')),
+    'frame': (18, ('default', 'leaves', 'stars')),
 }
+FRIENDS = {
+    'bosong': {'name': '보송', 'score_key': 'courage', 'source_maximum': COURAGE_POINTS},
+    'ipari': {'name': '이파리', 'score_key': 'warmth', 'source_maximum': WARMTH_POINTS},
+    'dore': {'name': '도레', 'score_key': 'speed', 'source_maximum': SPEED_POINTS},
+}
+AFFECTION_PER_STAGE = 100
 
 
 class SaveFormatError(ValueError):
@@ -36,6 +44,7 @@ def _default() -> dict:
         'settings': {'music': 0.55, 'sfx': 0.75, 'shake': True, 'mode': 'basic'},
         'cosmetics': {'scarf': 'default', 'rug': 'default', 'frame': 'default'},
         'intro_seen': False, 'tutorial_seen': False, 'records': {},
+        'star_records': {}, 'friend_memories': {}, 'legacy_cosmetic_stars': 0,
         'settled_ids': [], 'favorite_photo': None,
     }
 
@@ -62,7 +71,7 @@ def _normalized(data: dict) -> dict:
     if not isinstance(data, dict):
         raise SaveFormatError('저장 파일의 구조가 올바르지 않아요.')
     version = data.get('save_version', data.get('version', 0))
-    if version not in (0, SAVE_VERSION) or isinstance(version, bool):
+    if version not in (0, 1, 2, SAVE_VERSION) or isinstance(version, bool):
         raise UnsupportedSaveVersion(f'지원하지 않는 저장 버전({version})이에요. 원본을 보존했어요.')
     # v0 is the pre-release format. Complete stages and unique badges determine
     # photos, restored rooms and cosmetics once, without granting new currency.
@@ -88,6 +97,53 @@ def _normalized(data: dict) -> dict:
             raise SaveFormatError('알 수 없는 배지 종류예요.')
         badges.add(f'stage_{_stage_number(stage_name):02d}:{kind}')
     result['badges'] = sorted(badges)
+    # Existing v0/v1 saves earned cosmetics from badges. Preserve that access
+    # without inventing score records for rooms that predate this feature.
+    legacy_stars = data.get('legacy_cosmetic_stars', 0)
+    if version in (0, 1) and 'legacy_cosmetic_stars' not in data:
+        legacy_stars = min(18, len(badges) * 3 // 2)
+    if isinstance(legacy_stars, bool) or not isinstance(legacy_stars, int) or not 0 <= legacy_stars <= 18:
+        raise SaveFormatError('기존 꾸미기 해금 기록이 올바르지 않아요.')
+    result['legacy_cosmetic_stars'] = legacy_stars
+    stars = data.get('star_records', {})
+    if not isinstance(stars, dict):
+        raise SaveFormatError('별 기록을 읽을 수 없어요.')
+    for stage_key, entry in stars.items():
+        stage = _stage_number(stage_key)
+        if stage_key != f'stage_{stage:02d}' or stage not in result['completed'] or not isinstance(entry, dict):
+            raise SaveFormatError('방별 별 기록 구조가 올바르지 않아요.')
+        score, count = entry.get('score'), entry.get('stars')
+        if (isinstance(score, bool) or not isinstance(score, int) or not 0 <= score <= 100
+                or isinstance(count, bool) or not isinstance(count, int) or not 0 <= count <= 3
+                or count != sum(score >= threshold for threshold in STAR_THRESHOLDS)):
+            raise SaveFormatError('방별 별 기록 값이 올바르지 않아요.')
+        components = {key: entry.get(key) for key in ('warmth', 'speed', 'courage')}
+        if all(value is None for value in components.values()):
+            result['star_records'][stage_key] = {'score': score, 'stars': count}
+        elif any(value is None for value in components.values()):
+            raise SaveFormatError('방별 최고 점수의 세부 값이 일부 누락됐어요.')
+        else:
+            limits = {'warmth': WARMTH_POINTS, 'speed': SPEED_POINTS, 'courage': COURAGE_POINTS}
+            if any(isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= limits[key]
+                   for key, value in components.items()) or sum(components.values()) != score:
+                raise SaveFormatError('방별 최고 점수의 세부 값이 올바르지 않아요.')
+            result['star_records'][stage_key] = {'score': score, 'stars': count, **components}
+    memories = data.get('friend_memories', {})
+    if not isinstance(memories, dict):
+        raise SaveFormatError('친구 기억 기록을 읽을 수 없어요.')
+    for stage_key, memory in memories.items():
+        stage = _stage_number(stage_key)
+        if stage_key != f'stage_{stage:02d}' or stage not in result['completed'] or not isinstance(memory, dict):
+            raise SaveFormatError('방별 친구 기억 구조가 올바르지 않아요.')
+        values = {key: memory.get(key) for key in ('warmth', 'speed', 'courage', 'total', 'stars')}
+        limits = {'warmth': WARMTH_POINTS, 'speed': SPEED_POINTS, 'courage': COURAGE_POINTS,
+                  'total': 100, 'stars': 3}
+        if (any(isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= limits[key]
+                for key, value in values.items())
+                or values['total'] != values['warmth'] + values['speed'] + values['courage']
+                or values['stars'] != sum(values['total'] >= threshold for threshold in STAR_THRESHOLDS)):
+            raise SaveFormatError('친구 기억 점수가 올바르지 않아요.')
+        result['friend_memories'][stage_key] = values
     settings = data.get('settings', {})
     if not isinstance(settings, dict):
         raise SaveFormatError('설정 값을 읽을 수 없어요.')
@@ -103,10 +159,11 @@ def _normalized(data: dict) -> dict:
     cosmetics = data.get('cosmetics', {})
     if not isinstance(cosmetics, dict):
         raise SaveFormatError('꾸미기 값을 읽을 수 없어요.')
+    cosmetic_stars = max(sum(entry['stars'] for entry in result['star_records'].values()), legacy_stars)
     for kind, (threshold, choices) in COSMETICS.items():
         chosen = cosmetics.get(kind, 'default')
         # A broken cosmetic selection cannot grant abilities or unlock a reward.
-        if chosen in choices and (chosen == 'default' or len(badges) >= threshold):
+        if chosen in choices and (chosen == 'default' or cosmetic_stars >= threshold):
             result['cosmetics'][kind] = chosen
     for flag in ('intro_seen', 'tutorial_seen'):
         result[flag] = bool(data.get(flag, False))
@@ -165,11 +222,52 @@ class Campaign:
     def optional_badges(self) -> int:
         return len(set(self.data['badges']))
 
+    def total_stars(self) -> int:
+        return sum(entry['stars'] for entry in self.data['star_records'].values())
+
+    def stars_for_stage(self, stage: int) -> int:
+        return self.data['star_records'].get(f'stage_{_stage_number(stage):02d}', {}).get('stars', 0)
+
+    def star_record(self, stage: int) -> dict:
+        return deepcopy(self.data['star_records'].get(f'stage_{_stage_number(stage):02d}',
+                                                       {'score': 0, 'stars': 0}))
+
+    @staticmethod
+    def _affection_contribution(component: int, source_maximum: int) -> int:
+        """Normalise every metric to a comparable 0–100 room contribution."""
+        return (2 * component * AFFECTION_PER_STAGE + source_maximum) // (2 * source_maximum)
+
+    def friendship_scores(self) -> dict:
+        return {
+            friend_id: sum(self._affection_contribution(memory[info['score_key']], info['source_maximum'])
+                           for memory in self.data['friend_memories'].values())
+            for friend_id, info in FRIENDS.items()
+        }
+
+    def friendship_maximums(self) -> dict:
+        return {friend_id: AFFECTION_PER_STAGE * 12 for friend_id in FRIENDS}
+
+    def remember_friend_run(self, level: dict, outcome: dict) -> bool:
+        """Replace this room's representative relationship memory only."""
+        if outcome.get('status') != 'COMPLETE':
+            return False
+        stage = _stage_number(level.get('stage', level.get('id')))
+        if stage not in self.data['completed']:
+            return False
+        stage_key = f'stage_{stage:02d}'
+        score = score_outcome(level, outcome)
+        memory = {key: score[key] for key in ('warmth', 'speed', 'courage', 'total', 'stars')}
+        if self.data['friend_memories'].get(stage_key) == memory:
+            return False
+        self.data['friend_memories'][stage_key] = memory
+        return True
+
     def unlocked_cosmetics(self, kind: str) -> list[str]:
         if kind not in COSMETICS:
             raise ValueError(f'Unknown cosmetic kind: {kind}')
         threshold, choices = COSMETICS[kind]
-        return list(choices if self.optional_badges() >= threshold else choices[:1])
+        cosmetic_stars = max(self.total_stars(), self.data.get('legacy_cosmetic_stars', 0))
+        return list(choices if cosmetic_stars >= threshold else choices[:1])
 
     def set_cosmetic(self, kind: str, value: str) -> bool:
         if kind not in COSMETICS or value not in self.unlocked_cosmetics(kind):
@@ -181,8 +279,9 @@ class Campaign:
                settlement_id: str, controller: str = 'human') -> dict:
         if not isinstance(settlement_id, str) or not settlement_id:
             raise ValueError('settlement_id must be a non-empty string')
-        empty = {'first_complete': False, 'new_photo': False,
-                 'new_badges': [], 'new_cosmetics': []}
+        empty = {'first_complete': False, 'new_photo': False, 'new_badges': [],
+                 'new_cosmetics': [], 'new_stars': 0, 'best_star_improved': False,
+                 'new_friend_memory': False, 'score': None}
         if settlement_id in self.data['settled_ids']:
             return {**empty, 'already_settled': True}
         if mode not in ('basic', 'relaxed'):
@@ -213,6 +312,13 @@ class Campaign:
             raise ValueError('RETURN_LOW cannot reach the target')
         if status in ('FAILED', 'ABORTED') and numbers['banked'] != 0:
             raise ValueError('Failed or aborted runs cannot bank warmth')
+        initial_courage = level.get('initial_courage', 3)
+        remaining_courage = outcome.get('remaining_courage', initial_courage - numbers['damage_count'])
+        if (isinstance(remaining_courage, bool) or not isinstance(remaining_courage, int)
+                or not 0 <= remaining_courage <= initial_courage
+                or remaining_courage != initial_courage - numbers['damage_count']):
+            raise ValueError('Invalid remaining_courage for outcome damage count')
+        score = score_outcome(level, outcome)
         eligible = controller == 'human' and self.is_unlocked(stage) and status != 'ABORTED'
         before_cosmetics = {f'{k}:{v}' for k in COSMETICS for v in self.unlocked_cosmetics(k)}
         # Build updates in a copy: a malformed record cannot partially pay rewards.
@@ -230,7 +336,7 @@ class Campaign:
             previous = record['fastest_complete_ticks']
             record['fastest_complete_ticks'] = numbers['ticks_used'] if previous is None else min(previous, numbers['ticks_used'])
         record['last'] = {**deepcopy(outcome), 'settlement_id': settlement_id, 'eligible_for_campaign': eligible}
-        result = {**empty, 'eligible': eligible, 'already_settled': False}
+        result = {**empty, 'eligible': eligible, 'already_settled': False, 'score': score}
         if eligible and status == 'COMPLETE':
             result['first_complete'] = stage not in updated['completed']
             if result['first_complete']:
@@ -241,6 +347,23 @@ class Campaign:
                 result['new_photo'] = True
                 if updated['favorite_photo'] is None:
                     updated['favorite_photo'] = stage
+            previous_star = updated['star_records'].get(stage_key)
+            previous_score = -1 if previous_star is None else previous_star['score']
+            if score['total'] > previous_score:
+                old_count = 0 if previous_star is None else previous_star['stars']
+                updated['star_records'][stage_key] = {
+                    'score': score['total'], 'stars': score['stars'],
+                    'warmth': score['warmth'], 'speed': score['speed'], 'courage': score['courage'],
+                }
+                result['new_stars'] = score['stars'] - old_count
+                result['best_star_improved'] = True
+            # First completion becomes the first representative memory.
+            # Later attempts are only applied after the player chooses replace.
+            if stage_key not in updated['friend_memories']:
+                updated['friend_memories'][stage_key] = {
+                    key: score[key] for key in ('warmth', 'speed', 'courage', 'total', 'stars')
+                }
+                result['new_friend_memory'] = True
             earned = []
             if numbers['banked'] >= 10:
                 earned.append(f'{stage_key}:rich')

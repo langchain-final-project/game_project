@@ -13,6 +13,7 @@ def fixture(*, ghosts=0, budget=80):
     """Small synthetic variants retain the authored schema and 14-point item set."""
     config = load_level(1)
     config['time_budget_ticks'] = budget
+    config['star_fast_ticks'] = max(0, budget - 1)
     config['quest']['position'] = [1,2]
     if ghosts:
         config['stage'] = 2 if ghosts == 1 else 7
