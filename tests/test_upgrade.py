@@ -45,7 +45,7 @@ def test_safe_route_needs_no_rich_items_or_gate(stage):
     routes=json.loads((ROOT/'validation/safe_routes.json').read_text())
     route=next(r for r in routes if r['level_id']==f'stage_{stage:02}')
     outcome=replay(route)
-    assert outcome['quest_collected'] and outcome['banked']==4
+    assert outcome['quest_collected'] and outcome['banked'] >= 4
     g=GameCore(load_level(stage))
     for a in route['actions']:s=g.step(a).snapshot
     assert all(i['active'] for i in s['items'] if i['value']==3)

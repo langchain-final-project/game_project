@@ -472,7 +472,10 @@ class AppIntegrationTests(unittest.TestCase):
         after = self.app.core.snapshot()
 
         # 기다리지 않아도 획득되고, 이동 진행 시간은 유지됩니다.
-        self.assertGreater(after['carried'], before['carried'])
+        # 온기는 이동하면서 이미 획득했습니다.
+        # E를 눌러도 온기가 추가로 수집되지는 않습니다.
+        self.assertEqual(before['carried'], 1)
+        self.assertEqual(after['carried'], before['carried'])
         self.assertEqual(after['tick'], before['tick'] + 1)
         self.assertAlmostEqual(
             self.app.accumulator,

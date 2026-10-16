@@ -94,7 +94,10 @@ def make_lower_bound(game, target, forbid_rich):
                 mask ^ bit,
                 max(0, needed - values[index]),
             )
-            best = min(best, travel + 1 + remaining)
+            # 필수 물건에는 E키 1틱이 필요합니다.
+            # 온기는 이동하면서 수집하므로 추가 행동 비용이 없습니다.
+            interaction = int(index == len(items))
+            best = min(best, travel + interaction + remaining)
 
         return best
 
@@ -162,6 +165,25 @@ def make_lower_bound(game, target, forbid_rich):
 #  return best
 
 def plan(game, target=4, width=18, allow_shortcuts=True, forbid_rich=False):
+    
+    def route_path(snapshot, goal):
+        if not forbid_rich:
+            return safe_path(snapshot, goal)
+
+        # 안전 경로는 큰 온기를 지나가는 것도 피해야 합니다.
+        # 탐색용 복사본에서만 해당 칸을 벽으로 취급합니다.
+        restricted = deepcopy(snapshot)
+        grid = [list(row) for row in restricted["grid"]]
+
+        for item in restricted["items"]:
+            if item["active"] and item["value"] == 3:
+                x, y = item["position"]
+                grid[y][x] = "#"
+
+        restricted["grid"] = ["".join(row) for row in grid]
+
+        return safe_path(restricted, goal)
+
     lower_bound = make_lower_bound(game, target, forbid_rich)
     beam = [(game, [])]
     best = None
@@ -174,7 +196,7 @@ def plan(game, target=4, width=18, allow_shortcuts=True, forbid_rich=False):
 
             # 필수 물건과 목표 온기를 모았다면 귀환 경로를 검사합니다.
             if s['quest']['collected'] and s['carried'] >= target:
-                path = safe_path(s, tuple(s['exit']))
+                path = route_path(s, tuple(s['exit']))
 
                 if path and (best is None or len(actions) + len(path) < len(best)):
                     checked = rollout(core, path)
@@ -206,7 +228,7 @@ def plan(game, target=4, width=18, allow_shortcuts=True, forbid_rich=False):
                 ]
 
             for ident, position in goals:
-                path = safe_path(s, tuple(position))
+                path = route_path(s, tuple(position))
 
                 if not path or len(actions) + len(path) > s['initial_ticks'] - 2:
                     continue
