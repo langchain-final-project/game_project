@@ -12,6 +12,7 @@ from .theme import (CREAM, INK, NIGHT, PAPER, GOLD, LAVENDER, SAGE,
                     text, wrapped, panel, button)
 
 from .illustration import shelter, cat as draw_cat, ghost, prop
+from .likes import draw_likes, draw_choice
 
 W, H = 1280, 720
 _COVER_CACHE: dict = {}
@@ -378,114 +379,24 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         _overlay(surface, (0, 560, W, 160), alpha=190)
         note = '열두 방의 불빛이 돌아왔어요. 언제든 다시 만나요.' if len(completed)==12 else '방의 소중한 물건과 온기 4점 이상을 가져오면, 연결등이 켜져요.'
         text(surface, assets, note, (40, 575), size=18)
-        ui.control('explore', (38, 613, 260, 52), '기억 속으로 다시 걷기' if len(completed)==12 else '다음 방으로 걷기', primary=True)
-        ui.control('album', (308, 613, 170, 52), '기억 앨범')
-        ui.control('appearance', (488, 613, 170, 52), '쉼터 꾸미기')
-        ui.control('friends', (668, 613, 185, 52), '저택의 친구들')
-        ui.control('ending_conditions', (863, 613, 185, 52), '엔딩 조건')
-        ui.control('settings', (1058, 613, 180, 52), '설정')
+        ui.control('explore', (38, 613, 300, 52), '기억 속으로 다시 걷기' if len(completed)==12 else '다음 방으로 걷기', primary=True)
+        ui.control('album', (352, 613, 215, 52), '기억 앨범')
+        ui.control('appearance', (581, 613, 215, 52), '쉼터 꾸미기')
+        # ui.control('rooms', (810, 613, 215, 52), '구역 살펴보기')
+        ui.control('likes', (810, 613, 215, 52), '유령 호감도')
+        ui.control('settings', (1039, 613, 199, 52), '설정')
+        _footer(surface, assets)
+    elif screen in ('likes', 'ending_conditions'):
+        _background(surface, assets, ctx=ctx, actors=False)
+        _header(surface, assets, '유령 호감도', '이 방에 남긴 기억이 친구들의 마음에 쌓여요.')
+        draw_likes(surface, assets, ctx, ui)
         _footer(surface, assets)
 
-    elif screen == 'friends':
-        _background(surface, assets, _home_art(completed), 150, ctx=ctx)
-        total_stars = int(ctx.get('total_stars', 0))
-        _header(surface, assets, '저택의 친구들',
-                '방마다 고른 한 번의 탐험이 세 친구와의 관계를 남겨요.', f'별 {total_stars} / 36')
-        scores = ctx.get('friendship', {})
-        maximums = ctx.get('friendship_maximums', {})
-        memories = data.get('friend_memories', {})
-        friends = (
-            ('보송', 'bosong', '무사히 돌아온 용기', '네가 다치지 않고 돌아와서 안심했어.', (221, 166, 181)),
-            ('이파리', 'ipari', '되찾아 온 온기', '네가 모은 온기로 더 많은 것을 돌볼 수 있어.', (151, 184, 146)),
-            ('도레', 'dore', '약속한 귀환의 박자', '종이 울리기 전, 함께할 준비를 했구나.', (166, 151, 207)),
-        )
-        for index, (name, key, metric, quote, color) in enumerate(friends):
-            rect = pygame.Rect(38 + index * 405, 154, 379, 386)
-            panel(surface, rect, fill=PAPER, border=GOLD, radius=18)
-            ghost(surface, (rect.centerx, 250), 105, time=elapsed + index * .8, resident=True, variant=index)
-            text(surface, assets, name, (rect.centerx, 322), size=28, color=INK, bold=True, anchor='center')
-            text(surface, assets, metric, (rect.centerx, 357), size=17, color=(139, 112, 111), anchor='center')
-            score = int(scores.get(key, 0)); maximum = max(1, int(maximums.get(key, 1)))
-            progress = max(0., min(1., score / maximum)); bar = pygame.Rect(rect.x + 34, 399, rect.w - 68, 20)
-            pygame.draw.rect(surface, (224, 214, 197), bar, border_radius=10)
-            pygame.draw.rect(surface, color, (bar.x, bar.y, round(bar.w * progress), bar.h), border_radius=10)
-            text(surface, assets, f'♥ {(score + 5) // 10}', (rect.centerx, 431), size=23, color=(184, 87, 104), bold=True, anchor='center')
-            wrapped(surface, assets, quote, pygame.Rect(rect.x + 35, 463, rect.w - 70, 46), size=16, color=(112, 95, 97), line_gap=5)
-        text(surface, assets, f'대표 기억 {len(memories)} / 12 · 재도전 뒤 이번 탐험을 기억으로 바꿀 수 있어요.',
-             (640, 577), size=19, color=CREAM, anchor='center')
-        ui.control('back', (38, 626, 190, 40), '쉼터로')
-        _footer(surface, assets)
-    elif screen == 'ending_conditions':
-        _background(
-            surface,
-            assets,
-            _home_art(completed),
-            140,
-            ctx=ctx,
-            actors=False,
-        )
-
-        _header(
-            surface,
-            assets,
-            '엔딩 조건',
-            '세 유령의 엔딩 조건을 확인하는 곳이에요.',
-        )
-
-        for index, name in enumerate(('A', 'B', 'C')):
-            card = pygame.Rect(
-                50 + index * 410,
-                140,
-                360,
-                455,
-            )
-
-            panel(
-                surface,
-                card,
-                fill=PAPER,
-                border=GOLD,
-                radius=22,
-            )
-
-            text(
-                surface,
-                assets,
-                f'{name} 유령',
-                (card.centerx, card.y + 30),
-                size=24,
-                color=INK,
-                bold=True,
-                anchor='midtop',
-            )
-
-            ghost(
-                surface,
-                (card.centerx, card.y + 255),
-                size=150,
-                time=elapsed,
-                resident=True,
-                variant=index,
-            )
-
-            text(
-                surface,
-                assets,
-                '조건 준비 중',
-                (card.centerx, card.y + 330),
-                size=20,
-                color=INK,
-                anchor='midtop',
-            )
-
-        ui.control(
-            'home',
-            (465, 612, 350, 50),
-            '쉼터로',
-            primary=True,
-        )
-
-        _footer(surface, assets)
+    elif screen == 'memory_choice':
+        _background(surface, assets, ctx=ctx, actors=False)
+        _header(surface, assets, '이 방에 남길 기억', '두 번의 발걸음 중 어떤 기억을 남길까요?')
+        draw_choice(surface, assets, ctx, ui)
+        _footer(surface, assets, '방향키 선택 · Enter 확인 · Esc 기존 기억 유지')
 
     elif screen == 'rooms':
         _background(surface, assets, _home_art(completed), 140,ctx=ctx)
@@ -598,20 +509,10 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
               else assets.icon('art/kkamang_character.png',(300,350)))
         surface.blit(char,(863,169+int(math.sin(elapsed*2)*4)))
         if success:
-            stage_key=f'stage_{stage:02d}'
-            current_memory={key: score.get(key) for key in ('warmth','speed','courage','total','stars')}
-            saved_memory=data.get('friend_memories',{}).get(stage_key)
-            choosing_memory=(saved_memory != current_memory and not reward.get('friend_memory_kept') and not reward.get('friend_memory_replaced'))
-            if choosing_memory:
-                _chip(surface,assets,'이번 탐험을 친구들의 대표 기억으로 바꿀까요?',(831,522,376,42),size=17)
-                ui.control('keep_friend',(831,572,181,38),'기존 기억 유지')
-                ui.control('remember_friend',(1026,572,181,38),'이번 기록으로 교체',primary=True)
-            else:
-                note=('이번 탐험이 첫 번째 대표 기억이 되었어요.' if reward.get('new_friend_memory') else
-                      '이번 탐험을 친구들의 대표 기억으로 남겼어요.' if reward.get('friend_memory_replaced') else
-                      '기존 대표 기억을 그대로 간직해요.' if reward.get('friend_memory_kept') else
-                      '이 탐험은 이미 친구들의 대표 기억이에요.')
-                _chip(surface,assets,note,(831,522,376,49),size=18)
+            note=('이번 기억을 대표 기억으로 남겼어요.' if reward.get('friend_memory_replaced') else
+                  '기존 대표 기억을 그대로 간직해요.' if reward.get('friend_memory_kept') else
+                  '첫 번째 대표 기억을 남겼어요.')
+            _chip(surface,assets,note,(831,522,376,49),size=18)
         else:
             _chip(surface,assets,'온기보다 네가 먼저야.',(831,522,376,49),size=22)
         ui.control('retry',(42,624,206,44),'같은 방 다시 걷기')
@@ -625,8 +526,11 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         _footer(surface,assets)
 
     elif screen == 'ending':
-        _background(surface,assets,'ending_scene.png',ctx=ctx)
-        _header(surface,assets,'떠날 수 있기에, 다시 오고 싶은 집','까망이와 잠 못 드는 저택 · 첫 번째 밤의 끝','기억 12 / 12')
+        content = ctx.get('ending_content') or {}
+        _background(surface,assets,content.get('art', 'ending_scene.png'),ctx=ctx)
+        if content.get('art') and (assets.root / 'art' / content['art']).is_file():
+            _art(surface, assets, content['art'], (0, 0, W, H))
+        _header(surface,assets,content.get('title', '함께 남긴 밤'),content.get('subtitle', '열두 방의 기억 · 평가 전 공통 이야기'),'기억 12 / 12')
         panel(surface,(38,488,1204,179),fill=PAPER,border=GOLD,radius=18)
         speaker,line=ctx.get('dialogue') or ('이야기','다음 비 오는 날, 까망이는 다시 저택을 찾아왔어요.')
         text(surface,assets,speaker,(64,508),size=21,color=(145,99,104),bold=True)

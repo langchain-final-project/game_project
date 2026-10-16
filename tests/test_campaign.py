@@ -101,7 +101,7 @@ def test_friendship_normalises_the_three_score_ranges_to_the_same_scale():
     c.data['friend_memories'] = {'stage_01': {
         'warmth': 36, 'speed': 20, 'courage': 15, 'total': 71, 'stars': 2,
     }}
-    assert c.friendship_scores() == {'bosong': 100, 'ipari': 60, 'dore': 80}
+    assert c.friendship_scores() == {'bosong': 60, 'ipari': 100, 'dore': 80}
     assert c.friendship_maximums() == {'bosong': 1200, 'ipari': 1200, 'dore': 1200}
 
 
