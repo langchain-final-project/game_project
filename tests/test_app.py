@@ -201,6 +201,8 @@ class AppIntegrationTests(unittest.TestCase):
         self.assertEqual(len(self.app.campaign.unlocked_cosmetics('frame')), 3)
         ending_count = len(self.app.dialogues)
         self.assertGreater(ending_count, 0)
+        self.assertTrue(self.app.ending_art_only)
+        self.click_control('ending_continue')
         for _ in range(ending_count):
             self.assertEqual(self.app.scene, 'ending')
             self.app.advance(30)  # Complete the current typewriter line.

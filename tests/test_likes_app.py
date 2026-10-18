@@ -168,3 +168,35 @@ def test_new_screens_read_only_and_controls_on_canvas(app, preview):
     assert len({c['id'] for c in app.controls}) == len(app.controls)
     for c in app.controls:
         assert pygame.Rect(0, 0, 1280, 720).contains(c['rect'])
+
+
+@pytest.mark.parametrize('ending', ['happy_all', 'sad', 'ghost_a', 'ghost_b', 'ghost_c', 'normal'])
+def test_ending_art_epilogue_keyboard_and_save_preservation(app, ending):
+    from kkamang.ending_content import ENDING_CONTENT
+    configure_preview(app, ending)
+    assert app.ending_id == ending
+    assert app.ending_art_only
+    assert (ROOT / 'assets' / 'art' / ENDING_CONTENT[ending]['art']).is_file()
+    before = deepcopy(app.campaign.data)
+    app.draw()
+    app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_RETURN, mod=0))
+    if ending == 'sad':
+        assert app.dialogues == []
+        assert app.scene == 'home'
+    else:
+        assert not app.ending_art_only
+        assert app.scene == 'ending'
+        assert app.dialogue_index == 0
+        assert app.dialogue_time == 0
+        for _ in app.dialogues:
+            app.dialogue_time = 99
+            app.draw()
+            app.dispatch('ending_continue')
+        assert app.scene == 'home'
+    assert app.campaign.data == before
+    assert SaveStore(app.store.path).load().data['likes']['seen_endings'] == [ending]
+    app.start_ending()
+    assert app.ending_art_only
+    assert app.campaign.data['likes']['seen_endings'] == [ending]
+    app.go_back()
+    assert app.scene == 'home'

@@ -33,6 +33,7 @@ class GameApp:
         # Owner-supplied callable(level, outcome, snapshot, mode) -> score_breakdown | None.
         self.score_provider = score_provider
         self.ending_id = None
+        self.ending_art_only = False
         self.accumulator = 0.
         self.ghost_elapsed = 0.3
         pygame.display.init()
@@ -200,6 +201,7 @@ class GameApp:
             return
         self.ending_id = likes.select_ending(self.campaign.data['likes'], self.campaign.data['completed'])
         content = ENDING_CONTENT.get(self.ending_id)
+        self.ending_art_only = content is not None
         self.dialogues = list(content['lines'] if content else ENDING)
         self.dialogue_index=0
         self.dialogue_time=0.
@@ -211,6 +213,13 @@ class GameApp:
             self.transition('ending')
 
     def next_dialogue(self):
+        if self.scene == 'ending' and self.ending_art_only:
+            if not self.dialogues:
+                self.finish_story()
+            else:
+                self.ending_art_only = False
+                self.dialogue_time = 0.
+            return
         if self.dialogue_index >= len(self.dialogues):
             self.finish_story()
             return
@@ -737,7 +746,8 @@ class GameApp:
             audio_available=self.audio.available,ending_lines=ENDING,
             likes_totals=likes.totals(self.campaign.data['likes']),
             memory_comparison=likes.comparison(self.campaign.data['likes']),
-            ending_id=self.ending_id, ending_content=ENDING_CONTENT.get(self.ending_id))
+            ending_id=self.ending_id, ending_content=ENDING_CONTENT.get(self.ending_id),
+            ending_art_only=self.ending_art_only)
 
     def draw(self):
         self.audio.configure(self.campaign.data['settings'])

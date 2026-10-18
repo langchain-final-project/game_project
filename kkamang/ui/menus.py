@@ -531,6 +531,13 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         if content.get('art') and (assets.root / 'art' / content['art']).is_file():
             _art(surface, assets, content['art'], (0, 0, W, H))
         _header(surface,assets,content.get('title', '함께 남긴 밤'),content.get('subtitle', '열두 방의 기억 · 평가 전 공통 이야기'),'기억 12 / 12')
+        if ctx.get('ending_art_only'):
+            has_epilogue = bool(content.get('lines'))
+            ui.control('ending_continue',(1000,630,240,50),
+                       '후일담 보기' if has_epilogue else '쉼터로 돌아가기',primary=True)
+            if has_epilogue:
+                ui.control('story_skip',(40,630,200,50),'쉼터로 돌아가기')
+            return ui.controls
         panel(surface,(38,488,1204,179),fill=PAPER,border=GOLD,radius=18)
         speaker,line=ctx.get('dialogue') or ('이야기','다음 비 오는 날, 까망이는 다시 저택을 찾아왔어요.')
         text(surface,assets,speaker,(64,508),size=21,color=(145,99,104),bold=True)
