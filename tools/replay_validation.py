@@ -17,6 +17,33 @@ sys.path.insert(0, str(ROOT))
 
 from kkamang.core import GameCore
 from kkamang.levels import load_level
+from kkamang.realtime import RealtimeGameCore, PHYSICS_HZ, REALTIME_OBSERVATION_VERSION
+
+
+def replay_game_record(record):
+    """Replay an exported desktop record, including turns between world ticks."""
+    config = load_level(record['stage_id'])
+    realtime = record.get('control_mode') == 'realtime'
+    if realtime:
+        if (record['replay_version'] != '2.0' or record['physics_hz'] != PHYSICS_HZ
+                or record['observation_version'] != REALTIME_OBSERVATION_VERSION):
+            raise ValueError('incompatible realtime replay contract')
+    elif record.get('control_mode', 'grid') != 'grid' or record['replay_version'] != '1.0':
+        raise ValueError('incompatible grid replay contract')
+    core_class = RealtimeGameCore if realtime else GameCore
+    game = core_class(config, mode=record['mode'], seed=record['seed'])
+    if game.config_hash != record['config_hash']:
+        raise ValueError('replay level configuration hash mismatch')
+    game.reset(seed=record['seed'], phase_overrides=record['initial_phase'])
+    for action in record['actions']:
+        game.step(action)
+    expected = record['outcome']
+    if expected and expected['status'] == 'ABORTED':
+        game.abort(expected['reason'])
+    snapshot = game.snapshot()
+    if snapshot['terminal'] != record['terminal'] or snapshot['outcome'] != expected:
+        raise AssertionError('replay terminal outcome mismatch')
+    return snapshot
 
 
 def phase_overrides(config, offsets):
@@ -50,12 +77,20 @@ def compare_trace(snapshot, reference):
                     'current_index': g['route_index'], 'countdown': g['countdown']}
                    for g in snapshot['ghosts']],
     }
+    if 'magnet' in reference:
+        actual['magnet'] = snapshot.get('magnet')
+    for name in ('invincibility', 'chaser'):
+        if name in reference:
+            actual[name] = snapshot.get(name)
     expected = {key: reference[key] for key in actual}
     if actual != expected:
         raise AssertionError(f'Trace mismatch at tick {snapshot["tick"]}: {actual!r} != {expected!r}')
 
 
 def replay(route):
+    contact_policy = route.get('contact_policy', 'no_contact')
+    if contact_policy not in ('no_contact', 'item_invincible'):
+        raise AssertionError(f'Unknown contact policy: {contact_policy}')
     config = load_level(route['level_id'])
     game = GameCore(config, mode='basic', seed=0)
     state = game.reset(seed=0, phase_overrides=phase_overrides(config, route['phase_offsets']))
@@ -68,6 +103,10 @@ def replay(route):
     for tick, action in enumerate(route['actions'], 1):
         result = game.step(action)
         contact_events += sum(event['type'] == 'contact' for event in result.events)
+        for event in result.events:
+            if event['type'] == 'contact' and not (
+                    contact_policy == 'item_invincible' and event.get('item_invincible', False)):
+                raise AssertionError(f'Forbidden contact at tick {tick}')
         if result.snapshot['courage'] != 3:
             raise AssertionError(f'Unexpected damage at tick {tick}')
         if result.terminated != (tick == route['ticks']):
@@ -82,7 +121,7 @@ def replay(route):
         raise AssertionError(f'Banked value mismatch: {outcome}')
     if outcome['ticks_used'] != route['ticks'] or outcome['damage_count'] != 0:
         raise AssertionError(f'Tick/damage mismatch: {outcome}')
-    if contact_events:
+    if contact_events and contact_policy == 'no_contact':
         raise AssertionError(f'No-contact reference had {contact_events} contacts')
     opened = [s['opened'] for s in state['shortcuts']]
     if route['constraint'] == 'all_shortcuts_closed' and any(opened):
@@ -146,8 +185,15 @@ def validate(representative=False):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--representative', action='store_true', help='Only routes with per-tick regression traces')
+    parser.add_argument('--record', type=Path, help='Replay an exported human JSON record instead of grid witnesses')
     parser.add_argument('--output', type=Path, default=ROOT / 'validation' / 'runtime_replay_results.json')
     args = parser.parse_args()
+    if args.record:
+        record = json.loads(args.record.read_text(encoding='utf-8'))
+        snapshot = replay_game_record(record)
+        print(f"Exported {record.get('control_mode', 'grid')} replay passed: "
+              f"{len(record['actions'])} actions, {snapshot['tick']} world ticks")
+        return 0
     report = validate(args.representative)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')

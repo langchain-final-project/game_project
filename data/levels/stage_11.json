@@ -164,6 +164,10 @@
       "design_note": "정적 비교: (14, 4)→(8, 3) 구간에서 조작 1틱 포함 3틱 단축"
     }
   ],
+  "invincibility": {
+    "position": [14, 6],
+    "duration_ticks": 10
+  },
   "target_value": 4,
   "total_item_value": 14,
   "initial_courage": 3,

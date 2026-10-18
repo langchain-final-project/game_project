@@ -16,6 +16,8 @@ import re
 WIDTH = 16
 HEIGHT = 9
 MAX_TICKS = 512
+MAGNET_DURATION_TICKS = 13
+INVINCIBILITY_DURATION_TICKS = 10
 RULES_VERSION = "cat_mansion_0_2"
 
 
@@ -31,7 +33,7 @@ def _integer(value: object) -> bool:
 def validate_level(config: dict) -> None:
     """Reject ambiguous, malformed, or unsupported level configurations.
 
-    IDs and slot order are stable because the 610-value observation contract
+    IDs and slot order are stable because the observation contract
     relies on them. Modified maps may use fewer patrols or shortcuts; their
     number is not implicitly inferred from the stage number.
     """
@@ -229,6 +231,28 @@ def validate_level(config: dict) -> None:
             spawn in closed_reachable,
             "chaser spawn must be reachable with shortcuts closed",
         )
+
+    # 자석은 온기 10개와 분리된, 스테이지당 하나의 선택 아이템입니다.
+    powerup_positions = set()
+    for name, duration in (("magnet", MAGNET_DURATION_TICKS),
+                           ("invincibility", INVINCIBILITY_DURATION_TICKS)):
+        if name not in config:
+            continue
+        item = config[name]
+        _require(isinstance(item, dict), f"{name} must be an object")
+        _require(set(item) == {"position", "duration_ticks"},
+                 f"{name} requires exactly position and duration_ticks")
+        _require(_integer(item["duration_ticks"]) and item["duration_ticks"] == duration,
+                 f"{name} duration_ticks must be {duration}")
+        point = position(item["position"], name)
+        blocked_objects = occupied | gate_positions | {quest_point}
+        blocked_objects.update(tuple(p) for ghost in ghosts for p in ghost["route"])
+        if "chaser" in config:
+            blocked_objects.add(tuple(config["chaser"]["spawn_position"]))
+        _require(point not in blocked_objects | powerup_positions,
+                 f"{name} overlaps an object or ghost route")
+        _require(point in closed_reachable, f"{name} must be reachable with shortcuts closed")
+        powerup_positions.add(point)
 
 def _level_root(root: Path | None) -> Path:
     if root is not None:

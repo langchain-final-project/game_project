@@ -121,6 +121,10 @@
     }
   ],
   "shortcuts": [],
+  "magnet": {
+    "position": [3, 4],
+    "duration_ticks": 13
+  },
   "target_value": 4,
   "total_item_value": 14,
   "initial_courage": 3,

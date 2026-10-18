@@ -145,6 +145,10 @@
       "design_note": "정적 비교: (12, 2)→(1, 1) 구간에서 조작 1틱 포함 9틱 단축"
     }
   ],
+  "magnet": {
+    "position": [8, 4],
+    "duration_ticks": 13
+  },
   "target_value": 4,
   "total_item_value": 14,
   "initial_courage": 3,

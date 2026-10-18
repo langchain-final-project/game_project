@@ -16,6 +16,8 @@ FIELD_IMAGES = {
 
     'warmth_1': None,           # 1점 온기
     'warmth_3': None,           # 3점 온기
+    'magnet': 'icons/items/magnet_item.png',
+    'invincibility': 'icons/items/invincibility_item.png',
 
     'return_base': None,        # 귀환 지점의 바닥 표시
     'gate_closed': None,        # 닫힌 샛문
@@ -92,7 +94,7 @@ def _draw_rug(surface, assets, rr):
         )
 
 
-def _draw_warmth(surface, assets, center, tile, value):
+def _draw_warmth(surface, assets, center, tile, value, show_value=True):
     """온기의 그림과 빛 효과, +3 표시를 그립니다."""
 
     cx, cy = center
@@ -129,7 +131,7 @@ def _draw_warmth(surface, assets, center, tile, value):
         )
 
     # 점수 안내는 이미지와 별도로 표시합니다.
-    if value == 3:
+    if value == 3 and show_value:
         text(
             surface,
             assets,
@@ -153,6 +155,7 @@ def draw_field(
     facing='down',
     mood='idle',
     player_interpolation=None,
+    magnet_flights=(),
 ):
     # 게임 상태와 탐사 화면 영역을 준비
     s = snapshot
@@ -359,6 +362,18 @@ def draw_field(
     # veil.fill((28, 25, 42, 20))
     # surface.blit(veil, r)
 
+    # 밟으면 바로 사용하는 자석입니다. 온기/물건과는 별도로 그립니다.
+    magnet = s.get('magnet')
+    invincibility = s.get('invincibility')
+    for name, item in (('magnet', magnet), ('invincibility', invincibility)):
+        if item is None or item['collected']:
+            continue
+        rr = box(item['position'])
+        icon = pygame.Rect(0, 0, round(tile * .85), round(tile * .85))
+        icon.center = (rr.centerx, round(rr.centery + math.sin(elapsed * 3) * 2))
+        glow(surface, icon.center, round(tile * .5))
+        _draw_png(surface, assets, name, icon)
+
     # ── 수집할 온기 ──
     # 유령 반복문 밖에서 온기를 그립니다.
     for item in s['items']:
@@ -483,7 +498,13 @@ def draw_field(
         else player_interpolation
     )
 
-    if previous:
+    motion = s.get('motion')
+    if motion is not None:
+        # The simulation already supplies a continuous body center. Interpolating
+        # it again would add input delay and can cut across a turning corner.
+        pos = list(motion['position'])
+        moving = motion['moving']
+    elif previous:
         old = previous['position']
         moving = old != pos and player_alpha < 1.
 
@@ -494,13 +515,20 @@ def draw_field(
 
     pt = foot(pos)
 
-    # 보호 중이면 놀란 표정, 이동 중이며 기본 상태이면 걷기,
-    # 그 외에는 전달받은 mood를 사용합니다.
+    if magnet is not None and magnet['remaining_ticks'] > 0:
+        # 사각형 범위는 고양이와 함께 이동하며 벽 위에도 표시됩니다.
+        extent = math.ceil(tile * 3)
+        aura = pygame.Surface((extent, extent), pygame.SRCALPHA)
+        pygame.draw.rect(aura, (225, 187, 112, 14), aura.get_rect(), border_radius=10)
+        pygame.draw.rect(aura, (250, 212, 143, 110), aura.get_rect(), 2, border_radius=10)
+        surface.blit(aura, aura.get_rect(center=box(pos).center))
+
+    # 표정과 발걸음은 독립적입니다. 피격 중에도 이동하면 걷습니다.
     cm = (
         'surprised'
         if s['protection']
         else 'walk'
-        if moving # and mood == 'idle'
+        if moving
         else mood
     )
 
@@ -515,6 +543,9 @@ def draw_field(
                 elapsed,
                 cm,
                 cosmetics.get('scarf', 'default'),
+                walking=moving,
+                walk_progress=(motion['distance'] * .5 if motion is not None
+                               else ((s['tick'] - 1) % 2 + player_alpha) * .5),
             ),
         )
     )
@@ -525,8 +556,8 @@ def draw_field(
         draw()
 
     # 피해를 받은 뒤 보호 상태임을 나타내는 표시입니다.
-    if s['protection']:
-        protection_rect = box(s['position']).inflate(-4, -5)
+    if s['protection'] or (invincibility and invincibility['remaining_ticks'] > 0):
+        protection_rect = box(pos).inflate(-4, -5)
 
         if not _draw_png(
             surface, assets, 'protection', protection_rect
@@ -537,6 +568,22 @@ def draw_field(
                 protection_rect,
                 2,
             )
+
+    # 수집 결과는 이미 코어에 반영됐습니다. 그림만 현재 고양이를 따라갑니다.
+    target = box(pos).center
+    for flight in magnet_flights:
+        progress = min(1., max(0., flight['age'] / flight['duration']))
+        if progress >= 1.:
+            continue
+        origin = box(flight['origin']).center
+        eased = progress * progress
+        center = (
+            origin[0] + (target[0] - origin[0]) * eased,
+            origin[1] + (target[1] - origin[1]) * eased
+            - math.sin(progress * math.pi) * tile * .12,
+        )
+        _draw_warmth(surface, assets, center, tile * (1. - .65 * progress),
+                     flight['value'], show_value=False)
 
     # ── 현재 위치에서 가능한 상호작용 안내 ──
     label = None
@@ -607,6 +654,7 @@ def draw_game(
     facing='down',
     mood='idle',
     player_interpolation=None,
+    magnet_flights=(),
 ):
     # 게임 전체 화면의 배경을 채웁니다.
     s = snapshot
@@ -725,6 +773,7 @@ def draw_game(
         facing,
         mood,
         player_interpolation=player_interpolation,
+        magnet_flights=magnet_flights,
     )
 
     # ── 오른쪽: 필수 물건과 복원 설명 ──
@@ -798,6 +847,21 @@ def draw_game(
         INK,
         5,
     )
+    magnet = s.get('magnet')
+    if magnet is not None:
+        status = (f'자석 {magnet["remaining_ticks"]}틱 · 범위 3×3'
+                  if magnet['remaining_ticks'] > 0
+                  else '자석: 사용 완료' if magnet['collected']
+                  else '자석: 밟으면 자동 사용')
+        text(surface, assets, status, (1060, 609), 13, INK, True)
+    invincibility = s.get('invincibility')
+    if invincibility is not None:
+        status = (f'무적 {invincibility["remaining_ticks"]}틱'
+                  if invincibility['remaining_ticks'] > 0
+                  else '무적: 사용 완료' if invincibility['collected']
+                  else '무적: 밟으면 자동 사용')
+        text(surface, assets, status, (1060, 632 if magnet else 609), 13, INK, True)
+
     text(
         surface,
         assets,

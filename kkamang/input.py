@@ -4,7 +4,6 @@ import pygame
 KEY_ACTION = {pygame.K_UP: 0, pygame.K_w: 0, pygame.K_DOWN: 1, pygame.K_s: 1,
               pygame.K_LEFT: 2, pygame.K_a: 2, pygame.K_RIGHT: 3, pygame.K_d: 3,
               pygame.K_e: 4, pygame.K_SPACE: 5}
-PRIORITY = {4: 6, 0: 5, 3: 4, 1: 3, 2: 2, 5: 1}
 
 class InputAdapter:
     def __init__(self):
@@ -14,6 +13,7 @@ class InputAdapter:
         self.held = {}
         self.pending = []
         self.serial = 0
+        self.current_direction = None
 
     def handle(self, event):
         if event.type not in (pygame.KEYDOWN, pygame.KEYUP) or event.key not in KEY_ACTION:
@@ -24,8 +24,8 @@ class InputAdapter:
         if event.key in self.held:  # OS key repeat must not repeat interactions.
             return
         self.serial += 1
-        stamp = getattr(event, 'timestamp', self.serial)
-        value = (stamp, PRIORITY[KEY_ACTION[event.key]], KEY_ACTION[event.key])
+        # Event delivery order is reliable even when timestamps tie or are absent.
+        value = (self.serial, 0, KEY_ACTION[event.key])
         self.held[event.key] = value
         # Retain short taps until the next logic tick; held directions continue.
         self.pending.append(value)
@@ -45,7 +45,7 @@ class InputAdapter:
 
         return pressed
 
-    def consume_movement(self) -> int:
+    def consume_movement(self, can_move=None) -> int:
         """E와 별도로 이동·대기 행동을 가져옵니다."""
         candidates = [
             value
@@ -66,7 +66,24 @@ class InputAdapter:
             if value[2] == 4
         ]
 
-        return max(candidates)[2] if candidates else 5
+        requested = max(candidates)[2] if candidates else 5
+        if requested == 5:
+            self.current_direction = None
+            return requested
+
+        if can_move is None or can_move(requested):
+            self.current_direction = requested
+            return requested
+
+        # A held turn remains requested until an opening. Keep moving straight
+        # only while that direction is still held and traversable. A released
+        # short tap is consumed once above, so it cannot trigger a late turn.
+        current = self.current_direction
+        if (current is not None
+                and any(value[2] == current for value in self.held.values())
+                and can_move(current)):
+            return current
+        return requested
 
     def consume(self) -> int:
         pending = self.pending

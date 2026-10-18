@@ -9,11 +9,12 @@ INK=(43,39,57); FUR=(53,48,66); LIGHT=(77,69,88); CREAM=(248,232,202)
 SAGE=(151,181,157); GOLD=(240,194,111); ROSE=(218,151,155)
 
 @lru_cache(maxsize=2048)
-def cat_frame(size=100, direction='down', phase=0, mood='idle', scarf='default'):
+def cat_frame(size=100, direction='down', phase=0, mood='idle', scarf='default', *, walking=None):
     s=pygame.Surface((160,180),pygame.SRCALPHA)
     shadow=pygame.Surface((160,180),pygame.SRCALPHA)
     pygame.draw.ellipse(shadow,(20,18,30,45),(24,153,111,16));s.blit(shadow,(0,0))
-    walk=math.sin(phase*math.pi/4)*9 if mood=='walk' else 0
+    is_walking = mood == 'walk' if walking is None else walking
+    walk=math.sin(phase*math.pi/4)*9 if is_walking else 0
     bob=abs(walk)*.28
     tail=[(107,128),(133,126),(140,106+math.sin(phase*math.pi/4)*6),(131,90)]
     pygame.draw.lines(s,INK,False,tail,19);pygame.draw.lines(s,LIGHT,False,tail,11)
@@ -61,9 +62,15 @@ def cat_frame(size=100, direction='down', phase=0, mood='idle', scarf='default')
     pygame.draw.line(s,(205,220,191),(56,111-bob),(98,113-bob),2)
     return pygame.transform.smoothscale(s,(int(size),int(size*180/160)))
 
-def cat(surface, center, size=80, direction='down', time=0., mood='idle', scarf='default'):
-    phase=int(time*(12 if mood=='walk' else 3))%8
-    im=cat_frame(int(size),direction,phase,mood,scarf)
+def cat(surface, center, size=80, direction='down', time=0., mood='idle', scarf='default',
+        *, walking=None, walk_progress=None):
+    is_walking = mood == 'walk' if walking is None else walking
+    if is_walking and walk_progress is not None:
+        # 32 cached poses per cycle, driven by distance rather than wall time.
+        phase = (int(walk_progress * 32) % 32) / 4
+    else:
+        phase=int(time*(12 if is_walking else 3))%8
+    im=cat_frame(int(size),direction,phase,mood,scarf,walking=walking)
     surface.blit(im,im.get_rect(midbottom=(round(center[0]),round(center[1]))))
 
 def ghost(surface, center, size=50, time=0., resident=False, variant=0):
