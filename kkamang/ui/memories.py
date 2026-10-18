@@ -7,12 +7,14 @@ from functools import lru_cache
 import math
 import pygame
 
-from .illustration import (cat, cat_frame, resident_cat, ghost, prop, glow,
-                           shelter, INK, CREAM, GOLD, SAGE, ROSE)
+from .illustration import (cat, _resident_cat_frame, resident_cat, ghost, prop, glow,
+                           shelter, INK, CREAM, GOLD)
+from ..paths import ASSET_DIR
 
 SIZE = (1280, 720)
 FOG = (67, 62, 78)
 RESIDENT_COLORS = ((245,239,226), (195,155,111), (161,153,184))
+MEMORY_ART_DIR = ASSET_DIR / 'art' / 'memories'
 
 
 def _memory_id(value):
@@ -20,122 +22,6 @@ def _memory_id(value):
     if value not in (1, 2, 3):
         raise ValueError('memory_id must be 1, 2 or 3')
     return value
-
-
-def _chair(s):
-    d=pygame.draw
-    for x in (706,823):d.line(s,(81,60,67),(x,463),(x-5,548),12)
-    d.rect(s,(93,67,76),(688,260,161,236),border_radius=52)
-    d.rect(s,(164,125,127),(701,271,135,203),border_radius=44)
-    d.rect(s,(195,153,143),(705,441,130,37),border_radius=17)
-    for x in (687,825):d.rect(s,(111,78,80),(x,374,26,104),border_radius=12)
-    for x in (735,800):d.circle(s,(133,96,107),(x,325),4)
-
-
-def _hearth(s, night=False):
-    d=pygame.draw
-    stone=(129,107,115) if night else (173,135,119)
-    d.rect(s,stone,(363,110,252,310),border_radius=15)
-    d.rect(s,(199,157,128),(348,102,282,26),border_radius=6)
-    d.rect(s,(213,170,133),(345,401,291,27),border_radius=6)
-    d.rect(s,(53,43,55),(400,189,178,214),border_radius=77)
-    for x,y in ((378,153),(582,153),(379,282),(582,282)):
-        d.line(s,(219,179,139),(x-8,y),(x+8,y),2)
-        d.line(s,(219,179,139),(x,y-8),(x,y+8),2)
-    d.circle(s,(229,188,124),(489,156),17,2)
-    d.polygon(s,(229,188,124),[(489,139),(504,164),(474,164)],2)
-    if night:
-        d.lines(s,(82,65,85),False,[(482,136),(491,151),(484,158),(500,174)],4)
-        d.lines(s,(233,181,118),False,[(471,156),(478,149),(482,156)],2)
-        d.ellipse(s,(177,111,91),(434,370,107,19))
-        d.polygon(s,(228,155,91),[(468,377),(481,346),(490,366),(507,350),(516,377)])
-    else:
-        d.polygon(s,(225,141,80),[(420,390),(439,304),(467,354),(495,278),(552,390)])
-        d.polygon(s,(250,203,116),[(444,389),(462,342),(481,369),(495,322),(526,389)])
-        glow(s,(486,348),133)
-
-
-def _room(memory_id):
-    """The chair, hearth, window and rug have identical positions in all three."""
-    night=memory_id==3;afternoon=memory_id==2;d=pygame.draw
-    s=pygame.Surface(SIZE)
-    s.fill((66,66,86) if night else (146,119,128) if afternoon else (98,86,110))
-    for x in range(30,1280,72):
-        d.line(s,(90,82,102) if night else (172,143,144),(x,0),(x,370),2)
-        for y in range(32,370,84):
-            d.circle(s,(128,111,128),(x+32,y),2)
-    d.rect(s,(85,70,78) if night else (139,104,91),(0,363,1280,357))
-    for y in range(370,720,44):
-        d.line(s,(111,88,91) if night else (166,126,103),(0,y),(1280,y),2)
-        for x in range((y//44%2)*90,1280,180):d.line(s,(104,82,87),(x,y),(x,y+44),1)
-    d.rect(s,(185,139,111),(0,352,1280,15))
-    # Entrance, always in the same house and at the same angle.
-    d.rect(s,(69,57,74),(44,65,177,325),border_radius=71)
-    d.rect(s,(129,99,95),(54,75,157,303),border_radius=64)
-    if memory_id in (1,3):
-        d.polygon(s,(43,54,74),[(66,124),(150,93),(150,366),(66,366)])
-        d.polygon(s,(160,120,91),[(150,93),(204,123),(204,366),(150,366)])
-        prop(s,'handle',(156,232,40,65))
-    else:prop(s,'handle',(157,244,40,65))
-    # Framed window and the matching curtain tie.
-    d.rect(s,(185,142,112),(989,47,249,274),border_radius=70)
-    sky=(43,53,83) if night else (183,207,201) if afternoon else (69,80,109)
-    d.rect(s,sky,(1002,60,223,248),border_radius=59)
-    if afternoon:
-        d.circle(s,(250,225,169),(1161,116),32)
-        d.ellipse(s,(225,231,209),(1027,116,102,17))
-    else:
-        for i in range(28 if night else 14):
-            x=1015+(i*47)%190;y=83+(i*59)%200
-            d.line(s,(138,157,186),(x,y),(x-9,y+21),2)
-        if night:d.lines(s,(231,224,193),False,[(1139,77),(1115,123),(1145,114),(1126,160)],4)
-    d.line(s,(185,142,112),(1114,60),(1114,309),9)
-    d.line(s,(185,142,112),(1003,184),(1225,184),8)
-    for x in (970,1213):
-        d.polygon(s,(135,112,142),[(x,56),(x+37,56),(x+23,233),(x+39,330),(x-10,330),(x+7,233)])
-        d.line(s,GOLD,(x+4,231),(x+25,235),5)
-    _hearth(s,night);_chair(s)
-    d.ellipse(s,(55,45,60),(226,482,810,188))
-    d.ellipse(s,(133,112,142),(238,475,787,183))
-    d.ellipse(s,(205,169,159),(252,488,756,156),3)
-    return s
-
-
-def _grandmother(s, center, piano=False):
-    """A small, open-handed seated pose; never a dialogue portrait."""
-    x,y=center;d=pygame.draw
-    d.polygon(s,(98,119,124),[(x-37,y-119),(x+31,y-119),(x+55,y),(x-63,y)])
-    d.polygon(s,(186,154,139),[(x-29,y-116),(x+30,y-116),(x+39,y-41),(x-34,y-41)])
-    d.ellipse(s,(230,220,197),(x-33,y-188,66,72))
-    for dx,dy,r in ((-22,-162,18),(0,-179,26),(23,-160,18)):
-        d.circle(s,(208,204,202),(x+dx,y+dy),r)
-    d.ellipse(s,(225,181,151),(x-24,y-164,48,43))
-    for dx in (-10,10):d.arc(s,(106,81,83),(x+dx-5,y-149,10,7),0,math.pi,2)
-    d.arc(s,(150,103,99),(x-6,y-139,14,10),math.pi,math.pi*2,2)
-    # Her hand rests beside her, leaving the kitten room to approach.
-    hand=(x+75,y-67) if piano else (x-79,y-43)
-    d.line(s,(130,143,140),(x+22 if piano else x-26,y-105),hand,17)
-    d.ellipse(s,(229,186,153),(hand[0]-13,hand[1]-5,29,13))
-    for dx in (-28,15):d.ellipse(s,(75,63,73),(x+dx,y-3,31,15))
-
-
-def _piano(s):
-    d=pygame.draw
-    d.rect(s,(69,55,69),(866,309,344,187),border_radius=11)
-    d.rect(s,(108,77,84),(877,318,322,156),border_radius=7)
-    d.rect(s,(235,219,184),(885,418,303,43),border_radius=3)
-    for x in range(887,1185,19):d.line(s,(109,88,95),(x,419),(x,460),2)
-    for i,x in enumerate(range(895,1172,19)):
-        if i%7 not in (2,6):d.rect(s,(58,49,64),(x,419,10,24))
-    for x in (882,1175):d.rect(s,(69,55,69),(x,480,15,82),border_radius=5)
-    prop(s,'music',(1015,309,98,87))
-
-
-def _paw(s,x,y,color=(104,95,104),scale=1.):
-    d=pygame.draw
-    d.ellipse(s,color,(int(x-6*scale),int(y-3*scale),int(14*scale),int(11*scale)))
-    for dx,dy in ((-7,-7),(0,-11),(7,-8)):
-        d.circle(s,color,(int(x+dx*scale),int(y+dy*scale)),max(1,int(3*scale)))
 
 
 def _blanket(s,rect):
@@ -148,57 +34,27 @@ def _blanket(s,rect):
 
 @lru_cache(maxsize=3)
 def _original(memory_id):
-    memory_id=_memory_id(memory_id);s=_room(memory_id);d=pygame.draw
-    if memory_id==1:
-        for i in range(5):_paw(s,172+i*35,397+i*30,(90,87,103),.85)
-        _grandmother(s,(770,483))
-        prop(s,'towel',(279,531,196,126))
-        glow(s,(373,601),93)
-        resident_cat(s,(367,569),115,0.,0)
-        prop(s,'book',(524,420,87,84))
-        d.lines(s,SAGE,False,[(577,462),(591,449),(601,453)],2)
-        # A low garden sign repeats the guidebook's route motif.
-        d.line(s,(155,114,94),(251,349),(251,404),6)
-        d.polygon(s,SAGE,[(224,333),(264,333),(278,345),(264,357),(224,357)])
-    elif memory_id==2:
-        prop(s,'scarf_hook',(265,258,94,110))
-        resident_cat(s,(310,566),142,0.,0)
-        _piano(s);_grandmother(s,(829,477),True)
-        prop(s,'plant',(1140,221,96,105));prop(s,'seeds',(1210,307,62,61))
-        resident_cat(s,(1086,315),125,0.,1)
-        resident_cat(s,(1050,589),143,0.,2)
-        prop(s,'table',(537,523,274,142))
-        prop(s,'saucer',(602,527,105,52));prop(s,'cup',(623,494,68,68))
-        sun=pygame.Surface(SIZE,pygame.SRCALPHA)
-        d.polygon(sun,(255,232,174,21),[(1006,308),(1221,308),(1009,695),(719,695)])
-        s.blit(sun,(0,0))
-    else:
-        # The original is the storm, even after the current-day true ending.
-        d.polygon(s,(187,163,176),[(718,314),(748,320),(744,439),(717,447),(703,398)])
-        for x in (467,499):d.line(s,(211,183,151),(x,69),(x,89),3)
-        d.circle(s,(166,129,111),(489,69),34);d.circle(s,(215,196,172),(489,69),27)
-        d.line(s,INK,(489,69),(489,48),3);d.line(s,INK,(489,69),(473,78),3)
-        d.line(s,(126,105,113),(302,315),(302,395),6)
-        d.line(s,(126,105,113),(281,397),(324,397),6)
-        prop(s,'music_final',(259,255,87,88))
-        for variant,(x,y) in enumerate(((320,593),(463,602),(606,593))):
-            resident_cat(s,(x,y),154,0.,variant)
-            # The spectral edge follows this body's own shoulder and tail.
-            # There is no second ghost character beside the living cat.
-            sheen=pygame.Surface(SIZE,pygame.SRCALPHA)
-            d.polygon(sheen,(195,215,231,92),[(x+8,y-143),(x+52,y-117),(x+61,y-48),(x+44,y-34),(x+29,y-43),(x+12,y-31)])
-            d.lines(sheen,(219,225,238,220),False,[(x+29,y-150),(x+52,y-128),(x+61,y-48),(x+44,y-34),(x+29,y-43)],3)
-            s.blit(sheen,(0,0))
-            for j in range(3):
-                px=x+48+j*11;py=y-170-j*23
-                d.lines(s,(238,177,100),False,[(x+35,y-98),(px-7,py+20),(px,py)],2)
-                d.circle(s,GOLD,(px,py),7 if j==1 else 5)
-                d.circle(s,CREAM,(px-1,py-2),2)
-        _blanket(s,(236,535,481,118))
-        for x in (222,717):d.arc(s,(184,158,186),(x-21,583,43,41),-.6,2.8,9)
-    # A paper-book border belongs to the original, rather than a changing state.
-    d.rect(s,(213,184,145),(13,13,1254,694),3,border_radius=13)
-    return s
+    """Load the one immutable raster original for this memory, never a fallback."""
+    memory_id=_memory_id(memory_id)
+    path=MEMORY_ART_DIR / f'memory_{memory_id:02d}.png'
+    if not path.is_file():
+        raise FileNotFoundError(f'필수 기억 일러스트가 없습니다: {path}')
+    try:
+        image=pygame.image.load(str(path))
+    except (OSError,pygame.error) as exc:
+        raise RuntimeError(f'기억 일러스트를 읽을 수 없습니다: {path}') from exc
+    width,height=image.get_size()
+    # Image-generation exports can round the 16:9 height by one source pixel.
+    # Keep the source PNG intact and normalise only this runtime surface.
+    if abs(width*9-height*16)>16:
+        raise ValueError(f'기억 일러스트는 16:9 비율이어야 합니다: {path} ({width}×{height})')
+    if pygame.mask.from_surface(image,threshold=254).count()!=width*height:
+        raise ValueError(f'기억 일러스트는 완전히 불투명해야 합니다: {path}')
+    if image.get_size()!=SIZE:
+        image=pygame.transform.smoothscale(image,SIZE)
+    # An RGB backing keeps the immutable original independent of video mode.
+    original=pygame.Surface(SIZE);original.blit(image,(0,0))
+    return original
 
 
 def memory_original(memory_id):
@@ -211,28 +67,49 @@ def _labels(memory_id):
     memory_id=_memory_id(memory_id);s=pygame.Surface(SIZE);s.fill((4,0,0));d=pygame.draw
     def poly(label,points):d.polygon(s,(label,0,0),points)
     if memory_id==1:
-        poly(2,[(0,0),(283,0),(310,195),(272,330),(315,425),(302,603),(177,672),(0,720)])
-        poly(3,[(532,235),(862,222),(913,391),(870,560),(612,598),(526,481)])
-        poly(3,[(306,539),(433,536),(448,583),(347,602),(300,577)])
-        poly(1,[(259,578),(473,574),(526,629),(841,673),(1280,657),(1280,720),(0,720),(0,680),(230,640)])
-        # All of the young cat except the little front paws waits for region 4.
-        poly(4,[(285,407),(440,403),(451,529),(428,548),(305,546),(277,486)])
+        # Towel and its warm patch; the kitten is explicitly removed below.
+        poly(1,[(389,540),(470,504),(560,495),(700,495),(778,503),(862,525),
+                (934,595),(988,642),(972,720),(295,720),(331,612)])
+        # The open entrance and the wet path continue across the foreground.
+        poly(2,[(0,0),(250,0),(255,330),(245,393),(359,480),(440,557),(535,636),(625,720),(0,720)])
+        # Chair, with the grandmother's body and face deferred to the last part.
+        poly(3,[(844,180),(1051,176),(1170,184),(1230,279),(1235,464),
+                (1194,561),(951,567),(856,517),(830,394)])
+        poly(4,[(888,94),(1050,85),(1136,161),(1133,292),(1118,351),(1079,386),
+                (1110,528),(1020,553),(892,538),(855,477),(854,410),(882,338),
+                (908,272),(901,200)])
+        # Her open hand, and only the kitten's two little front paws.
+        poly(3,[(877,355),(903,367),(893,402),(884,435),(869,448),(855,431),(858,399)])
+        poly(4,[(525,402),(742,402),(746,547),(525,547)])
+        poly(3,[(610,515),(631,512),(649,518),(674,515),(700,519),(700,540),(610,540)])
     elif memory_id==2:
-        poly(1,[(0,0),(394,0),(426,267),(399,411),(453,584),(395,720),(0,720)])
-        poly(2,[(952,0),(1280,0),(1280,471),(1147,494),(1007,455),(969,316),(938,204)])
-        poly(3,[(787,263),(928,278),(975,414),(1099,476),(1280,477),(1280,720),(852,720),(770,578),(804,446)])
+        poly(1,[(0,0),(201,0),(221,158),(215,340),(289,402),(314,518),(344,596),(298,720),(0,720)])
+        poly(2,[(209,0),(607,0),(615,163),(610,290),(584,381),(486,408),
+                (371,404),(285,371),(227,316),(209,153)])
+        poly(3,[(924,0),(1280,0),(1280,720),(937,720),(916,621),(905,503),
+                (930,408),(934,293),(942,181)])
     else:
-        poly(1,[(692,0),(1280,0),(1280,720),(922,720),(857,549),(696,524),(671,329),(713,200)])
-        poly(2,[(203,526),(348,520),(419,531),(535,522),(661,528),(748,567),(770,720),(119,720),(173,631)])
-        poly(3,[(0,0),(692,0),(711,201),(669,327),(710,487),(633,539),(447,515),(208,525),(0,643)])
-        # Faces, dissolving contours and every orange warmth particle are one
-        # last-stage island. Even their soft silhouettes never appear early.
-        poly(4,[(218,357),(279,332),(359,347),(429,327),(509,340),(581,326),(676,349),(699,419),(699,551),(637,563),(560,551),(486,561),(409,550),(334,561),(233,549),(218,466)])
-        # The dying flame itself is a stage-11 clue, beside (not underneath)
-        # the final warmth trails. This island contains none of those trails.
-        poly(3,[(425,338),(505,333),(515,350),(512,394),(426,394)])
-        # The garden threshold and handle also wait for the final stage.
-        poly(4,[(30,58),(140,41),(233,84),(243,243),(222,402),(72,419),(27,362)])
+        poly(1,[(229,0),(1280,0),(1280,720),(1090,720),(1045,610),(1044,483),
+                (969,448),(945,350),(900,252),(639,231),(610,320),(553,388),
+                (334,404),(239,369)])
+        poly(2,[(291,563),(460,533),(590,531),(787,540),(959,573),(1084,632),
+                (1280,674),(1280,720),(0,720),(0,655),(198,619)])
+        poly(3,[(600,0),(950,0),(935,120),(920,258),(911,361),(877,383),
+                (610,387),(574,335),(581,241),(609,210)])
+        # The painterly spectral edges extend well past the three faces. Their
+        # faint tails, bright fur, orange particles and halos all wait for 12.
+        poly(4,[(390,319),(1069,319),(1091,444),(1077,605),(1019,626),
+                (394,620),(383,545)])
+        # The final raster keeps the lower bodies and tails opaque, without
+        # escaping glints. Reveal them with the blanket; all faces, upper
+        # shoulders, spectral edges and floating warmth stay above this patch.
+        poly(2,[(426,546),(488,532),(567,516),(622,503),(689,509),(735,509),
+                (771,512),(819,514),(862,530),(933,550),(1009,575),(1052,591),
+                (1043,622),(602,631),(442,616),(417,586)])
+        # The ember glow inside the fireplace is distinct from escaping warmth.
+        poly(3,[(720,310),(889,310),(898,345),(878,350),(729,348)])
+        # Door, handle and the narrow garden opening are also final-stage clues.
+        poly(4,[(0,0),(229,0),(241,335),(223,452),(176,486),(0,493)])
     return s
 
 
@@ -347,12 +224,71 @@ def _sleeping(s,center,variant=None,scarf='default',time=0.):
     d.ellipse(s,INK,(x-76,y-36-breath,145,65))
     d.ellipse(s,color,(x-72,y-34-breath,137,58))
     source=pygame.Surface((160,180),pygame.SRCALPHA)
-    if variant is None:source.blit(cat_frame(160,mood='sleep',scarf=scarf),(0,0))
+    if variant is None:
+        # The playable PNG atlas has no sleeping pose. Keep this local to the
+        # shared-blanket scene, with closed eyes and Kkamang's red neckerchief.
+        source.blit(_resident_cat_frame(160,mood='sleep',scarf=scarf),(0,0))
+        d.polygon(source,(190,74,54),[(47,108),(110,108),(98,120),(56,117)])
+        d.polygon(source,(190,74,54),[(98,114),(112,116),(120,139),(102,133)])
+        d.line(source,(239,135,96),(56,111),(98,113),2)
     else:resident_cat(source,(80,180),160,0.,variant)
     head=pygame.transform.smoothscale(source.subsurface((14,8,132,112)),(83,70))
     s.blit(head,(x-89,y-61))
     d.arc(s,INK,(x+12,y-15,54,42),-.8,2.3,13)
     d.arc(s,color,(x+12,y-15,54,42),-.8,2.3,8)
+
+
+def _cinematic_fixtures(surface,elapsed,*,door_open=False,dawn=False):
+    """Present-day story fixtures, separate from the simplified playable lobby."""
+    d=pygame.draw
+    # A full-height threshold aligns with the cat's existing garden walk.
+    d.rect(surface,(78,61,71),(24,94,178,464),border_radius=62)
+    d.rect(surface,(172,126,94),(31,101,164,450),border_radius=56)
+    d.rect(surface,(57,70,83) if not dawn else (187,210,187),
+           (43,113,140,427),border_radius=49)
+    if door_open:
+        d.rect(surface,(112,146,112) if dawn else (81,111,102),(44,451,138,89))
+        d.polygon(surface,(137,97,79),[(179,116),(224,147),(224,507),(179,539)])
+        d.line(surface,(196,151,107),(188,138),(188,517),3)
+        d.circle(surface,GOLD,(211,350),5)
+    else:
+        d.rect(surface,(128,91,77),(47,117,132,420),border_radius=44)
+        d.rect(surface,(162,117,89),(59,137,107,238),3,border_radius=37)
+        d.rect(surface,(162,117,89),(59,393,107,127),3,border_radius=13)
+        d.circle(surface,GOLD,(157,353),7)
+    d.rect(surface,(198,157,113),(27,539,174,15),border_radius=4)
+
+    # Reuse the game's stone, wood and warm light palette for the hearth.
+    d.rect(surface,(130,105,105),(269,202,196,215),border_radius=13)
+    for y in range(216,408,38):
+        d.line(surface,(161,129,115),(275,y),(459,y),2)
+    d.rect(surface,(193,147,111),(256,190,222,20),border_radius=5)
+    d.rect(surface,(202,158,119),(256,403,222,24),border_radius=5)
+    d.rect(surface,(49,39,49),(293,239,148,164),border_radius=62)
+    d.line(surface,(112,74,66),(313,388),(418,377),12)
+    d.line(surface,(142,89,68),(319,376),(413,390),9)
+    d.polygon(surface,(219,129,74),[(310,385),(326,314),(349,350),(368,297),(422,385)])
+    d.polygon(surface,(250,199,111),[(332,385),(346,345),(364,370),(376,331),(402,385)])
+    glow(surface,(367,350),100)
+
+    # No wall clock in the regular lobby is added or changed. This one is
+    # frozen in every ordinary resolution and resumes only after liberation.
+    center=(367,142)
+    d.circle(surface,(83,62,69),center,35)
+    d.circle(surface,(176,133,99),center,31)
+    d.circle(surface,(235,217,181),center,26)
+    for index in range(12):
+        angle=math.tau*index/12-math.pi/2
+        start=(round(center[0]+22*math.cos(angle)),round(center[1]+22*math.sin(angle)))
+        end=(round(center[0]+24*math.cos(angle)),round(center[1]+24*math.sin(angle)))
+        d.line(surface,INK,start,end,2)
+    d.line(surface,INK,center,(354,133),3)
+    d.line(surface,INK,center,(378,127),3)
+    seconds=math.floor(max(0.,elapsed)) if dawn else 0
+    angle=math.tau*seconds/60-math.pi/2
+    tip=(round(center[0]+22*math.cos(angle)),round(center[1]+22*math.sin(angle)))
+    d.line(surface,(166,91,85),center,tip,2)
+    d.circle(surface,INK,center,3)
 
 
 def draw_cinematic(surface,kind,elapsed,*,completed=(),cosmetics=None,released=False):
@@ -363,6 +299,8 @@ def draw_cinematic(surface,kind,elapsed,*,completed=(),cosmetics=None,released=F
     all_done=range(1,13) if kind!='prologue' else ()
     dawn=kind=='true_end' or (kind=='liberation' and t>=2.2)
     shelter(s,all_done,cosmetics,time=t,before=kind=='prologue',show_actors=False,released=dawn,story_time=t)
+    clock_time=max(0.,t-2.2) if kind=='liberation' else t
+    _cinematic_fixtures(s,clock_time,door_open=kind!='prologue',dawn=dawn)
     d=pygame.draw;scarf=cosmetics.get('scarf','default')
     if kind=='prologue':
         walk=_ease(t/2.3);retreat=_ease((t-1.1)/1.8)
@@ -372,8 +310,7 @@ def draw_cinematic(surface,kind,elapsed,*,completed=(),cosmetics=None,released=F
         glow(s,(333,514),35+round(30*walk))
     elif kind=='garden':
         # Open threshold, a path outside, and three friends leaving it clear.
-        d.polygon(s,(91,124,108),[(40,83),(123,79),(123,263),(40,263)])
-        d.polygon(s,(145,164,132),[(0,465),(180,465),(420,720),(0,720)])
+        d.polygon(s,(145,164,132),[(0,554),(184,554),(420,720),(0,720)])
         step=_ease(t/2.2)
         cat(s,(297-128*step,544+24*step),130,time=t,scarf=scarf,walking=step<1.,walk_progress=step*2.)
         for variant,(x,y) in enumerate(((384,453),(476,510),(578,459))):
@@ -387,7 +324,7 @@ def draw_cinematic(surface,kind,elapsed,*,completed=(),cosmetics=None,released=F
             body=pygame.Surface(SIZE,pygame.SRCALPHA)
             resident_cat(body,(x,y),106,t,variant);body.set_alpha(round(255*p));s.blit(body,(0,0))
             for k in range(7):
-                a=(k/7.+t*.22)%1.;xx=367+(x-367)*a;yy=253+(y-253)*a-math.sin(a*math.pi)*38
+                a=(k/7.+t*.22)%1.;xx=367+(x-367)*a;yy=350+(y-350)*a-math.sin(a*math.pi)*38
                 if p<1.:d.circle(s,GOLD,(round(xx),round(yy)),3)
     elif kind=='basic_end':
         arrival=_ease(t/2.)

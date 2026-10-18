@@ -105,6 +105,15 @@ def _memory_label(memory_id, regions):
     return f'기억 {memory_id} · {sum(regions)} / 4'
 
 
+def _memory_art(surface, memory_id, regions, rect, **kwargs):
+    """Fit the whole fixed picture inside the UI without cropping or stretching."""
+    bounds = pygame.Rect(rect)
+    scale = min(bounds.w / 1280, bounds.h / 720)
+    picture = pygame.Rect(0, 0, max(1, round(1280*scale)), max(1, round(720*scale)))
+    picture.center = bounds.center
+    draw_memory(surface, memory_id, regions, picture, **kwargs)
+
+
 def _home_art(completed):
     count = len(completed)
     if count >= 12:
@@ -217,7 +226,7 @@ def _home_keepsakes(surface, assets, ctx, data):
     for memory_id in range(1, 4):
         regions = _regions(ctx, memory_id)
         x = 1006 + (memory_id-1)*74
-        draw_memory(surface, memory_id, regions, (x, 453, 66, 48))
+        _memory_art(surface, memory_id, regions, (x, 453, 66, 48))
         text(surface, assets, f'{sum(regions)}/4', (x+33, 515), size=14,
              color=CREAM, anchor='center')
 
@@ -296,7 +305,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             regions = _regions(ctx, memory_id)
             r = pygame.Rect(38+(memory_id-1)*184, 126, 170, 108)
             panel(surface, r, fill=NIGHT, border=GOLD, radius=12)
-            draw_memory(surface, memory_id, regions, (r.x+8, r.y+8, 154, 65))
+            _memory_art(surface, memory_id, regions, (r.x+8, r.y+8, 154, 65))
             text(surface, assets, _memory_label(memory_id, regions),
                  (r.centerx, r.bottom-19), size=15, anchor='center')
             ui.control(f'memory:{memory_id}', r, f'기억 {memory_id}', custom=True)
@@ -524,7 +533,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             regions=ctx.get('regions',_regions(ctx,memory_id))
             surface.fill((26,25,39))
             panel(surface,(28,80,1224,548),fill=(61,49,64),border=GOLD,radius=18)
-            draw_memory(surface,memory_id,regions,(44,96,1192,516),
+            _memory_art(surface,memory_id,regions,(44,96,1192,516),
                         previous_regions=ctx.get('previous_regions'),
                         reveal_region=ctx.get('reveal_region'),
                         progress=float(ctx.get('reveal_progress',1)),
@@ -551,14 +560,14 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         for memory_id in range(1,4):
             regions=_regions(ctx,memory_id)
             r=pygame.Rect(53,142+(memory_id-1)*144,288,128)
-            draw_memory(surface,memory_id,regions,(r.x,r.y,184,104))
+            _memory_art(surface,memory_id,regions,(r.x,r.y,184,104))
             text(surface,assets,f'기억 {memory_id}',(r.x+201,r.y+22),size=19,color=INK,bold=True)
             text(surface,assets,f'{sum(regions)} / 4',(r.x+201,r.y+62),size=18,color=INK)
             if selected==memory_id:
                 pygame.draw.rect(surface,(158,124,176),r.inflate(8,8),3,border_radius=8)
             ui.control(f'memory:{memory_id}',r,f'기억 {memory_id}',custom=True)
         regions=_regions(ctx,selected)
-        draw_memory(surface,selected,regions,(365,143,852,395))
+        _memory_art(surface,selected,regions,(365,143,852,395))
         text(surface,assets,_memory_label(selected,regions),(382,554),size=22,color=INK,bold=True)
         ui.control('replay_memory',(818,552,190,40),'다시 보기',primary=True,disabled=not any(regions))
         ui.control('visit_memory',(1024,552,190,40),'방 선택',disabled=not any(regions))

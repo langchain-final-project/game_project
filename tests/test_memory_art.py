@@ -80,25 +80,68 @@ def test_animation_cannot_change_previous_reveals_or_expose_other_regions(memory
 def test_final_storm_reveal_keeps_faces_warmth_and_threshold_together():
     labels=pixels(memories.memory_region_mask(3))[:,:,0]
     # Three faces, all escaping warmth and the open garden handle wait for 12.
-    for point in ((320,485),(463,494),(606,485),(390,377),(533,386),
-                  (676,377),(172,262),(377,520),(520,529),(663,520)):
+    # Coordinates are measured against the final raster at canonical 1280×720.
+    for point in ((644,457),(743,467),(850,474),(666,375),(961,432),
+                  (549,406),(85,228),(403,584),(1057,558),
+                  (530,456),(945,465),(914,495)):
         assert labels[point]==4,point
     hidden=draw(3,[True,True,True,False]);fog=draw(3,[False]*4)
     np.testing.assert_array_equal(pixels(hidden)[labels==4],pixels(fog)[labels==4])
-    assert labels[777,320]==1  # Empty chair.
-    assert labels[460,618]==2  # Shared blanket, without the faces.
-    assert labels[489,367]==3  # Dying hearth.
-    assert labels[302,300]==3  # Last score on its stand.
+    assert labels[1100,235]==1  # Empty chair's back.
+    assert labels[740,555]==2  # Solid blanket, without the faces.
+    # The final raster removes lower glints and restores opaque bodies/tails.
+    for point in ((455,575),(500,588),(558,562),(585,578),(610,588),(622,575),
+                  (847,580),(918,588),(950,590),(1025,604)):
+        assert labels[point]==2,point
+    assert labels[800,335]==3  # Embers inside the hearth.
+    assert labels[640,269]==3  # Last score on its stand.
 
 
-def test_afternoon_contains_exactly_the_three_residents_and_no_kkamang():
+@pytest.mark.parametrize('memory_id,landmarks',(
+    (1,((850,550,1),(100,200,2),(340,546,2),(874,405,3),(650,530,3),
+        (695,451,4),(640,500,4),(555,505,4),(580,347,4),(644,315,4))),
+    (2,((200,455,1),(20,220,1),(473,255,2),(330,245,2),(1160,232,3),
+        (1040,180,3),(650,400,4),(550,430,4))),
+))
+def test_welcome_and_afternoon_landmarks_follow_their_raster_reveal_order(memory_id,landmarks):
+    labels=pixels(memories.memory_region_mask(memory_id))[:,:,0]
+    for x,y,region in landmarks:
+        assert labels[x,y]==region,(memory_id,x,y,region)
+
+
+@pytest.mark.parametrize('memory_id',(1,2,3))
+def test_memory_uses_its_raster_source_and_loads_it_only_once(memory_id):
     memories._original.cache_clear()
-    actual=memories.resident_cat
-    with patch.object(memories,'resident_cat',wraps=actual) as residents, \
-            patch.object(memories,'cat',wraps=memories.cat) as kkamang:
-        memories.memory_original(2)
-    assert [call.args[4] for call in residents.call_args_list]==[0,1,2]
-    kkamang.assert_not_called()
+    path=memories.MEMORY_ART_DIR/f'memory_{memory_id:02d}.png'
+    source=pygame.image.load(str(path))
+    expected=pygame.transform.smoothscale(source,memories.SIZE)
+    with patch.object(pygame.image,'load',wraps=pygame.image.load) as load:
+        first=memories.memory_original(memory_id)
+        second=memories.memory_original(memory_id)
+    load.assert_called_once_with(str(path))
+    np.testing.assert_array_equal(pixels(first),pixels(expected))
+    np.testing.assert_array_equal(pixels(second),pixels(expected))
+
+
+@pytest.mark.parametrize('problem',('missing','corrupt','wrong_aspect','transparent'))
+def test_missing_or_invalid_memory_art_reports_the_asset_path(tmp_path,monkeypatch,problem):
+    path=tmp_path/'memory_01.png'
+    monkeypatch.setattr(memories,'MEMORY_ART_DIR',tmp_path)
+    memories._original.cache_clear()
+    expected=FileNotFoundError
+    if problem=='corrupt':
+        path.write_bytes(b'not a PNG')
+        expected=RuntimeError
+    elif problem in ('wrong_aspect','transparent'):
+        image=pygame.Surface((160,90) if problem=='transparent' else (100,100),pygame.SRCALPHA)
+        image.fill((120,130,140,0 if problem=='transparent' else 255))
+        pygame.image.save(image,str(path))
+        expected=ValueError
+    try:
+        with pytest.raises(expected,match='memory_01.png'):
+            memories.memory_original(1)
+    finally:
+        memories._original.cache_clear()
 
 
 def test_present_day_endings_do_not_repaint_the_past_storm():
@@ -111,7 +154,6 @@ def test_present_day_endings_do_not_repaint_the_past_storm():
                                  cosmetics=cosmetics,released=True)
     assert (completed,cosmetics)==before
     np.testing.assert_array_equal(pixels(memories.memory_original(3)),original)
-    assert tuple(original[1080,100])==(43,53,83)  # The past sky stays a night.
 
 
 def test_shelter_relationship_action_and_latest_main_walk_api_are_preserved():
