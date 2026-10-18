@@ -8,6 +8,7 @@ import pygame
 
 from .paths import user_data_dir
 from .core import GameCore
+from .realtime import RealtimeGameCore, FRAME_SECONDS, FRAMES_PER_TICK
 from .levels import load_levels
 from .campaign import Campaign, SaveStore
 from .story import STAGES, PROLOGUE, ENDING
@@ -23,7 +24,11 @@ SIZE = (1280, 720)
 
 class GameApp:
     def __init__(self, save_path=None, headless=False, no_audio=False, size=SIZE, seed=0,
-                 score_provider=None):
+                 score_provider=None, movement_mode='realtime'):
+        if movement_mode not in ('realtime', 'grid'):
+            raise ValueError('movement_mode must be realtime or grid')
+        self.movement_mode = movement_mode
+        self.motion_accumulator = 0.
         # Owner-supplied callable(level, outcome, snapshot, mode) -> score_breakdown | None.
         self.score_provider = score_provider
         self.ending_id = None
@@ -87,6 +92,7 @@ class GameApp:
         self.facing = 'down'
         self.cat_mood = 'idle'
         self.mood_timer = 0.
+        self.magnet_flights = []
 
     @property
     def story(self):
@@ -132,12 +138,16 @@ class GameApp:
             return
         if not self.campaign.is_unlocked(self.stage):
             return
-        self.core = GameCore(self.levels[self.stage-1], mode=self.mode, seed=self.seed)
+        core_class = RealtimeGameCore if self.movement_mode == 'realtime' else GameCore
+        self.core = core_class(self.levels[self.stage-1], mode=self.mode, seed=self.seed)
         self.previous = self.core.snapshot()
+        self.accumulator = 0.
         self.pause_accumulator=0.
+        self.motion_accumulator = 0.
         self.facing='down'
         self.cat_mood='idle'
         self.mood_timer=0.
+        self.magnet_flights.clear()
         self.run_id = uuid.uuid4().hex
         self.last_outcome = None
         self.last_reward = None
@@ -447,66 +457,21 @@ class GameApp:
             self.persist('result' if self.last_outcome is not None else 'likes')
 
     def _perform_action(self, action, animation_age=0.):
-        """행동을 실행하되, E는 고양이의 이동 애니메이션을 유지합니다."""
+        """한 틱을 실행하고 보간의 시작점에는 실제 이전 칸을 보관합니다."""
         if self.scene != 'game' or self.core is None:
             return
 
-        tick_seconds = float(
-            self.core.config.get('tick_seconds', 0.3)
-        )
+        # 화면의 중간 좌표를 다음 구간의 시작점으로 쓰면 방향 전환 시
+        # 두 축이 동시에 보간됩니다. 코어의 정수 좌표만 보관합니다.
         before = self.core.snapshot()
-
-        if self.previous is not None:
-            # 유령은 현재 화면에 보이는 위치에서 다음 이동을 시작합니다.
-            alpha = min(1., self.ghost_elapsed / tick_seconds)
-
-            old_ghosts = {
-                ghost['id']: ghost
-                for ghost in self.previous['ghosts']
-            }
-
-            for ghost in before['ghosts']:
-                old = old_ghosts.get(ghost['id'])
-
-                if old is not None:
-                    ghost['position'] = [
-                        old['position'][k]
-                        + (
-                            ghost['position'][k]
-                            - old['position'][k]
-                        ) * alpha
-                        for k in (0, 1)
-                    ]
-
-            chaser = before.get('chaser')
-            old_chaser = self.previous.get('chaser')
-
-            if (
-                chaser is not None
-                and old_chaser is not None
-                and chaser['active']
-                and old_chaser['active']
-                and chaser['id'] == old_chaser['id']
-            ):
-                chaser['position'] = [
-                    old_chaser['position'][k]
-                    + (
-                        chaser['position'][k]
-                        - old_chaser['position'][k]
-                    ) * alpha
-                    for k in (0, 1)
-                ]
-
-            # E를 눌러도 고양이의 이동 시작 좌표를 바꾸지 않습니다.
-            if action == 4:
-                before['position'] = list(
-                    self.previous['position']
-                )
-
         self.previous = before
         result = self.core.step(action)
         self.ghost_elapsed = animation_age
+        self._process_result(result)
+        return result
 
+    def _process_result(self, result):
+        """Display shared core events and settle an ended run exactly once."""
         for event in result.events:
             kind = event['type']
 
@@ -540,12 +505,29 @@ class GameApp:
                 self.toast_timer = 2.
 
             if kind == 'collect':
+                if event.get('magnetic'):
+                    self.magnet_flights.append({
+                        'origin': list(event['source_position']),
+                        'value': event['value'],
+                        'age': 0.,
+                        'duration': .34,
+                    })
                 self.audio.play('collect')
                 self.toast = (
                     f'온기를 모았어요 · 보유 '
                     f'{result.snapshot["carried"]}점'
                 )
                 self.toast_timer = 1.5
+
+            elif kind == 'magnet_collect':
+                self.audio.play('collect')
+                self.toast = '자석 획득! 13틱 동안 주변 3×3 온기를 끌어와요'
+                self.toast_timer = 2.
+
+            elif kind == 'invincibility_collect':
+                self.audio.play('collect')
+                self.toast = '무적 획득! 10틱 동안 유령과 부딪혀도 안전해요'
+                self.toast_timer = 2.
 
             elif kind == 'open':
                 self.audio.play('open')
@@ -564,6 +546,16 @@ class GameApp:
 
         if result.terminated:
             self.finish_run(result)
+
+        # 같은 틱에 여러 온기를 얻어도 아이템 안내가 덮이지 않게 합니다.
+        if (any(event['type'] == 'magnet_collect' for event in result.events)
+                and not any(event['type'] == 'damage' for event in result.events)):
+            self.toast = '자석 획득! 13틱 동안 주변 3×3 온기를 끌어와요'
+            self.toast_timer = 2.
+        if (any(event['type'] == 'invincibility_collect' for event in result.events)
+                and not any(event['type'] == 'damage' for event in result.events)):
+            self.toast = '무적 획득! 10틱 동안 유령과 부딪혀도 안전해요'
+            self.toast_timer = 2.
 
         return result
     
@@ -591,27 +583,14 @@ class GameApp:
 
             self.input.handle(event)
 
-            # E는 다음 정기 틱까지 기다리지 않고 실행합니다.
-            if self.input.consume_interaction():
-                self._perform_action(4)
-
-            # 귀환·실패로 화면이 바뀌었다면 입력 처리를 끝냅니다.
-            if self.scene != 'game':
-                return
-
-            position = self.core.snapshot()['position']
-            moving = (
-                self.previous is not None
-                and self.previous['position'] != position
-            )
-
-            # 멈춰 있을 때 누른 방향키는 즉시 이동을 시작합니다.
-            if not moving:
-                action = self.input.consume_movement()
-
-                if 0 <= action <= 3:
-                    self.accumulator = 0.
-                    self._perform_action(action)
+            # 첫 입력만 즉시 시작합니다. 이후 모든 입력은 공통 틱에서
+            # 처리하여 E·방향키 연타가 유령과 시간을 가속하지 않게 합니다.
+            if (self.movement_mode == 'grid'
+                    and self.core.snapshot()['tick'] == 0 and self.input.pending):
+                action = (4 if self.input.consume_interaction()
+                          else self.input.consume_movement(self.core.can_move))
+                self.accumulator = 0.
+                self._perform_action(action)
 
             return
         
@@ -654,6 +633,16 @@ class GameApp:
         if self.scene != 'game' or self.core is None:
             return
 
+        # 메뉴와 일시정지 중에는 흡입 연출도 정지합니다.
+        for flight in self.magnet_flights:
+            flight['age'] += dt
+        self.magnet_flights = [flight for flight in self.magnet_flights
+                               if flight['age'] < flight['duration']]
+
+        if self.movement_mode == 'realtime':
+            self._advance_realtime(dt)
+            return
+
         self.accumulator += dt
         self.ghost_elapsed += dt
 
@@ -661,7 +650,8 @@ class GameApp:
             self.core.config.get('tick_seconds', 0.3)
         )
 
-        # 누르고 있는 방향키의 이동과 자동 대기를 처리합니다.
+        # 한 틱에는 E·이동·대기 중 하나만 처리합니다. E를 처리해도
+        # 누르고 있는 방향키와 아직 처리하지 않은 짧은 이동 입력은 유지합니다.
         while (
             self.scene == 'game'
             and self.accumulator + 1e-9 >= tick_seconds
@@ -671,12 +661,33 @@ class GameApp:
                 self.accumulator - tick_seconds,
             )
 
-            action = self.input.consume_movement()
+            action = (4 if self.input.consume_interaction()
+                      else self.input.consume_movement(self.core.can_move))
 
             self._perform_action(
                 action,
                 animation_age=self.accumulator,
             )
+
+    def _advance_realtime(self, dt):
+        self.motion_accumulator += dt
+        self.ghost_elapsed += dt
+        while self.scene == 'game' and self.motion_accumulator + 1e-12 >= FRAME_SECONDS:
+            self.motion_accumulator = max(0., self.motion_accumulator - FRAME_SECONDS)
+            before = self.core.snapshot()
+            # No corner reservation: the latest direction is applied this frame,
+            # even when the body is between tile centers. E takes one frame.
+            action = (4 if self.input.consume_interaction()
+                      else self.input.consume_movement())
+            result = self.core.step(action)
+            if result.snapshot['tick'] != before['tick']:
+                self.previous = before
+                self.ghost_elapsed = self.motion_accumulator
+            self._process_result(result)
+        if self.scene == 'game':
+            self.accumulator = (self.core.snapshot()['motion']['phase'] *
+                                FRAMES_PER_TICK * FRAME_SECONDS + self.motion_accumulator)
+
     def context(self):
         snapshot = self.core.snapshot() if self.core else self.preview
         if self.scene == 'briefing':
@@ -743,6 +754,7 @@ class GameApp:
                     if self.mood_timer > 0
                     else 'idle'
                 ),
+                magnet_flights=self.magnet_flights,
             )
             self.controls=[]
         else:

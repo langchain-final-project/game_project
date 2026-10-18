@@ -7,12 +7,81 @@ import unittest
 import numpy as np
 from gymnasium.utils.env_checker import check_env
 
-from kkamang.env import MansionEnv, encode_observation, OBSERVATION_VERSION
+from kkamang.env import MansionEnv, encode_observation, OBSERVATION_VERSION, OBSERVATION_SIZE
 from kkamang.levels import load_level
 from tools.evaluate import TimedGreedyPolicy
 
 
 class EnvironmentTests(unittest.TestCase):
+    def test_greedy_policy_requires_core_instead_of_using_a_legacy_fallback(self):
+        with self.assertRaises(TypeError):
+            TimedGreedyPolicy()
+        with self.assertRaises(ValueError):
+            TimedGreedyPolicy(core=None)
+
+    def test_greedy_handles_a_chaser_stage_without_items_reproducibly(self):
+        from tools.evaluate import project_path
+        first, second = MansionEnv(12), MansionEnv(12)
+        _, a = first.reset(seed=20261018)
+        _, b = second.reset(seed=20261018)
+        policies = [TimedGreedyPolicy(core=env.core) for env in (first, second)]
+        for _ in range(5):
+            initial = first.core.snapshot()
+            actions = [policies[0].action(a['snapshot']), policies[1].action(b['snapshot'])]
+            self.assertEqual(actions[0], actions[1])
+            self.assertEqual(first.core.snapshot(), initial)
+            self.assertIsNotNone(project_path(first.core, [actions[0]], allow_item_invincibility=True))
+            _, _, _, _, a = first.step(actions[0])
+            _, _, _, _, b = second.step(actions[1])
+            self.assertEqual(a['snapshot'], b['snapshot'])
+
+    def test_evaluation_pairs_phases_and_reports_score_items_and_searches(self):
+        from tools.evaluate import evaluate, POLICY_VERSION
+        rows, report = evaluate(1, [2], 20261018, 'basic', True)
+        self.assertFalse(report['errors'])
+        self.assertEqual(report['policy_version'], POLICY_VERSION)
+        random, greedy = rows
+        self.assertEqual((random['seed'], random['initial_phase'], random['config_hash']),
+                         (greedy['seed'], greedy['initial_phase'], greedy['config_hash']))
+        self.assertEqual(greedy['status'], 'COMPLETE')
+        self.assertEqual(greedy['score_total'],
+                         greedy['score_warmth'] + greedy['score_speed'] + greedy['score_courage'])
+        self.assertEqual(greedy['stars'], 3)
+        self.assertTrue(greedy['magnet_collected'])
+        self.assertGreater(greedy['magnetic_heat'], 0)
+        self.assertGreater(greedy['search_found'], 0)
+        self.assertEqual(random['search_found'], 0)
+        self.assertEqual(greedy['damage_count'], 0)
+
+    def test_invincibility_observation_pickup_expiry_and_reset(self):
+        env = MansionEnv(3)
+        obs, _ = env.reset(seed=0)
+        np.testing.assert_allclose(obs[615:620], [1, 0, 7 / 15, 5 / 8, 0])
+        env.core._state['position'] = [7, 6]
+        obs, reward, _, _, info = env.step(0)
+        np.testing.assert_allclose(obs[615:620], [1, 1, 7 / 15, 5 / 8, .9])
+        self.assertEqual(reward, 0)
+        for _ in range(9):
+            obs, _, _, _, _ = env.step(5)
+        np.testing.assert_allclose(obs[615:620], [1, 1, 7 / 15, 5 / 8, 0])
+        self.assertEqual(info['snapshot']['protection'], 0)
+        self.assertEqual(env.reset(seed=0)[0][616], 0)
+        self.assertFalse(MansionEnv(1).reset(seed=0)[0][615:620].any())
+        with self.assertRaises(ValueError):
+            MansionEnv(3, expected_observation_version='vector_v4_magnet')
+
+    def test_invincibility_observation_rejects_invalid_state(self):
+        for field, value in (('remaining_ticks', 11), ('remaining_ticks', True),
+                             ('duration_ticks', 13), ('collected', 1)):
+            state = MansionEnv(3).core.snapshot()
+            state['invincibility'][field] = value
+            with self.subTest(field=field, value=value), self.assertRaises(ValueError):
+                encode_observation(state)
+        state = MansionEnv(3).core.snapshot()
+        state['invincibility']['remaining_ticks'] = 1
+        with self.assertRaises(ValueError):
+            encode_observation(state)
+
     def test_gym_checker_and_bounds_all_stages_modes(self):
         for stage in range(1, 13):
             for mode in ('basic', 'relaxed'):
@@ -20,7 +89,7 @@ class EnvironmentTests(unittest.TestCase):
                     env = MansionEnv(stage, mode=mode, randomize_phase=True)
                     check_env(env, skip_render_check=True)
                     obs, _ = env.reset(seed=123)
-                    self.assertEqual(obs.shape, (610,))
+                    self.assertEqual(obs.shape, (OBSERVATION_SIZE,))
                     self.assertEqual(obs.dtype, np.float32)
                     self.assertTrue(env.observation_space.contains(obs))
                     env.action_space.seed(444)
@@ -109,7 +178,7 @@ class EnvironmentTests(unittest.TestCase):
     def test_banked_reward_not_collection_reward_and_no_progression(self):
         env = MansionEnv(1)
         _, info = env.reset(seed=0)
-        policy = TimedGreedyPolicy()
+        policy = TimedGreedyPolicy(core=env.core)
         done = False
         while not done:
             _, reward, terminated, truncated, info = env.step(policy.action(info['snapshot']))
@@ -147,6 +216,55 @@ class EnvironmentTests(unittest.TestCase):
             "e.reset(seed=0); e.step(5); assert 'pygame' not in sys.modules"],
             check=False, capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_magnet_observation_distinguishes_absent_pickup_active_and_expired(self):
+        absent, _ = MansionEnv(1).reset(seed=0)
+        np.testing.assert_array_equal(absent[610:615], np.zeros(5))
+        env = MansionEnv(2)
+        before, _ = env.reset(seed=0)
+        np.testing.assert_allclose(before[610:615], [1, 0, 3 / 15, 4 / 8, 0])
+        for action in (1, 1, 1, 3, 3):
+            active, reward, _, _, info = env.step(action)
+        self.assertEqual(reward, 0)
+        self.assertEqual(info['snapshot']['carried'], 2)
+        self.assertEqual(active[611], 1)
+        self.assertAlmostEqual(active[614], 12 / 13)
+        for _ in range(12):
+            expired, _, _, _, _ = env.step(5)
+        self.assertEqual(expired[611], 1)
+        self.assertEqual(expired[614], 0)
+        reset, _ = env.reset(seed=0)
+        np.testing.assert_array_equal(reset, before)
+        with self.assertRaises(ValueError):
+            MansionEnv(expected_observation_version='vector_v3_chaser')
+
+    def test_invalid_magnet_observation_is_rejected(self):
+        env = MansionEnv(2)
+        for field, value in (('collected', 1), ('remaining_ticks', -1),
+                             ('remaining_ticks', 14), ('remaining_ticks', True),
+                             ('duration_ticks', 12), ('position', [16, 0]),
+                             ('remaining_ticks', 1)):
+            with self.subTest(field=field, value=value):
+                snapshot = env.core.snapshot()
+                snapshot['magnet'][field] = value
+                with self.assertRaises(ValueError):
+                    encode_observation(snapshot)
+
+    def test_greedy_magnet_simulation_does_not_advance_the_live_game(self):
+        env = MansionEnv(2)
+        _, info = env.reset(seed=0)
+        policy = TimedGreedyPolicy(core=env.core)
+        while True:
+            before = env.core.snapshot()
+            action = policy.action(info['snapshot'])
+            self.assertEqual(env.core.snapshot(), before)
+            _, _, terminated, truncated, info = env.step(action)
+            if terminated or truncated:
+                break
+        self.assertEqual(info['outcome']['status'], 'COMPLETE')
+        self.assertEqual(info['outcome']['banked'], 14)
+        self.assertEqual(info['outcome']['damage_count'], 0)
+        self.assertTrue(info['snapshot']['magnet']['collected'])
 
 
 if __name__ == '__main__':

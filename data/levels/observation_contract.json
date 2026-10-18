@@ -1,9 +1,9 @@
 {
   "status": "implemented",
-  "observation_version": "vector_v3_chaser",
+  "observation_version": "vector_v5_invincibility",
   "dtype": "float32",
   "shape": [
-    610
+    620
   ],
   "bounds": [
     0,
@@ -86,6 +86,20 @@
       "length": 6,
       "normalization": "present,active,x/15,y/8,countdown/512,ticks_per_move/512",
       "meaning": "Absent chaser is all zero; configured inactive chaser retains its spawn and timing"
+    },
+    {
+      "name": "magnet",
+      "offset": 610,
+      "length": 5,
+      "normalization": "present,collected,x/15,y/8,remaining_ticks/13",
+      "meaning": "Absent magnet is all zero; collected magnet retains its position. Pickup tick counts toward the 13-tick 3x3 effect; barriers do not block collection. Animation is excluded."
+    },
+    {
+      "name": "invincibility",
+      "offset": 615,
+      "length": 5,
+      "normalization": "present,collected,x/15,y/8,remaining_ticks/10",
+      "meaning": "Absent item is all zero. Pickup tick counts toward 10 protected ticks. Independent of post-damage protection; contacts still stun the chaser."
     }
   ],
   "action_enum": {

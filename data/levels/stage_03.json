@@ -122,6 +122,10 @@
     }
   ],
   "shortcuts": [],
+  "invincibility": {
+    "position": [7, 5],
+    "duration_ticks": 10
+  },
   "target_value": 4,
   "total_item_value": 14,
   "initial_courage": 3,

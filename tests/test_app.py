@@ -34,7 +34,10 @@ class AppIntegrationTests(unittest.TestCase):
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory(prefix='kkamang-app-test-')
         self.save_path = Path(self.directory.name) / 'save.json'
-        self.app = GameApp(save_path=self.save_path, headless=True, no_audio=True)
+        # Legacy grid-controller regressions remain explicit. The desktop default
+        # and its RL parity are exercised separately in test_realtime.py.
+        self.app = GameApp(save_path=self.save_path, headless=True, no_audio=True,
+                           movement_mode='grid')
 
     def tearDown(self):
         self.app.close()
@@ -445,7 +448,7 @@ class AppIntegrationTests(unittest.TestCase):
         self.assertEqual(after['tick'], before['tick'] + 1)
         self.app.draw()
 
-    def test_interaction_does_not_interrupt_movement(self):
+    def test_queued_interaction_does_not_interrupt_current_animation(self):
         self.first_start()
         self.enter_stage(1)
 
@@ -471,12 +474,10 @@ class AppIntegrationTests(unittest.TestCase):
 
         after = self.app.core.snapshot()
 
-        # 기다리지 않아도 획득되고, 이동 진행 시간은 유지됩니다.
-        # 온기는 이동하면서 이미 획득했습니다.
-        # E를 눌러도 온기가 추가로 수집되지는 않습니다.
+        # E는 다음 공통 틱에 예약합니다. 진행 중인 이동 그림은 유지합니다.
         self.assertEqual(before['carried'], 1)
         self.assertEqual(after['carried'], before['carried'])
-        self.assertEqual(after['tick'], before['tick'] + 1)
+        self.assertEqual(after['tick'], before['tick'])
         self.assertAlmostEqual(
             self.app.accumulator,
             progress_before,
@@ -501,12 +502,234 @@ class AppIntegrationTests(unittest.TestCase):
             after['tick'],
         )
 
-        # 기존 이동 일정대로 다음 칸으로 계속 이동합니다.
+        # 다음 틱은 E 하나만 실행하고, 그 다음 틱에 누른 방향으로 이동합니다.
         self.app.advance(0.2)
+        self.assertEqual(self.app.core.actions[-1], Action.INTERACT)
+        self.assertEqual(self.app.core.snapshot()['tick'], before['tick'] + 1)
+        self.assertEqual(self.app.core.snapshot()['position'], [2, 1])
+        self.app.advance(0.3)
         self.assertEqual(
             self.app.core.snapshot()['position'],
             [3, 1],
         )
+
+    def test_early_held_turn_continues_straight_then_turns_at_opening(self):
+        self.app.start_run()
+        self.app.core._state['position'] = [3, 4]
+        self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_w))
+        self.assertEqual(self.app.core.snapshot()['position'], [3, 3])
+        self.app.advance(.1)
+        self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_d))
+        self.assertEqual(self.app.core.snapshot()['tick'], 1)
+        self.app.advance(.2)
+        self.assertEqual(self.app.core.snapshot()['position'], [3, 2])
+        self.app.advance(.3)
+        self.assertEqual(self.app.core.snapshot()['position'], [3, 1])
+        self.app.advance(.3)
+        self.assertEqual(self.app.core.snapshot()['position'], [4, 1])
+        with patch('kkamang.ui.field.cat') as draw_cat:
+            self.app.draw()
+            corner = draw_cat.call_args.args[1]
+        self.app.advance(.15)
+        with patch('kkamang.ui.field.cat') as draw_cat:
+            self.app.draw()
+            after_turn = draw_cat.call_args.args[1]
+        self.assertGreater(after_turn[0], corner[0])
+        self.assertAlmostEqual(after_turn[1], corner[1])
+        self.assertEqual(self.app.core.actions, [Action.UP] * 3 + [Action.RIGHT])
+
+    def test_releasing_reserved_turn_cancels_it_after_one_attempt(self):
+        self.app.start_run()
+        self.app.core._state['position'] = [3, 3]
+        self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_w))
+        self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_d))
+        self.app.handle_event(pygame.event.Event(pygame.KEYUP, key=pygame.K_d))
+        self.app.advance(.3)
+        self.assertEqual(self.app.core.snapshot()['position'], [3, 1])
+        self.app.advance(.3)
+        self.assertEqual(self.app.core.snapshot()['position'], [3, 1])
+        self.assertEqual(self.app.core.actions[-1], Action.UP)
+
+    def test_interaction_preserves_reserved_turn_without_extra_ticks(self):
+        self.app.start_run()
+        self.app.core._state['position'] = [3, 3]
+        self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_w))
+        self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_d))
+        self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_e))
+        self.app.advance(.3)
+        self.assertEqual(self.app.core.snapshot()['position'], [3, 2])
+        self.assertEqual(self.app.core.actions[-1], Action.INTERACT)
+        self.app.advance(.3)
+        self.assertEqual(self.app.core.snapshot()['position'], [3, 1])
+        self.app.advance(.3)
+        self.assertEqual(self.app.core.snapshot()['position'], [4, 1])
+        self.assertEqual(self.app.core.snapshot()['tick'], 4)
+
+    def test_hurt_expression_keeps_walking_in_sync_with_movement(self):
+        self.app.start_run()
+        self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_d))
+        self.app.core._state['protection'] = 2
+        self.app.advance(.1)
+        with patch('kkamang.ui.field.cat') as draw_cat:
+            self.app.draw()
+            first = draw_cat.call_args
+        self.app.advance(.1)
+        with patch('kkamang.ui.field.cat') as draw_cat:
+            self.app.draw()
+            second = draw_cat.call_args
+        self.assertEqual(first.args[5], 'surprised')
+        self.assertEqual(second.args[5], 'surprised')
+        self.assertTrue(first.kwargs['walking'])
+        self.assertTrue(second.kwargs['walking'])
+        self.assertGreater(second.args[1][0], first.args[1][0])
+        self.assertGreater(second.kwargs['walk_progress'], first.kwargs['walk_progress'])
+
+    def test_first_input_resets_near_due_tick_without_a_second_fast_step(self):
+        self.app.start_run()
+        self.app.advance(.29)
+        self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_e))
+        self.assertEqual(self.app.core.snapshot()['tick'], 1)
+        self.app.advance(.01)
+        self.assertEqual(self.app.core.snapshot()['tick'], 1)
+        self.app.advance(.29)
+        self.assertEqual(self.app.core.snapshot()['tick'], 2)
+
+    def test_interaction_near_regular_tick_does_not_move_active_chaser_twice(self):
+        self.app.campaign.data['completed'] = list(range(1, 11))
+        self.app.stage = 11
+        self.app.start_run()
+        self.app.advance(.3)
+        state = self.app.core._state
+        state['position'] = [11, 1]
+        state['quest']['collected'] = True
+        state['chaser'].update(active=True, position=[12, 2], countdown=1)
+        self.app.previous = self.app.core.snapshot()
+        self.app.accumulator = .29
+        self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_e))
+        self.assertEqual(self.app.core.snapshot()['tick'], 1)
+        self.app.advance(.01)
+        self.assertEqual(self.app.core.snapshot()['tick'], 2)
+        self.assertEqual(self.app.core.snapshot()['chaser']['position'], [12, 1])
+        self.app.advance(.01)
+        self.assertEqual(self.app.core.snapshot()['tick'], 2)
+        self.app.advance(.29)
+        self.assertEqual(self.app.core.snapshot()['tick'], 3)
+        self.assertEqual(self.app.previous['chaser']['position'], [12, 1])
+        self.assertEqual(self.app.core.snapshot()['chaser']['position'], [11, 1])
+
+    def test_repeated_interaction_presses_share_one_tick(self):
+        self.app.start_run()
+        self.apply_action(Action.RIGHT)
+        for _ in range(8):
+            self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_e))
+            self.app.handle_event(pygame.event.Event(pygame.KEYUP, key=pygame.K_e))
+        self.assertEqual(self.app.core.snapshot()['tick'], 1)
+        self.app.advance(.3)
+        self.assertEqual(self.app.core.actions, [Action.RIGHT, Action.INTERACT])
+        self.app.advance(.3)
+        self.assertEqual(self.app.core.actions[-1], Action.WAIT)
+
+    def test_blocked_direction_presses_and_os_repeat_do_not_accelerate_ticks(self):
+        self.app.start_run()
+        for _ in range(8):
+            self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_LEFT))
+        self.assertEqual(self.app.core.snapshot()['tick'], 1)
+        self.assertEqual(self.app.core.snapshot()['position'], [1, 1])
+        self.app.handle_event(pygame.event.Event(pygame.KEYUP, key=pygame.K_LEFT))
+        for _ in range(8):
+            self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_LEFT))
+            self.app.handle_event(pygame.event.Event(pygame.KEYUP, key=pygame.K_LEFT))
+        self.assertEqual(self.app.core.snapshot()['tick'], 1)
+        self.app.advance(.3)
+        self.assertEqual(self.app.core.snapshot()['tick'], 2)
+
+    def test_short_move_survives_an_interaction_in_the_same_tick(self):
+        self.app.start_run()
+        self.apply_action(Action.RIGHT)
+        for key in (pygame.K_DOWN, pygame.K_e):
+            self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=key))
+            self.app.handle_event(pygame.event.Event(pygame.KEYUP, key=key))
+        self.app.advance(.3)
+        self.assertEqual(self.app.core.actions[-1], Action.INTERACT)
+        self.app.advance(.3)
+        self.assertEqual(self.app.core.actions[-1], Action.DOWN)
+        self.assertEqual(self.app.core.snapshot()['position'], [2, 2])
+
+    def test_patrol_and_chaser_draw_each_turn_without_a_diagonal_shortcut(self):
+        for kind in ('patrol', 'chaser'):
+            with self.subTest(kind=kind):
+                self.app.campaign.data['completed'] = list(range(1, 11))
+                self.app.stage = 2 if kind == 'patrol' else 11
+                self.app.start_run()
+                state = self.app.core._state
+                if kind == 'patrol':
+                    state['ghosts'][0].update(countdown=1, ticks_per_move=1)
+                    corner = [6, 2]
+                    position = lambda snapshot: snapshot['ghosts'][0]['position']
+                else:
+                    state['ghosts'] = []
+                    state['position'] = [11, 1]
+                    state['quest']['collected'] = True
+                    state['chaser'].update(active=True, position=[12, 2], countdown=1)
+                    corner = [12, 1]
+                    position = lambda snapshot: snapshot['chaser']['position']
+                self.app.previous = self.app.core.snapshot()
+                self.app.ghost_elapsed = .3
+                self.app.accumulator = .29
+
+                def drawn_position():
+                    with patch('kkamang.ui.field.ghost') as draw:
+                        self.app.draw()
+                    self.assertEqual(draw.call_count, 1)
+                    return draw.call_args.args[1]
+
+                self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_e))
+                start = drawn_position()
+                self.app.advance(.01)
+                self.assertEqual(self.app.core.snapshot()['tick'], 1)
+                first_segment = drawn_position()
+                self.app.advance(.29)
+                self.assertEqual(self.app.core.snapshot()['tick'], 2)
+                self.assertEqual(position(self.app.previous), corner)
+                turn = drawn_position()
+                self.app.advance(.15)
+                second_segment = drawn_position()
+                if kind == 'patrol':
+                    self.assertGreater(first_segment[0], start[0])
+                    self.assertAlmostEqual(first_segment[1], start[1])
+                    self.assertAlmostEqual(first_segment[1], turn[1])
+                    self.assertAlmostEqual(second_segment[0], turn[0])
+                    self.assertGreater(second_segment[1], turn[1])
+                else:
+                    self.assertLess(first_segment[1], start[1])
+                    self.assertAlmostEqual(first_segment[0], start[0])
+                    self.assertAlmostEqual(first_segment[0], turn[0])
+                    self.assertAlmostEqual(second_segment[1], turn[1])
+                    self.assertLess(second_segment[0], turn[0])
+
+    def test_frame_catchup_keeps_integer_adjacent_ghost_endpoints(self):
+        self.app.campaign.data['completed'] = [1]
+        self.app.stage = 2
+        self.app.start_run()
+        self.app.core._state['ghosts'][0].update(countdown=1, ticks_per_move=1)
+        self.app.previous = self.app.core.snapshot()
+        self.app.advance(.65)
+        self.assertEqual(self.app.core.snapshot()['tick'], 2)
+        self.assertEqual(self.app.previous['ghosts'][0]['position'], [6, 2])
+        self.assertEqual(self.app.core.snapshot()['ghosts'][0]['position'], [6, 3])
+        self.assertAlmostEqual(self.app.ghost_elapsed, .05)
+
+    def test_restart_discards_partial_tick_and_queued_interaction(self):
+        self.app.start_run()
+        self.apply_action(Action.RIGHT)
+        self.app.advance(.2)
+        self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_e))
+        self.app.start_run()
+        self.assertEqual(self.app.accumulator, 0)
+        self.app.advance(.1)
+        self.assertEqual(self.app.core.snapshot()['tick'], 0)
+        self.app.advance(.2)
+        self.assertEqual(self.app.core.actions, [Action.WAIT])
 
 
 if __name__ == '__main__':

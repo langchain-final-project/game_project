@@ -1,8 +1,7 @@
 """Headless Gymnasium adapter; gameplay and learning use the same GameCore.
 
-No Pygame import, campaign save or cosmetic reward is used here. The observation
-layout retains the version identifier of the supplied design contract; the JSON
-document's proposal status describes its provenance, not this implementation.
+No Pygame import, campaign save or cosmetic reward is used here. The versioned
+observation layout includes timed item states and excludes visual effects.
 """
 from __future__ import annotations
 
@@ -14,13 +13,12 @@ import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
 
-from .core import GameCore
-from .levels import load_level
+from .core import GameCore, OBSERVATION_VERSION
+from .levels import MAGNET_DURATION_TICKS, INVINCIBILITY_DURATION_TICKS, load_level
+from .realtime import RealtimeGameCore, REALTIME_OBSERVATION_VERSION, FRAMES_PER_TICK
 
-# OBSERVATION_VERSION = "vector_v2_quest"
-# OBSERVATION_SIZE = 602
-OBSERVATION_VERSION = "vector_v3_chaser"
-OBSERVATION_SIZE = 610
+OBSERVATION_SIZE = 620
+REALTIME_OBSERVATION_SIZE = 623
 TIME_BOUND = 512
 
 
@@ -38,7 +36,7 @@ def _position(value: Any, name: str) -> tuple[int, int]:
 
 
 def encode_observation(snapshot: dict) -> np.ndarray:
-    """Encode the documented, fixed-slot 610-float fully observed state.
+    """Encode the documented, fixed-slot 620-float fully observed state.
 
     Invalid semantic values fail visibly rather than being clipped into a valid
     Box. Stable IDs prevent collecting an item from shifting later item slots.
@@ -46,7 +44,7 @@ def encode_observation(snapshot: dict) -> np.ndarray:
     """
     s = snapshot
     if s['width'] != 16 or s['height'] != 9:
-        raise ValueError('vector_v3_chaser requires a 16 × 9 map')
+        raise ValueError(f'{OBSERVATION_VERSION} requires a 16 × 9 map')
     grid = s['grid']
     if len(grid) != 9 or any(len(row) != 16 or set(row) - {'#', '.'} for row in grid):
         raise ValueError('grid must have 9 rows of 16 #/. cells')
@@ -159,9 +157,49 @@ def encode_observation(snapshot: dict) -> np.ndarray:
             speed / TIME_BOUND,
         )
 
+    for name, offset, duration_ticks in (('magnet', 610, MAGNET_DURATION_TICKS),
+                                        ('invincibility', 615, INVINCIBILITY_DURATION_TICKS)):
+        item = s.get(name)
+        if item is None:
+            continue
+        if not isinstance(item, dict) or type(item['collected']) is not bool:
+            raise ValueError(f'{name} must have a boolean collected flag')
+        x, y = _position(item['position'], f'{name} position')
+        duration = _integer(item['duration_ticks'], duration_ticks, duration_ticks,
+                            f'{name} duration_ticks')
+        remaining = _integer(item['remaining_ticks'], 0, duration, f'{name} remaining_ticks')
+        if not item['collected'] and remaining:
+            raise ValueError(f'uncollected {name} cannot have an active effect')
+        obs[offset:offset + 5] = (1, int(item['collected']), x / 15, y / 8,
+                                  remaining / duration_ticks)
+
     if not np.isfinite(obs).all() or not ((obs >= 0) & (obs <= 1)).all():
         raise ValueError('observation encoding escaped the declared bounds')
     return obs
+
+
+def encode_realtime_observation(snapshot: dict) -> np.ndarray:
+    """Add the true center and world-clock phase to the legacy cell features."""
+    motion = snapshot['motion']
+    position = motion['position']
+    if not isinstance(position, (list, tuple)) or len(position) != 2:
+        raise ValueError('motion position must have two coordinates')
+    values = []
+    for value, ceiling in zip(position, (15, 8)):
+        if (isinstance(value, (bool, np.bool_)) or not isinstance(value, (int, float))
+                or not np.isfinite(value) or not 0 <= value <= ceiling):
+            raise ValueError('motion position must be finite and inside the map')
+        values.append(value / ceiling)
+    frame = _integer(motion['frame'], 0, 2**31 - 1, 'motion frame')
+    if frame // FRAMES_PER_TICK != snapshot['tick']:
+        raise ValueError('world tick must match its physics frame')
+    phase = frame % FRAMES_PER_TICK / FRAMES_PER_TICK
+    if motion['phase'] != phase:
+        raise ValueError('motion phase must match its physics frame')
+    if [int(np.floor(round(value, 10) + .5)) for value in position] != snapshot['position']:
+        raise ValueError('occupied cell must match the continuous center')
+    return np.concatenate((encode_observation(snapshot),
+                           np.array([*values, phase], dtype=np.float32)))
 
 
 class MansionEnv(gym.Env):
@@ -174,6 +212,10 @@ class MansionEnv(gym.Env):
     """
 
     metadata = {'render_modes': ['ansi']}
+    core_class = GameCore
+    observation_size = OBSERVATION_SIZE
+    observation_contract = OBSERVATION_VERSION
+    encode = staticmethod(encode_observation)
 
     def __init__(self, stage: int | str = 1, *, config: dict | None = None,
                  mode: str = 'basic', randomize_phase: bool = False,
@@ -182,7 +224,7 @@ class MansionEnv(gym.Env):
                  render_mode: str | None = None,
                  expected_observation_version: str = OBSERVATION_VERSION):
         super().__init__()
-        if expected_observation_version != OBSERVATION_VERSION:
+        if expected_observation_version != self.observation_contract:
             raise ValueError(f'observation version mismatch: {expected_observation_version!r}')
         if render_mode not in (None, 'ansi'):
             raise ValueError('only headless or ansi rendering is supported')
@@ -193,12 +235,12 @@ class MansionEnv(gym.Env):
         self.render_mode = render_mode
         self.safety_coefficient = float(safety_coefficient)
         self.max_episode_steps = max_episode_steps
-        self.observation_version = OBSERVATION_VERSION
+        self.observation_version = self.observation_contract
         self.action_space = spaces.Discrete(6)
-        self.observation_space = spaces.Box(0.0, 1.0, (OBSERVATION_SIZE,), np.float32)
-        self.core = GameCore(deepcopy(config) if config is not None else load_level(stage),
+        self.observation_space = spaces.Box(0.0, 1.0, (self.observation_size,), np.float32)
+        self.core = self.core_class(deepcopy(config) if config is not None else load_level(stage),
                              mode=mode, seed=0, randomize_phase=randomize_phase)
-        encode_observation(self.core.snapshot())  # Fail incompatible config at construction.
+        self.encode(self.core.snapshot())  # Fail incompatible config at construction.
         self._finished = True
         self._steps = 0
 
@@ -219,7 +261,7 @@ class MansionEnv(gym.Env):
         snapshot = self.core.reset(seed=core_seed, phase_overrides=options.get('phase_overrides'))
         self._finished = False
         self._steps = 0
-        return encode_observation(snapshot), self._info(snapshot)
+        return self.encode(snapshot), self._info(snapshot)
 
     def step(self, action):
         if self._finished:
@@ -242,7 +284,7 @@ class MansionEnv(gym.Env):
         info['reward_terms'] = {'terminal_utility': utility, 'damage_penalty': penalty}
         if truncated:
             info['truncation_reason'] = 'external_step_limit'
-        return encode_observation(result.snapshot), float(utility - penalty), terminated, truncated, info
+        return self.encode(result.snapshot), float(utility - penalty), terminated, truncated, info
 
     def render(self):
         if self.render_mode != 'ansi':
@@ -256,6 +298,12 @@ class MansionEnv(gym.Env):
         for item in s['items']:
             if item['active']:
                 mark(item['position'], str(item['value']))
+        magnet = s.get('magnet')
+        if magnet is not None and not magnet['collected']:
+            mark(magnet['position'], 'M')
+        invincibility = s.get('invincibility')
+        if invincibility is not None and not invincibility['collected']:
+            mark(invincibility['position'], 'I')
         for shortcut in s['shortcuts']:
             mark(shortcut['gate'], '/' if shortcut['opened'] else '|')
         for ghost in s['ghosts']:
@@ -266,3 +314,18 @@ class MansionEnv(gym.Env):
 
     def close(self):
         pass
+
+
+class RealtimeMansionEnv(MansionEnv):
+    """The desktop game's free movement: six actions, each lasting 1/60 second.
+
+    Existing grid planners/models use MansionEnv; they cannot be used as a
+    correctness or difficulty evaluation of this continuous controller.
+    """
+    core_class = RealtimeGameCore
+    observation_size = REALTIME_OBSERVATION_SIZE
+    observation_contract = REALTIME_OBSERVATION_VERSION
+    encode = staticmethod(encode_realtime_observation)
+
+    def __init__(self, *args, expected_observation_version=REALTIME_OBSERVATION_VERSION, **kwargs):
+        super().__init__(*args, expected_observation_version=expected_observation_version, **kwargs)

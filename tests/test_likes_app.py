@@ -30,7 +30,7 @@ def complete(app, stage=1):
     app.start_run()
     route = next(r for r in ROUTES if r['level_id'] == f'stage_{stage:02d}' and r['target'] == 4)
     for action in route['actions']:
-        result = app.core.step(action)
+        result = app.core.advance(action, .3)
     assert result.outcome['status'] == 'COMPLETE'
     app.finish_run(result)
 
@@ -87,7 +87,7 @@ def test_real_replay_keeps_star_best_and_syncs_memory(app):
     app.start_run()
     route = next(r for r in ROUTES if r['level_id'] == 'stage_01' and r['target'] == 14)
     for action in route['actions']:
-        result = app.core.step(action)
+        result = app.core.advance(action, .3)
     app.finish_run(result)
     best = app.campaign.star_record(1)
     assert app.scene == 'memory_choice'

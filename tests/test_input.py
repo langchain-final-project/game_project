@@ -77,11 +77,12 @@ def test_most_recent_direction_wins_then_release_restores_older():
     ((pygame.K_UP, pygame.K_e), 4),
     ((pygame.K_e, pygame.K_UP), 4),
     ((pygame.K_RIGHT, pygame.K_UP), 0),
+    ((pygame.K_UP, pygame.K_RIGHT), 3),
     ((pygame.K_DOWN, pygame.K_RIGHT), 3),
     ((pygame.K_LEFT, pygame.K_DOWN), 1),
     ((pygame.K_SPACE, pygame.K_LEFT), 2),
 ])
-def test_equal_timestamps_follow_declared_priority(keys, expected):
+def test_equal_timestamps_follow_press_order_except_interaction(keys, expected):
     adapter = InputAdapter()
     for key in keys:
         adapter.handle(keydown(key, 50))
@@ -157,3 +158,57 @@ def test_short_movement_and_interaction_are_preserved_separately():
     # 처리한 입력은 다시 실행되지 않습니다.
     assert adapter.consume_movement() == 5
     assert adapter.consume_interaction() is False
+
+
+def test_held_turn_waits_for_opening_while_current_direction_is_held():
+    adapter = InputAdapter()
+    adapter.handle(keydown(pygame.K_w))
+    assert adapter.consume_movement(lambda action: True) == 0
+    adapter.handle(keydown(pygame.K_d))
+    assert adapter.consume_movement(lambda action: action == 0) == 0
+    assert adapter.consume_movement(lambda action: action == 0) == 0
+    assert adapter.consume_movement(lambda action: True) == 3
+    # Once turned, a blocked right does not fall back to the older up key.
+    assert adapter.consume_movement(lambda action: action == 0) == 3
+
+
+def test_released_blocked_tap_does_not_turn_at_a_later_opening():
+    adapter = InputAdapter()
+    adapter.handle(keydown(pygame.K_w))
+    adapter.consume_movement(lambda action: True)
+    adapter.handle(keydown(pygame.K_d))
+    adapter.handle(keyup(pygame.K_d))
+    assert adapter.consume_movement(lambda action: action == 0) == 0
+    assert adapter.consume_movement(lambda action: True) == 0
+
+
+def test_buffer_does_not_continue_released_current_direction():
+    adapter = InputAdapter()
+    adapter.handle(keydown(pygame.K_w))
+    adapter.consume_movement(lambda action: True)
+    adapter.handle(keydown(pygame.K_d))
+    adapter.handle(keyup(pygame.K_w))
+    assert adapter.consume_movement(lambda action: action == 0) == 3
+    adapter.handle(keyup(pygame.K_d))
+    assert adapter.consume_movement(lambda action: True) == 5
+
+
+def test_newer_press_replaces_buffer_regardless_of_timestamp():
+    adapter = InputAdapter()
+    adapter.handle(keydown(pygame.K_w, 100))
+    adapter.consume_movement(lambda action: True)
+    adapter.handle(keydown(pygame.K_d, 99))
+    assert adapter.consume_movement(lambda action: action == 0) == 0
+    adapter.handle(keydown(pygame.K_s, 98))
+    assert adapter.consume_movement(lambda action: True) == 1
+
+
+def test_space_stops_movement_and_clear_discards_turn_buffer():
+    adapter = InputAdapter()
+    adapter.handle(keydown(pygame.K_w))
+    adapter.consume_movement(lambda action: True)
+    adapter.handle(keydown(pygame.K_SPACE))
+    assert adapter.consume_movement(lambda action: True) == 5
+    adapter.clear()
+    adapter.handle(keydown(pygame.K_d))
+    assert adapter.consume_movement(lambda action: action == 0) == 3

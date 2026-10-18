@@ -136,6 +136,15 @@
       }
     },
 
+    "magnet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["position", "duration_ticks"],
+      "properties": {
+        "position": {"$ref": "#/$defs/position"},
+        "duration_ticks": {"const": 13}
+      }
+    },
     "chaser": { 
       "type": "object",
       "additionalProperties": false,
@@ -222,6 +231,18 @@
     },
     "chaser": {
       "$ref": "#/$defs/chaser"
+    },
+    "magnet": {
+      "$ref": "#/$defs/magnet"
+    },
+    "invincibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["position", "duration_ticks"],
+      "properties": {
+        "position": {"$ref": "#/$defs/position"},
+        "duration_ticks": {"type": "integer", "const": 10}
+      }
     },
     "shortcuts": {
       "type": "array",

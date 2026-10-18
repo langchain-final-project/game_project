@@ -1,0 +1,33 @@
+{
+  "status": "implemented",
+  "observation_version": "vector_v6_realtime",
+  "dtype": "float32",
+  "shape": [623],
+  "bounds": [0, 1],
+  "base_contract": "observation_contract.json",
+  "base_prefix_length": 620,
+  "base_semantics_overrides": [
+    "position is the occupied cell: floor(continuous center + 0.5)",
+    "pickup, contact and interaction are checked every physics frame",
+    "ghosts, protection and item countdowns advance only on world ticks",
+    "an item picked up between world ticks is active immediately and first decremented on the next world tick"
+  ],
+  "additional_fields": [
+    {"name": "continuous_center", "offset": 620, "length": 2, "normalization": "x/15,y/8"},
+    {"name": "world_phase", "offset": 622, "length": 1, "normalization": "(physics_frame % 18)/18"}
+  ],
+  "action_enum": {"UP": 0, "DOWN": 1, "LEFT": 2, "RIGHT": 3, "INTERACT": 4, "WAIT": 5},
+  "action_seconds": 0.016666666666666666,
+  "frames_per_world_tick": 18,
+  "world_tick_seconds": 0.3,
+  "movement_tiles_per_frame": 0.05555555555555555,
+  "player_half_extent_tiles": 0.28,
+  "rules": [
+    "latest direction applies on the next physics frame, even between cell centers",
+    "movement is cardinal and body bounds cannot cross a wall or closed gate",
+    "INTERACT and WAIT occupy one physics frame without translating the cat",
+    "external max_episode_steps counts physics frames",
+    "desktop and RealtimeMansionEnv use the same RealtimeGameCore",
+    "legacy grid policies and 620-float models are incompatible with this contract"
+  ]
+}

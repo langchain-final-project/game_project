@@ -16,6 +16,8 @@ import random
 from .levels import MAX_TICKS, validate_level
 from .scoring import score_outcome
 
+OBSERVATION_VERSION = "vector_v5_invincibility"
+
 
 class Action(IntEnum):
     UP = 0
@@ -144,6 +146,10 @@ class GameCore:
             "items": [{"id": item["id"], "position": list(item["position"]),
                        "value": item["value"], "active": True} for item in config["items"]],
             "ghosts": ghosts,
+            "magnet": ({**deepcopy(config["magnet"]), "collected": False,
+                        "remaining_ticks": 0} if "magnet" in config else None),
+            "invincibility": ({**deepcopy(config["invincibility"]), "collected": False,
+                               "remaining_ticks": 0} if "invincibility" in config else None),
             "shortcuts": [{"id": shortcut["id"], "terminal": list(shortcut["terminal"]),
                            "gate": list(shortcut["gate"]), "opened": False}
                           for shortcut in config["shortcuts"]],
@@ -168,9 +174,48 @@ class GameCore:
     def snapshot(self) -> dict:
         return deepcopy(self._state)
 
+    def _movement_target(self, action: int) -> tuple[list[int], str | None]:
+        state = self._state
+        dx, dy = ((0, -1), (0, 1), (-1, 0), (1, 0))[int(action)]
+        x, y = state["position"][0] + dx, state["position"][1] + dy
+        destination = [x, y]
+        if not (0 <= x < state["width"] and 0 <= y < state["height"]):
+            return destination, "bounds"
+        if state["grid"][y][x] == "#":
+            return destination, "wall"
+        if any(not shortcut["opened"] and shortcut["gate"] == destination
+               for shortcut in state["shortcuts"]):
+            return destination, "gate"
+        return destination, None
+
+    def can_move(self, action: int) -> bool:
+        """Query terrain without advancing time; ghosts do not block a tile."""
+        if (not isinstance(action, Integral) or isinstance(action, bool)
+                or not 0 <= action <= 3):
+            raise ValueError("movement action must be an integer 0..3")
+        return self._movement_target(action)[1] is None
+
     def _ensure_active(self) -> None:
         if self._state["terminal"]:
             raise RuntimeError("Episode has ended; call reset() before stepping again")
+
+    def _collect_warmth(self, events: list[dict], *, magnetic: bool) -> None:
+        """획득은 즉시 확정하고, 흡입 애니메이션은 UI에서 처리합니다."""
+        state = self._state
+        radius = 1 if magnetic else 0
+        for item in state["items"]:
+            if (item["active"] and all(
+                    abs(item["position"][axis] - state["position"][axis]) <= radius
+                    for axis in (0, 1))):
+                item["active"] = False
+                state["carried"] += item["value"]
+                events.append({
+                    "type": "collect", "item_id": item["id"],
+                    "value": item["value"], "carried": state["carried"],
+                    "position": list(state["position"]),
+                    "source_position": list(item["position"]),
+                    "magnetic": magnetic,
+                })
 
     def _next_chaser_position(self, origin: list[int]) -> list[int]:
         """벽과 닫힌 문을 피해 고양이에게 가는 최단 경로의 첫 칸을 찾습니다."""
@@ -264,14 +309,21 @@ class GameCore:
                 })
     
     def step(self, action: int) -> StepResult:
+        return self._transition(action)
+
+    def _transition(self, action: int, *, previous_position=None,
+                    advance_world=True, record_action=True) -> StepResult:
+        """Shared rules for grid turns and continuous movement frames."""
         self._ensure_active()
         if not isinstance(action, Integral) or isinstance(action, bool) or not 0 <= action <= 5:
             raise ValueError("action must be an integer 0..5 from Action")
         chosen = Action(action)
-        self._actions.append(int(chosen))
+        if record_action:
+            self._actions.append(int(chosen))
         state = self._state
         events: list[dict] = []
-        previous_position = list(state["position"])
+        previous_position = list(state["position"] if previous_position is None
+                                 else previous_position)
         previous_ghosts = [list(ghost["position"]) for ghost in state["ghosts"]]
         chaser = state["chaser"]
         previous_chaser = (
@@ -283,17 +335,7 @@ class GameCore:
         requested_return = False
 
         if chosen <= Action.RIGHT:
-            dx, dy = ((0, -1), (0, 1), (-1, 0), (1, 0))[int(chosen)]
-            x, y = state["position"][0] + dx, state["position"][1] + dy
-            destination = [x, y]
-            reason = None
-            if not (0 <= x < state["width"] and 0 <= y < state["height"]):
-                reason = "bounds"
-            elif state["grid"][y][x] == "#":
-                reason = "wall"
-            elif any(not shortcut["opened"] and shortcut["gate"] == destination
-                     for shortcut in state["shortcuts"]):
-                reason = "gate"
+            destination, reason = self._movement_target(chosen)
             if reason is not None:
                 events.append({"type": "blocked", "from": previous_position,
                                "to": destination, "reason": reason})
@@ -306,26 +348,6 @@ class GameCore:
                     "to": list(destination),
                 })
 
-                # 이동한 칸에 아직 획득하지 않은 온기가 있으면 수집합니다.
-                for item in state["items"]:
-                    if (
-                        item["active"]
-                        and item["position"] == state["position"]
-                    ):
-                        # 획득한 온기는 다시 수집되지 않도록 비활성화합니다.
-                        item["active"] = False
-                        state["carried"] += item["value"]
-
-                        # 기존 이벤트를 유지하여 소리와 알림도 연결합니다.
-                        events.append({
-                            "type": "collect",
-                            "item_id": item["id"],
-                            "value": item["value"],
-                            "carried": state["carried"],
-                            "position": list(state["position"]),
-                        })
-                        break
-                    
         elif chosen == Action.INTERACT:
             if state["position"] == state["exit"]:
                 if state['carried'] >= state['target'] and state['quest']['collected']:
@@ -336,14 +358,6 @@ class GameCore:
                 if state['position'] == state['quest']['position'] and not state['quest']['collected']:
                     state['quest']['collected'] = True
                     events.append({'type':'quest_collect', 'name':state['quest']['name']})
-                # for item in state["items"]:
-                #     if item["active"] and item["position"] == state["position"]:
-                #         item["active"] = False
-                #         state["carried"] += item["value"]
-                #         events.append({"type": "collect", "item_id": item["id"],
-                #                        "value": item["value"], "carried": state["carried"],
-                #                        "position": list(state["position"])})
-                #         break
                 for shortcut in state["shortcuts"]:
                     if not shortcut["opened"] and shortcut["terminal"] == state["position"]:
                         shortcut["opened"] = True
@@ -352,16 +366,42 @@ class GameCore:
                                        "position": list(state["position"])})
                         break
 
+        invincibility = state["invincibility"]
+        if (invincibility is not None and not invincibility["collected"]
+                and state["position"] == invincibility["position"]):
+            invincibility["collected"] = True
+            invincibility["remaining_ticks"] = invincibility["duration_ticks"]
+            events.append({"type": "invincibility_collect",
+                           "position": list(invincibility["position"]),
+                           "duration_ticks": invincibility["duration_ticks"]})
+        item_invincible = invincibility is not None and invincibility["remaining_ticks"] > 0
+
+        magnet = state["magnet"]
+        if magnet is not None and not magnet["collected"] and state["position"] == magnet["position"]:
+            magnet["collected"] = True
+            magnet["remaining_ticks"] = magnet["duration_ticks"]
+            events.append({"type": "magnet_collect", "position": list(magnet["position"]),
+                           "duration_ticks": magnet["duration_ticks"]})
+        magnetic = magnet is not None and magnet["remaining_ticks"] > 0
+        if magnetic or state["position"] != previous_position:
+            self._collect_warmth(events, magnetic=magnetic)
+        # 획득한 틱도 포함하여 정확히 13번 수집합니다. 대기·막힌 이동도 1틱입니다.
+        if magnetic and advance_world:
+            magnet["remaining_ticks"] -= 1
+            if magnet["remaining_ticks"] == 0:
+                events.append({"type": "magnet_end"})
+
         # Patrols are independent of one another; old positions above are kept
         # until all new positions exist, so contact is simultaneous and stable.
-        for ghost in state["ghosts"]:
+        for ghost in state["ghosts"] if advance_world else ():
             ghost["countdown"] -= 1
             if ghost["countdown"] == 0:
                 ghost["route_index"] = (ghost["route_index"] + ghost["direction"]) % len(ghost["route"])
                 ghost["countdown"] = ghost["ticks_per_move"]
             ghost["position"] = list(ghost["route"][ghost["route_index"]])
             ghost["next_position"] = list(ghost["route"][(ghost["route_index"] + ghost["direction"]) % len(ghost["route"])])
-        self._update_chaser(events)
+        if advance_world:
+            self._update_chaser(events)
         contacts = []
         for old_ghost, ghost in zip(previous_ghosts, state["ghosts"]):
             final_overlap = state["position"] == ghost["position"]
@@ -387,25 +427,33 @@ class GameCore:
 
                 # 이전 틱에는 떨어져 있었다면 새로운 충돌입니다.
                 if previous_chaser != previous_position:
-                    # 다음 2틱은 정지하고, 3번째 틱에 다시 이동합니다.
+                    # 다음 3틱은 정지하고, 4번째 틱에 다시 이동합니다.
                     chaser["countdown"] = 4
         
         if contacts:
             events.append({"type": "contact", "ghost_ids": [contact["ghost_id"] for contact in contacts],
-                           "contacts": contacts, "protected": previous_protection > 0,
+                           "contacts": contacts, "protected": previous_protection > 0 or item_invincible,
+                           "item_invincible": item_invincible,
                            "position": list(state["position"])})
-        if contacts and previous_protection == 0:
+        if contacts and previous_protection == 0 and not item_invincible:
             state["courage"] = max(0, state["courage"] - 1)
             state["protection"] = self._config["protection_future_ticks"]
             self._damage_count += 1
             state["damage_count"] = self._damage_count
             events.append({"type": "damage", "amount": 1, "courage": state["courage"],
                            "protection": state["protection"], "damage_count": self._damage_count})
-        else:
+        elif advance_world:
             state["protection"] = max(0, previous_protection - 1)
 
-        state["tick"] += 1
-        state["remaining_ticks"] -= 1
+        # The pickup tick and the final tick both protect before decrementing.
+        # Item protection never grants or refreshes post-damage protection.
+        if item_invincible and advance_world:
+            invincibility["remaining_ticks"] -= 1
+            if invincibility["remaining_ticks"] == 0:
+                events.append({"type": "invincibility_end"})
+
+        state["tick"] += int(advance_world)
+        state["remaining_ticks"] -= int(advance_world)
         if state["courage"] == 0:
             self._finish("FAILED", "courage", events)
         elif requested_return:
@@ -448,7 +496,7 @@ class GameCore:
         return {
             "replay_version": "1.0",
             "rules_version": self._config["rules_version"],
-            "observation_version": "vector_v3_chaser",
+            "observation_version": OBSERVATION_VERSION,
             "stage_id": self._config["id"], "stage": self._config["stage"],
             "config_hash": self.config_hash, "config_hash_algorithm": "sha256-canonical-json-utf8",
             "mode": self.mode, "seed": self.seed, "randomize_phase": self.randomize_phase,
