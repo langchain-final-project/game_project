@@ -3,37 +3,43 @@
 import math
 import pygame
 from .theme import text, wrapped, panel, CREAM, INK, NIGHT, PAPER, GOLD, SAGE
-from .illustration import cat, ghost, prop, glow
+from .illustration import cat, ghost, prop, glow, quest_prop
+from .ghost_sprites import movement_direction
+from .map_sprites import FRAME_SHEETS, SHEET_PATH as MAP_SHEET, WARMTH_SHEET, map_image
 
-# PNG가 준비 되기 전에는 None 유지 (필요한 PNG: 바닥 러그, 온기, 벽, 바닥)
-# 경로 지정은 assets 폴더 기준
-# PNG가 준비되면 None 대신 경로만 넣으면 됨! 예) RUG_IMAGE_PATH = 'art/rug.png'
+# Paths are relative to assets. Atlas entries select their named frame below;
+# None retains the existing drawing for artwork that has not been supplied.
 
 FIELD_IMAGES = {
-    'floor': None,              # 바닥 타일
-    'wall': None,               # 벽 타일
-    'rug': None,                # 러그
+    'floor': MAP_SHEET,         # 바닥 타일
+    'wall': MAP_SHEET,          # 벽 타일
+    'window': MAP_SHEET,
+    'lantern': MAP_SHEET,
+    'rug': MAP_SHEET,           # 러그
 
-    'warmth_1': None,           # 1점 온기
-    'warmth_3': None,           # 3점 온기
+    'warmth_1': WARMTH_SHEET,   # 1점 온기
+    'warmth_3': WARMTH_SHEET,   # 3점 온기
     'magnet': 'icons/items/magnet_item.png',
     'invincibility': 'icons/items/invincibility_item.png',
 
     'return_base': None,        # 귀환 지점의 바닥 표시
-    'gate_closed': None,        # 닫힌 샛문
-    'gate_open': None,          # 열린 샛문
-    'terminal_a': None,         # A 조작 장치
-    'terminal_b': None,         # B 조작 장치
+    'return_closed': MAP_SHEET,
+    'return_open': MAP_SHEET,
+    'gate_closed': MAP_SHEET,   # 닫힌 샛문
+    'gate_open': MAP_SHEET,     # 열린 샛문
+    'terminal_a': MAP_SHEET,    # A 조작 장치: 해
+    'terminal_b': MAP_SHEET,    # B 조작 장치: 달
 
-    'quest_frame': None,        # 필수 물건 주변 테두리
+    'quest_frame': MAP_SHEET,   # 필수 물건 주변 테두리 (느낌표 포함)
     'quest_badge': None,        # 느낌표 뒤의 원형 배경
     'protection': None,         # 플레이어 보호 표시
     'interaction_background': None,  # 상호작용 안내 배경
+    'interaction_key': MAP_SHEET,
 
     'game_background': None,    # 게임 전체 화면 배경
-    'heart_full': None,         # 남아 있는 용기
-    'heart_empty': None,        # 소진된 용기
-    'info_divider': None,       # 오른쪽 설명 패널의 구분선
+    'heart_full': MAP_SHEET,    # 남아 있는 용기
+    'heart_empty': MAP_SHEET,   # 소진된 용기
+    'info_divider': MAP_SHEET,  # 오른쪽 설명 패널의 구분선
 }
 
 def _draw_png(surface, assets, key, rect):
@@ -47,7 +53,9 @@ def _draw_png(surface, assets, key, rect):
     rect = pygame.Rect(rect)
 
     # 기존 이미지 로더가 파일 읽기와 크기별 캐시를 담당합니다.
-    image = assets.image(path, rect.size)
+    image = (map_image(key, rect.size)
+             if path == FRAME_SHEETS.get(key)
+             else assets.image(path, rect.size))
     surface.blit(image, rect.topleft)
 
     return True
@@ -156,6 +164,7 @@ def draw_field(
     mood='idle',
     player_interpolation=None,
     magnet_flights=(),
+    ghost_facings=None,
 ):
     # 게임 상태와 탐사 화면 영역을 준비
     s = snapshot
@@ -266,10 +275,12 @@ def draw_field(
                     )
 
                 elif y == 0 and x in (3, 8, 12):
-                    prop(surface, 'window', rr.inflate(-5, -4))
+                    if not _draw_png(surface, assets, 'window', rr):
+                        prop(surface, 'window', rr.inflate(-5, -4))
 
                 elif y == 0 and x in (5, 10):
-                    prop(surface, 'lantern', rr.inflate(-10, -9))
+                    if not _draw_png(surface, assets, 'lantern', rr):
+                        prop(surface, 'lantern', rr.inflate(-10, -9))
                     glow(surface, rr.center, 65)
 
     # ── 바닥의 러그 장식 ──
@@ -292,15 +303,19 @@ def draw_field(
             border_radius=12,
         )
 
-    prop(surface, 'garden', ex.inflate(-9, -4))
+    return_ready = s['quest']['collected'] and s['carried'] >= s['target']
+    return_key = 'return_open' if return_ready else 'return_closed'
+    if not _draw_png(surface, assets, return_key, ex):
+        prop(surface, 'garden', ex.inflate(-9, -4))
 
     # ── 샛문과 조작 장치 ──
     for sc in s['shortcuts']:
         gate = box(sc['gate'])
         term = box(sc['terminal'])
 
+        # Use the same destination in both states so opening never shifts a gate.
+        gate_rect = gate.inflate(-2, -2)
         if not sc['opened']:
-            gate_rect = gate.inflate(-7, -2)
 
             if not _draw_png(
                 surface, assets, 'gate_closed', gate_rect
@@ -322,8 +337,6 @@ def draw_field(
                     )
 
         else:
-            gate_rect = gate.inflate(-7, -7)
-
             if not _draw_png(
                 surface, assets, 'gate_open', gate_rect
             ):
@@ -335,9 +348,9 @@ def draw_field(
                     border_radius=10,
                 )
 
-        # 조작 장치는 기존 원의 지름에 맞춥니다.
+        # Keep A/B readable beside the sun/moon, without covering the symbols.
         radius = int(tile * .29)
-        terminal_rect = pygame.Rect(0, 0, radius * 2, radius * 2)
+        terminal_rect = pygame.Rect(0, 0, round(tile * .8), round(tile * .8))
         terminal_rect.center = term.center
 
         key = f"terminal_{sc['id'].lower()}"
@@ -345,14 +358,15 @@ def draw_field(
         if not _draw_png(surface, assets, key, terminal_rect):
             d.circle(surface, SAGE, term.center, radius)
 
-        # A/B 글자는 계속 코드로 표시합니다.
+        label_pos = (term.right - 8, term.bottom - 9)
+        d.circle(surface, NIGHT, label_pos, 9)
         text(
             surface,
             assets,
             sc['id'],
-            term.center,
-            18,
-            INK,
+            label_pos,
+            13,
+            CREAM,
             True,
             'center',
         )
@@ -409,13 +423,14 @@ def draw_field(
                 border_radius=12,
             )
 
-        prop(surface, q['kind'], rr.inflate(-10, -10))
+        atlas_frame = FIELD_IMAGES['quest_frame'] == MAP_SHEET
+        quest_prop(surface, q, rr.inflate(-24, -24) if atlas_frame else rr.inflate(-10, -10))
         glow(surface, rr.center, 60)
 
         badge_rect = pygame.Rect(0, 0, 14, 14)
         badge_rect.center = (rr.right - 9, rr.y + 8)
 
-        if not _draw_png(surface, assets, 'quest_badge', badge_rect):
+        if not atlas_frame and not _draw_png(surface, assets, 'quest_badge', badge_rect):
             d.circle(
                 surface,
                 GOLD,
@@ -423,25 +438,25 @@ def draw_field(
                 7,
             )
 
-        text(
-            surface,
-            assets,
-            '!',
-            (rr.right - 9, rr.y + 7),
-            11,
-            INK,
-            True,
-            'center',
-        )
+        if not atlas_frame:
+            text(
+                surface, assets, '!', (rr.right - 9, rr.y + 7),
+                11, INK, True, 'center',
+            )
 
     # ── 유령 캐릭터 ──
-    for i, g in enumerate(s['ghosts']):
+    ghost_facings = ghost_facings or {}
+    for g in s['ghosts']:
         pos = list(g['position'])
+        direction = ghost_facings.get(g['id'], movement_direction(pos, g['next_position']))
 
         # 이전 위치와 현재 위치 사이를 보간하여 부드럽게 보이게 합니다.
         # 화면에 그릴 좌표만 계산하며 게임 상태의 위치는 바꾸지 않습니다.
-        if previous and i < len(previous['ghosts']):
-            old = previous['ghosts'][i]['position']
+        previous_ghost = next((old for old in previous['ghosts']
+                               if old['id'] == g['id']), None) if previous else None
+        if previous_ghost is not None:
+            old = previous_ghost['position']
+            direction = movement_direction(old, g['position'], direction)
             pos = [
                 old[k] + (pos[k] - old[k]) * interpolation
                 for k in (0, 1)
@@ -452,8 +467,9 @@ def draw_field(
         # 현재 유령의 좌표와 ID를 기본 인자에 보관합니다.
 
         # 나중에 그릴 순찰형의 화면 좌표를 보관합니다.
-        def draw_patrol(pt=pt):
-            ghost(surface, pt, int(tile * .75), elapsed)
+        def draw_patrol(pt=pt, ghost_id=g['id'], direction=direction):
+            ghost(surface, pt, int(tile * .75), elapsed,
+                  ghost_id=ghost_id, direction=direction)
 
         tasks.append((pt[1], draw_patrol))
 
@@ -463,6 +479,7 @@ def draw_field(
     # 설정이 있고, 필수 물건 획득 후 활성화된 경우에만 그립니다.
     if chaser is not None and chaser['active']:
         pos = list(chaser['position'])
+        direction = ghost_facings.get(chaser['id'], 'down')
 
         previous_chaser = (
             previous.get('chaser') if previous else None
@@ -475,6 +492,7 @@ def draw_field(
             and previous_chaser['id'] == chaser['id']
         ):
             old = previous_chaser['position']
+            direction = movement_direction(old, chaser['position'], direction)
             pos = [
                 old[k] + (pos[k] - old[k]) * interpolation
                 for k in (0, 1)
@@ -483,8 +501,9 @@ def draw_field(
         pt = foot(pos)
 
         # 나중에 실행할 때도 추격형의 좌표와 ID를 사용하도록 보관합니다.
-        def draw_chaser(pt=pt):
-            ghost(surface, pt, int(tile * .75), elapsed)
+        def draw_chaser(pt=pt, ghost_id=chaser['id'], direction=direction):
+            ghost(surface, pt, int(tile * .75), elapsed,
+                  ghost_id=ghost_id, direction=direction)
 
         tasks.append((pt[1], draw_chaser))
 
@@ -538,7 +557,7 @@ def draw_field(
             lambda: cat(
                 surface,
                 pt,
-                int(tile * .87),
+                int(tile * .98),
                 facing,
                 elapsed,
                 cm,
@@ -614,7 +633,9 @@ def draw_field(
         p = foot(s['position'])
 
         # 글자 너비에 여백을 더해 안내 상자의 크기를 정합니다.
-        ww = assets.font(14).size(label)[0] + 20
+        show_key = label.startswith('E ')
+        caption = label[2:] if show_key else label
+        ww = assets.font(14).size(caption)[0] + (49 if show_key else 20)
         rr = pygame.Rect(
             p[0] - ww / 2,
             p[1] - tile - 23,
@@ -629,11 +650,15 @@ def draw_field(
             surface, assets, 'interaction_background', rr
         ):
             d.rect(surface, NIGHT, rr, border_radius=9)
+        if show_key:
+            key_rect = pygame.Rect(rr.x + 2, rr.y + 1, 24, 24)
+            _draw_png(surface, assets, 'interaction_key', key_rect)
+            text(surface, assets, 'E', key_rect.center, 13, INK, True, 'center')
         text(
             surface,
             assets,
-            label,
-            rr.center,
+            caption,
+            (rr.centerx + (13 if show_key else 0), rr.centery),
             14,
             CREAM,
             False,
@@ -655,6 +680,7 @@ def draw_game(
     mood='idle',
     player_interpolation=None,
     magnet_flights=(),
+    ghost_facings=None,
 ):
     # 게임 전체 화면의 배경을 채웁니다.
     s = snapshot
@@ -717,7 +743,7 @@ def draw_game(
         border=(118, 102, 113),
         radius=14,
     )
-    prop(surface, q['kind'], (505, 29, 42, 42))
+    quest_prop(surface, q, (505, 29, 42, 42))
     text(
         surface,
         assets,
@@ -774,6 +800,7 @@ def draw_game(
         mood,
         player_interpolation=player_interpolation,
         magnet_flights=magnet_flights,
+        ghost_facings=ghost_facings,
     )
 
     # ── 오른쪽: 필수 물건과 복원 설명 ──
@@ -793,11 +820,10 @@ def draw_game(
         INK,
         True,
     )
-    prop(
+    quest_prop(
         surface,
-        q['kind'],
+        q,
         (1098, 154, 102, 102),
-        q['collected'],
     )
     text(
         surface,
@@ -820,7 +846,7 @@ def draw_game(
     )
 
     # ── 오른쪽: 추가 목표와 보상 안내 ──
-    divider_rect = pygame.Rect(1059, 416, 182, 1)
+    divider_rect = pygame.Rect(1059, 409, 182, 14)
 
     if not _draw_png(surface, assets, 'info_divider', divider_rect):
         d.line(

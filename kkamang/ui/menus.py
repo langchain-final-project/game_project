@@ -109,7 +109,7 @@ def _background(surface, assets, name='title_background.png', shade=0, ctx=None,
     data = _data(ctx)
     shelter(surface, data.get('completed', []), data.get('cosmetics', {}),
             float(ctx.get('elapsed', 0)), before=ctx.get('home_view')=='before',
-            focus_stage=ctx.get('stage') if ctx.get('story_kind')=='memory' else None,show_actors=actors)
+            show_actors=actors)
     if shade:
         _overlay(surface, (0, 0, W, H), alpha=min(shade,140))
 
@@ -236,7 +236,7 @@ def _photo(surface, assets, story, rect, locked=False, large=False, frame='defau
         key=('memory_v2',n,inner.size,tuple(sorted((cosmetics or {}).items())))
         if key not in _COVER_CACHE:
             scene=pygame.Surface((1280,720),pygame.SRCALPHA)
-            shelter(scene,range(1,n+1),cosmetics or {},time=1.7,focus_stage=n)
+            shelter(scene,range(1,n+1),cosmetics or {},time=1.7)
             _COVER_CACHE[key]=pygame.transform.smoothscale(scene,inner.size)
         surface.blit(_COVER_CACHE[key],inner)
     else:

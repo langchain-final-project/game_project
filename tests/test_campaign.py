@@ -274,7 +274,10 @@ def test_twelve_story_entries_match_levels_and_real_assets():
         assert cfg['name'] == story['name']
         assert story['lines'] and story['restoration'] and story['before'] and story['teaser']
         if story['art']:
-            assert (project / 'assets/art' / story['art']).is_file()
+            # Match the renderer: bare filenames use art/, paths are relative
+            # to assets/ (including the reorganized background/ directory).
+            image = story['art'] if '/' in story['art'] else 'art/' + story['art']
+            assert (project / 'assets' / image).is_file()
         else:
             assert story['emblem']
     assert len(STAGES) == 12 and PROLOGUE and ENDING

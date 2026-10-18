@@ -1,92 +1,96 @@
-"""Original code-native picture-book assets. No simulation state is mutated here.
-All characters use one rig; legs, tail, gaze and scarf are independent layers.
-"""
+"""PNG cat animation and decorative illustrations; simulation state is read-only."""
 import math
 from functools import lru_cache
 import pygame
+from ..paths import ASSET_DIR
+from .cat_sprites import sprite_frame, WALK_FRAMES
+from .ghost_sprites import ghost_frame, RESIDENT_IDS
 
 INK=(43,39,57); FUR=(53,48,66); LIGHT=(77,69,88); CREAM=(248,232,202)
 SAGE=(151,181,157); GOLD=(240,194,111); ROSE=(218,151,155)
 
-@lru_cache(maxsize=2048)
+# Quest art is selected by ID: furniture and quests can share a kind, and the
+# two music quests have different drawings. The towel reuses the blanket art.
+QUEST_RECTS = {
+    'memory_01': (25, 738, 375, 337),
+    'memory_02': (30, 60, 385, 310),
+    'memory_03': (435, 60, 305, 310),
+    'memory_04': (775, 50, 310, 325),
+    'memory_05': (1100, 80, 325, 290),
+    'memory_06': (50, 385, 310, 345),
+    'memory_07': (388, 385, 330, 335),
+    'memory_08': (740, 430, 355, 275),
+    'memory_09': (1110, 375, 305, 355),
+    'memory_10': (25, 738, 375, 337),
+    'memory_11': (410, 728, 377, 325),
+    'memory_12': (850, 705, 190, 365),
+}
+
+
+@lru_cache(maxsize=4)
+def _png_file(filename):
+    image = pygame.image.load(str(ASSET_DIR / 'art' / filename))
+    return image.convert_alpha() if pygame.display.get_surface() else image
+
+
+@lru_cache(maxsize=16)
+def _png_source(filename, crop=None):
+    image = _png_file(filename)
+    if crop is not None:
+        image = image.subsurface(crop)
+    # Ignore almost invisible export noise outside the painted object.
+    bounds = image.get_bounding_rect(min_alpha=10)
+    if not bounds.width or not bounds.height:
+        raise ValueError(f'Empty PNG: {filename}, {crop}')
+    return image.subsurface(bounds).copy()
+
+
+@lru_cache(maxsize=256)
+def _png_image(filename, size, crop=None):
+    source = _png_source(filename, crop)
+    width, height = size
+    scale = min(width / source.get_width(), height / source.get_height())
+    image = pygame.transform.smoothscale(source, (
+        max(1, round(source.get_width() * scale)),
+        max(1, round(source.get_height() * scale)),
+    ))
+    canvas = pygame.Surface(size, pygame.SRCALPHA)
+    canvas.blit(image, image.get_rect(midbottom=(width // 2, height)))
+    return canvas
+
+
+def quest_prop(surface, quest, rect):
+    """Draw a mandatory item without confusing its kind with room decoration."""
+    rect = pygame.Rect(rect)
+    image = _png_image('Essential_item.png', rect.size, QUEST_RECTS[quest['id']])
+    surface.blit(image, rect)
+
+
 def cat_frame(size=100, direction='down', phase=0, mood='idle', scarf='default', *, walking=None):
-    s=pygame.Surface((160,180),pygame.SRCALPHA)
-    shadow=pygame.Surface((160,180),pygame.SRCALPHA)
-    pygame.draw.ellipse(shadow,(20,18,30,45),(24,153,111,16));s.blit(shadow,(0,0))
+    # Keep the existing drawing API. Mood/scarf do not select art until those
+    # variants exist; a hurt cat can still walk and retain its separate shield.
     is_walking = mood == 'walk' if walking is None else walking
-    walk=math.sin(phase*math.pi/4)*9 if is_walking else 0
-    bob=abs(walk)*.28
-    tail=[(107,128),(133,126),(140,106+math.sin(phase*math.pi/4)*6),(131,90)]
-    pygame.draw.lines(s,INK,False,tail,19);pygame.draw.lines(s,LIGHT,False,tail,11)
-    # Four independently placed paws: alternating pairs move in opposite phases.
-    for x,y,shift,col in [(52,133,walk,INK),(98,133,-walk,INK),(61,150,-walk,FUR),(94,150,walk,FUR)]:
-        if mood=='collect' and x==94:y-=24;shift=6
-        pygame.draw.ellipse(s,col,(x-10,y+shift,23,20))
-        if x in (61,94):
-            for a in (0,5):pygame.draw.line(s,LIGHT,(x+a,y+shift+11),(x+a,y+shift+15),1)
-    pygame.draw.ellipse(s,INK,(40,82-bob,80,77));pygame.draw.ellipse(s,FUR,(44,86-bob,72,68))
-    pygame.draw.ellipse(s,(88,79,95),(65,113-bob,28,28))
-    if direction in ('left','right'):
-        offset=-10 if direction=='left' else 10
-    else:offset=0
-    # Ears and head, same proportions across portraits and field sprites.
-    hx=offset; hy=-bob
-    pygame.draw.polygon(s,INK,[(29+hx,63+hy),(28+hx,13+hy),(64+hx,34+hy)])
-    pygame.draw.polygon(s,INK,[(94+hx,34+hy),(133+hx,13+hy),(130+hx,66+hy)])
-    pygame.draw.polygon(s,ROSE,[(36+hx,43+hy),(36+hx,24+hy),(56+hx,37+hy)])
-    pygame.draw.polygon(s,ROSE,[(104+hx,37+hy),(125+hx,24+hy),(122+hx,48+hy)])
-    pygame.draw.ellipse(s,INK,(21+hx,29+hy,118,86));pygame.draw.ellipse(s,FUR,(25+hx,31+hy,110,79))
-    pygame.draw.arc(s,LIGHT,(39+hx,35+hy,79,55),.3,2.9,3)
-    if direction!='up':
-        eyes=[(56+hx,70+hy),(103+hx,70+hy)]
-        if direction=='left':eyes=[(43+hx,70+hy),(83+hx,70+hy)]
-        if direction=='right':eyes=[(70+hx,70+hy),(110+hx,70+hy)]
-        for x,y in eyes:
-            if mood in ('sleep','happy') or (mood=='idle' and phase==7):
-                pygame.draw.arc(s,GOLD,(x-10,y-5,20,12),0,math.pi,3)
-            else:
-                r=13 if mood=='surprised' else 11
-                pygame.draw.ellipse(s,GOLD,(x-r,y-r,r*2,r*2+3))
-                pygame.draw.ellipse(s,INK,(x-4,y-9,8,21))
-                pygame.draw.circle(s,CREAM,(int(x+4),int(y-6)),3)
-        pygame.draw.polygon(s,ROSE,[(76+hx,82+hy),(84+hx,82+hy),(80+hx,87+hy)])
-        pygame.draw.arc(s,(204,186,183),(72+hx,86+hy,8,8),math.pi,2*math.pi,2)
-        pygame.draw.arc(s,(204,186,183),(80+hx,86+hy,8,8),math.pi,2*math.pi,2)
-        for side in (-1,1):
-            for dy in (-3,4):pygame.draw.line(s,(149,134,151),(80+hx+side*35,86+hy+dy),(80+hx+side*52,84+hy+dy),2)
-    else:
-        for x in (60,80,100):pygame.draw.arc(s,LIGHT,(x-6,57+hy,12,24),.2,2.9,2)
-    cloth={'default':SAGE,'peach':ROSE,'lavender':(181,160,210)}.get(scarf,SAGE)
-    pygame.draw.polygon(s,cloth,[(47,108-bob),(110,108-bob),(98,120-bob),(56,117-bob)])
-    pygame.draw.polygon(s,cloth,[(98,114-bob),(112,116-bob),(120,139-bob),(102,133-bob)])
-    pygame.draw.line(s,(205,220,191),(56,111-bob),(98,113-bob),2)
-    return pygame.transform.smoothscale(s,(int(size),int(size*180/160)))
+    index = int(phase * WALK_FRAMES / 8 + 1e-9) % WALK_FRAMES if is_walking else 0
+    return sprite_frame(int(size), direction, is_walking, index)
 
 def cat(surface, center, size=80, direction='down', time=0., mood='idle', scarf='default',
         *, walking=None, walk_progress=None):
     is_walking = mood == 'walk' if walking is None else walking
     if is_walking and walk_progress is not None:
-        # 32 cached poses per cycle, driven by distance rather than wall time.
-        phase = (int(walk_progress * 32) % 32) / 4
+        # Six PNG poses per cycle, still driven by actual travel distance.
+        phase = (int(walk_progress * WALK_FRAMES) % WALK_FRAMES) * 8 / WALK_FRAMES
     else:
-        phase=int(time*(12 if is_walking else 3))%8
+        phase=(int(time * 10) % WALK_FRAMES) * 8 / WALK_FRAMES if is_walking else 0
     im=cat_frame(int(size),direction,phase,mood,scarf,walking=walking)
     surface.blit(im,im.get_rect(midbottom=(round(center[0]),round(center[1]))))
 
-def ghost(surface, center, size=50, time=0., resident=False, variant=0):
-    s=pygame.Surface((100,110),pygame.SRCALPHA)
-    col=((246,225,190),(190,217,182),(202,190,222))[variant%3] if resident else (170,161,200)
-    pygame.draw.ellipse(s,(31,26,44,35),(15,91,70,12))
-    pygame.draw.circle(s,col,(50,43),31)
-    pygame.draw.polygon(s,col,[(19,43),(81,43),(86,88),(72,82),(60,92),(48,83),(35,92),(18,86)])
-    for x in (38,63):
-        pygame.draw.ellipse(s,INK,(x-3,41,7,12))
-        if resident:pygame.draw.circle(s,(226,169,154),(x-6,59),5)
-    pygame.draw.arc(s,INK,(44,53,13,10),math.pi,2*math.pi,2)
-    if resident and variant==1:
-        pygame.draw.line(s,SAGE,(50,18),(52,2),3);pygame.draw.ellipse(s,SAGE,(51,0,18,9))
-    s=pygame.transform.smoothscale(s,(size,int(size*1.1)))
-    surface.blit(s,s.get_rect(midbottom=(int(center[0]),int(center[1]+math.sin(time*2+variant)*3))))
+def ghost(surface, center, size=50, time=0., resident=False, variant=0, *,
+          ghost_id=None, direction='down'):
+    # Existing resident variants already follow Bosong/Ipari/Dore order.
+    ident = ghost_id if ghost_id is not None else RESIDENT_IDS[variant % 3]
+    image = ghost_frame(int(size), ident, direction)
+    surface.blit(image, image.get_rect(midbottom=(
+        round(center[0]), round(center[1] + math.sin(time * 2 + variant) * 3))))
 
 @lru_cache(maxsize=256)
 def prop_image(kind,size=64,lit=True):
@@ -135,7 +139,11 @@ def prop_image(kind,size=64,lit=True):
     return pygame.transform.smoothscale(s,(int(size),int(size)))
 
 def prop(surface,kind,rect,lit=True):
-    rect=pygame.Rect(rect);im=prop_image(kind,max(rect.size),lit)
+    rect=pygame.Rect(rect)
+    if kind in ('shelf', 'table', 'plant'):
+        surface.blit(_png_image(f'{kind}.png', rect.size), rect)
+        return
+    im=prop_image(kind,max(rect.size),lit)
     surface.blit(pygame.transform.smoothscale(im,rect.size),rect)
 
 @lru_cache(maxsize=128)
@@ -147,8 +155,8 @@ def halo(radius,color=(239,192,110)):
 def glow(surface,pos,radius=75):
     im=halo(radius);surface.blit(im,(int(pos[0]-radius),int(pos[1]-radius)))
 
-# Home is constructed from the same props and character rig as the field.
-def shelter(surface, completed=(), cosmetics=None,time=0.,before=False,focus_stage=None,show_actors=True):
+# Home keeps the room, lights and residents without furniture/item displays.
+def shelter(surface, completed=(), cosmetics=None,time=0.,before=False,show_actors=True):
     cosmetics=cosmetics or {};done=set() if before else set(completed);d=pygame.draw
     surface.fill((40,39,57))
     for y in range(200,720,40):
@@ -183,41 +191,6 @@ def shelter(surface, completed=(), cosmetics=None,time=0.,before=False,focus_sta
         for x in range(370,970,85):d.circle(surface,CREAM,(x,500),3)
     elif cosmetics.get('rug')=='leaves':
         for x in range(370,970,85):d.ellipse(surface,SAGE,(x,492,17,8))
-    # A permanent visible object per successful chapter, not a changing baked background.
-    kinds=['towel','map','frame','book','scarf','plant','music','tea','window','cushion','music','garden']
-    places=[(135,300),(280,300),(390,300),(890,310),(1050,300),(148,448),(1008,445),(800,453),(1090,153),(434,477),(731,324),(60,160)]
-    for n,(kind,(x,y)) in enumerate(zip(kinds,places),1):
-        if n in done:
-            if n in (1,4,6,8,10,11):prop(surface,'table',(x-17,y+26,112,90))
-            prop(surface,kind,(x,y,76,76))
-            if kind=='frame' and cosmetics.get('frame','default')!='default':
-                color=SAGE if cosmetics['frame']=='leaves' else (181,160,210)
-                d.rect(surface,color,(x+10,y+8,58,61),3,border_radius=5)
-            glow(surface,(x+38,y+30),90)
-            if n==focus_stage:
-                for k in range(5):
-                    px=x+38+math.sin(time*2+k)*43;py=y+36+math.cos(time*2+k)*35
-                    d.circle(surface,GOLD,(int(px),int(py)),2)
-        else:
-            d.ellipse(surface,(74,65,81),(x+10,y+53,55,9))
-    if show_actors:
-        # Resident activities persist after restoration and remain presentation-only.
-        if 1 in done:
-            d.line(surface,CREAM,(474,420),(457+math.sin(time*2)*5,422),5)
-        if 4 in done:
-            prop(surface,'book',(455,385,60,55))
-            d.line(surface,CREAM,(481,397),(493+math.sin(time*1.8)*4,400),2)
-        if 6 in done:
-            prop(surface,'cup',(239,452,35,35))
-            for k in range(3):
-                yy=473+(time*22+k*7)%27;d.circle(surface,(171,204,212),(237-k*4,int(yy)),2)
-        if 8 in done:
-            for k in range(3):d.arc(surface,(213,191,182),(822+k*7,420-int(time*8+k*5)%20,12,18),0,2.5,1)
-        if 11 in done:
-            for xx in (477,218,977):d.circle(surface,GOLD,(xx,370+int(math.sin(time*3)*5)),3)
-        if 12 in done:
-            d.rect(surface,(202,205,175),(83,175,29,45),border_radius=12)
-    prop(surface,'shelf',(18,292,123,145));prop(surface,'shelf',(1135,302,128,149))
     if show_actors:
         cat(surface,(615,532),132,time=time,mood='happy' if 10 in done else 'idle',scarf=cosmetics.get('scarf','default'))
         ghost(surface,(490,440),97,time,True,0)

@@ -18,6 +18,7 @@ from .input import InputAdapter
 from .audio import AudioEngine
 from .ui.theme import Assets, text, panel, CREAM, INK, NIGHT
 from .ui.field import draw_game
+from .ui.ghost_sprites import movement_direction
 from .ui.menus import render_menu
 
 SIZE = (1280, 720)
@@ -90,6 +91,7 @@ class GameApp:
         self.shake_timer = 0.
         self.last_replay_error = None
         self.facing = 'down'
+        self.ghost_facings = {}
         self.cat_mood = 'idle'
         self.mood_timer = 0.
         self.magnet_flights = []
@@ -145,6 +147,7 @@ class GameApp:
         self.pause_accumulator=0.
         self.motion_accumulator = 0.
         self.facing='down'
+        self.ghost_facings.clear()
         self.cat_mood='idle'
         self.mood_timer=0.
         self.magnet_flights.clear()
@@ -467,8 +470,23 @@ class GameApp:
         self.previous = before
         result = self.core.step(action)
         self.ghost_elapsed = animation_age
+        self._remember_ghost_facings(before, result.snapshot)
         self._process_result(result)
         return result
+
+    def _remember_ghost_facings(self, before, after):
+        """Retain presentation-only facing during waits and contact stuns."""
+        old = {g['id']: g['position'] for g in before['ghosts']}
+        if before.get('chaser') and before['chaser']['active']:
+            old[before['chaser']['id']] = before['chaser']['position']
+        current = list(after['ghosts'])
+        if after.get('chaser') and after['chaser']['active']:
+            current.append(after['chaser'])
+        for ghost in current:
+            if ghost['id'] in old and old[ghost['id']] != ghost['position']:
+                self.ghost_facings[ghost['id']] = movement_direction(
+                    old[ghost['id']], ghost['position'],
+                    self.ghost_facings.get(ghost['id'], 'down'))
 
     def _process_result(self, result):
         """Display shared core events and settle an ended run exactly once."""
@@ -682,6 +700,7 @@ class GameApp:
             result = self.core.step(action)
             if result.snapshot['tick'] != before['tick']:
                 self.previous = before
+                self._remember_ghost_facings(before, result.snapshot)
                 self.ghost_elapsed = self.motion_accumulator
             self._process_result(result)
         if self.scene == 'game':
@@ -755,6 +774,7 @@ class GameApp:
                     else 'idle'
                 ),
                 magnet_flights=self.magnet_flights,
+                ghost_facings=self.ghost_facings,
             )
             self.controls=[]
         else:
