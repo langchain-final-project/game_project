@@ -66,7 +66,7 @@ STAGES = [
         ],
         'restoration': '독서등과 담요가 놓이고, 보송과 함께 책을 읽을 수 있어요.',
         'teaser': '안내서에 표시된 다음 길은 서재 뒤 낮은 통로예요.',
-        'art': 'memory_scene.png', 'emblem': 'book', 'act': 1,
+        'art': 'art/before/memory_scene.png', 'emblem': 'book', 'act': 1,
     },
     {
         'stage': 5, 'name': '서재 뒤 샛길', 'photo': '네가 먼저',
@@ -118,7 +118,7 @@ STAGES = [
         ],
         'restoration': '찻상 주위에 세 주민과 까망이의 자리가 마련돼요.',
         'teaser': '빗줄기가 가늘어졌어요. 창 너머 정원문 표식이 가까이 보여요.',
-        'art': 'background/tea_memory.png', 'emblem': 'tea', 'act': 2,
+        'art': 'art/before/tea_memory.png', 'emblem': 'tea', 'act': 2,
     },
     {
         'stage': 9, 'name': '두 갈래 응접실', 'photo': '창가는 나눠 쓰기',
@@ -172,7 +172,7 @@ STAGES = [
         ],
         'restoration': '작은 정원문이 열려요. 까망이는 원할 때 떠나고 돌아올 수 있어요.',
         'teaser': '다음 비 오는 날, 작은 발소리가 다시 문 앞에 들려요.',
-        'art': 'ending_scene.png', 'emblem': 'garden', 'act': 3,
+        'art': 'art/before/ending_scene.png', 'emblem': 'garden', 'act': 3,
     },
 ]
 
