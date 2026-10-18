@@ -305,7 +305,11 @@ class GameApp:
             self.tutorial_return = self.scene
             self.tutorial_starts_run = False
             self.transition('tutorial')
-        elif ident in ('retry','restart'):
+        elif ident == 'retry':
+            # 결과 화면의 재도전은 바로 탐사를 시작하지 않는다. 방의 목표와
+            # 모드를 다시 확인할 수 있도록 같은 방의 준비 화면으로 돌아간다.
+            self.prepare(self.stage)
+        elif ident == 'restart':
             if self.scene in ('pause','game'):
                 self.request_confirm('restart')
             else:
@@ -319,6 +323,16 @@ class GameApp:
                 self.prepare(self.stage+1)
         elif ident in ('memory','view_memory'):
             self.start_memory()
+        elif ident == 'story_finish_next':
+            # A newly unlocked room can be entered immediately after its
+            # memory story.  Album replays and the final room keep their
+            # existing return/ending flows instead.
+            if self.story_kind == 'memory' and not self.replaying_story and self.stage < 12:
+                self.prepare(self.stage + 1)
+            else:
+                self.finish_story()
+        elif ident == 'story_finish_home':
+            self.finish_story()
         elif ident == 'story_next':
             self.next_dialogue()
         elif ident == 'story_skip':

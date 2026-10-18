@@ -567,7 +567,18 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         index=int(ctx.get('dialogue_index',0))+1
         total=int(ctx.get('total_dialogue',1))
         text(surface,assets,f'{min(index,total)} / {max(total,1)}',(1214,510),size=16,color=(138,119,113),anchor='topright')
-        ui.control('ending_continue' if ending else 'story_next',(1037,579,177,58),'다음 이야기' if index<total else ('쉼터로' if ending else '기억 간직하기'),primary=True)
+        # Once a newly earned room memory has fully appeared, let the player
+        # choose whether to return home or continue straight to the next room.
+        source_lines=story.get('lines', []) if isinstance(story, dict) else []
+        final_line_complete=(index == total and len(source_lines) >= total
+                             and len(line) >= len(source_lines[total-1][1]))
+        can_continue=(ctx.get('story_kind') == 'memory' and not ctx.get('replay')
+                      and stage < 12 and final_line_complete)
+        if can_continue:
+            ui.control('story_finish_next',(836,579,190,58),'다음 방으로')
+            ui.control('story_finish_home',(1037,579,177,58),'기억 간직하기',primary=True)
+        else:
+            ui.control('ending_continue' if ending else 'story_next',(1037,579,177,58),'다음 이야기' if index<total else ('쉼터로' if ending else '기억 간직하기'),primary=True)
         ui.control('story_skip',(1041,81,199,38),'이야기 건너뛰기')
         _footer(surface,assets,'Enter / Space 다음 이야기 · 사진과 보상은 이미 안전하게 반영됐어요' if ctx.get('story_kind')!='prologue' else 'Enter / Space 다음 이야기 · Esc 건너뛰기')
 

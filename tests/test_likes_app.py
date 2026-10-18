@@ -105,6 +105,29 @@ def test_real_replay_keeps_star_best_and_syncs_memory(app):
     assert not {'remember_friend', 'keep_friend'} & {c['id'] for c in app.controls}
 
 
+def test_new_memory_story_can_continue_directly_to_the_next_room(app):
+    app.campaign.data['completed'] = [1]
+    app.campaign.data['photos'] = [1]
+    app.start_memory(1)
+    app.dialogue_index = len(app.dialogues) - 1
+    app.dialogue_time = len(app.dialogues[-1][1]) / 38 + 1
+    app.draw()
+    assert {'story_finish_home', 'story_finish_next'} <= {c['id'] for c in app.controls}
+    app.dispatch('story_finish_next')
+    assert app.stage == 2
+    assert app.scene == 'briefing'
+
+
+def test_result_retry_returns_to_the_same_room_briefing(app):
+    complete(app)
+
+    assert app.scene == 'result'
+    app.dispatch('retry')
+
+    assert app.scene == 'briefing'
+    assert app.stage == 1
+
+
 def test_save_failure_retains_choice_then_can_retry(app):
     complete(app)
     complete(app)
