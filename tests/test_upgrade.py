@@ -70,7 +70,7 @@ def test_quest_overlap_rejected(field):
     l['quest']['position']=l['exit'] if field=='exit' else l['shortcuts'][0]['gate'] if field=='gate' else l['items'][0]['position']
     with pytest.raises(ValueError):validate_level(l)
 
-def test_character_directions_paws_moods_and_scarf_have_distinct_frames():
+def test_png_cat_directions_walk_and_fixed_appearance():
     os.environ.setdefault('SDL_VIDEODRIVER','dummy')
     import pygame
     from kkamang.ui.illustration import cat_frame
@@ -78,8 +78,9 @@ def test_character_directions_paws_moods_and_scarf_have_distinct_frames():
     assert len({raw(direction=d) for d in ['up','down','left','right']})==4
     for d in ['up','down','left','right']:
         assert raw(direction=d,mood='walk',phase=2)!=raw(direction=d,mood='walk',phase=6)
-    assert len({raw(mood=m) for m in ['idle','happy','collect','surprised']})==4
-    assert raw(scarf='default')!=raw(scarf='peach')
+    # The first PNG set has no expressions or scarf colour variants yet.
+    assert len({raw(mood=m) for m in ['idle','happy','collect','surprised']})==1
+    assert raw(scarf='default')==raw(scarf='peach')==raw(scarf='lavender')
 
 
 def test_hurt_cat_can_walk_and_walk_phase_depends_on_progress():

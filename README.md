@@ -38,12 +38,16 @@ python main.py
 | `kkamang/core.py`, `realtime.py`, `levels.py` | 공통 게임 판정·연속 이동·레벨 검증 |
 | `data/levels/stage_01.json` … `stage_12.json` | 맵·필수 물건·순찰·샛문·시간 |
 | `kkamang/ui/illustration.py` | 모든 화면이 공유하는 고양이·유령·가구·쉼터 |
+| `kkamang/ui/cat_sprites.py` | 고양이 PNG의 프레임 좌표·발 기준 정렬·이미지 캐시 |
+| `kkamang/ui/ghost_sprites.py` | 유령 A/B/C의 PNG·방향별 자세·몸체 정렬·이미지 캐시 |
 | `kkamang/ui/field.py`, `menus.py`, `theme.py` | 탐사 화면·메뉴·공통 버튼·텍스트 |
 | `kkamang/app.py` | 입력·1/60초 이동 프레임·0.3초 세계 틱·장면·저장 연결 |
 | `kkamang/campaign.py`, `story.py` | 지속 보상·세이브·대사 |
 | `kkamang/env.py` | 자유 이동 `RealtimeMansionEnv`: 6행동·623차원 (`vector_v6_realtime`), 기존 칸 단위 `MansionEnv`: 620차원 |
 
-새 그림에는 글자를 굽지 않습니다. PNG 원본은 보존했지만 주요 배경·캐릭터는 동일한 코드 기반 일러스트로 표시합니다. 독립적인 새 게임 판정은 UI에 추가하지 않습니다.
+새 그림에는 글자를 굽지 않습니다. 고양이는 `assets/art/kkamang.png`의 4방향 대기와 방향별 걷기 6프레임을 탐사·쉼터·대화에서 공유합니다. 원본 PNG를 수정하지 않고 불규칙한 프레임 영역을 잘라 같은 몸통·발 기준으로 정렬합니다. 현재 표정 전환과 목도리 색상 변경은 적용하지 않으며 이미지의 빨간 목도리를 사용합니다. 무적 보호막과 피격 중 걷기는 유지합니다. 배경·가구는 기존 표시를 사용하며 독립적인 새 게임 판정은 UI에 추가하지 않습니다.
+
+탐사 유령 A/B/C는 `assets/art/a.png`, `b.png`, `c.png`를 각각 사용합니다. 4열×2행의 8방향 자세 중 이동 방향에 해당하는 그림을 선택하고 기존 부유·직선 보간을 유지합니다. 정지·충돌 후 대기·일시정지 재개 시 마지막 이동 방향을 유지합니다. 쉼터·대화·호감도 화면은 보송=a, 이파리=b, 도레=c로 같은 PNG를 사용합니다. 엔딩 ID `ghost_b`(도레)와 탐사 유령 ID B(이파리 그림)는 별도 의미이므로 혼동하지 않습니다.
 
 ## 개발용 바로 실행
 

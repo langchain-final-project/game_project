@@ -33,7 +33,7 @@ class Assets:
         self._cats = {}
 
     def cat(self, size: tuple, scarf="default") -> pygame.Surface:
-        """Use the exact same rig as field animation and story portraits."""
+        """Use the same PNG cat as field animation and story portraits."""
         from .illustration import cat_frame
         source = cat_frame(int(size[0]), scarf=scarf)
         canvas = pygame.Surface(tuple(map(int,size)), pygame.SRCALPHA)

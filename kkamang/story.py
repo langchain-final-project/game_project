@@ -118,7 +118,7 @@ STAGES = [
         ],
         'restoration': '찻상 주위에 세 주민과 까망이의 자리가 마련돼요.',
         'teaser': '빗줄기가 가늘어졌어요. 창 너머 정원문 표식이 가까이 보여요.',
-        'art': 'tea_memory.png', 'emblem': 'tea', 'act': 2,
+        'art': 'background/tea_memory.png', 'emblem': 'tea', 'act': 2,
     },
     {
         'stage': 9, 'name': '두 갈래 응접실', 'photo': '창가는 나눠 쓰기',
