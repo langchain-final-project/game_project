@@ -257,7 +257,22 @@ class GameApp:
             self.last_replay_error = str(exc)
 
     def finish_run(self, result):
-        self.last_outcome = result.outcome
+        # 화면 표시용 결과를 따로 만듭니다.
+        self.last_outcome = dict(result.outcome)
+
+        motion = result.snapshot.get("motion")
+
+        if motion is not None:
+            # 실시간 모드: 1/60초 단위의 진행 횟수로 계산합니다.
+            used_seconds = motion["frame"] * FRAME_SECONDS
+        else:
+            # 격자 모드는 기존 틱 기준 계산을 유지합니다.
+            tick_seconds = float(
+                self.core.config.get("tick_seconds", 0.3)
+            )
+            used_seconds = result.outcome["ticks_used"] * tick_seconds
+
+        self.last_outcome["display_elapsed_seconds"] = used_seconds
         memory = None
         if (result.outcome['status'] == 'COMPLETE'
                 and self.run_id not in self.campaign.data['settled_ids']):
@@ -758,6 +773,18 @@ class GameApp:
                 self.core.config.get('tick_seconds', 0.3)
             )
 
+            tick_seconds = float(
+                self.core.config.get('tick_seconds', 0.3)
+            )
+
+            # 남은 틱을 초로 바꾸고,
+            # 현재 틱 안에서 이미 흐른 시간을 표시에서 제외합니다.
+            remaining_seconds = max(
+                0.,
+                snapshot['remaining_ticks'] * tick_seconds
+                - self.accumulator,
+            )
+
             draw_game(
                 self.canvas,
                 self.assets,
@@ -785,6 +812,7 @@ class GameApp:
                 ),
                 magnet_flights=self.magnet_flights,
                 ghost_facings=self.ghost_facings,
+                remaining_seconds=remaining_seconds,
             )
             self.controls=[]
         else:
