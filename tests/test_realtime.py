@@ -44,11 +44,12 @@ def key(app, event_type, value):
 
 
 def test_mid_cell_direction_changes_on_next_frame_without_waiting_for_tick(app):
+    start_x, start_y = app.core.config['start']
     key(app, pygame.KEYDOWN, pygame.K_d)
     app.advance(.1)
     first = app.core.snapshot()
     x, y = first['motion']['position']
-    assert 1 < x < 1.5 and y == 1
+    assert start_x < x < start_x + .5 and y == start_y
     assert first['tick'] == 0
     key(app, pygame.KEYDOWN, pygame.K_s)
     app.advance(FRAME_SECONDS)
@@ -112,7 +113,8 @@ def test_short_tap_survives_one_interaction_frame_then_stops(app):
         key(app, pygame.KEYUP, value)
     app.advance(FRAME_SECONDS * 3)
     assert app.core.actions == [Action.INTERACT, Action.RIGHT, Action.WAIT]
-    assert app.core.snapshot()['motion']['position'][0] == pytest.approx(1 + 1 / 18)
+    assert app.core.snapshot()['motion']['position'][0] == pytest.approx(
+        app.core.config['start'][0] + 1 / 18)
 
 
 def test_pause_preserves_fractional_position_and_clock_without_held_input(app):
@@ -140,17 +142,17 @@ def test_restart_discards_fractional_position_and_input(app):
     app.advance(.115)
     app.start_run()
     assert app.motion_accumulator == 0
-    assert app.core.snapshot()['motion']['position'] == [1, 1]
+    assert app.core.snapshot()['motion']['position'] == app.core.config['start']
     app.advance(FRAME_SECONDS)
     assert app.core.actions == [Action.WAIT]
 
 
 def test_wall_blocks_body_without_preventing_immediate_parallel_turn():
     game = RealtimeGameCore(load_level(1))
-    place(game, [3, 2])
+    place(game, [6, 2])
     blocked = game.advance(Action.RIGHT, .6).snapshot
-    assert blocked['motion']['position'] == pytest.approx([3.5 - PLAYER_RADIUS, 2])
-    assert blocked['position'] == [3, 2]
+    assert blocked['motion']['position'] == pytest.approx([6.5 - PLAYER_RADIUS, 2])
+    assert blocked['position'] == [6, 2]
     game.step(Action.UP)
     assert game.snapshot()['motion']['position'][1] < 2
     assert game.snapshot()['motion']['position'][0] == blocked['motion']['position'][0]
@@ -188,7 +190,7 @@ def test_warmth_is_collected_between_world_ticks_once():
     game = RealtimeGameCore(load_level(1))
     result = game.advance(Action.RIGHT, .15)
     assert result.snapshot['tick'] == 0
-    assert result.snapshot['position'] == [2, 1]
+    assert result.snapshot['position'] == [5, 1]
     assert result.snapshot['carried'] == 1
     assert sum(event['type'] == 'collect' for event in result.events) == 1
     assert game.step(Action.WAIT).snapshot['carried'] == 1
@@ -249,8 +251,8 @@ def test_invincibility_pickup_protects_same_frame_and_keeps_chaser_stun():
 def test_magnet_collects_rich_heat_across_wall_without_advancing_its_timer_per_frame():
     game = RealtimeGameCore(load_level(2))
     place(game, game._state['magnet']['position'])
-    game._state['items'] = [dict(id='heat_00', position=[4, 4], value=3, active=True)]
-    assert game._state['grid'][4][4] == '#'
+    game._state['items'] = [dict(id='heat_00', position=[7, 4], value=3, active=True)]
+    assert game._state['grid'][4][7] == '#'
     result = game.step(Action.WAIT)
     assert result.snapshot['carried'] == 3
     assert result.snapshot['magnet']['remaining_ticks'] == 13

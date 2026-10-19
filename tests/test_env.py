@@ -162,7 +162,7 @@ class EnvironmentTests(unittest.TestCase):
 
     def test_safety_penalty_only_on_actual_damage(self):
         config = load_level(1)
-        config['ghosts'] = [{'id': 'A', 'route': [[2, 1], [3, 1]],
+        config['ghosts'] = [{'id': 'A', 'route': [[5, 1], [6, 1]],
                              'initial_index': 0, 'direction': 1,
                              'initial_countdown': 2, 'ticks_per_move': 2}]
         env = MansionEnv(config=config, safety_coefficient=0.1)
@@ -222,7 +222,8 @@ class EnvironmentTests(unittest.TestCase):
         np.testing.assert_array_equal(absent[610:615], np.zeros(5))
         env = MansionEnv(2)
         before, _ = env.reset(seed=0)
-        np.testing.assert_allclose(before[610:615], [1, 0, 3 / 15, 4 / 8, 0])
+        magnet_x, magnet_y = env.core.config['magnet']['position']
+        np.testing.assert_allclose(before[610:615], [1, 0, magnet_x / 15, magnet_y / 8, 0])
         for action in (1, 1, 1, 3, 3):
             active, reward, _, _, info = env.step(action)
         self.assertEqual(reward, 0)

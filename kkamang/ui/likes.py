@@ -30,7 +30,8 @@ def draw_likes(surface, assets, ctx, ui):
         r = pygame.Rect(40 + i * 410, 132, 380, 420)
         panel(surface, r, fill=PAPER, border=COLORS[ident], radius=22)
         text(surface, assets, name, (r.centerx, 154), 28, INK, True, 'midtop')
-        ghost(surface, (r.centerx, 340), 125, ctx.get('elapsed', 0),
+        ghost_size = 145 if ident == 'ipari' else 125  # B 유령(이파리)만 10픽셀 확대합니다.
+        ghost(surface, (r.centerx, 340), ghost_size, ctx.get('elapsed', 0),
               resident=True, variant=VARIANTS[ident])
         text(surface, assets, description, (r.centerx, 362), 17, INK, anchor='midtop')
         value = totals[ident]

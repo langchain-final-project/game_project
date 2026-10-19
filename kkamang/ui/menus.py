@@ -13,6 +13,8 @@ from .theme import (CREAM, INK, NIGHT, PAPER, GOLD, LAVENDER, SAGE,
 
 from .illustration import shelter, cat as draw_cat, ghost, prop
 from .likes import draw_likes, draw_choice
+from .map_sprites import map_image
+from .ghost_sprites import ghost_frame
 
 W, H = 1280, 720
 _COVER_CACHE: dict = {}
@@ -138,14 +140,62 @@ def _chip(surface, assets, label, rect, fill=NIGHT, color=CREAM, size=17):
 
 
 def _lanterns(surface, assets, completed, rect):
+    """스테이지 클리어 여부에 따라 켜진 랜턴과 꺼진 랜턴을 표시합니다."""
     r = pygame.Rect(rect)
-    panel(surface, r, fill=NIGHT, border=GOLD, radius=16)
-    cell = r.w / 12
+
+    # PNG 테두리는 크기별로 한 번만 준비해서 재사용합니다.
+    frame_key = ('lantern_frame', id(assets), r.size)
+
+    if frame_key not in _COVER_CACHE:
+        source = assets.image('art/map/lantern_frame.png')
+
+        # PNG 바깥의 투명 여백만 제외합니다.
+        # 테두리 안쪽의 투명 영역은 그대로 유지됩니다.
+        bounds = source.get_bounding_rect(min_alpha=10)
+        frame = source.subsurface(bounds)
+
+        # 도트 느낌을 유지하면서 기존 테두리 크기에 맞춥니다.
+        _COVER_CACHE[frame_key] = pygame.transform.scale(
+            frame,
+            r.size,
+        )
+
+    surface.blit(_COVER_CACHE[frame_key], r.topleft)
+
+    # 랜턴 이미지 영역의 기존 너비는 유지합니다.
+    lantern_width = int(r.w / 12 - 12)
+
+    # 랜턴 중심 사이의 거리
+    cell = 38
+
+    # 랜턴 12개를 테두리 안에서 가운데 정렬합니다.
+    total_width = cell * 11 + lantern_width
+    start_x = r.centerx - total_width / 2
+
     for i in range(12):
-        _icon(surface, assets, 'lantern_on' if i+1 in completed else 'lantern_off',
-              (r.x+i*cell+6, r.y+7, cell-12, r.h-20))
-        text(surface, assets, str(i+1), (r.x+cell*(i+.5), r.bottom-8), size=11,
-             color=GOLD if i+1 in completed else (152, 138, 159), anchor='midbottom')
+        stage_number = i + 1
+        is_completed = stage_number in completed
+
+        lantern_rect = pygame.Rect(
+            start_x + i * cell,
+            r.y + 7,
+            lantern_width,
+            r.h - 20,
+        )
+
+        if is_completed:
+            # 클리어한 스테이지: map.png의 켜진 랜턴을 사용합니다.
+            image = map_image('lantern', lantern_rect.size)
+        else:
+            # 미클리어 스테이지: 별도로 추가한 꺼진 랜턴을 사용합니다.
+            # icon()은 투명 여백을 제외하고 이미지 비율을 유지합니다.
+            image = assets.icon(
+                'art/map/lantern_off.png',
+                lantern_rect.size,
+            )
+        # 랜턴 이미지 화면에 표시
+        surface.blit(image, lantern_rect.topleft)
+
 
 
 def _emblem(surface, assets, kind, rect, locked=False, large=False):
@@ -356,7 +406,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         subtitle = '비를 피할 자리는 처음부터 여기 있었어요.' if not completed else '작은 일이 모여, 돌아오고 싶은 집이 되었어요.'
         _header(surface, assets, title, subtitle,
                 f'기억 {len(photos)} / 12 · 별 {int(ctx.get("total_stars", 0))} / 36')
-        _lanterns(surface, assets, completed, (662, 124, 575, 65))
+        _lanterns(surface, assets, completed, (745, 124, 500, 65))
         if completed:
             latest = _story(ctx, max(completed))
             _overlay(surface, (37, 123, 570, 98), alpha=190, radius=16)
@@ -739,19 +789,79 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
     elif screen == 'tutorial':
         _background(surface,assets,'shelter_before.png',160,ctx=ctx)
         _header(surface,assets,'까망이의 첫 탐사','천천히 읽고 출발해도 괜찮아요. 지금은 시간이 흐르지 않아요.')
-        cards=[('01','작은 발걸음','방향키 / WASD로 한 칸씩 이동해요.\n움직이지 않아도 시간은 흘러요.','paw_cursor'),
-               ('02','온기는 자동 획득','온기는 자동 획득!\n물건·장치·귀환은 같은 칸에서 E!','warmth_3'),
-               ('03','물건과 온기 함께','방의 필수 물건 + 온기 4점.\n둘을 모두 챙겨 귀환해야 해요.','lantern_on'),
-               ('04','돌아올 자리','목표를 채운 뒤 귀환점에서 E!\n조건 부족 시 탐사는 계속돼요.','return_portal'),
-               ('05','순찰 잔상을 조심','다음 칸과 이동 예고를 살펴요.\n닿으면 용기가 한 칸 줄어요.','echo_body'),
-               ('06','종이 울리기 전에','시간 초과나 용기 0이면 실패.\nEsc로 언제든 잠깐 쉴 수 있어요.','bell')]
-        for i,(num,title,desc,icon) in enumerate(cards):
-            r=pygame.Rect(39+(i%3)*407,126+(i//3)*231,389,213)
-            panel(surface,r,fill=PAPER,border=GOLD,radius=17)
-            _icon(surface,assets,icon,(r.x+19,r.y+20,60,60))
-            text(surface,assets,num,(r.right-23,r.y+20),size=18,color=(177,146,113),anchor='topright')
-            text(surface,assets,title,(r.x+95,r.y+40),size=23,color=INK,bold=True)
-            wrapped(surface,assets,desc,pygame.Rect(r.x+24,r.y+108,343,86),size=18,color=INK,line_gap=9)
+        # file은 개별 PNG, map은 맵 PNG의 그림, ghost는 유령 PNG의 한 프레임입니다.
+        cards = [
+            (
+                '01', '조작키',
+                'WASD / 방향키로 이동해요.\n'
+                'E로 필수 물건 획득·상호작용!',
+                (('file', 'icons/paw_cursor.png'),),
+            ),
+            (
+                '02', '스테이지 클리어',
+                '온기 4점 이상 + 필수 물건 획득!\n'
+                '귀환점에서 E를 누르면 클리어해요.',
+                (('map', 'warmth_1'), ('map', 'return_open')),
+            ),
+            (
+                '03', '게임 오버',
+                '제한 시간이 끝나거나\n'
+                '목숨 3개를 모두 잃으면\n'
+                '탐사가 종료돼요.',
+                (('map', 'heart_empty'),),
+            ),
+            (
+                '04', '유령을 조심해요',
+                '유령과 부딪히면 목숨 1개 감소!\n'
+                '유령을 피해 무사히 돌아오세요.',
+                (('ghost', 'A'),),
+            ),
+            (
+                '05', '자석과 무적 아이템',
+                '자석: 약 4초간 주변 온기 자동 획득\n'
+                '무적: 3초간 유령과 닿아도 피해 없음\n'
+                '두 아이템 모두 획득 즉시 사용',
+                (('file', 'icons/items/magnet_item.png'),
+                 ('file', 'icons/items/invincibility_item.png')),
+            ),
+            (
+                '06', '엔딩 조건',
+                '12개 스테이지 클리어 후,\n'
+                '유령 호감도와 탐사 기록에 따라\n'
+                '6가지 엔딩 중 하나를 만나요.',
+                (('map', 'heart_full'),),
+            ),
+        ]
+        for i, (num, title, desc, icons) in enumerate(cards):
+            r = pygame.Rect(39 + (i % 3) * 407, 126 + (i // 3) * 231, 389, 213)
+            panel(surface, r, fill=PAPER, border=GOLD, radius=17)
+
+            # 여러 PNG를 쓰는 카드는 같은 영역에 나란히 표시합니다.
+            icon_gap = 4
+            icon_width = (88 - icon_gap * (len(icons) - 1)) // len(icons)
+            for j, (kind, name) in enumerate(icons):
+                icon_rect = pygame.Rect(r.x + 19 + j * (icon_width + icon_gap),
+                                        r.y + 18, icon_width, 60)
+                if kind == 'map':
+                    image = map_image(name, icon_rect.size)
+                elif kind == 'ghost':
+                    source = ghost_frame(60, name)
+                    scale = min(icon_rect.w / source.get_width(),
+                                icon_rect.h / source.get_height())
+                    image = pygame.transform.scale(source, (
+                        max(1, round(source.get_width() * scale)),
+                        max(1, round(source.get_height() * scale)),
+                    ))
+                else:
+                    image = assets.icon(name, icon_rect.size)
+                surface.blit(image, image.get_rect(center=icon_rect.center))
+
+            text(surface, assets, num, (r.right - 23, r.y + 20), size=18,
+                 color=(177,146,113), anchor='topright')
+            _fit_text(surface, assets, title, (r.x + 119, r.y + 37, 245, 35),
+                      size=23, color=INK, bold=True)
+            wrapped(surface, assets, desc, pygame.Rect(r.x + 24, r.y + 100, 343, 96),
+                    size=17, color=INK, line_gap=6)
         ui.control('tutorial_done',(880,615,357,49),'알겠어요, 준비됐어요',primary=True)
         _footer(surface,assets,'탐사 중에는 하단 조작 안내도 확인할 수 있어요')
 

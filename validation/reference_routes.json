@@ -31,7 +31,7 @@
         {
           "tick": 0,
           "player": [
-            1,
+            4,
             1
           ],
           "carried": 0,
@@ -43,7 +43,7 @@
         {
           "tick": 1,
           "player": [
-            2,
+            5,
             1
           ],
           "carried": 1,
@@ -57,7 +57,7 @@
         {
           "tick": 2,
           "player": [
-            3,
+            6,
             1
           ],
           "carried": 2,
@@ -72,7 +72,7 @@
         {
           "tick": 3,
           "player": [
-            4,
+            7,
             1
           ],
           "carried": 2,
@@ -87,7 +87,7 @@
         {
           "tick": 4,
           "player": [
-            5,
+            8,
             1
           ],
           "carried": 3,
@@ -103,7 +103,7 @@
         {
           "tick": 5,
           "player": [
-            6,
+            9,
             1
           ],
           "carried": 3,
@@ -119,7 +119,7 @@
         {
           "tick": 6,
           "player": [
-            7,
+            10,
             1
           ],
           "carried": 4,
@@ -136,7 +136,7 @@
         {
           "tick": 7,
           "player": [
-            8,
+            11,
             1
           ],
           "carried": 4,
@@ -153,7 +153,7 @@
         {
           "tick": 8,
           "player": [
-            8,
+            11,
             1
           ],
           "carried": 4,
@@ -170,7 +170,7 @@
         {
           "tick": 9,
           "player": [
-            7,
+            10,
             1
           ],
           "carried": 4,
@@ -187,7 +187,7 @@
         {
           "tick": 10,
           "player": [
-            6,
+            9,
             1
           ],
           "carried": 4,
@@ -204,7 +204,7 @@
         {
           "tick": 11,
           "player": [
-            5,
+            8,
             1
           ],
           "carried": 4,
@@ -221,7 +221,7 @@
         {
           "tick": 12,
           "player": [
-            4,
+            7,
             1
           ],
           "carried": 4,
@@ -238,7 +238,7 @@
         {
           "tick": 13,
           "player": [
-            3,
+            6,
             1
           ],
           "carried": 4,
@@ -255,7 +255,7 @@
         {
           "tick": 14,
           "player": [
-            2,
+            5,
             1
           ],
           "carried": 4,
@@ -272,7 +272,7 @@
         {
           "tick": 15,
           "player": [
-            1,
+            4,
             1
           ],
           "carried": 4,
@@ -289,7 +289,7 @@
         {
           "tick": 16,
           "player": [
-            1,
+            4,
             1
           ],
           "carried": 4,
@@ -342,7 +342,7 @@
         {
           "tick": 0,
           "player": [
-            1,
+            4,
             1
           ],
           "carried": 0,
@@ -354,7 +354,7 @@
         {
           "tick": 1,
           "player": [
-            2,
+            5,
             1
           ],
           "carried": 1,
@@ -368,7 +368,7 @@
         {
           "tick": 2,
           "player": [
-            3,
+            6,
             1
           ],
           "carried": 2,
@@ -383,7 +383,7 @@
         {
           "tick": 3,
           "player": [
-            4,
+            7,
             1
           ],
           "carried": 2,
@@ -398,7 +398,7 @@
         {
           "tick": 4,
           "player": [
-            5,
+            8,
             1
           ],
           "carried": 3,
@@ -414,7 +414,7 @@
         {
           "tick": 5,
           "player": [
-            6,
+            9,
             1
           ],
           "carried": 3,
@@ -430,7 +430,7 @@
         {
           "tick": 6,
           "player": [
-            7,
+            10,
             1
           ],
           "carried": 4,
@@ -447,7 +447,7 @@
         {
           "tick": 7,
           "player": [
-            8,
+            11,
             1
           ],
           "carried": 4,
@@ -464,7 +464,7 @@
         {
           "tick": 8,
           "player": [
-            8,
+            11,
             1
           ],
           "carried": 4,
@@ -481,7 +481,7 @@
         {
           "tick": 9,
           "player": [
-            8,
+            11,
             2
           ],
           "carried": 4,
@@ -498,7 +498,7 @@
         {
           "tick": 10,
           "player": [
-            8,
+            11,
             3
           ],
           "carried": 4,
@@ -515,7 +515,7 @@
         {
           "tick": 11,
           "player": [
-            7,
+            10,
             3
           ],
           "carried": 7,
@@ -533,7 +533,7 @@
         {
           "tick": 12,
           "player": [
-            7,
+            10,
             3
           ],
           "carried": 7,
@@ -551,7 +551,7 @@
         {
           "tick": 13,
           "player": [
-            7,
+            10,
             2
           ],
           "carried": 7,
@@ -569,7 +569,7 @@
         {
           "tick": 14,
           "player": [
-            7,
+            10,
             1
           ],
           "carried": 7,
@@ -587,7 +587,7 @@
         {
           "tick": 15,
           "player": [
-            6,
+            9,
             1
           ],
           "carried": 7,
@@ -605,7 +605,7 @@
         {
           "tick": 16,
           "player": [
-            5,
+            8,
             1
           ],
           "carried": 7,
@@ -623,7 +623,7 @@
         {
           "tick": 17,
           "player": [
-            4,
+            7,
             1
           ],
           "carried": 7,
@@ -641,7 +641,7 @@
         {
           "tick": 18,
           "player": [
-            3,
+            6,
             1
           ],
           "carried": 7,
@@ -659,7 +659,7 @@
         {
           "tick": 19,
           "player": [
-            3,
+            6,
             2
           ],
           "carried": 7,
@@ -677,7 +677,7 @@
         {
           "tick": 20,
           "player": [
-            2,
+            5,
             2
           ],
           "carried": 10,
@@ -696,7 +696,7 @@
         {
           "tick": 21,
           "player": [
-            2,
+            5,
             2
           ],
           "carried": 10,
@@ -715,7 +715,7 @@
         {
           "tick": 22,
           "player": [
-            2,
+            5,
             1
           ],
           "carried": 10,
@@ -734,7 +734,7 @@
         {
           "tick": 23,
           "player": [
-            1,
+            4,
             1
           ],
           "carried": 10,
@@ -753,7 +753,7 @@
         {
           "tick": 24,
           "player": [
-            1,
+            4,
             1
           ],
           "carried": 10,
@@ -814,7 +814,7 @@
         {
           "tick": 0,
           "player": [
-            1,
+            4,
             1
           ],
           "carried": 0,
@@ -826,7 +826,7 @@
         {
           "tick": 1,
           "player": [
-            2,
+            5,
             1
           ],
           "carried": 1,
@@ -840,7 +840,7 @@
         {
           "tick": 2,
           "player": [
-            3,
+            6,
             1
           ],
           "carried": 2,
@@ -855,7 +855,7 @@
         {
           "tick": 3,
           "player": [
-            4,
+            7,
             1
           ],
           "carried": 2,
@@ -870,7 +870,7 @@
         {
           "tick": 4,
           "player": [
-            5,
+            8,
             1
           ],
           "carried": 3,
@@ -886,7 +886,7 @@
         {
           "tick": 5,
           "player": [
-            6,
+            9,
             1
           ],
           "carried": 3,
@@ -902,7 +902,7 @@
         {
           "tick": 6,
           "player": [
-            7,
+            10,
             1
           ],
           "carried": 4,
@@ -919,7 +919,7 @@
         {
           "tick": 7,
           "player": [
-            8,
+            11,
             1
           ],
           "carried": 4,
@@ -936,7 +936,7 @@
         {
           "tick": 8,
           "player": [
-            8,
+            11,
             1
           ],
           "carried": 4,
@@ -953,7 +953,7 @@
         {
           "tick": 9,
           "player": [
-            8,
+            11,
             2
           ],
           "carried": 4,
@@ -970,7 +970,7 @@
         {
           "tick": 10,
           "player": [
-            8,
+            11,
             3
           ],
           "carried": 4,
@@ -987,7 +987,7 @@
         {
           "tick": 11,
           "player": [
-            7,
+            10,
             3
           ],
           "carried": 7,
@@ -1005,7 +1005,7 @@
         {
           "tick": 12,
           "player": [
-            7,
+            10,
             3
           ],
           "carried": 7,
@@ -1023,7 +1023,7 @@
         {
           "tick": 13,
           "player": [
-            7,
+            10,
             4
           ],
           "carried": 7,
@@ -1041,7 +1041,7 @@
         {
           "tick": 14,
           "player": [
-            7,
+            10,
             5
           ],
           "carried": 8,
@@ -1060,7 +1060,7 @@
         {
           "tick": 15,
           "player": [
-            7,
+            10,
             6
           ],
           "carried": 8,
@@ -1079,7 +1079,7 @@
         {
           "tick": 16,
           "player": [
-            6,
+            9,
             6
           ],
           "carried": 9,
@@ -1099,7 +1099,7 @@
         {
           "tick": 17,
           "player": [
-            6,
+            9,
             6
           ],
           "carried": 9,
@@ -1119,7 +1119,7 @@
         {
           "tick": 18,
           "player": [
-            6,
+            9,
             5
           ],
           "carried": 9,
@@ -1139,7 +1139,7 @@
         {
           "tick": 19,
           "player": [
-            5,
+            8,
             5
           ],
           "carried": 9,
@@ -1159,7 +1159,7 @@
         {
           "tick": 20,
           "player": [
-            4,
+            7,
             5
           ],
           "carried": 9,
@@ -1179,7 +1179,7 @@
         {
           "tick": 21,
           "player": [
-            3,
+            6,
             5
           ],
           "carried": 10,
@@ -1200,7 +1200,7 @@
         {
           "tick": 22,
           "player": [
-            3,
+            6,
             4
           ],
           "carried": 10,
@@ -1221,7 +1221,7 @@
         {
           "tick": 23,
           "player": [
-            3,
+            6,
             3
           ],
           "carried": 10,
@@ -1242,7 +1242,7 @@
         {
           "tick": 24,
           "player": [
-            2,
+            5,
             3
           ],
           "carried": 11,
@@ -1264,7 +1264,7 @@
         {
           "tick": 25,
           "player": [
-            2,
+            5,
             3
           ],
           "carried": 11,
@@ -1286,7 +1286,7 @@
         {
           "tick": 26,
           "player": [
-            2,
+            5,
             2
           ],
           "carried": 14,
@@ -1309,7 +1309,7 @@
         {
           "tick": 27,
           "player": [
-            2,
+            5,
             2
           ],
           "carried": 14,
@@ -1332,7 +1332,7 @@
         {
           "tick": 28,
           "player": [
-            2,
+            5,
             1
           ],
           "carried": 14,
@@ -1355,7 +1355,7 @@
         {
           "tick": 29,
           "player": [
-            1,
+            4,
             1
           ],
           "carried": 14,
@@ -1378,7 +1378,7 @@
         {
           "tick": 30,
           "player": [
-            1,
+            4,
             1
           ],
           "carried": 14,
@@ -1433,7 +1433,7 @@
         {
           "tick": 0,
           "player": [
-            1,
+            4,
             1
           ],
           "carried": 0,
@@ -1444,7 +1444,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 2
               ],
               "current_index": 0,
@@ -1453,7 +1453,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -1464,7 +1464,7 @@
         {
           "tick": 1,
           "player": [
-            2,
+            5,
             1
           ],
           "carried": 1,
@@ -1477,7 +1477,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 2
               ],
               "current_index": 0,
@@ -1486,7 +1486,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -1497,7 +1497,7 @@
         {
           "tick": 2,
           "player": [
-            3,
+            6,
             1
           ],
           "carried": 2,
@@ -1511,7 +1511,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 2
               ],
               "current_index": 1,
@@ -1520,7 +1520,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -1531,7 +1531,7 @@
         {
           "tick": 3,
           "player": [
-            3,
+            6,
             2
           ],
           "carried": 2,
@@ -1545,7 +1545,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 2
               ],
               "current_index": 1,
@@ -1554,7 +1554,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -1565,7 +1565,7 @@
         {
           "tick": 4,
           "player": [
-            3,
+            6,
             3
           ],
           "carried": 2,
@@ -1579,7 +1579,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 3
               ],
               "current_index": 2,
@@ -1588,7 +1588,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -1599,7 +1599,7 @@
         {
           "tick": 5,
           "player": [
-            3,
+            6,
             4
           ],
           "carried": 4,
@@ -1615,7 +1615,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 3
               ],
               "current_index": 2,
@@ -1624,7 +1624,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -1635,7 +1635,7 @@
         {
           "tick": 6,
           "player": [
-            3,
+            6,
             5
           ],
           "carried": 4,
@@ -1651,7 +1651,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 3
               ],
               "current_index": 3,
@@ -1660,7 +1660,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -1671,7 +1671,7 @@
         {
           "tick": 7,
           "player": [
-            3,
+            6,
             6
           ],
           "carried": 4,
@@ -1687,7 +1687,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 3
               ],
               "current_index": 3,
@@ -1696,7 +1696,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -1707,7 +1707,7 @@
         {
           "tick": 8,
           "player": [
-            4,
+            7,
             6
           ],
           "carried": 4,
@@ -1723,7 +1723,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 2
               ],
               "current_index": 0,
@@ -1732,7 +1732,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -1743,7 +1743,7 @@
         {
           "tick": 9,
           "player": [
-            4,
+            7,
             6
           ],
           "carried": 4,
@@ -1759,7 +1759,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 2
               ],
               "current_index": 0,
@@ -1768,7 +1768,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -1779,7 +1779,7 @@
         {
           "tick": 10,
           "player": [
-            4,
+            7,
             5
           ],
           "carried": 4,
@@ -1795,7 +1795,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 2
               ],
               "current_index": 1,
@@ -1804,7 +1804,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -1815,7 +1815,7 @@
         {
           "tick": 11,
           "player": [
-            3,
+            6,
             5
           ],
           "carried": 4,
@@ -1831,7 +1831,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 2
               ],
               "current_index": 1,
@@ -1840,7 +1840,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -1851,7 +1851,7 @@
         {
           "tick": 12,
           "player": [
-            3,
+            6,
             4
           ],
           "carried": 4,
@@ -1867,7 +1867,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 3
               ],
               "current_index": 2,
@@ -1876,7 +1876,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -1887,7 +1887,7 @@
         {
           "tick": 13,
           "player": [
-            3,
+            6,
             3
           ],
           "carried": 4,
@@ -1903,7 +1903,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 3
               ],
               "current_index": 2,
@@ -1912,7 +1912,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -1923,7 +1923,7 @@
         {
           "tick": 14,
           "player": [
-            3,
+            6,
             2
           ],
           "carried": 4,
@@ -1939,7 +1939,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 3
               ],
               "current_index": 3,
@@ -1948,7 +1948,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -1959,7 +1959,7 @@
         {
           "tick": 15,
           "player": [
-            3,
+            6,
             1
           ],
           "carried": 4,
@@ -1975,7 +1975,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 3
               ],
               "current_index": 3,
@@ -1984,7 +1984,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -1995,7 +1995,7 @@
         {
           "tick": 16,
           "player": [
-            2,
+            5,
             1
           ],
           "carried": 4,
@@ -2011,7 +2011,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 2
               ],
               "current_index": 0,
@@ -2020,7 +2020,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -2031,7 +2031,7 @@
         {
           "tick": 17,
           "player": [
-            1,
+            4,
             1
           ],
           "carried": 4,
@@ -2047,7 +2047,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 2
               ],
               "current_index": 0,
@@ -2056,7 +2056,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -2067,7 +2067,7 @@
         {
           "tick": 18,
           "player": [
-            1,
+            4,
             1
           ],
           "carried": 4,
@@ -2083,7 +2083,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 2
               ],
               "current_index": 1,
@@ -2092,7 +2092,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -2137,7 +2137,7 @@
         {
           "tick": 0,
           "player": [
-            1,
+            4,
             1
           ],
           "carried": 0,
@@ -2148,7 +2148,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 2
               ],
               "current_index": 0,
@@ -2157,7 +2157,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -2168,7 +2168,7 @@
         {
           "tick": 1,
           "player": [
-            2,
+            5,
             1
           ],
           "carried": 1,
@@ -2181,7 +2181,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 2
               ],
               "current_index": 0,
@@ -2190,7 +2190,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -2201,7 +2201,7 @@
         {
           "tick": 2,
           "player": [
-            3,
+            6,
             1
           ],
           "carried": 2,
@@ -2215,7 +2215,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 2
               ],
               "current_index": 1,
@@ -2224,7 +2224,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -2235,7 +2235,7 @@
         {
           "tick": 3,
           "player": [
-            3,
+            6,
             2
           ],
           "carried": 2,
@@ -2249,7 +2249,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 2
               ],
               "current_index": 1,
@@ -2258,7 +2258,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -2269,7 +2269,7 @@
         {
           "tick": 4,
           "player": [
-            3,
+            6,
             3
           ],
           "carried": 2,
@@ -2283,7 +2283,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 3
               ],
               "current_index": 2,
@@ -2292,7 +2292,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -2303,7 +2303,7 @@
         {
           "tick": 5,
           "player": [
-            3,
+            6,
             4
           ],
           "carried": 4,
@@ -2319,7 +2319,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 3
               ],
               "current_index": 2,
@@ -2328,7 +2328,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -2339,7 +2339,7 @@
         {
           "tick": 6,
           "player": [
-            3,
+            6,
             5
           ],
           "carried": 4,
@@ -2355,7 +2355,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 3
               ],
               "current_index": 3,
@@ -2364,7 +2364,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -2375,7 +2375,7 @@
         {
           "tick": 7,
           "player": [
-            3,
+            6,
             6
           ],
           "carried": 4,
@@ -2391,7 +2391,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 3
               ],
               "current_index": 3,
@@ -2400,7 +2400,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -2411,7 +2411,7 @@
         {
           "tick": 8,
           "player": [
-            4,
+            7,
             6
           ],
           "carried": 4,
@@ -2427,7 +2427,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 2
               ],
               "current_index": 0,
@@ -2436,7 +2436,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -2447,7 +2447,7 @@
         {
           "tick": 9,
           "player": [
-            4,
+            7,
             6
           ],
           "carried": 4,
@@ -2463,7 +2463,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 2
               ],
               "current_index": 0,
@@ -2472,7 +2472,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -2483,7 +2483,7 @@
         {
           "tick": 10,
           "player": [
-            4,
+            7,
             5
           ],
           "carried": 4,
@@ -2499,7 +2499,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 2
               ],
               "current_index": 1,
@@ -2508,7 +2508,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -2519,7 +2519,7 @@
         {
           "tick": 11,
           "player": [
-            5,
+            8,
             5
           ],
           "carried": 5,
@@ -2536,7 +2536,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 2
               ],
               "current_index": 1,
@@ -2545,7 +2545,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -2556,7 +2556,7 @@
         {
           "tick": 12,
           "player": [
-            5,
+            8,
             4
           ],
           "carried": 8,
@@ -2574,7 +2574,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 3
               ],
               "current_index": 2,
@@ -2583,7 +2583,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -2594,7 +2594,7 @@
         {
           "tick": 13,
           "player": [
-            5,
+            8,
             3
           ],
           "carried": 11,
@@ -2613,7 +2613,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 3
               ],
               "current_index": 2,
@@ -2622,7 +2622,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -2633,7 +2633,7 @@
         {
           "tick": 14,
           "player": [
-            5,
+            8,
             2
           ],
           "carried": 12,
@@ -2653,7 +2653,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 3
               ],
               "current_index": 3,
@@ -2662,7 +2662,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -2672,6 +2672,126 @@
         },
         {
           "tick": 15,
+          "player": [
+            8,
+            1
+          ],
+          "carried": 12,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_01",
+            "heat_02",
+            "heat_03",
+            "heat_04",
+            "heat_07",
+            "heat_08",
+            "heat_09"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                8,
+                3
+              ],
+              "current_index": 3,
+              "countdown": 1
+            }
+          ],
+          "magnet": {
+            "position": [
+              6,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 2
+          }
+        },
+        {
+          "tick": 16,
+          "player": [
+            7,
+            1
+          ],
+          "carried": 12,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_01",
+            "heat_02",
+            "heat_03",
+            "heat_04",
+            "heat_07",
+            "heat_08",
+            "heat_09"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                8,
+                2
+              ],
+              "current_index": 0,
+              "countdown": 2
+            }
+          ],
+          "magnet": {
+            "position": [
+              6,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 1
+          }
+        },
+        {
+          "tick": 17,
+          "player": [
+            6,
+            1
+          ],
+          "carried": 12,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_01",
+            "heat_02",
+            "heat_03",
+            "heat_04",
+            "heat_07",
+            "heat_08",
+            "heat_09"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                8,
+                2
+              ],
+              "current_index": 0,
+              "countdown": 1
+            }
+          ],
+          "magnet": {
+            "position": [
+              6,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 0
+          }
+        },
+        {
+          "tick": 18,
           "player": [
             5,
             1
@@ -2693,25 +2813,25 @@
             {
               "id": "A",
               "position": [
-                5,
-                3
+                9,
+                2
               ],
-              "current_index": 3,
-              "countdown": 1
+              "current_index": 1,
+              "countdown": 2
             }
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
             "collected": true,
-            "remaining_ticks": 2
+            "remaining_ticks": 0
           }
         },
         {
-          "tick": 16,
+          "tick": 19,
           "player": [
             4,
             1
@@ -2733,127 +2853,7 @@
             {
               "id": "A",
               "position": [
-                5,
-                2
-              ],
-              "current_index": 0,
-              "countdown": 2
-            }
-          ],
-          "magnet": {
-            "position": [
-              3,
-              4
-            ],
-            "duration_ticks": 13,
-            "collected": true,
-            "remaining_ticks": 1
-          }
-        },
-        {
-          "tick": 17,
-          "player": [
-            3,
-            1
-          ],
-          "carried": 12,
-          "quest_collected": true,
-          "collected_ids": [
-            "heat_00",
-            "heat_01",
-            "heat_02",
-            "heat_03",
-            "heat_04",
-            "heat_07",
-            "heat_08",
-            "heat_09"
-          ],
-          "opened_shortcut_ids": [],
-          "ghosts": [
-            {
-              "id": "A",
-              "position": [
-                5,
-                2
-              ],
-              "current_index": 0,
-              "countdown": 1
-            }
-          ],
-          "magnet": {
-            "position": [
-              3,
-              4
-            ],
-            "duration_ticks": 13,
-            "collected": true,
-            "remaining_ticks": 0
-          }
-        },
-        {
-          "tick": 18,
-          "player": [
-            2,
-            1
-          ],
-          "carried": 12,
-          "quest_collected": true,
-          "collected_ids": [
-            "heat_00",
-            "heat_01",
-            "heat_02",
-            "heat_03",
-            "heat_04",
-            "heat_07",
-            "heat_08",
-            "heat_09"
-          ],
-          "opened_shortcut_ids": [],
-          "ghosts": [
-            {
-              "id": "A",
-              "position": [
-                6,
-                2
-              ],
-              "current_index": 1,
-              "countdown": 2
-            }
-          ],
-          "magnet": {
-            "position": [
-              3,
-              4
-            ],
-            "duration_ticks": 13,
-            "collected": true,
-            "remaining_ticks": 0
-          }
-        },
-        {
-          "tick": 19,
-          "player": [
-            1,
-            1
-          ],
-          "carried": 12,
-          "quest_collected": true,
-          "collected_ids": [
-            "heat_00",
-            "heat_01",
-            "heat_02",
-            "heat_03",
-            "heat_04",
-            "heat_07",
-            "heat_08",
-            "heat_09"
-          ],
-          "opened_shortcut_ids": [],
-          "ghosts": [
-            {
-              "id": "A",
-              "position": [
-                6,
+                9,
                 2
               ],
               "current_index": 1,
@@ -2862,7 +2862,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -2873,7 +2873,7 @@
         {
           "tick": 20,
           "player": [
-            1,
+            4,
             1
           ],
           "carried": 12,
@@ -2893,7 +2893,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 3
               ],
               "current_index": 2,
@@ -2902,7 +2902,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -2949,7 +2949,7 @@
         {
           "tick": 0,
           "player": [
-            1,
+            4,
             1
           ],
           "carried": 0,
@@ -2960,7 +2960,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 2
               ],
               "current_index": 0,
@@ -2969,7 +2969,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -2980,7 +2980,7 @@
         {
           "tick": 1,
           "player": [
-            2,
+            5,
             1
           ],
           "carried": 1,
@@ -2993,7 +2993,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 2
               ],
               "current_index": 0,
@@ -3002,7 +3002,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -3013,7 +3013,7 @@
         {
           "tick": 2,
           "player": [
-            3,
+            6,
             1
           ],
           "carried": 2,
@@ -3027,7 +3027,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 2
               ],
               "current_index": 1,
@@ -3036,7 +3036,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -3047,7 +3047,7 @@
         {
           "tick": 3,
           "player": [
-            3,
+            6,
             2
           ],
           "carried": 2,
@@ -3061,7 +3061,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 2
               ],
               "current_index": 1,
@@ -3070,7 +3070,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -3081,7 +3081,7 @@
         {
           "tick": 4,
           "player": [
-            3,
+            6,
             3
           ],
           "carried": 2,
@@ -3095,7 +3095,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 3
               ],
               "current_index": 2,
@@ -3104,7 +3104,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -3115,7 +3115,7 @@
         {
           "tick": 5,
           "player": [
-            3,
+            6,
             4
           ],
           "carried": 4,
@@ -3131,7 +3131,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 3
               ],
               "current_index": 2,
@@ -3140,7 +3140,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -3151,7 +3151,7 @@
         {
           "tick": 6,
           "player": [
-            3,
+            6,
             5
           ],
           "carried": 4,
@@ -3167,7 +3167,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 3
               ],
               "current_index": 3,
@@ -3176,7 +3176,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -3187,7 +3187,7 @@
         {
           "tick": 7,
           "player": [
-            3,
+            6,
             6
           ],
           "carried": 4,
@@ -3203,7 +3203,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 3
               ],
               "current_index": 3,
@@ -3212,7 +3212,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -3223,7 +3223,7 @@
         {
           "tick": 8,
           "player": [
-            4,
+            7,
             6
           ],
           "carried": 4,
@@ -3239,7 +3239,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 2
               ],
               "current_index": 0,
@@ -3248,7 +3248,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -3259,7 +3259,7 @@
         {
           "tick": 9,
           "player": [
-            4,
+            7,
             6
           ],
           "carried": 4,
@@ -3275,7 +3275,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 2
               ],
               "current_index": 0,
@@ -3284,7 +3284,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -3295,7 +3295,7 @@
         {
           "tick": 10,
           "player": [
-            4,
+            7,
             5
           ],
           "carried": 4,
@@ -3311,7 +3311,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 2
               ],
               "current_index": 1,
@@ -3320,7 +3320,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -3331,7 +3331,7 @@
         {
           "tick": 11,
           "player": [
-            5,
+            8,
             5
           ],
           "carried": 5,
@@ -3348,7 +3348,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 2
               ],
               "current_index": 1,
@@ -3357,7 +3357,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -3368,7 +3368,7 @@
         {
           "tick": 12,
           "player": [
-            5,
+            8,
             4
           ],
           "carried": 8,
@@ -3386,7 +3386,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 3
               ],
               "current_index": 2,
@@ -3395,7 +3395,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -3406,7 +3406,7 @@
         {
           "tick": 13,
           "player": [
-            6,
+            9,
             4
           ],
           "carried": 9,
@@ -3425,7 +3425,7 @@
             {
               "id": "A",
               "position": [
-                6,
+                9,
                 3
               ],
               "current_index": 2,
@@ -3434,7 +3434,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -3445,7 +3445,7 @@
         {
           "tick": 14,
           "player": [
-            6,
+            9,
             3
           ],
           "carried": 12,
@@ -3465,7 +3465,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 3
               ],
               "current_index": 3,
@@ -3474,7 +3474,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -3485,7 +3485,7 @@
         {
           "tick": 15,
           "player": [
-            6,
+            9,
             2
           ],
           "carried": 14,
@@ -3507,7 +3507,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 3
               ],
               "current_index": 3,
@@ -3516,7 +3516,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -3526,6 +3526,132 @@
         },
         {
           "tick": 16,
+          "player": [
+            9,
+            1
+          ],
+          "carried": 14,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_01",
+            "heat_02",
+            "heat_03",
+            "heat_04",
+            "heat_05",
+            "heat_06",
+            "heat_07",
+            "heat_08",
+            "heat_09"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                8,
+                2
+              ],
+              "current_index": 0,
+              "countdown": 2
+            }
+          ],
+          "magnet": {
+            "position": [
+              6,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 1
+          }
+        },
+        {
+          "tick": 17,
+          "player": [
+            8,
+            1
+          ],
+          "carried": 14,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_01",
+            "heat_02",
+            "heat_03",
+            "heat_04",
+            "heat_05",
+            "heat_06",
+            "heat_07",
+            "heat_08",
+            "heat_09"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                8,
+                2
+              ],
+              "current_index": 0,
+              "countdown": 1
+            }
+          ],
+          "magnet": {
+            "position": [
+              6,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 0
+          }
+        },
+        {
+          "tick": 18,
+          "player": [
+            7,
+            1
+          ],
+          "carried": 14,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_01",
+            "heat_02",
+            "heat_03",
+            "heat_04",
+            "heat_05",
+            "heat_06",
+            "heat_07",
+            "heat_08",
+            "heat_09"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                9,
+                2
+              ],
+              "current_index": 1,
+              "countdown": 2
+            }
+          ],
+          "magnet": {
+            "position": [
+              6,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 0
+          }
+        },
+        {
+          "tick": 19,
           "player": [
             6,
             1
@@ -3549,25 +3675,25 @@
             {
               "id": "A",
               "position": [
-                5,
+                9,
                 2
               ],
-              "current_index": 0,
-              "countdown": 2
+              "current_index": 1,
+              "countdown": 1
             }
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
             "collected": true,
-            "remaining_ticks": 1
+            "remaining_ticks": 0
           }
         },
         {
-          "tick": 17,
+          "tick": 20,
           "player": [
             5,
             1
@@ -3591,16 +3717,16 @@
             {
               "id": "A",
               "position": [
-                5,
-                2
+                9,
+                3
               ],
-              "current_index": 0,
-              "countdown": 1
+              "current_index": 2,
+              "countdown": 2
             }
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -3609,7 +3735,7 @@
           }
         },
         {
-          "tick": 18,
+          "tick": 21,
           "player": [
             4,
             1
@@ -3633,133 +3759,7 @@
             {
               "id": "A",
               "position": [
-                6,
-                2
-              ],
-              "current_index": 1,
-              "countdown": 2
-            }
-          ],
-          "magnet": {
-            "position": [
-              3,
-              4
-            ],
-            "duration_ticks": 13,
-            "collected": true,
-            "remaining_ticks": 0
-          }
-        },
-        {
-          "tick": 19,
-          "player": [
-            3,
-            1
-          ],
-          "carried": 14,
-          "quest_collected": true,
-          "collected_ids": [
-            "heat_00",
-            "heat_01",
-            "heat_02",
-            "heat_03",
-            "heat_04",
-            "heat_05",
-            "heat_06",
-            "heat_07",
-            "heat_08",
-            "heat_09"
-          ],
-          "opened_shortcut_ids": [],
-          "ghosts": [
-            {
-              "id": "A",
-              "position": [
-                6,
-                2
-              ],
-              "current_index": 1,
-              "countdown": 1
-            }
-          ],
-          "magnet": {
-            "position": [
-              3,
-              4
-            ],
-            "duration_ticks": 13,
-            "collected": true,
-            "remaining_ticks": 0
-          }
-        },
-        {
-          "tick": 20,
-          "player": [
-            2,
-            1
-          ],
-          "carried": 14,
-          "quest_collected": true,
-          "collected_ids": [
-            "heat_00",
-            "heat_01",
-            "heat_02",
-            "heat_03",
-            "heat_04",
-            "heat_05",
-            "heat_06",
-            "heat_07",
-            "heat_08",
-            "heat_09"
-          ],
-          "opened_shortcut_ids": [],
-          "ghosts": [
-            {
-              "id": "A",
-              "position": [
-                6,
-                3
-              ],
-              "current_index": 2,
-              "countdown": 2
-            }
-          ],
-          "magnet": {
-            "position": [
-              3,
-              4
-            ],
-            "duration_ticks": 13,
-            "collected": true,
-            "remaining_ticks": 0
-          }
-        },
-        {
-          "tick": 21,
-          "player": [
-            1,
-            1
-          ],
-          "carried": 14,
-          "quest_collected": true,
-          "collected_ids": [
-            "heat_00",
-            "heat_01",
-            "heat_02",
-            "heat_03",
-            "heat_04",
-            "heat_05",
-            "heat_06",
-            "heat_07",
-            "heat_08",
-            "heat_09"
-          ],
-          "opened_shortcut_ids": [],
-          "ghosts": [
-            {
-              "id": "A",
-              "position": [
-                6,
+                9,
                 3
               ],
               "current_index": 2,
@@ -3768,7 +3768,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -3779,7 +3779,7 @@
         {
           "tick": 22,
           "player": [
-            1,
+            4,
             1
           ],
           "carried": 14,
@@ -3801,7 +3801,7 @@
             {
               "id": "A",
               "position": [
-                5,
+                8,
                 3
               ],
               "current_index": 3,
@@ -3810,7 +3810,7 @@
           ],
           "magnet": {
             "position": [
-              3,
+              6,
               4
             ],
             "duration_ticks": 13,
@@ -62016,12 +62016,12 @@
     {
       "id": "stage_01",
       "file": "levels/stage_01.json",
-      "sha256": "b513a7563a1faf514d4518297d9f778b41c36367a4394048bd66d3b4cf4366b2"
+      "sha256": "89e6974a9018c95293eeb74ed268d1de2f4e811485a387b15bd46544019111c2"
     },
     {
       "id": "stage_02",
       "file": "levels/stage_02.json",
-      "sha256": "947d3ca765a794fc086afc7899bb8791417c1efd2665d41b44556dfdb49c4479"
+      "sha256": "686ee12b411efcddbb1b8f835aa842f89c13286988d9b56fd2efec487573f6d9"
     },
     {
       "id": "stage_03",

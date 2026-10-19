@@ -9,7 +9,7 @@ SHEET_PATH = 'art/map/map.png'
 SHEET_SIZE = (1122, 1402)
 WARMTH_SHEET = 'art/map/warmth.png'
 SHEET_SIZES = {SHEET_PATH: SHEET_SIZE, WARMTH_SHEET: (1278, 1230)}
-# Furniture is intentionally absent: keep the existing shelf/table/plant PNGs.
+# Furniture crops from warmth.png are handled separately in illustration.py.
 # Base tiles use their opaque interiors, excluding the atlas's outer bevels.
 FRAMES = {
     'floor': (39, 80, 240, 240),
