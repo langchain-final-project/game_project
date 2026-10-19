@@ -66,11 +66,12 @@ python main.py --headless --no-audio --frames 5 --dev-stage 12
 python -m pip install -r requirements-dev.txt
 python -m pytest -q
 python tools/replay_validation.py
-python tools/evaluate.py --episodes 10 --output reports/local
+python tools/evaluate.py --control-mode realtime --episodes 1 --stages 1 2 --output reports/local/realtime_evaluation
+python tools/validate_realtime_routes.py --targets 4 --output reports/local/realtime_routes
 ```
 
 현재 검증 결과와 미검증 범위는 `docs/VALIDATION.md`, 변경 전체 목록은 `docs/CHANGELOG.md` 및 `validation/change_manifest.json`에 있습니다. 실제 화면은 `evidence/review_board.png`, 걷기/표정은 `evidence/cat_animation.gif`로 확인할 수 있습니다.
 
-현재 게임의 자유 이동을 학습하려면 `from kkamang.env import RealtimeMansionEnv`를 사용합니다. 한 행동은 1/60초이며 소수점 좌표와 세계 틱 진행률을 관측합니다. 기존 620차원 모델은 호환되지 않습니다. `tools/plan_routes.py`, `tools/evaluate.py` 및 기존 36개 경로 검증은 칸 단위 환경의 검사입니다. 그 결과를 자유 이동의 무피해 경로나 난이도 평가로 해석할 수 없습니다. 새 플레이 기록은 `python tools/replay_validation.py --record <기록.json>`으로 재생 검증합니다.
+현재 게임의 자유 이동을 학습하려면 `from kkamang.env import RealtimeMansionEnv`를 사용합니다. 한 행동은 1/60초이며 소수점 좌표와 세계 틱 진행률을 관측합니다. 기존 620차원 모델은 호환되지 않습니다. `tools/evaluate.py`의 CLI 기본값은 현재 자유 이동이며, 기존 칸 단위 평가는 `--control-mode grid`로 실행합니다. `tools/validate_realtime_routes.py`는 현재 코어의 매 프레임을 검사해 경로를 생성하고 별도 코어에서 재생합니다. 기존 `tools/plan_routes.py`와 36개 경로는 계속 칸 단위 검사입니다. 새 플레이 기록은 `python tools/replay_validation.py --record <기록.json>`으로 재생 검증합니다. 제어 방식·시간 단위·오프라인 기준선의 한계는 `docs/RL_READY.md`를 확인하세요.
 
 강화학습 모델은 아직 학습하지 않았습니다. Windows 실행 파일은 Windows에서 `BUILD_WINDOWS.bat`로 만들고 실제 PC에서 확인해야 합니다. 이 묶음은 팀 개발용 소스 배포본입니다.

@@ -20,4 +20,6 @@ jobs:
       - run: python -m pytest -q
       - run: python tools/check_level_schema.py
       - run: python tools/replay_validation.py
+      - run: python tools/evaluate.py --control-mode realtime --episodes 1 --stages 1 --target-warmth 4 --max-search-nodes 16
+      - run: python tools/validate_realtime_routes.py --stages 1 --targets 4 --max-search-nodes 16
       - run: python main.py --headless --no-audio --frames 5 --dev-stage 7

@@ -20,6 +20,12 @@ from kkamang.levels import load_level
 from kkamang.realtime import RealtimeGameCore, PHYSICS_HZ, REALTIME_OBSERVATION_VERSION
 
 
+def snapshot_digest(snapshot):
+    """Canonical final-state digest for newly exported verification records."""
+    payload = json.dumps(snapshot, sort_keys=True, separators=(',', ':'), ensure_ascii=True)
+    return hashlib.sha256(payload.encode('ascii')).hexdigest()
+
+
 def replay_game_record(record):
     """Replay an exported desktop record, including turns between world ticks."""
     config = load_level(record['stage_id'])
@@ -43,6 +49,9 @@ def replay_game_record(record):
     snapshot = game.snapshot()
     if snapshot['terminal'] != record['terminal'] or snapshot['outcome'] != expected:
         raise AssertionError('replay terminal outcome mismatch')
+    if ('final_snapshot_sha256' in record
+            and snapshot_digest(snapshot) != record['final_snapshot_sha256']):
+        raise AssertionError('replay final snapshot hash mismatch')
     return snapshot
 
 
