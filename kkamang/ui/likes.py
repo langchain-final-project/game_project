@@ -57,32 +57,35 @@ def draw_choice(surface, assets, ctx, ui):
         text(surface, assets, '선택할 기억이 없어요.', (640, 330), 25, CREAM, anchor='center')
         ui.control('home', (465, 612, 350, 50), '쉼터로', primary=True)
         return
+    # Keep both comparison cards as one visual block so their contents move
+    # together without changing the room left for the explanation and choices.
+    card_top = 150
     for i, (label, record) in enumerate((('기존 기억', compare['old']), ('이번 기억', compare['new']))):
-        r = pygame.Rect(40 + i * 620, 132, 580, 345)
+        r = pygame.Rect(40 + i * 620, card_top, 580, 345)
         panel(surface, r, fill=PAPER, border=GOLD, radius=22)
-        text(surface, assets, label, (r.x + 28, 150), 27, INK, True)
+        text(surface, assets, label, (r.x + 28, r.y + 18), 27, INK, True)
         mode = {'basic': '기본', 'relaxed': '여유', 'legacy': '이전 기록'}[record['mode']]
-        text(surface, assets, f'{record["stage"]:02d}번 방 · {mode} 모드', (r.right - 28, 159), 17, INK, anchor='topright')
+        text(surface, assets, f'{record["stage"]:02d}번 방 · {mode} 모드', (r.right - 28, r.y + 27), 17, INK, anchor='topright')
         summary = f'온기 {record["banked"]}점  ·  {record["ticks_used"]}틱  ·  용기 {record["remaining_courage"]}/{record["initial_courage"]}'
         if record['mode'] == 'legacy':
             summary = '이전 버전에서 남긴 기억 · 세부 탐사 기록 없음'
-        text(surface, assets, summary, (r.x + 28, 207), 19, INK)
+        text(surface, assets, summary, (r.x + 28, r.y + 75), 19, INK)
         scores = record['scores']
         text(surface, assets, '점수 평가 대기' if scores is None else f'이 판의 점수 {scores["total"]} · 별 {scores["stars"]}개',
-             (r.x + 28, 242), 18, INK)
+             (r.x + 28, r.y + 110), 18, INK)
         values = contribution(record)
         for j, (ident, name, *_) in enumerate(CHARACTERS):
-            y = 292 + j * 53
+            y = r.y + 160 + j * 53
             text(surface, assets, name, (r.x + 28, y), 19, INK, True)
             _bar(surface, pygame.Rect(r.x + 108, y + 6, 310, 14), values[ident], COLORS[ident])
             text(surface, assets, number(values[ident]), (r.right - 26, y), 18, INK, anchor='topright')
-    text(surface, assets, '이번 기억을 선택하면 전체 호감도가 이렇게 바뀌어요.', (40, 497), 20, CREAM, True)
-    for i, (ident, name, *_) in enumerate(CHARACTERS):
-        before, after = compare['before'][ident], compare['after'][ident]
-        label = f'{name}  {number(before)} → {number(after)}'
-        if before is not None and after is not None:
-            label += f'  ({after - before:+.1f})'
-        text(surface, assets, label, (40 + i * 410, 537), 20, CREAM)
-    text(surface, assets, '세 친구의 기억을 함께 교체해요. 최고 별점과 꾸미기 해금은 유지돼요.', (40, 578), 17, CREAM)
+    # text(surface, assets, '이번 기억을 선택하면 전체 호감도가 이렇게 바뀌어요.', (40, 497), 20, CREAM, True)
+    # for i, (ident, name, *_) in enumerate(CHARACTERS):
+    #     before, after = compare['before'][ident], compare['after'][ident]
+    #     label = f'{name}  {number(before)} → {number(after)}'
+    #     if before is not None and after is not None:
+    #         label += f'  ({after - before:+.1f})'
+    #     text(surface, assets, label, (40 + i * 410, 537), 20, CREAM)
+    text(surface, assets, '세 친구의 기억을 함께 교체해요. 최고 별점과 꾸미기 해금은 유지돼요.', (40, 570), 17, CREAM)
     ui.control('memory_keep', (40, 619, 580, 45), '기존 기억 유지', primary=True)
     ui.control('memory_replace', (660, 619, 580, 45), '이번 기억으로 교체')
