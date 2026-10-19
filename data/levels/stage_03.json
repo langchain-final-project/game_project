@@ -141,11 +141,11 @@
   "quest": {
     "id": "memory_03",
     "name": "발자국 사진",
-    "kind": "frame",
+    "kind": "footprint_photo",
     "position": [
       11,
       7
     ],
-    "restoration": "까망이의 발자국 사진이 쉼터 벽에 걸려요."
+    "restoration": "기억 1 · 3번 영역"
   }
 }

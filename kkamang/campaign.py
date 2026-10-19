@@ -13,6 +13,7 @@ from pathlib import Path
 import tempfile
 import uuid
 from . import likes
+from .ending_content import released_variants as ending_released_variants
 
 from .scoring import COURAGE_POINTS, SPEED_POINTS, STAR_THRESHOLDS, WARMTH_POINTS, score_outcome
 
@@ -48,6 +49,8 @@ def _default() -> dict:
         'star_records': {}, 'friend_memories': {}, 'legacy_cosmetic_stars': 0,
         'settled_ids': [], 'favorite_photo': None,
         'likes': likes.empty_state(),
+        'narrative': {'basic_seen': False, 'true_seen': False, 'liberation_seen': False,
+                      'active_ending': None},
     }
 
 
@@ -169,6 +172,18 @@ def _normalized(data: dict) -> dict:
             result['cosmetics'][kind] = chosen
     for flag in ('intro_seen', 'tutorial_seen'):
         result[flag] = bool(data.get(flag, False))
+    narrative = data.get('narrative', {})
+    if not isinstance(narrative, dict):
+        raise SaveFormatError('이야기 감상 기록을 읽을 수 없어요.')
+    for flag in ('basic_seen', 'true_seen', 'liberation_seen'):
+        value = narrative.get(flag, False)
+        if not isinstance(value, bool):
+            raise SaveFormatError('이야기 감상 기록 값이 올바르지 않아요.')
+        result['narrative'][flag] = value
+    active_ending = narrative.get('active_ending')
+    if active_ending is not None and active_ending not in likes.ENDING_IDS:
+        raise SaveFormatError('현재 엔딩 기록이 올바르지 않아요.')
+    result['narrative']['active_ending'] = active_ending
     records = data.get('records', {})
     if not isinstance(records, dict):
         raise SaveFormatError('기록 목록을 읽을 수 없어요.')
@@ -243,6 +258,20 @@ class Campaign:
     def optional_badges(self) -> int:
         return len(set(self.data['badges']))
 
+    def memory_regions(self, memory_id: int) -> list[bool]:
+        """Derive four permanent picture regions from first-completed rooms."""
+        if type(memory_id) is not int or not 1 <= memory_id <= 3:
+            raise ValueError('memory_id must be an integer in 1..3')
+        first_stage = (memory_id - 1) * 4 + 1
+        completed = set(self.data['completed'])
+        return [stage in completed for stage in range(first_stage, first_stage + 4)]
+
+    def memory_progress(self) -> list[int]:
+        return [sum(self.memory_regions(memory_id)) for memory_id in range(1, 4)]
+
+    def memory_complete(self, memory_id: int) -> bool:
+        return all(self.memory_regions(memory_id))
+
     def total_stars(self) -> int:
         return sum(entry['stars'] for entry in self.data['star_records'].values())
 
@@ -297,6 +326,40 @@ class Campaign:
                 'total': score['total'], 'stars': score['stars']}
         return likes.choose_memory(self.data['likes'], replace)
 
+    def warmth_memories(self) -> list[int]:
+        """Rooms whose warmth was recovered, including existing save badges."""
+        badges = set(self.data['badges'])
+        return [stage for stage in range(1, 13)
+                if self.completed(stage) and f'stage_{stage:02d}:rich' in badges]
+
+    def extended_ending_unlocked(self) -> bool:
+        """Compatibility name for the main rules' best ending selection."""
+        return self.selected_ending() == 'happy_all'
+
+    def selected_ending(self) -> str | None:
+        return likes.select_ending(self.data['likes'], self.data['completed'])
+
+    def active_ending(self) -> str | None:
+        return self.data['narrative']['active_ending']
+
+    def released_variants(self) -> tuple[int, ...]:
+        """Read the displayed world's last activated ending, not a pending choice."""
+        return ending_released_variants(self.active_ending())
+
+    def record_ending(self, ending_id: str, activate: bool = False) -> bool:
+        """Record a validated ending ID after the app has checked its selection."""
+        if ending_id not in likes.ENDING_IDS:
+            raise ValueError('Unknown ending ID')
+        changed = False
+        seen = self.data['likes']['seen_endings']
+        if ending_id not in seen:
+            seen.append(ending_id)
+            changed = True
+        if activate and self.active_ending() != ending_id:
+            self.data['narrative']['active_ending'] = ending_id
+            changed = True
+        return changed
+
     def unlocked_cosmetics(self, kind: str) -> list[str]:
         if kind not in COSMETICS:
             raise ValueError(f'Unknown cosmetic kind: {kind}')
@@ -314,7 +377,7 @@ class Campaign:
                settlement_id: str, controller: str = 'human', memory_record=None) -> dict:
         if not isinstance(settlement_id, str) or not settlement_id:
             raise ValueError('settlement_id must be a non-empty string')
-        empty = {'first_complete': False, 'new_photo': False, 'new_badges': [],
+        empty = {'first_complete': False, 'new_photo': False, 'new_ending': False, 'new_badges': [],
                  'new_cosmetics': [], 'new_stars': 0, 'best_star_improved': False,
                  'new_friend_memory': False, 'practice_mode': False, 'score': None}
         if settlement_id in self.data['settled_ids']:
@@ -423,6 +486,9 @@ class Campaign:
                 result['memory_status'] = likes.offer_memory(updated['likes'], memory_record)
         updated['settled_ids'].append(settlement_id)
         self.data = updated
+        selected_ending = self.selected_ending()
+        result['new_ending'] = (selected_ending is not None
+                                and selected_ending not in self.data['likes']['seen_endings'])
         after_cosmetics = {f'{k}:{v}' for k in COSMETICS for v in self.unlocked_cosmetics(k)}
         result['new_cosmetics'] = sorted(after_cosmetics - before_cosmetics)
         return result

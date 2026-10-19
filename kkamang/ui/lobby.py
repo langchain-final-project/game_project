@@ -5,6 +5,7 @@ from functools import lru_cache
 import pygame
 
 from ..paths import ASSET_DIR
+from .illustration import resident_cat, _released_residents
 
 
 @dataclass(frozen=True)
@@ -42,6 +43,7 @@ STORY_ITEMS = {
     12: LobbySprite('정원문', (1080, 697, 335, 367), (170, 170), (0, 0)),
 }
 CHARACTERS = {'cat': CAT, 'A': GHOSTS[1], 'B': GHOSTS[7], 'C': GHOSTS[4]}
+RESIDENT_VARIANTS = {'A': 0, 'B': 1, 'C': 2}
 FINAL_STAGES = frozenset(range(1, 13))
 
 
@@ -99,19 +101,36 @@ def draw_story_item(surface, stage, rect):
     _draw_in_rect(surface, 'item.png', STORY_ITEMS[stage], rect)
 
 
-@lru_cache(maxsize=8)
-def _scene(completed, size, show_actors):
+@lru_cache(maxsize=32)
+def _scene(completed, size, show_actors, released_variants=(), show_residents=True):
     # The final picture already contains everyone; never draw duplicates over it.
-    if FINAL_STAGES.issubset(completed) and show_actors:
+    if (FINAL_STAGES.issubset(completed) and show_actors
+            and not released_variants and show_residents):
         return pygame.transform.smoothscale(_image('after.png'), size)
     scene = _image('before.png').copy()
     for filename, spec in lobby_layers(completed, show_actors=show_actors):
+        if filename == 'character.png' and spec.name in RESIDENT_VARIANTS:
+            if not show_residents:
+                continue
+            variant = RESIDENT_VARIANTS[spec.name]
+            if variant in released_variants:
+                # Keep this actor's original foot and depth amongst the PNG
+                # furniture. Only its released body replaces the ghost sprite.
+                resident_cat(scene, spec.foot, spec.size[0], 0., variant)
+                continue
         image = _sprite(filename, spec)
         scene.blit(image, image.get_rect(midbottom=spec.foot))
     return pygame.transform.smoothscale(scene, size)
 
 
-def draw_lobby(surface, completed=(), *, before=False, show_actors=True):
-    """Paint the room from saved completion IDs; replayed clears add no duplicates."""
+def draw_lobby(surface, completed=(), *, before=False, show_actors=True,
+               released_variants=(), show_residents=True):
+    """Paint saved progress, with optional active-ending resident bodies.
+
+    The default completed room remains exactly the supplied after picture.
+    Ending variants are composited from the same room, items and character
+    sheet, without changing saved progress or the stage-based arrivals.
+    """
     done = () if before else tuple(sorted(set(completed)))
-    surface.blit(_scene(done, surface.get_size(), show_actors), (0, 0))
+    living = tuple(sorted(_released_residents(False, released_variants, before=before)))
+    surface.blit(_scene(done, surface.get_size(), show_actors, living, bool(show_residents)), (0, 0))

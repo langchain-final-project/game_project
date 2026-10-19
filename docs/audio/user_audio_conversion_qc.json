@@ -1,0 +1,30 @@
+{
+  "all_pass": true,
+  "checks": [
+    {
+      "file": "bgm_lobby.wav",
+      "format_ok": true,
+      "pcm16_ok": true,
+      "exact_logical_frame_count": true,
+      "decoded_frame_count_preserved": true,
+      "no_pcm_clipping": true,
+      "error_within_half_lsb": true,
+      "level_preserved": true,
+      "reproducible_sha256": true
+    },
+    {
+      "file": "sfx_ghost_contact.wav",
+      "format_ok": true,
+      "pcm16_ok": true,
+      "exact_logical_frame_count": true,
+      "decoded_frame_count_preserved": true,
+      "no_pcm_clipping": true,
+      "error_within_half_lsb": true,
+      "level_preserved": true,
+      "reproducible_sha256": true
+    }
+  ],
+  "crossfades_applied": false,
+  "human_listening_performed": false,
+  "loop_scope": "Waveform boundary/edge-silence measurements only. No claim of musically seamless phrase continuation; no automatic editing of user music."
+}

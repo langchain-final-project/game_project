@@ -15,3 +15,13 @@ ENDING_CONTENT = {
 # Production notes and silent actions are not narrated by the dialogue UI.
 for _ident, _ending in ENDING_CONTENT.items():
     _ending['art'] = f'ending_{_ident}.png'
+
+
+def released_variants(ending_id):
+    """Map ending IDs to resident art order: Bosong 0, Ipari 1, Dore 2."""
+    return {
+        'happy_all': (0, 1, 2),
+        'ghost_a': (0,),
+        'ghost_b': (2,),
+        'ghost_c': (1,),
+    }.get(ending_id, ())

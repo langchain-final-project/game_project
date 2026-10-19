@@ -1,202 +1,50 @@
-"""Fixed first-completion story. Dialogue never changes episode state or rewards.
+"""Three silent, cumulative memories followed by the six affection endings.
 
-All memories share the live character and prop renderer with exploration.
-Mandatory-object previews are sourced from the level definitions.
+Picture regions follow completed rooms. Narrative text is confined to the
+six ending epilogues; stage labels below provide only functional game information.
 """
+from .levels import load_levels
 
-PROLOGUE = [
-    ('이야기', '비바람을 피하러 들어온 집. 까망이가 몸을 털자 작은 등이 흔들렸어요.'),
-    ('보송', '많이 젖었네. 여기 수건이 있어. 불 가까이에서 쉬어도 돼.'),
-    ('이야기', '보송과 함께 밀어 봐도, 폭풍에 뒤틀린 현관문은 열리지 않았어요.'),
-    ('보송', '작은 정원문으로 나갈 수 있어. 그쪽으로 이어지는 등이 꺼졌지만…'),
-    ('보송', '집 안에 흩어진 온기를 가져오면 다시 켤 수 있어. 내 몸으로는 담을 수가 없거든.'),
-    ('보송', '네 스카프 주머니라면 잠깐 담아 둘 수 있겠다. 힘들면 언제든 돌아와.'),
-    ('이야기', '다가오는 종소리 전에 온기 4점 이상을 가져오기. 까망이의 첫 산책이 시작돼요.'),
+
+PROLOGUE = []
+
+MEMORIES = [
+    {'id': 1, 'name': '문이 열리던 밤', 'stages': [1, 2, 3, 4]},
+    {'id': 2, 'name': '세 개의 자리', 'stages': [5, 6, 7, 8]},
+    {'id': 3, 'name': '놓고 싶지 않았던 밤', 'stages': [9, 10, 11, 12]},
 ]
 
-STAGES = [
-    {
-        'stage': 1, 'name': '젖은 현관', 'photo': '한쪽 앞발만',
-        'title': '수건 선반등', 'before': '이미 받은 수건이 아직 축축해요. 말릴 자리를 밝혀 주세요.',
-        'lines': [
-            ('이야기', '돌아온 온기가 선반등의 네 칸을 채웠어요. 축축한 수건 위로 따뜻한 빛이 내려앉아요.'),
-            ('보송', '이번에는 보송보송해.'),
-            ('이야기', '보송이 수건을 넓게 펴 주자, 까망이는 한쪽 앞발만 살며시 올렸어요.'),
-            ('보송', '마음에 들면 다른 발도 올려. 서두르지 않아도 돼.'),
-        ],
-        'restoration': '수건 선반등이 켜지고, 보송이 수건을 펼쳐 말려요.',
-        'teaser': '보송이 안내도를 펼쳤어요. 정원으로 가는 길은 긴 복도부터예요.',
-        'art': '', 'emblem': 'towel', 'act': 1,
-    },
-    {
-        'stage': 2, 'name': '긴 복도', 'photo': '돌아오는 쪽',
-        'title': '복도 안내등', 'before': '높고 비뚤어진 생활 안내판. 까망이 눈높이에 맞춰 보고 싶어요.',
-        'lines': [
-            ('이야기', '복도 안내등이 켜졌어요. 보송이 높은 안내판을 떼어 아래로 옮겨요.'),
-            ('보송', '이쪽은 쉬는 방. 네가 보기에도 잘 보이지?'),
-            ('이야기', '까망이는 쉼터 쪽으로 돌아서 귀를 쫑긋 세웠어요.'),
-            ('보송', '길이 헷갈리면 같이 보면 돼.'),
-        ],
-        'restoration': '쉼터 문 옆에 낮은 생활 안내판이 놓여요.',
-        'teaser': '멀리서 같은 세 음이 들려요. 안내 그림은 액자 회랑을 가리켜요.',
-        'art': '', 'emblem': 'sign', 'act': 1,
-    },
-    {
-        'stage': 3, 'name': '액자 회랑', 'photo': '조금 비뚤어진 액자',
-        'title': '액자 작업등', 'before': '빈 액자 옆, 젖은 종이에 오늘 밤의 작은 발자국이 남았어요.',
-        'lines': [
-            ('이야기', '작업등 아래에서 발자국 종이가 말랐어요. 보송이 빈 액자에 넣어요.'),
-            ('보송', '앗, 조금 비뚤어졌네. 바로 걸어 줄게.'),
-            ('이야기', '까망이가 액자 아래에 앞발을 포개고 앉았어요. 보송의 손도 잠깐 멈춰요.'),
-            ('보송', '…이대로도 좋다. 오늘 우리 사진이니까.'),
-        ],
-        'restoration': '이번 밤의 발자국을 담은 액자가 벽에 걸려요.',
-        'teaser': '액자 뒤 안내 그림에서 서재를 거치는 길을 찾았어요.',
-        'art': '', 'emblem': 'frame', 'act': 1,
-    },
-    {
-        'stage': 4, 'name': '작은 서재', 'photo': '그 페이지, 잡아 줄래?',
-        'title': '함께 읽는 자리', 'before': '정원 안내서는 찾았어요. 이제 함께 펼쳐 읽을 불빛이 필요해요.',
-        'lines': [
-            ('이야기', '독서등이 켜졌어요. 보송이 책과 등불을 한꺼번에 잡다가 책장을 놓쳤어요.'),
-            ('보송', '그 페이지, 잡아 줄래?'),
-            ('이야기', '까망이가 앞발로 종이를 눌렀어요. 펼쳐진 페이지에 작은 정원문이 보여요.'),
-            ('보송', '여기구나. 낮은 통로를 이으면 정원문까지 갈 수 있어.'),
-            ('이야기', '열린 책 옆에서 까망이가 담요를 꾹꾹 눌러요. 둘이 읽을 자리가 생겼어요.'),
-        ],
-        'restoration': '독서등과 담요가 놓이고, 보송과 함께 책을 읽을 수 있어요.',
-        'teaser': '안내서에 표시된 다음 길은 서재 뒤 낮은 통로예요.',
-        'art': 'art/before/memory_scene.png', 'emblem': 'book', 'act': 1,
-    },
-    {
-        'stage': 5, 'name': '서재 뒤 샛길', 'photo': '네가 먼저',
-        'title': '낮은 통로등', 'before': '높은 코트걸이 아래에는 작은 스카프를 걸 자리가 없어요.',
-        'lines': [
-            ('이야기', '통로등 아래에서 보송이 작은 고리를 달았어요. 까망이의 스카프 높이에 꼭 맞아요.'),
-            ('보송', '잠깐 벗어 둘 땐 여기에. 이제 너도 네 자리가 있네.'),
-            ('이야기', '까망이가 낮은 길을 들여다보자 보송이 옆으로 비켜 줬어요.'),
-            ('보송', '네가 먼저. 나는 뒤에서 갈게.'),
-        ],
-        'restoration': '코트걸이 아래에 까망이의 스카프 고리가 생겨요.',
-        'teaser': '문틈으로 잎 하나가 들어왔어요. 온실에서 누군가 말을 걸어요.',
-        'art': '', 'emblem': 'scarf', 'act': 2,
-    },
-    {
-        'stage': 6, 'name': '온실 외곽', 'photo': '이만큼 자란 지금',
-        'title': '온실 작업등', 'before': '작업대 아래에 작은 싹이 있어요. 이파리가 자세히 살펴보고 싶대요.',
-        'lines': [
-            ('이야기', '작업등이 밝아지자, 커다란 화분 뒤에 가려졌던 작은 싹이 보여요.'),
-            ('이파리', '이만큼 자랐구나. 이 아이한테는 작은 화분이 편하겠어.'),
-            ('이야기', '이파리가 손수 흙을 옮겼어요. 까망이는 냄새를 맡다 앞발을 살짝 거뒀어요.'),
-            ('이파리', '응, 살살. 우리 같이 천천히 돌보자.'),
-        ],
-        'restoration': '쉼터에 낮은 화분이 놓이고, 이파리가 새싹을 돌봐요.',
-        'teaser': '가까이서 들리는 짧은 음악. 다음 방에는 도레가 있어요.',
-        'art': '', 'emblem': 'plant', 'act': 2,
-    },
-    {
-        'stage': 7, 'name': '음악실', 'photo': '그 음도 괜찮아',
-        'title': '음악실 악보등', 'before': '도레가 같은 구절을 되풀이해요. 악보 위에 불빛을 놓아 주세요.',
-        'lines': [
-            ('이야기', '악보등이 켜졌어요. 까망이가 다가가다 건반 하나를 잘못 밟았어요.'),
-            ('도레', '어? …잠깐만. 방금 그 음.'),
-            ('이야기', '도레가 새 음을 넣어 짧은 구절을 다시 연주해요. 까망이의 귀가 음악 쪽으로 돌아가요.'),
-            ('도레', '그 음도 괜찮아. 다음엔 건너편 탁자에서 같이 듣자.'),
-        ],
-        'restoration': '음악 상자에서 새로운 짧은 선율이 흘러요.',
-        'teaser': '곡은 아직 끝나지 않았어요. 먼저 함께 앉을 탁자를 밝힐까요?',
-        'art': '', 'emblem': 'music', 'act': 2,
-    },
-    {
-        'stage': 8, 'name': '식탁 옆 회랑', 'photo': '하나 더 놓인 자리',
-        'title': '함께 쉬는 찻상', 'before': '세 방 사이의 빈 탁자. 각자의 물건을 가지고 모일 곳이 필요해요.',
-        'lines': [
-            ('이야기', '작은 식탁등이 켜졌어요. 보송은 찻잔을, 이파리는 화분을 가져와요.'),
-            ('도레', '아까 만든 구절, 여기서 들려줄게.'),
-            ('보송', '까망이 자리는 이쪽. 러그 한 칸을 비워 뒀어.'),
-            ('이야기', '까망이가 둥글게 앉자 이파리가 잎을 살짝 돌려 줘요. 모두가 같은 탁자에 있어요.'),
-        ],
-        'restoration': '찻상 주위에 세 주민과 까망이의 자리가 마련돼요.',
-        'teaser': '빗줄기가 가늘어졌어요. 창 너머 정원문 표식이 가까이 보여요.',
-        'art': 'art/before/tea_memory.png', 'emblem': 'tea', 'act': 2,
-    },
-    {
-        'stage': 9, 'name': '두 갈래 응접실', 'photo': '창가는 나눠 쓰기',
-        'title': '창가등', 'before': '창가를 가득 채운 화분들. 까망이도 밖을 보고 싶어요.',
-        'lines': [
-            ('이야기', '창가등이 켜지자 이파리가 화분을 한쪽으로 옮겨요.'),
-            ('이파리', '이만큼 비우면 네가 앉을 수 있겠다.'),
-            ('이야기', '까망이가 올라앉았어요. 커튼 틈으로 조금 잦아든 비가 보여요.'),
-            ('이파리', '비 그치면 나가 보고 싶지? 길도 이제 얼마 안 남았어.'),
-        ],
-        'restoration': '창가에 빈자리가 생기고, 까망이가 바깥을 바라봐요.',
-        'teaser': '정원까지 남은 연결등은 세 구간. 보송은 말려 둔 천을 꺼내요.',
-        'art': '', 'emblem': 'window', 'act': 3,
-    },
-    {
-        'stage': 10, 'name': '유리 회랑', 'photo': '다음에 와도',
-        'title': '쿠션 작업등', 'before': '말려 둔 천과 바느질 바구니. 보송이 작은 쿠션을 만들고 싶대요.',
-        'lines': [
-            ('이야기', '작업등 아래에서 보송이 천을 가지런히 접고 작은 쿠션을 만들었어요.'),
-            ('이야기', '까망이가 쿠션 냄새를 맡다가 문 쪽을 바라봤어요.'),
-            ('보송', '나가도 괜찮아. 다음에 오면 여기 두자.'),
-            ('이야기', '까망이는 쿠션에 잠깐 볼을 비볐어요. 돌아올 자리는 약속을 요구하지 않아요.'),
-        ],
-        'restoration': '까망이의 전용 쿠션이 쉼터에 놓여요.',
-        'teaser': '도레가 불러요. 아직 남은 마지막 구절을 함께 맞춰 보재요.',
-        'art': '', 'emblem': 'cushion', 'act': 3,
-    },
-    {
-        'stage': 11, 'name': '시계 아래 복도', 'photo': '이번에는 끝까지',
-        'title': '합주 자리등', 'before': '짧은 선율의 마지막 구절. 모두가 함께할 넓은 자리가 필요해요.',
-        'lines': [
-            ('이야기', '합주 자리등 아래에서 도레가 까망이의 발걸음처럼 천천히 박자를 세요.'),
-            ('도레', '하나, 둘. 이번에는 끝까지 가 보자.'),
-            ('이야기', '보송이 찻잔 받침을 두드리고, 이파리가 박자를 맞춰요. 까망이의 꼬리 끝도 움직여요.'),
-            ('이야기', '처음 들었던 짧은 구절이 마침내 한 곡이 됐어요.'),
-        ],
-        'restoration': '함께 만든 곡을 처음부터 끝까지 다시 들을 수 있어요.',
-        'teaser': '마지막 연결등 너머로 새벽빛이 보여요. 정원문까지 한 구역 남았어요.',
-        'art': '', 'emblem': 'ensemble', 'act': 3,
-    },
-    {
-        'stage': 12, 'name': '정원 앞 홀', 'photo': '문은 열어 둘게',
-        'title': '정원과 자유로운 낮잠', 'before': '정원문까지 마지막 연결 구간. 평소처럼 온기를 가져와 쉼터로 돌아오세요.',
-        'lines': [
-            ('이야기', '까망이가 쉼터로 돌아왔어요. 가져온 손잡이를 달고 온기를 더하자 마지막 연결등이 켜져요.'),
-            ('이야기', '세 주민이 작은 정원문까지 함께 걸어왔어요. 그리고 양옆으로 비켜 섰어요.'),
-            ('이파리', '비가 그쳤네. 바깥 냄새는 어때?'),
-            ('도레', '다음에도 같이 연주하자.'),
-            ('이야기', '까망이가 제 앞발로 문을 밀었어요. 밖으로 나가다 한 번 뒤돌아봐요.'),
-            ('보송', '오늘은 문, 열어 둘게.'),
-        ],
-        'restoration': '작은 정원문이 열려요. 까망이는 원할 때 떠나고 돌아올 수 있어요.',
-        'teaser': '다음 비 오는 날, 작은 발소리가 다시 문 앞에 들려요.',
-        'art': 'art/before/ending_scene.png', 'emblem': 'garden', 'act': 3,
-    },
-]
 
-ENDING = [
-    ('이야기', '다음 비 오는 날. 까망이는 이번에는 문 앞에서 망설이지 않았어요.'),
-    ('이야기', '보송은 책을 읽고, 이파리는 화분을 돌보고, 도레의 음악이 작게 흐르고 있었어요.'),
-    ('이야기', '까망이가 제 쿠션에 둥글게 앉았어요. 떠날 수 있기에, 다시 오고 싶은 집.'),
-    ('이야기', '까망이와 잠 못 드는 저택 — 우리의 첫 번째 밤은 여기까지예요.'),
-]
+def memory_for_stage(stage: int) -> tuple[int, int]:
+    """Return the memory number and zero-based region for a room."""
+    if type(stage) is not int or not 1 <= stage <= 12:
+        raise ValueError('stage must be an integer in 1..12')
+    return (stage - 1) // 4 + 1, (stage - 1) % 4
 
-# Stable local names are useful to menus without importing the simulation.
-SPEAKERS = {'보송': '등불을 든 주민', '이파리': '새싹을 돌보는 주민', '도레': '음악을 만드는 주민'}
+
+STAGES = []
+for _level in load_levels():
+    _stage = _level['stage']
+    _quest = _level['quest']
+    _memory_id, _region_index = memory_for_stage(_stage)
+    STAGES.append({
+        'stage': _stage, 'name': _level['name'],
+        'photo': f'기억 {_memory_id} · {_region_index + 1}번 영역',
+        'title': f'기억 {_memory_id}',
+        'before': f"아이템: {_quest['name']} · 온기 4점 이상",
+        'lines': [], 'restoration': _quest['restoration'], 'teaser': '',
+        'art': '', 'emblem': _quest['kind'], 'act': _memory_id,
+    })
+
+# Compatibility names share main's dialogue source; the controller selects all
+# six entries from ENDING_CONTENT rather than treating these as two branches.
+from .ending_content import ENDING_CONTENT
+ENDING = ENDING_CONTENT['normal']['lines']
+EXTENDED_ENDING = ENDING_CONTENT['happy_all']['lines']
+
+SPEAKERS = {'보송': '보송', '이파리': '이파리', '도레': '도레'}
 COSMETIC_LABELS = {
     'scarf': {'default': '세이지 스카프', 'peach': '복숭아 스카프', 'lavender': '라벤더 스카프'},
     'rug': {'default': '따뜻한 기본 러그', 'stars': '별빛 러그', 'leaves': '잎사귀 러그'},
     'frame': {'default': '나무 액자', 'leaves': '잎사귀 액자', 'stars': '별빛 액자'},
 }
-
-# Per-stage mission wording is loaded from the authoritative level data.
-from .levels import load_levels as _load_story_levels
-for _story, _level in zip(STAGES, _load_story_levels()):
-    _quest = _level["quest"]
-    _story["before"] = _quest["name"] + "와 온기 4점 이상을 찾아 쉼터로 돌아오세요."
-    _story["restoration"] = _quest["restoration"]
-    _story["emblem"] = _quest["kind"]
-    _story["lines"] = [("이야기", "되찾은 물건은 " + _quest["name"] + ". 모아 온 온기로 등이 켜져요.")] + _story["lines"]
-PROLOGUE[-1] = ("이야기", "방에 남겨진 물건과 온기를 함께 찾아 주세요. 물건과 온기 4점 이상을 가지고 쉼터 문에서 E를 누르면 돌아올 수 있어요.")

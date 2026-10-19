@@ -1,0 +1,3378 @@
+{
+  "file": "bgm_act2.wav",
+  "sample_rate": 22050,
+  "channels": 2,
+  "encoding": "PCM16",
+  "frames": 1221231,
+  "duration_seconds": 55.384625850340136,
+  "bpm": 69.3333202317989,
+  "meter": "4/4",
+  "bars": 16,
+  "loop": true,
+  "peak_dbfs": -6.19625,
+  "rms_dbfs": -27.65185,
+  "target_rms_dbfs": -27.6,
+  "master_gain": 5.090231419842502,
+  "clipped_samples": 0,
+  "transient_control": {
+    "method": "Stereo-linked60ms lookahead minimum hold,6ms Gaussian gain smoothing; no hard clipping",
+    "ceiling_dbfs": -6.196078399429727,
+    "maximum_gain_reduction_db": 4.4198,
+    "fraction_below_minus1db": 0.006659
+  },
+  "boundary_sample_delta": 0.003082275390625,
+  "boundary_vs_local99_ratio": 0.5771428571428572,
+  "edge_rms": {
+    "0.1": {
+      "start_dbfs": -42.5998,
+      "end_dbfs": -43.0474,
+      "difference_db": 0.4475
+    },
+    "0.25": {
+      "start_dbfs": -42.0951,
+      "end_dbfs": -42.4212,
+      "difference_db": 0.3261
+    },
+    "0.5": {
+      "start_dbfs": -29.0913,
+      "end_dbfs": -36.4601,
+      "difference_db": 7.3688
+    },
+    "1.0": {
+      "start_dbfs": -24.1141,
+      "end_dbfs": -29.931,
+      "difference_db": 5.8169
+    },
+    "2.0": {
+      "start_dbfs": -23.45,
+      "end_dbfs": -27.8403,
+      "difference_db": 4.3903
+    }
+  },
+  "events": 89,
+  "role_counts": {
+    "bass": 16,
+    "inner_voice": 16,
+    "countermelody": 20,
+    "melody": 35,
+    "loop_turnaround": 2
+  },
+  "sha256": "add75f811c2a3d7e9c080370be1367cc50948f8b247d1baaa9418c45a4e9402e",
+  "sections": [
+    {
+      "start_bar": 1,
+      "name": "shared_question",
+      "rationale": "The same identifiable rhythm is heard in a warmer upper piano register."
+    },
+    {
+      "start_bar": 5,
+      "name": "friend_answer",
+      "rationale": "A C-B-A answer and a short separate upper reply suggest a second presence."
+    },
+    {
+      "start_bar": 9,
+      "name": "lifted_question",
+      "rationale": "The motif expands upward through G and F before it gently falls."
+    },
+    {
+      "start_bar": 13,
+      "name": "friend_return",
+      "rationale": "The descending answer remains suspended on D/E so the loop remains open."
+    }
+  ],
+  "notes": [
+    {
+      "bar": 1,
+      "beat": 0.5,
+      "absolute_beat": 0.5,
+      "time_seconds": 0.4682812,
+      "duration_beats": 1.25,
+      "duration_seconds": 1.1184313,
+      "midi": 69,
+      "velocity": 0.530925,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.24,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.592095,
+          "root_midi": 68,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v2_rr1_Player.wav",
+          "sha256": "5d2c5634dbed1cbd2f760d756f045247089b2e2962184fa3fcf47cf9c8fd4277",
+          "pitch_shift_semitones": 1
+        },
+        {
+          "layer": 3,
+          "weight": 0.407905,
+          "root_midi": 68,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v3_rr1_Player.wav",
+          "sha256": "e28aebba2f2995ea1d5443a8f7eeaac8f81a342317d54c4c6781ae482b355f20",
+          "pitch_shift_semitones": 1
+        }
+      ]
+    },
+    {
+      "bar": 1,
+      "beat": 0.7,
+      "absolute_beat": 0.7,
+      "time_seconds": 0.6502731,
+      "duration_beats": 1.6,
+      "duration_seconds": 1.4066577,
+      "midi": 45,
+      "velocity": 0.345469,
+      "role": "bass",
+      "articulation": "soft",
+      "pedal": 0.3,
+      "stereo_balance": -0.07,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.172656,
+          "root_midi": 45,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_A1_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_A1_v1_rr1_Player.wav",
+          "sha256": "a1e432f8ca90168e957b59d1777c0dcdadeef61ae4344843b1592f89d140a7cb",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 2,
+          "weight": 0.827344,
+          "root_midi": 45,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_A1_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_A1_v2_rr1_Player.wav",
+          "sha256": "3fb2818cbf799cebcd91798f949cacb01e287e12a33158c6520bf381c73f4689",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 1,
+      "beat": 1.75,
+      "absolute_beat": 1.75,
+      "time_seconds": 1.5857628,
+      "duration_beats": 0.95,
+      "duration_seconds": 0.8182555,
+      "midi": 64,
+      "velocity": 0.310798,
+      "role": "inner_voice",
+      "articulation": "legato",
+      "pedal": 0.22,
+      "stereo_balance": 0.05,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.34601,
+          "root_midi": 64,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E3_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E3_v1_rr1_Player.wav",
+          "sha256": "3986177d766ad67acaeb8d0d53114c4380dea65bc1632938dc597006e5123771",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 2,
+          "weight": 0.65399,
+          "root_midi": 64,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E3_v2_rr1_Player.wav",
+          "sha256": "51727d51e9174cd141ea202e25871a56fbd32f799d7f440d7bbeba0f1d29dc7c",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 1,
+      "beat": 2.0,
+      "absolute_beat": 2.0,
+      "time_seconds": 1.802422,
+      "duration_beats": 0.42,
+      "duration_seconds": 0.3608006,
+      "midi": 72,
+      "velocity": 0.553282,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.24,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.53167,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 3,
+          "weight": 0.46833,
+          "root_midi": 72,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "sha256": "eb5faca3331cd32f15f6a2302dba69b073a2ca600fed606bf456e60260d06e5b",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 1,
+      "beat": 2.5,
+      "absolute_beat": 2.5,
+      "time_seconds": 2.2311938,
+      "duration_beats": 1.3,
+      "duration_seconds": 1.150078,
+      "midi": 76,
+      "velocity": 0.612664,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.24,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.371179,
+          "root_midi": 76,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "sha256": "0b3357ea1c4313d196defebd8d1f02291889c6d1484f94652fa68b82768315c8",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 3,
+          "weight": 0.628821,
+          "root_midi": 76,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v3_rr1_Player.wav",
+          "sha256": "7f54f4483fa263ecde249dd20804394862acdb49ab879f0d20f09ad03586c0da",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 2,
+      "beat": 0.25,
+      "absolute_beat": 4.25,
+      "time_seconds": 3.7907844,
+      "duration_beats": 1.6,
+      "duration_seconds": 1.3567384,
+      "midi": 43,
+      "velocity": 0.352455,
+      "role": "bass",
+      "articulation": "soft",
+      "pedal": 0.3,
+      "stereo_balance": -0.07,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.137726,
+          "root_midi": 42,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#1_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%231_v1_rr1_Player.wav",
+          "sha256": "1dfdca1c4c577dfd0a50a33b72cb22c3eb752235cc12e26432fc30db43d2dfdd",
+          "pitch_shift_semitones": 1
+        },
+        {
+          "layer": 2,
+          "weight": 0.862274,
+          "root_midi": 42,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#1_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%231_v2_rr1_Player.wav",
+          "sha256": "c26ac28fca64b6aaa3e2733673e9217ca378652999e2621cabbb1bcb53254500",
+          "pitch_shift_semitones": 1
+        }
+      ]
+    },
+    {
+      "bar": 2,
+      "beat": 0.5,
+      "absolute_beat": 4.5,
+      "time_seconds": 4.0138547,
+      "duration_beats": 0.45,
+      "duration_seconds": 0.3907599,
+      "midi": 74,
+      "velocity": 0.515572,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.24,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.633589,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": 2
+        },
+        {
+          "layer": 3,
+          "weight": 0.366411,
+          "root_midi": 72,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "sha256": "eb5faca3331cd32f15f6a2302dba69b073a2ca600fed606bf456e60260d06e5b",
+          "pitch_shift_semitones": 2
+        }
+      ]
+    },
+    {
+      "bar": 2,
+      "beat": 1.25,
+      "absolute_beat": 5.25,
+      "time_seconds": 4.643478,
+      "duration_beats": 0.85,
+      "duration_seconds": 0.6919905,
+      "midi": 72,
+      "velocity": 0.485752,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.24,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.714185,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 3,
+          "weight": 0.285815,
+          "root_midi": 72,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "sha256": "eb5faca3331cd32f15f6a2302dba69b073a2ca600fed606bf456e60260d06e5b",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 2,
+      "beat": 1.75,
+      "absolute_beat": 5.75,
+      "time_seconds": 5.060016,
+      "duration_beats": 0.95,
+      "duration_seconds": 0.7662575,
+      "midi": 62,
+      "velocity": 0.309308,
+      "role": "inner_voice",
+      "articulation": "legato",
+      "pedal": 0.22,
+      "stereo_balance": 0.05,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.353462,
+          "root_midi": 60,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C3_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C3_v1_rr1_Player.wav",
+          "sha256": "eb52431464cc160cb7c3576d5087b6cc67326fd903b620088c0874f6bcff4a8e",
+          "pitch_shift_semitones": 2
+        },
+        {
+          "layer": 2,
+          "weight": 0.646538,
+          "root_midi": 60,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C3_v2_rr1_Player.wav",
+          "sha256": "fce33012fe900309abafd1a4d6d254d142b0cbf33834c7a72c2fd1ada4e746e1",
+          "pitch_shift_semitones": 2
+        }
+      ]
+    },
+    {
+      "bar": 2,
+      "beat": 2.75,
+      "absolute_beat": 6.75,
+      "time_seconds": 5.8623439,
+      "duration_beats": 0.85,
+      "duration_seconds": 0.7115035,
+      "midi": 71,
+      "velocity": 0.444354,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.24,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.826071,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": -1
+        },
+        {
+          "layer": 3,
+          "weight": 0.173929,
+          "root_midi": 72,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "sha256": "eb5faca3331cd32f15f6a2302dba69b073a2ca600fed606bf456e60260d06e5b",
+          "pitch_shift_semitones": -1
+        }
+      ]
+    },
+    {
+      "bar": 2,
+      "beat": 2.8,
+      "absolute_beat": 6.8,
+      "time_seconds": 5.9144644,
+      "duration_beats": 0.5,
+      "duration_seconds": 0.4158243,
+      "midi": 69,
+      "velocity": 0.267362,
+      "role": "countermelody",
+      "articulation": "detached",
+      "pedal": 0.05,
+      "stereo_balance": 0.08,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.563192,
+          "root_midi": 68,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v1_rr1_Player.wav",
+          "sha256": "a812c31c7f474ee603a7a3eb83e6e285ee87878344ce9a372bd00730281852c5",
+          "pitch_shift_semitones": 1
+        },
+        {
+          "layer": 2,
+          "weight": 0.436808,
+          "root_midi": 68,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v2_rr1_Player.wav",
+          "sha256": "5d2c5634dbed1cbd2f760d756f045247089b2e2962184fa3fcf47cf9c8fd4277",
+          "pitch_shift_semitones": 1
+        }
+      ]
+    },
+    {
+      "bar": 2,
+      "beat": 3.5,
+      "absolute_beat": 7.5,
+      "time_seconds": 6.4960143,
+      "duration_beats": 0.4,
+      "duration_seconds": 0.3425594,
+      "midi": 74,
+      "velocity": 0.249017,
+      "role": "countermelody",
+      "articulation": "detached",
+      "pedal": 0.05,
+      "stereo_balance": 0.08,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.654917,
+          "root_midi": 72,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v1_rr1_Player.wav",
+          "sha256": "f921d4737ee847ecb55ce251a94e1841069b70e206b00342676954992ea7d0dc",
+          "pitch_shift_semitones": 2
+        },
+        {
+          "layer": 2,
+          "weight": 0.345083,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": 2
+        }
+      ]
+    },
+    {
+      "bar": 3,
+      "beat": 0.25,
+      "absolute_beat": 8.25,
+      "time_seconds": 7.1362616,
+      "duration_beats": 1.6,
+      "duration_seconds": 1.3250356,
+      "midi": 45,
+      "velocity": 0.353964,
+      "role": "bass",
+      "articulation": "soft",
+      "pedal": 0.3,
+      "stereo_balance": -0.07,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.13018,
+          "root_midi": 45,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_A1_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_A1_v1_rr1_Player.wav",
+          "sha256": "a1e432f8ca90168e957b59d1777c0dcdadeef61ae4344843b1592f89d140a7cb",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 2,
+          "weight": 0.86982,
+          "root_midi": 45,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_A1_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_A1_v2_rr1_Player.wav",
+          "sha256": "3fb2818cbf799cebcd91798f949cacb01e287e12a33158c6520bf381c73f4689",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 3,
+      "beat": 0.5,
+      "absolute_beat": 8.5,
+      "time_seconds": 7.3463876,
+      "duration_beats": 0.45,
+      "duration_seconds": 0.3788365,
+      "midi": 67,
+      "velocity": 0.415578,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.24,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.903844,
+          "root_midi": 68,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v2_rr1_Player.wav",
+          "sha256": "5d2c5634dbed1cbd2f760d756f045247089b2e2962184fa3fcf47cf9c8fd4277",
+          "pitch_shift_semitones": -1
+        },
+        {
+          "layer": 3,
+          "weight": 0.096156,
+          "root_midi": 68,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v3_rr1_Player.wav",
+          "sha256": "e28aebba2f2995ea1d5443a8f7eeaac8f81a342317d54c4c6781ae482b355f20",
+          "pitch_shift_semitones": -1
+        }
+      ]
+    },
+    {
+      "bar": 3,
+      "beat": 1.25,
+      "absolute_beat": 9.25,
+      "time_seconds": 7.9705205,
+      "duration_beats": 1.3,
+      "duration_seconds": 1.0516576,
+      "midi": 69,
+      "velocity": 0.466016,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.24,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.767525,
+          "root_midi": 68,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v2_rr1_Player.wav",
+          "sha256": "5d2c5634dbed1cbd2f760d756f045247089b2e2962184fa3fcf47cf9c8fd4277",
+          "pitch_shift_semitones": 1
+        },
+        {
+          "layer": 3,
+          "weight": 0.232475,
+          "root_midi": 68,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v3_rr1_Player.wav",
+          "sha256": "e28aebba2f2995ea1d5443a8f7eeaac8f81a342317d54c4c6781ae482b355f20",
+          "pitch_shift_semitones": 1
+        }
+      ]
+    },
+    {
+      "bar": 3,
+      "beat": 1.75,
+      "absolute_beat": 9.75,
+      "time_seconds": 8.3840706,
+      "duration_beats": 0.95,
+      "duration_seconds": 0.7708639,
+      "midi": 60,
+      "velocity": 0.3108,
+      "role": "inner_voice",
+      "articulation": "legato",
+      "pedal": 0.22,
+      "stereo_balance": 0.05,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.346001,
+          "root_midi": 60,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C3_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C3_v1_rr1_Player.wav",
+          "sha256": "eb52431464cc160cb7c3576d5087b6cc67326fd903b620088c0874f6bcff4a8e",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 2,
+          "weight": 0.653999,
+          "root_midi": 60,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C3_v2_rr1_Player.wav",
+          "sha256": "fce33012fe900309abafd1a4d6d254d142b0cbf33834c7a72c2fd1ada4e746e1",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 4,
+      "beat": 0.25,
+      "absolute_beat": 12.25,
+      "time_seconds": 10.5142747,
+      "duration_beats": 1.6,
+      "duration_seconds": 1.4060355,
+      "midi": 43,
+      "velocity": 0.353717,
+      "role": "bass",
+      "articulation": "soft",
+      "pedal": 0.3,
+      "stereo_balance": -0.07,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.131414,
+          "root_midi": 42,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#1_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%231_v1_rr1_Player.wav",
+          "sha256": "1dfdca1c4c577dfd0a50a33b72cb22c3eb752235cc12e26432fc30db43d2dfdd",
+          "pitch_shift_semitones": 1
+        },
+        {
+          "layer": 2,
+          "weight": 0.868586,
+          "root_midi": 42,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#1_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%231_v2_rr1_Player.wav",
+          "sha256": "c26ac28fca64b6aaa3e2733673e9217ca378652999e2621cabbb1bcb53254500",
+          "pitch_shift_semitones": 1
+        }
+      ]
+    },
+    {
+      "bar": 4,
+      "beat": 1.0,
+      "absolute_beat": 13.0,
+      "time_seconds": 11.1815799,
+      "duration_beats": 1.5,
+      "duration_seconds": 1.2977984,
+      "midi": 71,
+      "velocity": 0.402255,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.24,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.93985,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": -1
+        },
+        {
+          "layer": 3,
+          "weight": 0.06015,
+          "root_midi": 72,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "sha256": "eb5faca3331cd32f15f6a2302dba69b073a2ca600fed606bf456e60260d06e5b",
+          "pitch_shift_semitones": -1
+        }
+      ]
+    },
+    {
+      "bar": 4,
+      "beat": 1.75,
+      "absolute_beat": 13.75,
+      "time_seconds": 11.8309986,
+      "duration_beats": 0.95,
+      "duration_seconds": 0.8228619,
+      "midi": 59,
+      "velocity": 0.309079,
+      "role": "inner_voice",
+      "articulation": "legato",
+      "pedal": 0.22,
+      "stereo_balance": 0.05,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.354604,
+          "root_midi": 60,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C3_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C3_v1_rr1_Player.wav",
+          "sha256": "eb52431464cc160cb7c3576d5087b6cc67326fd903b620088c0874f6bcff4a8e",
+          "pitch_shift_semitones": -1
+        },
+        {
+          "layer": 2,
+          "weight": 0.645396,
+          "root_midi": 60,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C3_v2_rr1_Player.wav",
+          "sha256": "fce33012fe900309abafd1a4d6d254d142b0cbf33834c7a72c2fd1ada4e746e1",
+          "pitch_shift_semitones": -1
+        }
+      ]
+    },
+    {
+      "bar": 4,
+      "beat": 2.8,
+      "absolute_beat": 14.8,
+      "time_seconds": 12.7432162,
+      "duration_beats": 0.5,
+      "duration_seconds": 0.4521588,
+      "midi": 66,
+      "velocity": 0.26884,
+      "role": "countermelody",
+      "articulation": "detached",
+      "pedal": 0.05,
+      "stereo_balance": 0.08,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.555798,
+          "root_midi": 64,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E3_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E3_v1_rr1_Player.wav",
+          "sha256": "3986177d766ad67acaeb8d0d53114c4380dea65bc1632938dc597006e5123771",
+          "pitch_shift_semitones": 2
+        },
+        {
+          "layer": 2,
+          "weight": 0.444202,
+          "root_midi": 64,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E3_v2_rr1_Player.wav",
+          "sha256": "51727d51e9174cd141ea202e25871a56fbd32f799d7f440d7bbeba0f1d29dc7c",
+          "pitch_shift_semitones": 2
+        }
+      ]
+    },
+    {
+      "bar": 4,
+      "beat": 3.5,
+      "absolute_beat": 15.5,
+      "time_seconds": 13.377873,
+      "duration_beats": 0.4,
+      "duration_seconds": 0.3735756,
+      "midi": 71,
+      "velocity": 0.251197,
+      "role": "countermelody",
+      "articulation": "detached",
+      "pedal": 0.05,
+      "stereo_balance": 0.08,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.644013,
+          "root_midi": 72,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v1_rr1_Player.wav",
+          "sha256": "f921d4737ee847ecb55ce251a94e1841069b70e206b00342676954992ea7d0dc",
+          "pitch_shift_semitones": -1
+        },
+        {
+          "layer": 2,
+          "weight": 0.355987,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": -1
+        }
+      ]
+    },
+    {
+      "bar": 5,
+      "beat": 0.25,
+      "absolute_beat": 16.25,
+      "time_seconds": 14.0847914,
+      "duration_beats": 1.6,
+      "duration_seconds": 1.4377382,
+      "midi": 41,
+      "velocity": 0.35194,
+      "role": "bass",
+      "articulation": "soft",
+      "pedal": 0.3,
+      "stereo_balance": -0.07,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.140301,
+          "root_midi": 42,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#1_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%231_v1_rr1_Player.wav",
+          "sha256": "1dfdca1c4c577dfd0a50a33b72cb22c3eb752235cc12e26432fc30db43d2dfdd",
+          "pitch_shift_semitones": -1
+        },
+        {
+          "layer": 2,
+          "weight": 0.859699,
+          "root_midi": 42,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#1_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%231_v2_rr1_Player.wav",
+          "sha256": "c26ac28fca64b6aaa3e2733673e9217ca378652999e2621cabbb1bcb53254500",
+          "pitch_shift_semitones": -1
+        }
+      ]
+    },
+    {
+      "bar": 5,
+      "beat": 0.5,
+      "absolute_beat": 16.5,
+      "time_seconds": 14.3127739,
+      "duration_beats": 0.85,
+      "duration_seconds": 0.769633,
+      "midi": 72,
+      "velocity": 0.547736,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.26,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.546661,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 3,
+          "weight": 0.453339,
+          "root_midi": 72,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "sha256": "eb5faca3331cd32f15f6a2302dba69b073a2ca600fed606bf456e60260d06e5b",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 5,
+      "beat": 1.75,
+      "absolute_beat": 17.75,
+      "time_seconds": 15.4319718,
+      "duration_beats": 0.42,
+      "duration_seconds": 0.3612476,
+      "midi": 71,
+      "velocity": 0.480067,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.26,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.72955,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": -1
+        },
+        {
+          "layer": 3,
+          "weight": 0.27045,
+          "root_midi": 72,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "sha256": "eb5faca3331cd32f15f6a2302dba69b073a2ca600fed606bf456e60260d06e5b",
+          "pitch_shift_semitones": -1
+        }
+      ]
+    },
+    {
+      "bar": 5,
+      "beat": 1.75,
+      "absolute_beat": 17.75,
+      "time_seconds": 15.4332266,
+      "duration_beats": 0.95,
+      "duration_seconds": 0.8182555,
+      "midi": 57,
+      "velocity": 0.31426,
+      "role": "inner_voice",
+      "articulation": "legato",
+      "pedal": 0.22,
+      "stereo_balance": 0.05,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.3287,
+          "root_midi": 54,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#2_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%232_v1_rr1_Player.wav",
+          "sha256": "b2f0d5b6e58a9e05879cf2da90240cd3aa4e8c565e488d77ed5718d430cb59b6",
+          "pitch_shift_semitones": 3
+        },
+        {
+          "layer": 2,
+          "weight": 0.6713,
+          "root_midi": 54,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#2_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%232_v2_rr1_Player.wav",
+          "sha256": "45be0b87b88a6789550f849da90c2b085bd7976e183850f5f359bbc843c41d64",
+          "pitch_shift_semitones": 3
+        }
+      ]
+    },
+    {
+      "bar": 5,
+      "beat": 2.5,
+      "absolute_beat": 18.5,
+      "time_seconds": 16.0752872,
+      "duration_beats": 1.3,
+      "duration_seconds": 1.150078,
+      "midi": 69,
+      "velocity": 0.463929,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.26,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.773164,
+          "root_midi": 68,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v2_rr1_Player.wav",
+          "sha256": "5d2c5634dbed1cbd2f760d756f045247089b2e2962184fa3fcf47cf9c8fd4277",
+          "pitch_shift_semitones": 1
+        },
+        {
+          "layer": 3,
+          "weight": 0.226836,
+          "root_midi": 68,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v3_rr1_Player.wav",
+          "sha256": "e28aebba2f2995ea1d5443a8f7eeaac8f81a342317d54c4c6781ae482b355f20",
+          "pitch_shift_semitones": 1
+        }
+      ]
+    },
+    {
+      "bar": 6,
+      "beat": 0.25,
+      "absolute_beat": 20.25,
+      "time_seconds": 17.6356575,
+      "duration_beats": 1.6,
+      "duration_seconds": 1.3567384,
+      "midi": 45,
+      "velocity": 0.353496,
+      "role": "bass",
+      "articulation": "soft",
+      "pedal": 0.3,
+      "stereo_balance": -0.07,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.132518,
+          "root_midi": 45,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_A1_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_A1_v1_rr1_Player.wav",
+          "sha256": "a1e432f8ca90168e957b59d1777c0dcdadeef61ae4344843b1592f89d140a7cb",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 2,
+          "weight": 0.867482,
+          "root_midi": 45,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_A1_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_A1_v2_rr1_Player.wav",
+          "sha256": "3fb2818cbf799cebcd91798f949cacb01e287e12a33158c6520bf381c73f4689",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 6,
+      "beat": 0.5,
+      "absolute_beat": 20.5,
+      "time_seconds": 17.8486484,
+      "duration_beats": 0.6,
+      "duration_seconds": 0.5180719,
+      "midi": 67,
+      "velocity": 0.430839,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.26,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.862598,
+          "root_midi": 68,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v2_rr1_Player.wav",
+          "sha256": "5d2c5634dbed1cbd2f760d756f045247089b2e2962184fa3fcf47cf9c8fd4277",
+          "pitch_shift_semitones": -1
+        },
+        {
+          "layer": 3,
+          "weight": 0.137402,
+          "root_midi": 68,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v3_rr1_Player.wav",
+          "sha256": "e28aebba2f2995ea1d5443a8f7eeaac8f81a342317d54c4c6781ae482b355f20",
+          "pitch_shift_semitones": -1
+        }
+      ]
+    },
+    {
+      "bar": 6,
+      "beat": 1.5,
+      "absolute_beat": 21.5,
+      "time_seconds": 18.7158454,
+      "duration_beats": 0.6,
+      "duration_seconds": 0.485355,
+      "midi": 69,
+      "velocity": 0.475565,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.26,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.741715,
+          "root_midi": 68,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v2_rr1_Player.wav",
+          "sha256": "5d2c5634dbed1cbd2f760d756f045247089b2e2962184fa3fcf47cf9c8fd4277",
+          "pitch_shift_semitones": 1
+        },
+        {
+          "layer": 3,
+          "weight": 0.258285,
+          "root_midi": 68,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v3_rr1_Player.wav",
+          "sha256": "e28aebba2f2995ea1d5443a8f7eeaac8f81a342317d54c4c6781ae482b355f20",
+          "pitch_shift_semitones": 1
+        }
+      ]
+    },
+    {
+      "bar": 6,
+      "beat": 1.75,
+      "absolute_beat": 21.75,
+      "time_seconds": 18.9028308,
+      "duration_beats": 0.95,
+      "duration_seconds": 0.7662575,
+      "midi": 60,
+      "velocity": 0.308653,
+      "role": "inner_voice",
+      "articulation": "legato",
+      "pedal": 0.22,
+      "stereo_balance": 0.05,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.356736,
+          "root_midi": 60,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C3_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C3_v1_rr1_Player.wav",
+          "sha256": "eb52431464cc160cb7c3576d5087b6cc67326fd903b620088c0874f6bcff4a8e",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 2,
+          "weight": 0.643264,
+          "root_midi": 60,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C3_v2_rr1_Player.wav",
+          "sha256": "fce33012fe900309abafd1a4d6d254d142b0cbf33834c7a72c2fd1ada4e746e1",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 6,
+      "beat": 2.5,
+      "absolute_beat": 22.5,
+      "time_seconds": 19.5101238,
+      "duration_beats": 1.1,
+      "duration_seconds": 0.914783,
+      "midi": 72,
+      "velocity": 0.51788,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.26,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.627351,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 3,
+          "weight": 0.372649,
+          "root_midi": 72,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "sha256": "eb5faca3331cd32f15f6a2302dba69b073a2ca600fed606bf456e60260d06e5b",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 6,
+      "beat": 2.8,
+      "absolute_beat": 22.8,
+      "time_seconds": 19.7605319,
+      "duration_beats": 0.5,
+      "duration_seconds": 0.4158243,
+      "midi": 67,
+      "velocity": 0.271009,
+      "role": "countermelody",
+      "articulation": "detached",
+      "pedal": 0.05,
+      "stereo_balance": 0.08,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.544955,
+          "root_midi": 68,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v1_rr1_Player.wav",
+          "sha256": "a812c31c7f474ee603a7a3eb83e6e285ee87878344ce9a372bd00730281852c5",
+          "pitch_shift_semitones": -1
+        },
+        {
+          "layer": 2,
+          "weight": 0.455045,
+          "root_midi": 68,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v2_rr1_Player.wav",
+          "sha256": "5d2c5634dbed1cbd2f760d756f045247089b2e2962184fa3fcf47cf9c8fd4277",
+          "pitch_shift_semitones": -1
+        }
+      ]
+    },
+    {
+      "bar": 6,
+      "beat": 3.25,
+      "absolute_beat": 23.25,
+      "time_seconds": 20.1243954,
+      "duration_beats": 0.4,
+      "duration_seconds": 0.3395841,
+      "midi": 79,
+      "velocity": 0.270181,
+      "role": "countermelody",
+      "articulation": "soft",
+      "pedal": 0.1,
+      "stereo_balance": 0.08,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.549097,
+          "root_midi": 76,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v1_rr1_Player.wav",
+          "sha256": "2bbea3d9e280e7b87605eaa01853b9e81c8ce21eae1db61cfb6fa33b94ca449f",
+          "pitch_shift_semitones": 3
+        },
+        {
+          "layer": 2,
+          "weight": 0.450903,
+          "root_midi": 76,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "sha256": "0b3357ea1c4313d196defebd8d1f02291889c6d1484f94652fa68b82768315c8",
+          "pitch_shift_semitones": 3
+        }
+      ]
+    },
+    {
+      "bar": 6,
+      "beat": 3.5,
+      "absolute_beat": 23.5,
+      "time_seconds": 20.3427765,
+      "duration_beats": 0.4,
+      "duration_seconds": 0.3425594,
+      "midi": 72,
+      "velocity": 0.252322,
+      "role": "countermelody",
+      "articulation": "detached",
+      "pedal": 0.05,
+      "stereo_balance": 0.08,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.63839,
+          "root_midi": 72,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v1_rr1_Player.wav",
+          "sha256": "f921d4737ee847ecb55ce251a94e1841069b70e206b00342676954992ea7d0dc",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 2,
+          "weight": 0.36161,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 7,
+      "beat": 0.0,
+      "absolute_beat": 24.0,
+      "time_seconds": 20.765081,
+      "duration_beats": 0.55,
+      "duration_seconds": 0.4710848,
+      "midi": 81,
+      "velocity": 0.287529,
+      "role": "countermelody",
+      "articulation": "soft",
+      "pedal": 0.1,
+      "stereo_balance": 0.08,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.462356,
+          "root_midi": 82,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_A#4_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_A%234_v1_rr1_Player.wav",
+          "sha256": "d126e50d8f9118fe962af3d55e529f5fc0ecde81d8d9882ecd82db235589e121",
+          "pitch_shift_semitones": -1
+        },
+        {
+          "layer": 2,
+          "weight": 0.537644,
+          "root_midi": 82,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_A#4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_A%234_v2_rr1_Player.wav",
+          "sha256": "5fdd61e4eafa7ee90325ac6a7380c87f4115d30d88f722f3f8a0b9fbd39e0b6e",
+          "pitch_shift_semitones": -1
+        }
+      ]
+    },
+    {
+      "bar": 7,
+      "beat": 0.25,
+      "absolute_beat": 24.25,
+      "time_seconds": 20.9861387,
+      "duration_beats": 1.6,
+      "duration_seconds": 1.3250356,
+      "midi": 40,
+      "velocity": 0.346113,
+      "role": "bass",
+      "articulation": "soft",
+      "pedal": 0.3,
+      "stereo_balance": -0.07,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.169435,
+          "root_midi": 42,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#1_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%231_v1_rr1_Player.wav",
+          "sha256": "1dfdca1c4c577dfd0a50a33b72cb22c3eb752235cc12e26432fc30db43d2dfdd",
+          "pitch_shift_semitones": -2
+        },
+        {
+          "layer": 2,
+          "weight": 0.830565,
+          "root_midi": 42,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#1_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%231_v2_rr1_Player.wav",
+          "sha256": "c26ac28fca64b6aaa3e2733673e9217ca378652999e2621cabbb1bcb53254500",
+          "pitch_shift_semitones": -2
+        }
+      ]
+    },
+    {
+      "bar": 7,
+      "beat": 0.5,
+      "absolute_beat": 24.5,
+      "time_seconds": 21.2002756,
+      "duration_beats": 1.3,
+      "duration_seconds": 1.0711704,
+      "midi": 76,
+      "velocity": 0.567622,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.26,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.492914,
+          "root_midi": 76,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "sha256": "0b3357ea1c4313d196defebd8d1f02291889c6d1484f94652fa68b82768315c8",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 3,
+          "weight": 0.507086,
+          "root_midi": 76,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v3_rr1_Player.wav",
+          "sha256": "7f54f4483fa263ecde249dd20804394862acdb49ab879f0d20f09ad03586c0da",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 7,
+      "beat": 1.0,
+      "absolute_beat": 25.0,
+      "time_seconds": 21.6210153,
+      "duration_beats": 0.55,
+      "duration_seconds": 0.449558,
+      "midi": 79,
+      "velocity": 0.277673,
+      "role": "countermelody",
+      "articulation": "soft",
+      "pedal": 0.1,
+      "stereo_balance": 0.08,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.511635,
+          "root_midi": 76,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v1_rr1_Player.wav",
+          "sha256": "2bbea3d9e280e7b87605eaa01853b9e81c8ce21eae1db61cfb6fa33b94ca449f",
+          "pitch_shift_semitones": 3
+        },
+        {
+          "layer": 2,
+          "weight": 0.488365,
+          "root_midi": 76,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "sha256": "0b3357ea1c4313d196defebd8d1f02291889c6d1484f94652fa68b82768315c8",
+          "pitch_shift_semitones": 3
+        }
+      ]
+    },
+    {
+      "bar": 7,
+      "beat": 1.75,
+      "absolute_beat": 25.75,
+      "time_seconds": 22.2280665,
+      "duration_beats": 0.95,
+      "duration_seconds": 0.7708639,
+      "midi": 59,
+      "velocity": 0.310001,
+      "role": "inner_voice",
+      "articulation": "legato",
+      "pedal": 0.22,
+      "stereo_balance": 0.05,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.349996,
+          "root_midi": 60,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C3_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C3_v1_rr1_Player.wav",
+          "sha256": "eb52431464cc160cb7c3576d5087b6cc67326fd903b620088c0874f6bcff4a8e",
+          "pitch_shift_semitones": -1
+        },
+        {
+          "layer": 2,
+          "weight": 0.650004,
+          "root_midi": 60,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C3_v2_rr1_Player.wav",
+          "sha256": "fce33012fe900309abafd1a4d6d254d142b0cbf33834c7a72c2fd1ada4e746e1",
+          "pitch_shift_semitones": -1
+        }
+      ]
+    },
+    {
+      "bar": 7,
+      "beat": 2.5,
+      "absolute_beat": 26.5,
+      "time_seconds": 22.8363976,
+      "duration_beats": 0.85,
+      "duration_seconds": 0.718881,
+      "midi": 74,
+      "velocity": 0.480945,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.26,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.727175,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": 2
+        },
+        {
+          "layer": 3,
+          "weight": 0.272825,
+          "root_midi": 72,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "sha256": "eb5faca3331cd32f15f6a2302dba69b073a2ca600fed606bf456e60260d06e5b",
+          "pitch_shift_semitones": 2
+        }
+      ]
+    },
+    {
+      "bar": 8,
+      "beat": 0.25,
+      "absolute_beat": 28.25,
+      "time_seconds": 24.3563077,
+      "duration_beats": 1.6,
+      "duration_seconds": 1.4060355,
+      "midi": 43,
+      "velocity": 0.35236,
+      "role": "bass",
+      "articulation": "soft",
+      "pedal": 0.3,
+      "stereo_balance": -0.07,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.138202,
+          "root_midi": 42,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#1_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%231_v1_rr1_Player.wav",
+          "sha256": "1dfdca1c4c577dfd0a50a33b72cb22c3eb752235cc12e26432fc30db43d2dfdd",
+          "pitch_shift_semitones": 1
+        },
+        {
+          "layer": 2,
+          "weight": 0.861798,
+          "root_midi": 42,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#1_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%231_v2_rr1_Player.wav",
+          "sha256": "c26ac28fca64b6aaa3e2733673e9217ca378652999e2621cabbb1bcb53254500",
+          "pitch_shift_semitones": 1
+        }
+      ]
+    },
+    {
+      "bar": 8,
+      "beat": 0.75,
+      "absolute_beat": 28.75,
+      "time_seconds": 24.8033078,
+      "duration_beats": 1.5,
+      "duration_seconds": 1.3019098,
+      "midi": 71,
+      "velocity": 0.415718,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.26,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.903465,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": -1
+        },
+        {
+          "layer": 3,
+          "weight": 0.096535,
+          "root_midi": 72,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "sha256": "eb5faca3331cd32f15f6a2302dba69b073a2ca600fed606bf456e60260d06e5b",
+          "pitch_shift_semitones": -1
+        }
+      ]
+    },
+    {
+      "bar": 8,
+      "beat": 1.75,
+      "absolute_beat": 29.75,
+      "time_seconds": 25.6739402,
+      "duration_beats": 0.95,
+      "duration_seconds": 0.8228619,
+      "midi": 62,
+      "velocity": 0.305647,
+      "role": "inner_voice",
+      "articulation": "legato",
+      "pedal": 0.22,
+      "stereo_balance": 0.05,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.371763,
+          "root_midi": 60,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C3_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C3_v1_rr1_Player.wav",
+          "sha256": "eb52431464cc160cb7c3576d5087b6cc67326fd903b620088c0874f6bcff4a8e",
+          "pitch_shift_semitones": 2
+        },
+        {
+          "layer": 2,
+          "weight": 0.628237,
+          "root_midi": 60,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C3_v2_rr1_Player.wav",
+          "sha256": "fce33012fe900309abafd1a4d6d254d142b0cbf33834c7a72c2fd1ada4e746e1",
+          "pitch_shift_semitones": 2
+        }
+      ]
+    },
+    {
+      "bar": 8,
+      "beat": 2.75,
+      "absolute_beat": 30.75,
+      "time_seconds": 26.5417198,
+      "duration_beats": 0.65,
+      "duration_seconds": 0.5886659,
+      "midi": 76,
+      "velocity": 0.247564,
+      "role": "countermelody",
+      "articulation": "soft",
+      "pedal": 0.1,
+      "stereo_balance": 0.08,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.66218,
+          "root_midi": 76,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v1_rr1_Player.wav",
+          "sha256": "2bbea3d9e280e7b87605eaa01853b9e81c8ce21eae1db61cfb6fa33b94ca449f",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 2,
+          "weight": 0.33782,
+          "root_midi": 76,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "sha256": "0b3357ea1c4313d196defebd8d1f02291889c6d1484f94652fa68b82768315c8",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 8,
+      "beat": 2.8,
+      "absolute_beat": 30.8,
+      "time_seconds": 26.5881497,
+      "duration_beats": 0.5,
+      "duration_seconds": 0.4521588,
+      "midi": 69,
+      "velocity": 0.273375,
+      "role": "countermelody",
+      "articulation": "detached",
+      "pedal": 0.05,
+      "stereo_balance": 0.08,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.533127,
+          "root_midi": 68,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v1_rr1_Player.wav",
+          "sha256": "a812c31c7f474ee603a7a3eb83e6e285ee87878344ce9a372bd00730281852c5",
+          "pitch_shift_semitones": 1
+        },
+        {
+          "layer": 2,
+          "weight": 0.466873,
+          "root_midi": 68,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v2_rr1_Player.wav",
+          "sha256": "5d2c5634dbed1cbd2f760d756f045247089b2e2962184fa3fcf47cf9c8fd4277",
+          "pitch_shift_semitones": 1
+        }
+      ]
+    },
+    {
+      "bar": 8,
+      "beat": 3.5,
+      "absolute_beat": 31.5,
+      "time_seconds": 27.2316238,
+      "duration_beats": 0.4,
+      "duration_seconds": 0.3735756,
+      "midi": 74,
+      "velocity": 0.253749,
+      "role": "countermelody",
+      "articulation": "detached",
+      "pedal": 0.05,
+      "stereo_balance": 0.08,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.631253,
+          "root_midi": 72,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v1_rr1_Player.wav",
+          "sha256": "f921d4737ee847ecb55ce251a94e1841069b70e206b00342676954992ea7d0dc",
+          "pitch_shift_semitones": 2
+        },
+        {
+          "layer": 2,
+          "weight": 0.368747,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": 2
+        }
+      ]
+    },
+    {
+      "bar": 9,
+      "beat": 0.25,
+      "absolute_beat": 32.25,
+      "time_seconds": 27.9261655,
+      "duration_beats": 1.6,
+      "duration_seconds": 1.4377382,
+      "midi": 41,
+      "velocity": 0.345345,
+      "role": "bass",
+      "articulation": "soft",
+      "pedal": 0.3,
+      "stereo_balance": -0.07,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.173276,
+          "root_midi": 42,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#1_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%231_v1_rr1_Player.wav",
+          "sha256": "1dfdca1c4c577dfd0a50a33b72cb22c3eb752235cc12e26432fc30db43d2dfdd",
+          "pitch_shift_semitones": -1
+        },
+        {
+          "layer": 2,
+          "weight": 0.826724,
+          "root_midi": 42,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#1_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%231_v2_rr1_Player.wav",
+          "sha256": "c26ac28fca64b6aaa3e2733673e9217ca378652999e2621cabbb1bcb53254500",
+          "pitch_shift_semitones": -1
+        }
+      ]
+    },
+    {
+      "bar": 9,
+      "beat": 0.5,
+      "absolute_beat": 32.5,
+      "time_seconds": 28.1617044,
+      "duration_beats": 1.25,
+      "duration_seconds": 1.1184313,
+      "midi": 69,
+      "velocity": 0.541664,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.24,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.56307,
+          "root_midi": 68,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v2_rr1_Player.wav",
+          "sha256": "5d2c5634dbed1cbd2f760d756f045247089b2e2962184fa3fcf47cf9c8fd4277",
+          "pitch_shift_semitones": 1
+        },
+        {
+          "layer": 3,
+          "weight": 0.43693,
+          "root_midi": 68,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v3_rr1_Player.wav",
+          "sha256": "e28aebba2f2995ea1d5443a8f7eeaac8f81a342317d54c4c6781ae482b355f20",
+          "pitch_shift_semitones": 1
+        }
+      ]
+    },
+    {
+      "bar": 9,
+      "beat": 1.75,
+      "absolute_beat": 33.75,
+      "time_seconds": 29.27897,
+      "duration_beats": 0.95,
+      "duration_seconds": 0.8182555,
+      "midi": 60,
+      "velocity": 0.307481,
+      "role": "inner_voice",
+      "articulation": "legato",
+      "pedal": 0.22,
+      "stereo_balance": 0.05,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.362595,
+          "root_midi": 60,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C3_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C3_v1_rr1_Player.wav",
+          "sha256": "eb52431464cc160cb7c3576d5087b6cc67326fd903b620088c0874f6bcff4a8e",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 2,
+          "weight": 0.637405,
+          "root_midi": 60,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C3_v2_rr1_Player.wav",
+          "sha256": "fce33012fe900309abafd1a4d6d254d142b0cbf33834c7a72c2fd1ada4e746e1",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 9,
+      "beat": 2.0,
+      "absolute_beat": 34.0,
+      "time_seconds": 29.4968132,
+      "duration_beats": 0.42,
+      "duration_seconds": 0.3608006,
+      "midi": 72,
+      "velocity": 0.574411,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.24,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.474566,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 3,
+          "weight": 0.525434,
+          "root_midi": 72,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "sha256": "eb5faca3331cd32f15f6a2302dba69b073a2ca600fed606bf456e60260d06e5b",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 9,
+      "beat": 2.5,
+      "absolute_beat": 34.5,
+      "time_seconds": 29.9203365,
+      "duration_beats": 1.3,
+      "duration_seconds": 1.150078,
+      "midi": 76,
+      "velocity": 0.63845,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.24,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.301487,
+          "root_midi": 76,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "sha256": "0b3357ea1c4313d196defebd8d1f02291889c6d1484f94652fa68b82768315c8",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 3,
+          "weight": 0.698513,
+          "root_midi": 76,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v3_rr1_Player.wav",
+          "sha256": "7f54f4483fa263ecde249dd20804394862acdb49ab879f0d20f09ad03586c0da",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 10,
+      "beat": 0.25,
+      "absolute_beat": 36.25,
+      "time_seconds": 31.4778757,
+      "duration_beats": 1.6,
+      "duration_seconds": 1.3567384,
+      "midi": 48,
+      "velocity": 0.348011,
+      "role": "bass",
+      "articulation": "soft",
+      "pedal": 0.3,
+      "stereo_balance": -0.07,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.159943,
+          "root_midi": 48,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C2_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C2_v1_rr1_Player.wav",
+          "sha256": "eba9adfb3977605a494830081d4e9e4ff0a4efd017439fe402a208aca9f11d7a",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 2,
+          "weight": 0.840057,
+          "root_midi": 48,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C2_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C2_v2_rr1_Player.wav",
+          "sha256": "00838dbdbcb0dffd02529c38fa84bc514931634b485fc2ad6ecc62fe98d27a62",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 10,
+      "beat": 0.5,
+      "absolute_beat": 36.5,
+      "time_seconds": 31.6967738,
+      "duration_beats": 0.85,
+      "duration_seconds": 0.7269773,
+      "midi": 79,
+      "velocity": 0.563205,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.24,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.50485,
+          "root_midi": 76,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "sha256": "0b3357ea1c4313d196defebd8d1f02291889c6d1484f94652fa68b82768315c8",
+          "pitch_shift_semitones": 3
+        },
+        {
+          "layer": 3,
+          "weight": 0.49515,
+          "root_midi": 76,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v3_rr1_Player.wav",
+          "sha256": "7f54f4483fa263ecde249dd20804394862acdb49ab879f0d20f09ad03586c0da",
+          "pitch_shift_semitones": 3
+        }
+      ]
+    },
+    {
+      "bar": 10,
+      "beat": 1.75,
+      "absolute_beat": 37.75,
+      "time_seconds": 32.7516621,
+      "duration_beats": 0.95,
+      "duration_seconds": 0.7662575,
+      "midi": 64,
+      "velocity": 0.308177,
+      "role": "inner_voice",
+      "articulation": "legato",
+      "pedal": 0.22,
+      "stereo_balance": 0.05,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.359115,
+          "root_midi": 64,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E3_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E3_v1_rr1_Player.wav",
+          "sha256": "3986177d766ad67acaeb8d0d53114c4380dea65bc1632938dc597006e5123771",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 2,
+          "weight": 0.640885,
+          "root_midi": 64,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E3_v2_rr1_Player.wav",
+          "sha256": "51727d51e9174cd141ea202e25871a56fbd32f799d7f440d7bbeba0f1d29dc7c",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 10,
+      "beat": 1.75,
+      "absolute_beat": 37.75,
+      "time_seconds": 32.7561927,
+      "duration_beats": 0.65,
+      "duration_seconds": 0.5230709,
+      "midi": 76,
+      "velocity": 0.511111,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.24,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.645645,
+          "root_midi": 76,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "sha256": "0b3357ea1c4313d196defebd8d1f02291889c6d1484f94652fa68b82768315c8",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 3,
+          "weight": 0.354355,
+          "root_midi": 76,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v3_rr1_Player.wav",
+          "sha256": "7f54f4483fa263ecde249dd20804394862acdb49ab879f0d20f09ad03586c0da",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 10,
+      "beat": 2.8,
+      "absolute_beat": 38.8,
+      "time_seconds": 33.6071278,
+      "duration_beats": 0.5,
+      "duration_seconds": 0.4158243,
+      "midi": 71,
+      "velocity": 0.273955,
+      "role": "countermelody",
+      "articulation": "detached",
+      "pedal": 0.05,
+      "stereo_balance": 0.08,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.530225,
+          "root_midi": 72,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v1_rr1_Player.wav",
+          "sha256": "f921d4737ee847ecb55ce251a94e1841069b70e206b00342676954992ea7d0dc",
+          "pitch_shift_semitones": -1
+        },
+        {
+          "layer": 2,
+          "weight": 0.469775,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": -1
+        }
+      ]
+    },
+    {
+      "bar": 10,
+      "beat": 3.5,
+      "absolute_beat": 39.5,
+      "time_seconds": 34.1922013,
+      "duration_beats": 0.4,
+      "duration_seconds": 0.3425594,
+      "midi": 76,
+      "velocity": 0.246825,
+      "role": "countermelody",
+      "articulation": "detached",
+      "pedal": 0.05,
+      "stereo_balance": 0.08,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.665874,
+          "root_midi": 76,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v1_rr1_Player.wav",
+          "sha256": "2bbea3d9e280e7b87605eaa01853b9e81c8ce21eae1db61cfb6fa33b94ca449f",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 2,
+          "weight": 0.334126,
+          "root_midi": 76,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "sha256": "0b3357ea1c4313d196defebd8d1f02291889c6d1484f94652fa68b82768315c8",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 11,
+      "beat": 0.25,
+      "absolute_beat": 40.25,
+      "time_seconds": 34.8290397,
+      "duration_beats": 1.6,
+      "duration_seconds": 1.3250356,
+      "midi": 50,
+      "velocity": 0.347943,
+      "role": "bass",
+      "articulation": "soft",
+      "pedal": 0.3,
+      "stereo_balance": -0.07,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.160285,
+          "root_midi": 48,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C2_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C2_v1_rr1_Player.wav",
+          "sha256": "eba9adfb3977605a494830081d4e9e4ff0a4efd017439fe402a208aca9f11d7a",
+          "pitch_shift_semitones": 2
+        },
+        {
+          "layer": 2,
+          "weight": 0.839715,
+          "root_midi": 48,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C2_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C2_v2_rr1_Player.wav",
+          "sha256": "00838dbdbcb0dffd02529c38fa84bc514931634b485fc2ad6ecc62fe98d27a62",
+          "pitch_shift_semitones": 2
+        }
+      ]
+    },
+    {
+      "bar": 11,
+      "beat": 0.5,
+      "absolute_beat": 40.5,
+      "time_seconds": 35.0414909,
+      "duration_beats": 0.8,
+      "duration_seconds": 0.6670744,
+      "midi": 77,
+      "velocity": 0.513139,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.24,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.640165,
+          "root_midi": 76,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "sha256": "0b3357ea1c4313d196defebd8d1f02291889c6d1484f94652fa68b82768315c8",
+          "pitch_shift_semitones": 1
+        },
+        {
+          "layer": 3,
+          "weight": 0.359835,
+          "root_midi": 76,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v3_rr1_Player.wav",
+          "sha256": "7f54f4483fa263ecde249dd20804394862acdb49ab879f0d20f09ad03586c0da",
+          "pitch_shift_semitones": 1
+        }
+      ]
+    },
+    {
+      "bar": 11,
+      "beat": 1.75,
+      "absolute_beat": 41.75,
+      "time_seconds": 36.0783357,
+      "duration_beats": 0.55,
+      "duration_seconds": 0.4428407,
+      "midi": 76,
+      "velocity": 0.482759,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.24,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.722272,
+          "root_midi": 76,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "sha256": "0b3357ea1c4313d196defebd8d1f02291889c6d1484f94652fa68b82768315c8",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 3,
+          "weight": 0.277728,
+          "root_midi": 76,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v3_rr1_Player.wav",
+          "sha256": "7f54f4483fa263ecde249dd20804394862acdb49ab879f0d20f09ad03586c0da",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 11,
+      "beat": 1.75,
+      "absolute_beat": 41.75,
+      "time_seconds": 36.0788162,
+      "duration_beats": 0.95,
+      "duration_seconds": 0.7708639,
+      "midi": 65,
+      "velocity": 0.305424,
+      "role": "inner_voice",
+      "articulation": "legato",
+      "pedal": 0.22,
+      "stereo_balance": 0.05,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.37288,
+          "root_midi": 64,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E3_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E3_v1_rr1_Player.wav",
+          "sha256": "3986177d766ad67acaeb8d0d53114c4380dea65bc1632938dc597006e5123771",
+          "pitch_shift_semitones": 1
+        },
+        {
+          "layer": 2,
+          "weight": 0.62712,
+          "root_midi": 64,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E3_v2_rr1_Player.wav",
+          "sha256": "51727d51e9174cd141ea202e25871a56fbd32f799d7f440d7bbeba0f1d29dc7c",
+          "pitch_shift_semitones": 1
+        }
+      ]
+    },
+    {
+      "bar": 11,
+      "beat": 2.75,
+      "absolute_beat": 42.75,
+      "time_seconds": 36.8827612,
+      "duration_beats": 0.75,
+      "duration_seconds": 0.6438895,
+      "midi": 74,
+      "velocity": 0.445697,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.24,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.822441,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": 2
+        },
+        {
+          "layer": 3,
+          "weight": 0.177559,
+          "root_midi": 72,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "sha256": "eb5faca3331cd32f15f6a2302dba69b073a2ca600fed606bf456e60260d06e5b",
+          "pitch_shift_semitones": 2
+        }
+      ]
+    },
+    {
+      "bar": 12,
+      "beat": 0.25,
+      "absolute_beat": 44.25,
+      "time_seconds": 38.197429,
+      "duration_beats": 1.6,
+      "duration_seconds": 1.4060355,
+      "midi": 43,
+      "velocity": 0.34871,
+      "role": "bass",
+      "articulation": "soft",
+      "pedal": 0.3,
+      "stereo_balance": -0.07,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.156449,
+          "root_midi": 42,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#1_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%231_v1_rr1_Player.wav",
+          "sha256": "1dfdca1c4c577dfd0a50a33b72cb22c3eb752235cc12e26432fc30db43d2dfdd",
+          "pitch_shift_semitones": 1
+        },
+        {
+          "layer": 2,
+          "weight": 0.843551,
+          "root_midi": 42,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#1_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%231_v2_rr1_Player.wav",
+          "sha256": "c26ac28fca64b6aaa3e2733673e9217ca378652999e2621cabbb1bcb53254500",
+          "pitch_shift_semitones": 1
+        }
+      ]
+    },
+    {
+      "bar": 12,
+      "beat": 0.75,
+      "absolute_beat": 44.75,
+      "time_seconds": 38.6520514,
+      "duration_beats": 1.5,
+      "duration_seconds": 1.3019098,
+      "midi": 72,
+      "velocity": 0.434604,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.24,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.852422,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 3,
+          "weight": 0.147578,
+          "root_midi": 72,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "sha256": "eb5faca3331cd32f15f6a2302dba69b073a2ca600fed606bf456e60260d06e5b",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 12,
+      "beat": 1.75,
+      "absolute_beat": 45.75,
+      "time_seconds": 39.5218733,
+      "duration_beats": 0.95,
+      "duration_seconds": 0.8228619,
+      "midi": 62,
+      "velocity": 0.311839,
+      "role": "inner_voice",
+      "articulation": "legato",
+      "pedal": 0.22,
+      "stereo_balance": 0.05,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.340807,
+          "root_midi": 60,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C3_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C3_v1_rr1_Player.wav",
+          "sha256": "eb52431464cc160cb7c3576d5087b6cc67326fd903b620088c0874f6bcff4a8e",
+          "pitch_shift_semitones": 2
+        },
+        {
+          "layer": 2,
+          "weight": 0.659193,
+          "root_midi": 60,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C3_v2_rr1_Player.wav",
+          "sha256": "fce33012fe900309abafd1a4d6d254d142b0cbf33834c7a72c2fd1ada4e746e1",
+          "pitch_shift_semitones": 2
+        }
+      ]
+    },
+    {
+      "bar": 12,
+      "beat": 2.8,
+      "absolute_beat": 46.8,
+      "time_seconds": 40.4358376,
+      "duration_beats": 0.5,
+      "duration_seconds": 0.4521588,
+      "midi": 69,
+      "velocity": 0.271198,
+      "role": "countermelody",
+      "articulation": "detached",
+      "pedal": 0.05,
+      "stereo_balance": 0.08,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.544012,
+          "root_midi": 68,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v1_rr1_Player.wav",
+          "sha256": "a812c31c7f474ee603a7a3eb83e6e285ee87878344ce9a372bd00730281852c5",
+          "pitch_shift_semitones": 1
+        },
+        {
+          "layer": 2,
+          "weight": 0.455988,
+          "root_midi": 68,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v2_rr1_Player.wav",
+          "sha256": "5d2c5634dbed1cbd2f760d756f045247089b2e2962184fa3fcf47cf9c8fd4277",
+          "pitch_shift_semitones": 1
+        }
+      ]
+    },
+    {
+      "bar": 12,
+      "beat": 3.5,
+      "absolute_beat": 47.5,
+      "time_seconds": 41.0697007,
+      "duration_beats": 0.4,
+      "duration_seconds": 0.3735756,
+      "midi": 74,
+      "velocity": 0.246924,
+      "role": "countermelody",
+      "articulation": "detached",
+      "pedal": 0.05,
+      "stereo_balance": 0.08,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.665382,
+          "root_midi": 72,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v1_rr1_Player.wav",
+          "sha256": "f921d4737ee847ecb55ce251a94e1841069b70e206b00342676954992ea7d0dc",
+          "pitch_shift_semitones": 2
+        },
+        {
+          "layer": 2,
+          "weight": 0.334618,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": 2
+        }
+      ]
+    },
+    {
+      "bar": 13,
+      "beat": 0.25,
+      "absolute_beat": 48.25,
+      "time_seconds": 41.7776051,
+      "duration_beats": 1.6,
+      "duration_seconds": 1.4377382,
+      "midi": 40,
+      "velocity": 0.351455,
+      "role": "bass",
+      "articulation": "soft",
+      "pedal": 0.3,
+      "stereo_balance": -0.07,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.142723,
+          "root_midi": 42,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#1_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%231_v1_rr1_Player.wav",
+          "sha256": "1dfdca1c4c577dfd0a50a33b72cb22c3eb752235cc12e26432fc30db43d2dfdd",
+          "pitch_shift_semitones": -2
+        },
+        {
+          "layer": 2,
+          "weight": 0.857277,
+          "root_midi": 42,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#1_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%231_v2_rr1_Player.wav",
+          "sha256": "c26ac28fca64b6aaa3e2733673e9217ca378652999e2621cabbb1bcb53254500",
+          "pitch_shift_semitones": -2
+        }
+      ]
+    },
+    {
+      "bar": 13,
+      "beat": 0.5,
+      "absolute_beat": 48.5,
+      "time_seconds": 42.0096135,
+      "duration_beats": 0.85,
+      "duration_seconds": 0.769633,
+      "midi": 72,
+      "velocity": 0.511859,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.25,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.643624,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 3,
+          "weight": 0.356376,
+          "root_midi": 72,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "sha256": "eb5faca3331cd32f15f6a2302dba69b073a2ca600fed606bf456e60260d06e5b",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 13,
+      "beat": 1.75,
+      "absolute_beat": 49.75,
+      "time_seconds": 43.1226644,
+      "duration_beats": 0.42,
+      "duration_seconds": 0.3612476,
+      "midi": 71,
+      "velocity": 0.457412,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.25,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.790779,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": -1
+        },
+        {
+          "layer": 3,
+          "weight": 0.209221,
+          "root_midi": 72,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "sha256": "eb5faca3331cd32f15f6a2302dba69b073a2ca600fed606bf456e60260d06e5b",
+          "pitch_shift_semitones": -1
+        }
+      ]
+    },
+    {
+      "bar": 13,
+      "beat": 1.75,
+      "absolute_beat": 49.75,
+      "time_seconds": 43.126708,
+      "duration_beats": 0.95,
+      "duration_seconds": 0.8182555,
+      "midi": 64,
+      "velocity": 0.311389,
+      "role": "inner_voice",
+      "articulation": "legato",
+      "pedal": 0.22,
+      "stereo_balance": 0.05,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.343056,
+          "root_midi": 64,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E3_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E3_v1_rr1_Player.wav",
+          "sha256": "3986177d766ad67acaeb8d0d53114c4380dea65bc1632938dc597006e5123771",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 2,
+          "weight": 0.656944,
+          "root_midi": 64,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E3_v2_rr1_Player.wav",
+          "sha256": "51727d51e9174cd141ea202e25871a56fbd32f799d7f440d7bbeba0f1d29dc7c",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 13,
+      "beat": 2.5,
+      "absolute_beat": 50.5,
+      "time_seconds": 43.7685001,
+      "duration_beats": 1.3,
+      "duration_seconds": 1.150078,
+      "midi": 69,
+      "velocity": 0.439288,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.25,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.839761,
+          "root_midi": 68,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v2_rr1_Player.wav",
+          "sha256": "5d2c5634dbed1cbd2f760d756f045247089b2e2962184fa3fcf47cf9c8fd4277",
+          "pitch_shift_semitones": 1
+        },
+        {
+          "layer": 3,
+          "weight": 0.160239,
+          "root_midi": 68,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v3_rr1_Player.wav",
+          "sha256": "e28aebba2f2995ea1d5443a8f7eeaac8f81a342317d54c4c6781ae482b355f20",
+          "pitch_shift_semitones": 1
+        }
+      ]
+    },
+    {
+      "bar": 14,
+      "beat": 0.25,
+      "absolute_beat": 52.25,
+      "time_seconds": 45.3241633,
+      "duration_beats": 1.6,
+      "duration_seconds": 1.3567384,
+      "midi": 41,
+      "velocity": 0.35013,
+      "role": "bass",
+      "articulation": "soft",
+      "pedal": 0.3,
+      "stereo_balance": -0.07,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.149351,
+          "root_midi": 42,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#1_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%231_v1_rr1_Player.wav",
+          "sha256": "1dfdca1c4c577dfd0a50a33b72cb22c3eb752235cc12e26432fc30db43d2dfdd",
+          "pitch_shift_semitones": -1
+        },
+        {
+          "layer": 2,
+          "weight": 0.850649,
+          "root_midi": 42,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#1_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%231_v2_rr1_Player.wav",
+          "sha256": "c26ac28fca64b6aaa3e2733673e9217ca378652999e2621cabbb1bcb53254500",
+          "pitch_shift_semitones": -1
+        }
+      ]
+    },
+    {
+      "bar": 14,
+      "beat": 0.5,
+      "absolute_beat": 52.5,
+      "time_seconds": 45.5467785,
+      "duration_beats": 0.65,
+      "duration_seconds": 0.5601742,
+      "midi": 67,
+      "velocity": 0.394172,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.25,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.961697,
+          "root_midi": 68,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v2_rr1_Player.wav",
+          "sha256": "5d2c5634dbed1cbd2f760d756f045247089b2e2962184fa3fcf47cf9c8fd4277",
+          "pitch_shift_semitones": -1
+        },
+        {
+          "layer": 3,
+          "weight": 0.038303,
+          "root_midi": 68,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v3_rr1_Player.wav",
+          "sha256": "e28aebba2f2995ea1d5443a8f7eeaac8f81a342317d54c4c6781ae482b355f20",
+          "pitch_shift_semitones": -1
+        }
+      ]
+    },
+    {
+      "bar": 14,
+      "beat": 1.75,
+      "absolute_beat": 53.75,
+      "time_seconds": 46.5924383,
+      "duration_beats": 0.95,
+      "duration_seconds": 0.7662575,
+      "midi": 62,
+      "velocity": 0.31222,
+      "role": "inner_voice",
+      "articulation": "legato",
+      "pedal": 0.22,
+      "stereo_balance": 0.05,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.338902,
+          "root_midi": 60,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C3_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C3_v1_rr1_Player.wav",
+          "sha256": "eb52431464cc160cb7c3576d5087b6cc67326fd903b620088c0874f6bcff4a8e",
+          "pitch_shift_semitones": 2
+        },
+        {
+          "layer": 2,
+          "weight": 0.661098,
+          "root_midi": 60,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C3_v2_rr1_Player.wav",
+          "sha256": "fce33012fe900309abafd1a4d6d254d142b0cbf33834c7a72c2fd1ada4e746e1",
+          "pitch_shift_semitones": 2
+        }
+      ]
+    },
+    {
+      "bar": 14,
+      "beat": 1.75,
+      "absolute_beat": 53.75,
+      "time_seconds": 46.5935212,
+      "duration_beats": 0.65,
+      "duration_seconds": 0.5230709,
+      "midi": 69,
+      "velocity": 0.433798,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.25,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.8546,
+          "root_midi": 68,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v2_rr1_Player.wav",
+          "sha256": "5d2c5634dbed1cbd2f760d756f045247089b2e2962184fa3fcf47cf9c8fd4277",
+          "pitch_shift_semitones": 1
+        },
+        {
+          "layer": 3,
+          "weight": 0.1454,
+          "root_midi": 68,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v3_rr1_Player.wav",
+          "sha256": "e28aebba2f2995ea1d5443a8f7eeaac8f81a342317d54c4c6781ae482b355f20",
+          "pitch_shift_semitones": 1
+        }
+      ]
+    },
+    {
+      "bar": 14,
+      "beat": 2.8,
+      "absolute_beat": 54.8,
+      "time_seconds": 47.4473899,
+      "duration_beats": 0.5,
+      "duration_seconds": 0.4158243,
+      "midi": 69,
+      "velocity": 0.267169,
+      "role": "countermelody",
+      "articulation": "detached",
+      "pedal": 0.05,
+      "stereo_balance": 0.08,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.564155,
+          "root_midi": 68,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v1_rr1_Player.wav",
+          "sha256": "a812c31c7f474ee603a7a3eb83e6e285ee87878344ce9a372bd00730281852c5",
+          "pitch_shift_semitones": 1
+        },
+        {
+          "layer": 2,
+          "weight": 0.435845,
+          "root_midi": 68,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v2_rr1_Player.wav",
+          "sha256": "5d2c5634dbed1cbd2f760d756f045247089b2e2962184fa3fcf47cf9c8fd4277",
+          "pitch_shift_semitones": 1
+        }
+      ]
+    },
+    {
+      "bar": 14,
+      "beat": 3.5,
+      "absolute_beat": 55.5,
+      "time_seconds": 48.0346556,
+      "duration_beats": 0.4,
+      "duration_seconds": 0.3425594,
+      "midi": 74,
+      "velocity": 0.250492,
+      "role": "countermelody",
+      "articulation": "detached",
+      "pedal": 0.05,
+      "stereo_balance": 0.08,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.64754,
+          "root_midi": 72,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v1_rr1_Player.wav",
+          "sha256": "f921d4737ee847ecb55ce251a94e1841069b70e206b00342676954992ea7d0dc",
+          "pitch_shift_semitones": 2
+        },
+        {
+          "layer": 2,
+          "weight": 0.35246,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": 2
+        }
+      ]
+    },
+    {
+      "bar": 15,
+      "beat": 0.25,
+      "absolute_beat": 56.25,
+      "time_seconds": 48.6724484,
+      "duration_beats": 1.6,
+      "duration_seconds": 1.3250356,
+      "midi": 50,
+      "velocity": 0.345415,
+      "role": "bass",
+      "articulation": "soft",
+      "pedal": 0.3,
+      "stereo_balance": -0.07,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.172926,
+          "root_midi": 48,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C2_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C2_v1_rr1_Player.wav",
+          "sha256": "eba9adfb3977605a494830081d4e9e4ff0a4efd017439fe402a208aca9f11d7a",
+          "pitch_shift_semitones": 2
+        },
+        {
+          "layer": 2,
+          "weight": 0.827074,
+          "root_midi": 48,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C2_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C2_v2_rr1_Player.wav",
+          "sha256": "00838dbdbcb0dffd02529c38fa84bc514931634b485fc2ad6ecc62fe98d27a62",
+          "pitch_shift_semitones": 2
+        }
+      ]
+    },
+    {
+      "bar": 15,
+      "beat": 0.5,
+      "absolute_beat": 56.5,
+      "time_seconds": 48.885629,
+      "duration_beats": 1.1,
+      "duration_seconds": 0.9102611,
+      "midi": 72,
+      "velocity": 0.486575,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.25,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.71196,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 3,
+          "weight": 0.28804,
+          "root_midi": 72,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "sha256": "eb5faca3331cd32f15f6a2302dba69b073a2ca600fed606bf456e60260d06e5b",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 15,
+      "beat": 1.75,
+      "absolute_beat": 57.75,
+      "time_seconds": 49.9253113,
+      "duration_beats": 0.95,
+      "duration_seconds": 0.7708639,
+      "midi": 65,
+      "velocity": 0.308523,
+      "role": "inner_voice",
+      "articulation": "legato",
+      "pedal": 0.22,
+      "stereo_balance": 0.05,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.357383,
+          "root_midi": 64,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E3_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E3_v1_rr1_Player.wav",
+          "sha256": "3986177d766ad67acaeb8d0d53114c4380dea65bc1632938dc597006e5123771",
+          "pitch_shift_semitones": 1
+        },
+        {
+          "layer": 2,
+          "weight": 0.642617,
+          "root_midi": 64,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E3_v2_rr1_Player.wav",
+          "sha256": "51727d51e9174cd141ea202e25871a56fbd32f799d7f440d7bbeba0f1d29dc7c",
+          "pitch_shift_semitones": 1
+        }
+      ]
+    },
+    {
+      "bar": 15,
+      "beat": 2.5,
+      "absolute_beat": 58.5,
+      "time_seconds": 50.527154,
+      "duration_beats": 0.85,
+      "duration_seconds": 0.718881,
+      "midi": 74,
+      "velocity": 0.456324,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.25,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.793718,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": 2
+        },
+        {
+          "layer": 3,
+          "weight": 0.206282,
+          "root_midi": 72,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v3_rr1_Player.wav",
+          "sha256": "eb5faca3331cd32f15f6a2302dba69b073a2ca600fed606bf456e60260d06e5b",
+          "pitch_shift_semitones": 2
+        }
+      ]
+    },
+    {
+      "bar": 16,
+      "beat": 0.25,
+      "absolute_beat": 60.25,
+      "time_seconds": 52.0501423,
+      "duration_beats": 1.6,
+      "duration_seconds": 1.4060355,
+      "midi": 43,
+      "velocity": 0.34912,
+      "role": "bass",
+      "articulation": "soft",
+      "pedal": 0.3,
+      "stereo_balance": -0.07,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.154399,
+          "root_midi": 42,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#1_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%231_v1_rr1_Player.wav",
+          "sha256": "1dfdca1c4c577dfd0a50a33b72cb22c3eb752235cc12e26432fc30db43d2dfdd",
+          "pitch_shift_semitones": 1
+        },
+        {
+          "layer": 2,
+          "weight": 0.845601,
+          "root_midi": 42,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_F#1_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_F%231_v2_rr1_Player.wav",
+          "sha256": "c26ac28fca64b6aaa3e2733673e9217ca378652999e2621cabbb1bcb53254500",
+          "pitch_shift_semitones": 1
+        }
+      ]
+    },
+    {
+      "bar": 16,
+      "beat": 1.0,
+      "absolute_beat": 61.0,
+      "time_seconds": 52.7132644,
+      "duration_beats": 1.0,
+      "duration_seconds": 0.8653232,
+      "midi": 76,
+      "velocity": 0.400245,
+      "role": "melody",
+      "articulation": "legato",
+      "pedal": 0.25,
+      "stereo_balance": 0.02,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.945283,
+          "root_midi": 76,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "sha256": "0b3357ea1c4313d196defebd8d1f02291889c6d1484f94652fa68b82768315c8",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 3,
+          "weight": 0.054717,
+          "root_midi": 76,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v3_rr1_Player.wav",
+          "sha256": "7f54f4483fa263ecde249dd20804394862acdb49ab879f0d20f09ad03586c0da",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 16,
+      "beat": 1.75,
+      "absolute_beat": 61.75,
+      "time_seconds": 53.3701489,
+      "duration_beats": 0.95,
+      "duration_seconds": 0.8228619,
+      "midi": 64,
+      "velocity": 0.3138,
+      "role": "inner_voice",
+      "articulation": "legato",
+      "pedal": 0.22,
+      "stereo_balance": 0.05,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.331002,
+          "root_midi": 64,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E3_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E3_v1_rr1_Player.wav",
+          "sha256": "3986177d766ad67acaeb8d0d53114c4380dea65bc1632938dc597006e5123771",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 2,
+          "weight": 0.668998,
+          "root_midi": 64,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E3_v2_rr1_Player.wav",
+          "sha256": "51727d51e9174cd141ea202e25871a56fbd32f799d7f440d7bbeba0f1d29dc7c",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 16,
+      "beat": 2.35,
+      "absolute_beat": 62.35,
+      "time_seconds": 53.8848633,
+      "duration_beats": 0.55,
+      "duration_seconds": 0.4842982,
+      "midi": 64,
+      "velocity": 0.436279,
+      "role": "loop_turnaround",
+      "articulation": "soft",
+      "pedal": 0.23,
+      "stereo_balance": 0,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.847895,
+          "root_midi": 64,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E3_v2_rr1_Player.wav",
+          "sha256": "51727d51e9174cd141ea202e25871a56fbd32f799d7f440d7bbeba0f1d29dc7c",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 3,
+          "weight": 0.152105,
+          "root_midi": 64,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E3_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E3_v3_rr1_Player.wav",
+          "sha256": "6001665682547238ecddd1b26c91f2f44363d381300e04b3a39dae14e6ffbda6",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    },
+    {
+      "bar": 16,
+      "beat": 2.8,
+      "absolute_beat": 62.8,
+      "time_seconds": 54.2792349,
+      "duration_beats": 0.5,
+      "duration_seconds": 0.4521588,
+      "midi": 71,
+      "velocity": 0.271041,
+      "role": "countermelody",
+      "articulation": "detached",
+      "pedal": 0.05,
+      "stereo_balance": 0.08,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.544794,
+          "root_midi": 72,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v1_rr1_Player.wav",
+          "sha256": "f921d4737ee847ecb55ce251a94e1841069b70e206b00342676954992ea7d0dc",
+          "pitch_shift_semitones": -1
+        },
+        {
+          "layer": 2,
+          "weight": 0.455206,
+          "root_midi": 72,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_C4_v2_rr1_Player.wav",
+          "sha256": "69845de40a38ed6501746520f9f385ae56200a4372faed48178e64a32a75e58c",
+          "pitch_shift_semitones": -1
+        }
+      ]
+    },
+    {
+      "bar": 16,
+      "beat": 3.2,
+      "absolute_beat": 63.2,
+      "time_seconds": 54.6407057,
+      "duration_beats": 1.4,
+      "duration_seconds": 1.3036027,
+      "midi": 67,
+      "velocity": 0.47713,
+      "role": "loop_turnaround",
+      "articulation": "soft",
+      "pedal": 0.23,
+      "stereo_balance": 0,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 2,
+          "weight": 0.737487,
+          "root_midi": 68,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v2_rr1_Player.wav",
+          "sha256": "5d2c5634dbed1cbd2f760d756f045247089b2e2962184fa3fcf47cf9c8fd4277",
+          "pitch_shift_semitones": -1
+        },
+        {
+          "layer": 3,
+          "weight": 0.262513,
+          "root_midi": 68,
+          "velocity_layer": 3,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_G#3_v3_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_G%233_v3_rr1_Player.wav",
+          "sha256": "e28aebba2f2995ea1d5443a8f7eeaac8f81a342317d54c4c6781ae482b355f20",
+          "pitch_shift_semitones": -1
+        }
+      ]
+    },
+    {
+      "bar": 16,
+      "beat": 3.5,
+      "absolute_beat": 63.5,
+      "time_seconds": 54.9202161,
+      "duration_beats": 0.4,
+      "duration_seconds": 0.3735756,
+      "midi": 76,
+      "velocity": 0.251113,
+      "role": "countermelody",
+      "articulation": "detached",
+      "pedal": 0.05,
+      "stereo_balance": 0.08,
+      "rationale": "",
+      "recorded_samples": [
+        {
+          "layer": 1,
+          "weight": 0.644436,
+          "root_midi": 76,
+          "velocity_layer": 1,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v1_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v1_rr1_Player.wav",
+          "sha256": "2bbea3d9e280e7b87605eaa01853b9e81c8ce21eae1db61cfb6fa33b94ca449f",
+          "pitch_shift_semitones": 0
+        },
+        {
+          "layer": 2,
+          "weight": 0.355564,
+          "root_midi": 76,
+          "velocity_layer": 2,
+          "source_path": "Chordophones/Zithers/Grand Piano, Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "source_url": "https://raw.githubusercontent.com/sgossner/VCSL/c1ea7bcc3c7309650ab0da9d15c9cd1fbc4a4c7e/Chordophones/Zithers/Grand%20Piano%2C%20Kawai/Sustains/GPiano_sus_E4_v2_rr1_Player.wav",
+          "sha256": "0b3357ea1c4313d196defebd8d1f02291889c6d1484f94652fa68b82768315c8",
+          "pitch_shift_semitones": 0
+        }
+      ]
+    }
+  ]
+}

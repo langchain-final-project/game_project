@@ -10,7 +10,7 @@ os.environ.setdefault('SDL_AUDIODRIVER', 'dummy')
 import pygame
 import pytest
 
-from kkamang.app import GameApp
+from kkamang.app import GameApp, CINEMATIC_DURATIONS
 from kkamang.campaign import SaveStore
 from kkamang.likes_preview import configure_preview, sample_record
 
@@ -20,7 +20,7 @@ ROUTES = json.loads((ROOT / 'validation/reference_routes.json').read_text(encodi
 
 @pytest.fixture
 def app(tmp_path):
-    instance = GameApp(save_path=tmp_path / 'save.json', headless=True, no_audio=True)
+    instance = GameApp(save_path=tmp_path / 'save.json', headless=True, no_audio=True, movement_mode='grid')
     yield instance
     instance.close()
 
@@ -30,9 +30,18 @@ def complete(app, stage=1):
     app.start_run()
     route = next(r for r in ROUTES if r['level_id'] == f'stage_{stage:02d}' and r['target'] == 4)
     for action in route['actions']:
-        result = app.core.advance(action, .3)
+        result = app.core.step(action)
     assert result.outcome['status'] == 'COMPLETE'
     app.finish_run(result)
+
+
+def show_ending_art(app):
+    for _ in range(3):
+        if app.scene == 'ending':
+            break
+        assert app.scene == 'story' and app.story_kind in ('garden', 'liberation')
+        app.advance(CINEMATIC_DURATIONS[app.story_kind])
+    assert app.scene == 'ending' and app.ending_art_only
 
 
 def test_real_completion_provider_choice_escape_and_no_star_loss(app):
@@ -68,7 +77,7 @@ def test_real_scores_persist_and_reload_resumes_choice(app):
     assert score['life'] == app.last_outcome['score']['courage']
     assert app.campaign.data['likes']['best_stars']['1'] == app.campaign.stars_for_stage(1)
     complete(app)
-    restored = GameApp(save_path=app.store.path, headless=True, no_audio=True)
+    restored = GameApp(save_path=app.store.path, headless=True, no_audio=True, movement_mode='grid')
     try:
         restored.dispatch('continue')
         assert restored.scene == 'memory_choice'
@@ -87,7 +96,7 @@ def test_real_replay_keeps_star_best_and_syncs_memory(app):
     app.start_run()
     route = next(r for r in ROUTES if r['level_id'] == 'stage_01' and r['target'] == 14)
     for action in route['actions']:
-        result = app.core.advance(action, .3)
+        result = app.core.step(action)
     app.finish_run(result)
     best = app.campaign.star_record(1)
     assert app.scene == 'memory_choice'
@@ -106,16 +115,29 @@ def test_real_replay_keeps_star_best_and_syncs_memory(app):
 
 
 def test_new_memory_story_can_continue_directly_to_the_next_room(app):
-    app.campaign.data['completed'] = [1]
-    app.campaign.data['photos'] = [1]
-    app.start_memory(1)
-    app.dialogue_index = len(app.dialogues) - 1
-    app.dialogue_time = len(app.dialogues[-1][1]) / 38 + 1
+    app.campaign.data['completed'] = [1, 2, 3, 4]
+    app.campaign.data['photos'] = [1, 2, 3, 4]
+    app.start_memory(4)
+    assert app.dialogues == []
+    app.advance(2.)
+    assert app.scene == 'story'
     app.draw()
     assert {'story_finish_home', 'story_finish_next'} <= {c['id'] for c in app.controls}
     app.dispatch('story_finish_next')
-    assert app.stage == 2
+    assert app.stage == 5
     assert app.scene == 'briefing'
+
+
+def test_partial_picture_reveal_returns_home_without_dialogue(app):
+    app.campaign.data['completed'] = [1]
+    app.campaign.data['photos'] = [1]
+    app.start_memory(1)
+    assert app.dialogues == []
+    app.advance(1.9)
+    assert app.scene == 'story'
+    app.advance(.1)
+    assert app.scene == 'home'
+    assert app.campaign.memory_progress() == [1, 0, 0]
 
 
 def test_result_retry_returns_to_the_same_room_briefing(app):
@@ -143,6 +165,23 @@ def test_relaxed_completion_is_practice_only_and_has_no_progress_actions(app):
     assert not {'next_stage', 'view_memory'} & {c['id'] for c in app.controls}
 
 
+def test_practice_can_run_with_a_pending_basic_memory_without_resolving_it(app):
+    complete(app)
+    complete(app)
+    assert app.campaign.data['likes']['pending'] is not None
+    app.mode = 'relaxed'
+    app.campaign.data['settings']['mode'] = 'relaxed'
+    before = deepcopy(app.campaign.data)
+    with patch.object(app,'score_provider',side_effect=AssertionError('practice relationship score')):
+        complete(app)
+    assert app.scene == 'result' and app.last_reward['practice_mode']
+    assert app.campaign.data == before
+    assert SaveStore(app.store.path).load().data == before
+    app.dispatch('next_stage')
+    assert app.scene == 'rooms'
+    assert app.campaign.data == before
+
+
 def test_save_failure_retains_choice_then_can_retry(app):
     complete(app)
     complete(app)
@@ -163,13 +202,19 @@ def test_ending_waits_for_choice_and_preserves_seen_history(app):
     assert app.campaign.data['likes']['seen_endings'] == []
     app.dispatch('memory_keep')
     app.dispatch('show_ending')
+    assert app.scene == 'story' and app.story_kind == 'garden'
+    show_ending_art(app)
     assert app.ending_id == 'normal'
-    assert app.scene == 'ending'
-    app.start_ending()
+    assert app.campaign.active_ending() == 'normal'
+    app.finish_story()
     assert app.campaign.data['likes']['seen_endings'] == ['normal']
+    before = deepcopy(app.campaign.data)
+    app.start_ending(replay=True)
+    assert app.scene == 'ending' and app.ending_art_only
+    assert app.campaign.data == before
     app.campaign.data['likes']['representatives']['1']['scores'] = None
-    app.start_ending()
-    assert app.ending_id is None
+    app.start_ending(replay=True)
+    assert app.scene == 'likes'
     assert app.campaign.data['likes']['seen_endings'] == ['normal']
 
 
@@ -186,32 +231,58 @@ def test_new_screens_read_only_and_controls_on_canvas(app, preview):
 
 
 @pytest.mark.parametrize('ending', ['happy_all', 'sad', 'ghost_a', 'ghost_b', 'ghost_c', 'normal'])
-def test_ending_art_epilogue_keyboard_and_save_preservation(app, ending):
+def test_six_ending_art_epilogue_keyboard_and_save_preservation(app, ending):
     from kkamang.ending_content import ENDING_CONTENT
+    from kkamang import likes
     configure_preview(app, ending)
-    assert app.ending_id == ending
-    assert app.ending_art_only
+    assert likes.select_ending(app.campaign.data['likes'], app.campaign.data['completed']) == ending
     assert (ROOT / 'assets' / 'art' / ENDING_CONTENT[ending]['art']).is_file()
-    before = deepcopy(app.campaign.data)
-    app.draw()
+    representatives = deepcopy(app.campaign.data['likes']['representatives'])
+    stars = deepcopy(app.campaign.data['likes']['best_stars'])
+    assert app.ending_id == ending
+    assert app.scene == 'story' and app.story_kind == 'garden'
+    assert app.context()['dialogue'] is None
+    show_ending_art(app)
+    assert app.dialogues == ENDING_CONTENT[ending]['lines']
+    assert app.context()['ending_content'] == ENDING_CONTENT[ending]
+    assert app.context()['ending_art_only']
+    with patch('kkamang.ui.menus.wrapped') as dialogue_box:
+        app.draw()
+    dialogue_box.assert_not_called()
+    continue_button = next(c for c in app.controls if c['id']=='ending_continue')
+    assert continue_button['label'] == ('후일담 보기' if app.dialogues else '쉼터로 돌아가기')
     app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_RETURN, mod=0))
     if ending == 'sad':
-        assert app.dialogues == []
-        assert app.scene == 'home'
+        assert app.dialogues == [] and app.scene == 'home'
     else:
-        assert not app.ending_art_only
-        assert app.scene == 'ending'
-        assert app.dialogue_index == 0
+        assert not app.ending_art_only and app.dialogue_index == 0
         assert app.dialogue_time == 0
-        for _ in app.dialogues:
+        with patch('kkamang.ui.menus.draw_cinematic') as cinematic:
+            with patch('kkamang.ui.menus._art') as art:
+                app.draw()
+        if ending in ('normal','happy_all'):
+            assert cinematic.call_args.args[1] == ('true_end' if ending=='happy_all' else 'basic_end')
+            assert cinematic.call_args.kwargs['released_variants'] == ((0,1,2) if ending=='happy_all' else ())
+            art.assert_not_called()
+        else:
+            cinematic.assert_not_called()
+            assert art.call_args.args[2] == ENDING_CONTENT[ending]['art']
+        for _ in ENDING_CONTENT[ending]['lines']:
             app.dialogue_time = 99
             app.draw()
             app.dispatch('ending_continue')
-        assert app.scene == 'home'
-    assert app.campaign.data == before
-    assert SaveStore(app.store.path).load().data['likes']['seen_endings'] == [ending]
-    app.start_ending()
-    assert app.ending_art_only
+    assert app.scene == 'home'
+    assert app.campaign.active_ending() == ending
     assert app.campaign.data['likes']['seen_endings'] == [ending]
+    assert app.campaign.data['likes']['representatives'] == representatives
+    assert app.campaign.data['likes']['best_stars'] == stars
+    saved = SaveStore(app.store.path).load()
+    assert saved.data['likes'] == app.campaign.data['likes']
+    assert saved.active_ending() == ending
+    assert saved.released_variants() == app.campaign.released_variants()
+    before = deepcopy(app.campaign.data)
+    app.start_ending(replay=True)
+    assert app.scene == 'ending' and app.ending_art_only
     app.go_back()
     assert app.scene == 'home'
+    assert app.campaign.data == before

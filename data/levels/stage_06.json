@@ -156,11 +156,11 @@
   "quest": {
     "id": "memory_06",
     "name": "씨앗 주머니",
-    "kind": "plant",
+    "kind": "seeds",
     "position": [
       12,
       2
     ],
-    "restoration": "이파리가 작은 화분에 씨앗을 심어요."
+    "restoration": "기억 2 · 2번 영역"
   }
 }

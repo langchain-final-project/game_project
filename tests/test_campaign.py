@@ -7,6 +7,9 @@ import pytest
 
 from kkamang.campaign import Campaign, SaveStore, SAVE_VERSION
 from kkamang.story import STAGES, PROLOGUE, ENDING
+from kkamang import likes
+from kkamang.ending_content import released_variants
+from kkamang.likes_preview import SAMPLES, sample_record
 
 
 def level(stage=1):
@@ -283,7 +286,9 @@ def test_twelve_story_entries_match_levels_and_real_assets():
         assert story['stage'] == stage
         cfg = json.loads((project / f'data/levels/stage_{stage:02d}.json').read_text('utf-8'))
         assert cfg['name'] == story['name']
-        assert story['lines'] and story['restoration'] and story['before'] and story['teaser']
+        assert story['lines'] == []
+        assert story['restoration'] and story['before']
+        assert story['teaser'] == ''
         if story['art']:
             # Match the renderer: bare filenames use art/, paths are relative
             # to assets/ (including the reorganized background/ directory).
@@ -291,8 +296,8 @@ def test_twelve_story_entries_match_levels_and_real_assets():
             assert (project / 'assets' / image).is_file()
         else:
             assert story['emblem']
-    assert len(STAGES) == 12 and PROLOGUE and ENDING
-    assert STAGES[-1]['lines'][-1] == ('보송', '오늘은 문, 열어 둘게.')
+    assert len(STAGES) == 12 and PROLOGUE == [] and len(ENDING) == 3
+    assert ('보송', '왔네. 수건은 저기 있어.') in ENDING
 
 
 def test_parseable_but_damaged_records_are_preserved_as_corrupt(tmp_path):
@@ -307,3 +312,144 @@ def test_parseable_but_damaged_records_are_preserved_as_corrupt(tmp_path):
     clear(campaign)
     assert not store.save(campaign)
     assert path.read_bytes() == raw
+
+
+def ending_campaign(ending_id, rooms=12):
+    state = likes.empty_state()
+    for stage in range(1, rooms + 1):
+        likes.offer_memory(state, sample_record(stage, SAMPLES[ending_id]))
+    return Campaign({'completed': list(range(1, rooms + 1)), 'likes': state})
+
+
+def settle_scored_memory(campaign, stage, ending_id, settlement_id):
+    from kkamang.levels import load_level
+    config = load_level(stage)
+    memory = sample_record(stage, SAMPLES[ending_id], settlement_id)
+    result = {'status': 'COMPLETE', 'reason': 'returned', 'quest_collected': True,
+              'banked': memory['banked'], 'carried': memory['banked'],
+              'damage_count': config['initial_courage'] - memory['remaining_courage'],
+              'remaining_courage': memory['remaining_courage'],
+              'ticks_used': memory['ticks_used'],
+              'remaining_ticks': config['time_budget_ticks'] - memory['ticks_used']}
+    return campaign.settle(config, result, memory['config_hash'], 'basic', settlement_id,
+                           memory_record=memory)
+
+
+@pytest.mark.parametrize('ending_id,variants', [
+    ('happy_all', (0, 1, 2)), ('sad', ()), ('ghost_a', (0,)),
+    ('ghost_b', (2,)), ('ghost_c', (1,)), ('normal', ()), (None, ()),
+])
+def test_release_mapping_uses_render_order_and_has_no_side_effects(ending_id, variants):
+    assert released_variants(ending_id) == variants
+    assert isinstance(released_variants(ending_id), tuple)
+
+
+@pytest.mark.parametrize('ending_id', likes.ENDING_IDS)
+def test_main_selected_ending_and_explicit_activation_survive_save_roundtrip(tmp_path, ending_id):
+    campaign = ending_campaign(ending_id)
+    assert campaign.selected_ending() == likes.select_ending(
+        campaign.data['likes'], campaign.data['completed']) == ending_id
+    assert campaign.extended_ending_unlocked() == (ending_id == 'happy_all')
+    # Selection and historic flags do not activate a present-day world state.
+    assert campaign.active_ending() is None and campaign.released_variants() == ()
+    assert campaign.data['likes']['seen_endings'] == []
+    assert campaign.record_ending(ending_id)
+    assert not campaign.record_ending(ending_id)
+    assert campaign.active_ending() is None
+    assert campaign.record_ending(ending_id, activate=True)
+    assert not campaign.record_ending(ending_id, activate=True)
+    assert campaign.active_ending() == ending_id
+    assert campaign.released_variants() == released_variants(ending_id)
+    assert campaign.data['likes']['seen_endings'] == [ending_id]
+    assert not any(campaign.data['narrative'][flag]
+                   for flag in ('basic_seen', 'true_seen', 'liberation_seen'))
+    before = deepcopy(campaign.data)
+    store = SaveStore(tmp_path / 'selected-ending.json')
+    assert store.save(campaign)
+    restored = SaveStore(store.path).load()
+    assert restored.data == before
+    assert restored.selected_ending() == ending_id
+    assert restored.active_ending() == ending_id
+    assert restored.released_variants() == released_variants(ending_id)
+
+
+@pytest.mark.parametrize('ending_id', likes.ENDING_IDS)
+def test_new_ending_reports_each_unseen_main_selection_without_recording_it(ending_id):
+    campaign = ending_campaign(ending_id, rooms=11)
+    assert campaign.selected_ending() is None
+    reward = settle_scored_memory(campaign, 12, ending_id, 'final-room')
+    assert reward['new_ending']
+    assert campaign.selected_ending() == ending_id
+    assert campaign.data['likes']['seen_endings'] == []
+    assert campaign.active_ending() is None
+    before = deepcopy(campaign.data)
+    assert not settle_scored_memory(campaign, 12, ending_id, 'final-room')['new_ending']
+    assert campaign.data == before
+    campaign.record_ending(ending_id)
+    assert not clear(campaign, sid='after-seen')['new_ending']
+
+
+def test_pending_selection_does_not_replace_last_active_world():
+    campaign = ending_campaign('normal')
+    campaign.record_ending('ghost_a', activate=True)
+    reward = settle_scored_memory(campaign, 1, 'happy_all', 'pending-replay')
+    assert reward['memory_status'] == 'pending' and not reward['new_ending']
+    assert campaign.selected_ending() is None
+    assert not campaign.extended_ending_unlocked()
+    assert campaign.active_ending() == 'ghost_a'
+    assert campaign.released_variants() == (0,)
+    assert campaign.choose_friend_memory(False)
+    assert campaign.selected_ending() == 'normal'
+    assert campaign.active_ending() == 'ghost_a'
+    campaign.record_ending('normal', activate=True)
+    assert campaign.released_variants() == ()
+    assert campaign.data['likes']['seen_endings'] == ['ghost_a', 'normal']
+
+
+def test_twelve_rich_badges_are_not_the_best_ending_and_missing_badges_do_not_block_it():
+    campaign = ending_campaign('normal')
+    campaign.data['badges'] = [f'stage_{stage:02d}:rich' for stage in range(1, 13)]
+    assert campaign.warmth_memories() == list(range(1, 13))
+    assert campaign.selected_ending() == 'normal'
+    assert not campaign.extended_ending_unlocked()
+    best = ending_campaign('happy_all')
+    assert best.warmth_memories() == []
+    assert best.extended_ending_unlocked()
+    assert best.active_ending() is None and best.released_variants() == ()
+
+
+@pytest.mark.parametrize('version', [0, 1, 2, 3, 4])
+def test_old_true_flags_never_invent_six_ending_history_or_release_state(version):
+    campaign = Campaign({'save_version': version, 'completed': list(range(1, 13)),
+                         'badges': [f'stage_{stage:02d}:rich' for stage in range(1, 13)],
+                         'narrative': {'basic_seen': True, 'true_seen': True,
+                                       'liberation_seen': True}})
+    assert campaign.memory_progress() == [4, 4, 4]
+    assert campaign.active_ending() is None and campaign.released_variants() == ()
+    assert campaign.data['likes']['seen_endings'] == []
+    assert campaign.selected_ending() is None
+    assert not campaign.extended_ending_unlocked()
+    assert all(campaign.data['narrative'][flag]
+               for flag in ('basic_seen', 'true_seen', 'liberation_seen'))
+    assert Campaign(campaign.data).data == campaign.data
+
+
+def test_practice_cannot_record_or_activate_an_unseen_selected_ending():
+    campaign = ending_campaign('happy_all')
+    campaign.record_ending('ghost_c', activate=True)
+    before = deepcopy(campaign.data)
+    reward = clear(campaign, mode='relaxed', banked=14)
+    assert reward['practice_mode'] and not reward['new_ending']
+    assert campaign.selected_ending() == 'happy_all'
+    assert campaign.active_ending() == 'ghost_c'
+    assert campaign.released_variants() == (1,)
+    assert campaign.data == before
+
+
+@pytest.mark.parametrize('ending_id', [None, 'basic', 'true', 'ghost_d', True, [], {}])
+def test_invalid_record_ending_is_rejected_atomically(ending_id):
+    campaign = Campaign()
+    before = deepcopy(campaign.data)
+    with pytest.raises(ValueError):
+        campaign.record_ending(ending_id, activate=True)
+    assert campaign.data == before

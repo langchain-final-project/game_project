@@ -160,11 +160,11 @@
   "quest": {
     "id": "memory_05",
     "name": "스카프 고리",
-    "kind": "scarf",
+    "kind": "scarf_hook",
     "position": [
       11,
       1
     ],
-    "restoration": "까망이 눈높이에 스카프를 걸 자리가 생겨요."
+    "restoration": "기억 2 · 1번 영역"
   }
 }

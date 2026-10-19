@@ -124,115 +124,141 @@ def story_game(tmp_path):
     from kkamang.app import GameApp
 
     game = GameApp(save_path=tmp_path / 'story.json', headless=True, no_audio=True)
-    game.campaign.data['completed'] = [1]
-    game.campaign.data['photos'] = [1]
     yield game
     game.close()
 
 
-@pytest.mark.parametrize('stage,speaker,ghost_id', [
-    (1, '보송', 'A'),
-    (6, '이파리', 'B'),
-    (7, '도레', 'C'),
-])
-def test_story_uses_lobby_portraits_without_changing_dialogue_or_progress(
-        story_game, stage, speaker, ghost_id):
+@pytest.mark.parametrize('stage', range(1, 13))
+def test_twelve_room_clears_replay_three_silent_pictures_without_dialogue_portraits(
+        story_game, stage):
     from kkamang.ui import menus
 
     game = story_game
     game.campaign.data['completed'] = list(range(1, stage + 1))
-    game.campaign.data['photos'] = list(range(1, stage + 1))
-    game.start_memory(stage)
-    game.dialogue_index = next(i for i, line in enumerate(game.dialogues) if line[0] == speaker)
-    game.dialogue_time = 99
-    dialogue = deepcopy(game.dialogues)
-    campaign = deepcopy(game.campaign.data)
-    with patch.object(menus, 'draw_story_character', wraps=lobby.draw_story_character) as portrait:
-        with patch.object(lobby, '_sprite', wraps=lobby._sprite) as sprite:
-            game.draw()
-    # The app may paint again after choosing the initial keyboard focus.
-    assert {call.args[1] for call in portrait.call_args_list} == {'cat', ghost_id}
-    assert sum(call.args[1] == 'cat' for call in portrait.call_args_list) == sum(
-        call.args[1] == ghost_id for call in portrait.call_args_list)
-    painted_characters = [call.args[1].name for call in sprite.call_args_list
-                          if call.args[0] == 'character.png']
-    assert set(painted_characters) == {'까망이', ghost_id}
-    assert game.dialogues == dialogue
-    assert game.campaign.data == campaign
+    # Historical photo IDs cannot turn the three shared pictures into 12 scenes.
+    game.campaign.data['photos'] = list(range(1, 13))
+    original = deepcopy(game.campaign.data)
+    game.start_memory(stage, replay=True)
+    memory_id = (stage - 1) // 4 + 1
+    expected_regions = [number <= stage for number in
+                        range((memory_id - 1) * 4 + 1, memory_id * 4 + 1)]
+    with patch.object(menus, '_memory_art', wraps=menus._memory_art) as picture, \
+            patch.object(menus, 'draw_story_character') as portrait, \
+            patch.object(menus, 'draw_story_item') as item:
+        game.draw()
+    assert picture.called
+    assert all(call.args[1] == memory_id and call.args[2] == expected_regions
+               for call in picture.call_args_list)
+    portrait.assert_not_called()
+    item.assert_not_called()
+    assert game.context()['silent'] and game.context()['dialogue'] is None
+    assert game.dialogues == []
+    assert game.campaign.data == original
     assert {'story_next', 'story_skip'} <= {control['id'] for control in game.controls}
 
 
-def test_all_twelve_memory_items_render_from_png_but_prologue_has_no_item(story_game):
+def test_prologue_is_a_silent_cinematic_without_dialogue_png_helpers(story_game):
     from kkamang.ui import menus
 
     game = story_game
-    game.campaign.data['completed'] = list(range(1, 13))
-    game.campaign.data['photos'] = list(range(1, 13))
     original = deepcopy(game.campaign.data)
-    with patch.object(menus, 'draw_story_item', wraps=lobby.draw_story_item) as item:
-        for stage in range(1, 13):
-            item.reset_mock()
-            game.start_memory(stage)
-            game.dialogue_time = 99
-            game.draw()
-            assert item.called
-            assert all(call.args[1] == stage for call in item.call_args_list)
-            assert item.call_args.args[1] == stage
-            assert pygame.Rect(0, 0, 1280, 488).contains(item.call_args.args[2])
-        item.reset_mock()
-        game.start_prologue()
+    game.start_prologue()
+    with patch.object(menus, 'draw_cinematic', wraps=menus.draw_cinematic) as cinematic, \
+            patch.object(menus, 'draw_story_character') as portrait, \
+            patch.object(menus, 'draw_story_item') as item:
         game.draw()
-        item.assert_not_called()
+    assert cinematic.called
+    assert all(call.args[1] == 'prologue' for call in cinematic.call_args_list)
+    portrait.assert_not_called()
+    item.assert_not_called()
+    assert game.dialogues == [] and game.context()['dialogue'] is None
     assert game.campaign.data == original
 
 
-@pytest.mark.parametrize('stage,expected', [
-    (1, '..A.A'),
-    (2, '..A.A'),
-    (3, '..A.A'),
-    (4, '..A.A.'),
-    (5, '..A.A'),
-    (6, '..B.B'),
-    (7, '..C.C'),
-    (8, '..CA.'),
-    (9, '..B.B'),
-    (10, '...A.'),
-    (11, '..C..'),
-    (12, '...BC.A'),
+@pytest.mark.parametrize('dialogue,expected', [
+    (None, None),
+    (('', '설명'), None),
+    (('까망이', '...'), None),
+    (('보송', '...'), 'A'),
+    (('이파리', '...'), 'B'),
+    (('도레', '...'), 'C'),
+    ({'speaker': '보송', 'line': '...'}, 'A'),
+    ({'speaker': '이파리', 'line': '...'}, 'B'),
+    ({'speaker': '도레', 'line': '...'}, 'C'),
 ])
-def test_every_story_line_hides_ghosts_for_narration_and_shows_only_the_speaker(
-        story_game, stage, expected):
+def test_optional_speaker_helper_selects_only_the_actual_speaker(dialogue, expected):
     from kkamang.ui import menus
 
-    game = story_game
-    game.campaign.data['completed'] = list(range(1, stage + 1))
-    game.campaign.data['photos'] = list(range(1, stage + 1))
-    game.start_memory(stage)
-    dialogue = deepcopy(game.dialogues)
-    campaign = deepcopy(game.campaign.data)
-    assert len(game.dialogues) == len(expected)
-    for index, ghost_id in enumerate(expected):
-        game.dialogue_index = index
-        game.dialogue_time = 99
-        with patch.object(menus, 'draw_story_character', wraps=lobby.draw_story_character) as portrait:
-            game.draw()
-        expected_portraits = {'cat'} if ghost_id == '.' else {'cat', ghost_id}
-        assert {call.args[1] for call in portrait.call_args_list} == expected_portraits
-    assert game.dialogues == dialogue
-    assert game.campaign.data == campaign
+    assert menus._story_ghost_id({'dialogue': dialogue}) == expected
 
 
-def test_prologue_also_hides_ghosts_during_narration(story_game):
+@pytest.mark.parametrize('character_id', ['cat', 'A', 'B', 'C'])
+def test_lobby_character_crop_and_optional_portrait_helper_render_independently(character_id):
+    spec = lobby.CHARACTERS[character_id]
+    source = lobby._image('character.png')
+    assert source.get_rect().contains(pygame.Rect(spec.crop))
+    surface = pygame.Surface((440, 360), pygame.SRCALPHA)
+    target = pygame.Rect(83, 41, 250, 280)
+    with patch.object(lobby, '_sprite', wraps=lobby._sprite) as sprite:
+        lobby.draw_story_character(surface, character_id, target)
+    assert sprite.call_args.args[0] == 'character.png'
+    assert sprite.call_args.args[1].crop == spec.crop
+    assert sprite.call_args.args[1].size == target.size
+    painted = surface.get_bounding_rect(min_alpha=10)
+    assert painted.w > 0 and painted.h > 0
+    assert target.contains(painted)
+
+
+@pytest.mark.parametrize('stage', range(1, 13))
+def test_twelve_png_item_crops_and_optional_item_helper_render_independently(stage):
+    spec = lobby.STORY_ITEMS[stage]
+    source = lobby._image('item.png')
+    assert source.get_rect().contains(pygame.Rect(spec.crop))
+    surface = pygame.Surface((440, 360), pygame.SRCALPHA)
+    target = pygame.Rect(83, 41, 250, 280)
+    with patch.object(lobby, '_sprite', wraps=lobby._sprite) as sprite:
+        lobby.draw_story_item(surface, stage, target)
+    assert sprite.call_args.args[0] == 'item.png'
+    assert sprite.call_args.args[1].crop == spec.crop
+    assert sprite.call_args.args[1].size == target.size
+    painted = surface.get_bounding_rect(min_alpha=10)
+    assert painted.w > 0 and painted.h > 0
+    assert target.contains(painted)
+
+
+@pytest.mark.parametrize('scene,home_view,active,released,expected_before,show_residents', [
+    ('home', 'after', None, (), False, True),
+    ('home', 'before', 'happy_all', (0, 1, 2), True, True),
+    ('home', 'after', 'ghost_a', (0,), False, True),
+    ('home', 'after', 'sad', (), False, False),
+    ('album', 'before', 'sad', (), False, False),
+])
+def test_menu_background_forwards_current_world_state_to_main_lobby_art(
+        scene, home_view, active, released, expected_before, show_residents):
     from kkamang.ui import menus
 
+    surface = pygame.Surface((1280, 720))
+    completed = [1, 4, 7]
+    context = {'campaign': {'completed': completed}, 'scene': scene,
+               'home_view': home_view, 'active_ending': active,
+               'released_variants': released}
+    original = deepcopy(context)
+    with patch.object(menus, 'draw_lobby') as draw:
+        menus._background(surface, None, ctx=context, actors=False)
+    assert draw.call_args.args == (surface, completed)
+    assert draw.call_args.kwargs == {
+        'before': expected_before, 'show_actors': False,
+        'released_variants': released, 'show_residents': show_residents,
+    }
+    assert context == original
+
+
+@pytest.mark.parametrize('screen', ['title', 'result'])
+def test_title_and_result_use_the_relocated_sitting_cat_png(story_game, screen):
     game = story_game
-    game.start_prologue()
-    expected = '.A.AAA.'
-    assert len(game.dialogues) == len(expected)
-    for index, ghost_id in enumerate(expected):
-        game.dialogue_index = index
-        game.dialogue_time = 99
-        with patch.object(menus, 'draw_story_character', wraps=lobby.draw_story_character) as portrait:
-            game.draw()
-        expected_portraits = {'cat'} if ghost_id == '.' else {'cat', ghost_id}
-        assert {call.args[1] for call in portrait.call_args_list} == expected_portraits
+    game.transition(screen)
+    with patch.object(game.assets, 'icon', wraps=game.assets.icon) as icon:
+        game.draw()
+    sitting_paths = [call.args[0] for call in icon.call_args_list
+                     if call.args[0].endswith('kkamang_wait.png')]
+    assert sitting_paths and set(sitting_paths) == {'art/character/kkamang_wait.png'}

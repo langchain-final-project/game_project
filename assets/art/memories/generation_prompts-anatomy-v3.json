@@ -1,0 +1,36 @@
+{
+  "revision": "folded-ears-single-tail-v3",
+  "tool": "built-in image_gen",
+  "mode": "precise-object-edit",
+  "purpose": "Correct Bosong to the canonical folded-ear design in all three memories and remove duplicate or ambiguous tails while preserving the story, framing, props and reveal coordinates.",
+  "source_size": [
+    1672,
+    941
+  ],
+  "game_canvas": [
+    1280,
+    720
+  ],
+  "edit_target_commit": "3930a8881c9206945c2b5f98b14b93abde0209e4",
+  "character_constraints": {
+    "bosong": "Pure white fur, clearly folded ears resting low against the head, amber eyes, red scarf and gold bell; one anatomically connected tail.",
+    "all_cats": "One tail per cat; no duplicate ears, limbs or ghost bodies."
+  },
+  "images": [
+    {
+      "memory": 1,
+      "file": "memory_01.png",
+      "prompt": "Use case: precise-object-edit.\nInput image: the existing game memory illustration ONE is the EDIT TARGET, not an inspiration for a new composition.\nMake ONLY these local anatomy corrections on the white kitten Bosong. (1) Both ears are FOLDED EARS: small softly rounded ear flaps bent forward and down, resting close to the top/sides of the head, like the user's folded-ear white cat character. The top head silhouette is round and low; no tall pointed triangular ears, no erect ear with merely a curved tip. Exactly two folded ear flaps, not additional ears. (2) Correct the obvious duplicated tail behind the kitten's left haunch. Remove the extra short upward white tail curl emerging above the existing tail. Keep exactly ONE continuous fluffy white tail attached to the rump, gently curling toward the left. Make the anatomy unambiguous: one kitten, one tail, four legs; no forked/bifurcated tail, no second white tail-shaped tuft behind the back. Reconstruct the tiny uncovered background area seamlessly.\nHard invariants: preserve the exact kitten body/face position, huge amber eyes, cautious expression, pure white fur, red scarf and gold bell, all existing visible paws and their placement, the grandmother's patient waiting pose and open hand, towel/footprints/guidebook/entire room, composition, lighting, illustration style, and image frame. These are game reveal-mask coordinates, so do not shift or resize any subject or object. Keep the original full 16:9 1672x941 framing. No new character, extra limb, text, captions, borders, cropping or global restyling. The only intended changes are folded ears and removing the duplicate tail."
+    },
+    {
+      "memory": 2,
+      "file": "memory_02.png",
+      "prompt": "Use case: precise-object-edit.\nInput image: the existing game memory illustration TWO is the EDIT TARGET. Local character design correction only.\nOn the WHITE cat Bosong at the lower LEFT, replace BOTH erect pointed triangular ears with distinctly FOLDED ears: small rounded flaps bent FORWARD AND DOWN close against the head, with a round low head silhouette. This is the canonical folded-ear white cat character. No upright triangles, no merely drooping ear tips, no additional ears. Keep the exact face, amber eyes, head scale and placement, bell and red scarf. Check the resting body's rear silhouette and simplify the left/lower white fur into exactly ONE clear fluffy tail curling around the rump, anatomically attached to the body; no two tails, no split tail and no spare tail-shaped white appendage. Keep the tucked/front paws visibly distinct from this one tail and in their existing positions.\nHard invariants: preserve all other pixels/areas as closely as possible: EXACTLY the existing THREE cats (white Bosong left, orange-white flower-straw-hat Ipari window, dark-grey-white red piano-ribbon Dore at piano), grandmother, piano, same props, the tea cup and saucer on the central table, seed pouch, spare scarf, room architecture, warm afternoon light, premium 2D anime game art, exact framing and placements. Do not touch Ipari's or Dore's ear design or anatomy. Do not introduce the black protagonist. Keep the original full 16:9 1672x941 framing, no object relocation, crop, text, border or global repaint. Only Bosong's folded-ear design and single-tail anatomy need correction."
+    },
+    {
+      "memory": 3,
+      "file": "memory_03.png",
+      "prompt": "Use case: precise-object-edit.\nInput image: the existing game memory illustration THREE is the EDIT TARGET. Correct ONLY the white cat Bosong's ears.\nThe WHITE cat at the LEFT of the huddled group has the canonical FOLDED-EAR design. Replace its tall pointed upright ear(s) with TWO small rounded ear flaps bent FORWARD AND DOWN closely against the top/sides of the head. Give the white head a low round silhouette, no tall white triangular ear, no ghost-wisp shaped extra ear, no upright ear with just a bent tip. The changing translucent spectral outline should follow the SAME newly folded ears, with no leftover original tall white ear silhouette or duplicate outlines. Keep the same white cat face and sad huge amber eyes, red scarf and gold bell, scale and placement.\nHard invariants: preserve the existing EXACTLY THREE cats and EXACTLY THREE single tails, one solid normal-fur tail for each cat (white left, orange-white middle, grey-white right). Do not add or split any tails. Keep the paws, lower tail/blanket region, and all other objects in the exact same locations. Do not modify the orange-white Ipari flower hat or dark-grey-white Dore piano ribbon or their normal upright ears. Preserve the magical transformation of the three SAME bodies, warmth orbs ONLY around their UPPER heads/shoulders, opaque lower paws and tails, no duplicated ghost characters. Preserve stormy night, empty shawl chair, cracked protective fireplace carving, stopped clock, final lullaby sheet, door handle, room/background, all original lighting/style/composition. Keep the original full 16:9 1672x941 framing. No Kkamang, extra animal, grandmother, text, border, cropping, relocation or global restyling."
+    }
+  ]
+}

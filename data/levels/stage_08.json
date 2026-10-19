@@ -160,11 +160,11 @@
   "quest": {
     "id": "memory_08",
     "name": "찻잔 받침",
-    "kind": "tea",
+    "kind": "saucer",
     "position": [
       12,
       2
     ],
-    "restoration": "주민들이 따뜻한 찻상에 둘러앉아요."
+    "restoration": "기억 2 · 4번 영역"
   }
 }

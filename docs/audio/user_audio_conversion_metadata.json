@@ -1,0 +1,440 @@
+{
+  "purpose": "Faithful format-only conversion of two user-supplied MP3s for game deployment.",
+  "source_status": "User supplied. Embedded source and license statements are preserved verbatim; no claim that all source media are original synthesis. Independent license verification is outside this conversion.",
+  "human_listening_performed": false,
+  "ffmpeg_version": "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers",
+  "files": [
+    {
+      "source_name": "fireside_rain_complete_90s_discord.mp3",
+      "output_name": "bgm_lobby.wav",
+      "source_path": "user_audio_sources/fireside_rain_complete_90s_discord.mp3",
+      "output_path": "assets/sound/bgm_lobby.wav",
+      "source_sha256": "7c2fa0f5f4887e65cf2938112d1ef1c59ddf05f9aab20bb4355c083e30ec7aac",
+      "output_sha256": "544f15eecfdd04bd808d21198c278a79596611435617d2ac6efd56489ccb15a5",
+      "source_probe": {
+        "streams": [
+          {
+            "index": 0,
+            "codec_name": "mp3",
+            "codec_long_name": "MP3 (MPEG audio layer 3)",
+            "codec_type": "audio",
+            "codec_tag_string": "[0][0][0][0]",
+            "codec_tag": "0x0000",
+            "sample_fmt": "fltp",
+            "sample_rate": "44100",
+            "channels": 2,
+            "channel_layout": "stereo",
+            "bits_per_sample": 0,
+            "initial_padding": 0,
+            "r_frame_rate": "0/0",
+            "avg_frame_rate": "0/0",
+            "time_base": "1/14112000",
+            "start_pts": 353600,
+            "start_time": "0.025057",
+            "duration_ts": 1270702080,
+            "duration": "90.044082",
+            "bit_rate": "96000",
+            "disposition": {
+              "default": 0,
+              "dub": 0,
+              "original": 0,
+              "comment": 0,
+              "lyrics": 0,
+              "karaoke": 0,
+              "forced": 0,
+              "hearing_impaired": 0,
+              "visual_impaired": 0,
+              "clean_effects": 0,
+              "attached_pic": 0,
+              "timed_thumbnails": 0,
+              "non_diegetic": 0,
+              "captions": 0,
+              "descriptions": 0,
+              "metadata": 0,
+              "dependent": 0,
+              "still_image": 0
+            },
+            "tags": {
+              "encoder": "Lavc63.7."
+            }
+          }
+        ],
+        "format": {
+          "filename": "user_audio_sources/fireside_rain_complete_90s_discord.mp3",
+          "nb_streams": 1,
+          "nb_programs": 0,
+          "format_name": "mp3",
+          "format_long_name": "MP2/3 (MPEG audio layer 2/3)",
+          "start_time": "0.025057",
+          "duration": "90.044082",
+          "size": "1081314",
+          "bit_rate": "96069",
+          "probe_score": 51,
+          "tags": {
+            "comment": "Piano samples: Salamander Grand Piano by Alexander Holm, CC BY 3.0; arranged, transposed, equalized and reverberated. Source: https://github.com/Tonejs/audio/tree/master/salamander ; license: https://creativecommons.org/licenses/by/3.0/ . Clean ambience revision: reduced continuous air/rain and fire noise beds; existing music and fire crackles retained.",
+            "title": "Fireside Rain - complete - compact 90 seconds",
+            "encoder": "Lavf63.5.101"
+          }
+        }
+      },
+      "source_embedded_tags": {
+        "comment": "Piano samples: Salamander Grand Piano by Alexander Holm, CC BY 3.0; arranged, transposed, equalized and reverberated. Source: https://github.com/Tonejs/audio/tree/master/salamander ; license: https://creativecommons.org/licenses/by/3.0/ . Clean ambience revision: reduced continuous air/rain and fire noise beds; existing music and fire crackles retained.",
+        "title": "Fireside Rain - complete - compact 90 seconds",
+        "encoder": "Lavf63.5.101"
+      },
+      "native_decoded": {
+        "frames": 3969000,
+        "sample_rate": 44100,
+        "channels": 2,
+        "duration_seconds": 90.0,
+        "peak_amplitude": 0.503409445,
+        "peak_dbfs": -5.961573,
+        "rms_dbfs": -27.068575,
+        "dc_mean_per_channel": [
+          -4.1913e-06,
+          7.0842e-06
+        ],
+        "first_sample_per_channel": [
+          -0.0032406016,
+          -0.0063361442
+        ],
+        "last_sample_per_channel": [
+          -0.0027517651,
+          -0.0077181007
+        ],
+        "first_50ms_rms_dbfs": -43.825226,
+        "last_50ms_rms_dbfs": -43.727485,
+        "leading_below_minus65db_seconds": 0.0,
+        "trailing_below_minus65db_seconds": 0.0,
+        "leading_below_minus80db_seconds": 0.0,
+        "trailing_below_minus80db_seconds": 0.0,
+        "loop_boundary_max_delta_amplitude": 0.0013819565,
+        "loop_boundary_delta_dbfs": -57.190113,
+        "adjacent_delta_99pct": 0.0149148097,
+        "loop_boundary_vs_adjacent_delta_99pct": 0.092657
+      },
+      "resampled_float_reference": {
+        "frames": 1984500,
+        "sample_rate": 22050,
+        "channels": 2,
+        "duration_seconds": 90.0,
+        "peak_amplitude": 0.503412783,
+        "peak_dbfs": -5.961515,
+        "rms_dbfs": -27.068506,
+        "dc_mean_per_channel": [
+          -4.1915e-06,
+          7.0841e-06
+        ],
+        "first_sample_per_channel": [
+          -0.0038143585,
+          -0.0078389002
+        ],
+        "last_sample_per_channel": [
+          -0.0022769347,
+          -0.008168038
+        ],
+        "first_50ms_rms_dbfs": -43.824505,
+        "last_50ms_rms_dbfs": -43.72821,
+        "leading_below_minus65db_seconds": 0.0,
+        "trailing_below_minus65db_seconds": 0.0,
+        "leading_below_minus80db_seconds": 0.0,
+        "trailing_below_minus80db_seconds": 0.0,
+        "loop_boundary_max_delta_amplitude": 0.0015374238,
+        "loop_boundary_delta_dbfs": -56.264128,
+        "adjacent_delta_99pct": 0.0297411689,
+        "loop_boundary_vs_adjacent_delta_99pct": 0.051693
+      },
+      "output_pcm16": {
+        "frames": 1984500,
+        "sample_rate": 22050,
+        "channels": 2,
+        "duration_seconds": 90.0,
+        "peak_amplitude": 0.503417969,
+        "peak_dbfs": -5.961426,
+        "rms_dbfs": -27.068507,
+        "dc_mean_per_channel": [
+          -4.1922e-06,
+          7.088e-06
+        ],
+        "first_sample_per_channel": [
+          -0.0038146973,
+          -0.0078430176
+        ],
+        "last_sample_per_channel": [
+          -0.0022888184,
+          -0.0081787109
+        ],
+        "first_50ms_rms_dbfs": -43.824744,
+        "last_50ms_rms_dbfs": -43.727957,
+        "leading_below_minus65db_seconds": 0.0,
+        "trailing_below_minus65db_seconds": 0.0,
+        "leading_below_minus80db_seconds": 0.0,
+        "trailing_below_minus80db_seconds": 0.0,
+        "loop_boundary_max_delta_amplitude": 0.0015258789,
+        "loop_boundary_delta_dbfs": -56.329599,
+        "adjacent_delta_99pct": 0.0297546387,
+        "loop_boundary_vs_adjacent_delta_99pct": 0.051282
+      },
+      "expected_logical_seconds": 90.0,
+      "expected_pcm_frames": 1984500,
+      "container_padding_explanation": "MP3 container duration includes encoder delay/padding; FFmpeg automatically honors gapless skip/discard. No explicit -t or trim filter is used.",
+      "processing": {
+        "eq": false,
+        "gain_change": false,
+        "normalization": false,
+        "added_notes": false,
+        "explicit_trim": false,
+        "fade": false,
+        "crossfade": false,
+        "resampling": "44100 Hz to 22050 Hz using FFmpeg default sample-rate conversion",
+        "output_codec": "pcm_s16le",
+        "channels": 2
+      },
+      "conversion_command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-y",
+        "-i",
+        "user_audio_sources/fireside_rain_complete_90s_discord.mp3",
+        "-map",
+        "0:a:0",
+        "-map_metadata",
+        "0",
+        "-ac",
+        "2",
+        "-ar",
+        "22050",
+        "-c:a",
+        "pcm_s16le",
+        "assets/sound/bgm_lobby.wav"
+      ],
+      "quantization_max_absolute_error": 1.5258789e-05,
+      "quantization_error_rms": 8.80863e-06,
+      "source_vs_output_peak_difference_db": 8.9e-05,
+      "source_vs_output_rms_difference_db": -1e-06,
+      "output_sample_dtype": "int16",
+      "clipped_pcm_samples": 0,
+      "deterministic_wav_sha256_reproduction": true,
+      "potential_loop_discontinuity_for_review": false,
+      "loop_edit_applied": false
+    },
+    {
+      "source_name": "collision_cat_long_600ms_project.mp3",
+      "output_name": "sfx_ghost_contact.wav",
+      "source_path": "user_audio_sources/collision_cat_long_600ms_project.mp3",
+      "output_path": "assets/sound/sfx_ghost_contact.wav",
+      "source_sha256": "baaa82df7074592baf72d14cd05a27ee3a552ed64f4884cbebc7a6bd5ee6fdb5",
+      "output_sha256": "1eb978f54ee804a4d7c72654f05cb232280e58ef9b5a10ee5d25137575280daa",
+      "source_probe": {
+        "streams": [
+          {
+            "index": 0,
+            "codec_name": "mp3",
+            "codec_long_name": "MP3 (MPEG audio layer 3)",
+            "codec_type": "audio",
+            "codec_tag_string": "[0][0][0][0]",
+            "codec_tag": "0x0000",
+            "sample_fmt": "fltp",
+            "sample_rate": "48000",
+            "channels": 2,
+            "channel_layout": "stereo",
+            "bits_per_sample": 0,
+            "initial_padding": 0,
+            "r_frame_rate": "0/0",
+            "avg_frame_rate": "0/0",
+            "time_base": "1/14112000",
+            "start_pts": 324870,
+            "start_time": "0.023021",
+            "duration_ts": 8805888,
+            "duration": "0.624000",
+            "bit_rate": "256000",
+            "disposition": {
+              "default": 0,
+              "dub": 0,
+              "original": 0,
+              "comment": 0,
+              "lyrics": 0,
+              "karaoke": 0,
+              "forced": 0,
+              "hearing_impaired": 0,
+              "visual_impaired": 0,
+              "clean_effects": 0,
+              "attached_pic": 0,
+              "timed_thumbnails": 0,
+              "non_diegetic": 0,
+              "captions": 0,
+              "descriptions": 0,
+              "metadata": 0,
+              "dependent": 0,
+              "still_image": 0
+            },
+            "tags": {
+              "encoder": "Lavc63.7."
+            }
+          }
+        ],
+        "format": {
+          "filename": "user_audio_sources/collision_cat_long_600ms_project.mp3",
+          "nb_streams": 1,
+          "nb_programs": 0,
+          "format_name": "mp3",
+          "format_long_name": "MP2/3 (MPEG audio layer 2/3)",
+          "start_time": "0.023021",
+          "duration": "0.624000",
+          "size": "21219",
+          "bit_rate": "272038",
+          "probe_score": 51,
+          "tags": {
+            "title": "Ghost brush and cat - 0.6 second collision",
+            "comment": "Original procedural ghost, source gain -7 dB. Cat meow by tuberatanka, https://freesound.org/people/tuberatanka/sounds/110011/ . CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/ . Pitch retained; sustained middle vowel shortened with a phase-matched crossfade, original vocal tail preserved. Total 0.60 s; cat onset 0.11 s. Game WAV: 22050 Hz, stereo, PCM16.",
+            "encoder": "Lavf63.5.101"
+          }
+        }
+      },
+      "source_embedded_tags": {
+        "title": "Ghost brush and cat - 0.6 second collision",
+        "comment": "Original procedural ghost, source gain -7 dB. Cat meow by tuberatanka, https://freesound.org/people/tuberatanka/sounds/110011/ . CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/ . Pitch retained; sustained middle vowel shortened with a phase-matched crossfade, original vocal tail preserved. Total 0.60 s; cat onset 0.11 s. Game WAV: 22050 Hz, stereo, PCM16.",
+        "encoder": "Lavf63.5.101"
+      },
+      "native_decoded": {
+        "frames": 28800,
+        "sample_rate": 48000,
+        "channels": 2,
+        "duration_seconds": 0.6,
+        "peak_amplitude": 0.485275418,
+        "peak_dbfs": -6.280234,
+        "rms_dbfs": -21.495749,
+        "dc_mean_per_channel": [
+          -3.49037e-05,
+          -2.84068e-05
+        ],
+        "first_sample_per_channel": [
+          -0.0002263815,
+          0.0005429284
+        ],
+        "last_sample_per_channel": [
+          -1.3304e-06,
+          3.654e-07
+        ],
+        "first_50ms_rms_dbfs": -28.87853,
+        "last_50ms_rms_dbfs": -37.836458,
+        "leading_below_minus65db_seconds": 2.0833333333333333e-05,
+        "trailing_below_minus65db_seconds": 0.0041041666666666666,
+        "leading_below_minus80db_seconds": 0.0,
+        "trailing_below_minus80db_seconds": 0.0020833333333333333,
+        "loop_boundary_max_delta_amplitude": 0.000542563,
+        "loop_boundary_delta_dbfs": -65.310996,
+        "adjacent_delta_99pct": 0.0926743429,
+        "loop_boundary_vs_adjacent_delta_99pct": 0.005855
+      },
+      "resampled_float_reference": {
+        "frames": 13230,
+        "sample_rate": 22050,
+        "channels": 2,
+        "duration_seconds": 0.6,
+        "peak_amplitude": 0.479508549,
+        "peak_dbfs": -6.384073,
+        "rms_dbfs": -21.499257,
+        "dc_mean_per_channel": [
+          -3.49144e-05,
+          -2.83825e-05
+        ],
+        "first_sample_per_channel": [
+          -0.0004058905,
+          0.0008847307
+        ],
+        "last_sample_per_channel": [
+          6.927e-07,
+          9.411e-07
+        ],
+        "first_50ms_rms_dbfs": -28.906619,
+        "last_50ms_rms_dbfs": -37.83713,
+        "leading_below_minus65db_seconds": 0.0,
+        "trailing_below_minus65db_seconds": 0.004081632653061225,
+        "leading_below_minus80db_seconds": 0.0,
+        "trailing_below_minus80db_seconds": 0.0020861678004535146,
+        "loop_boundary_max_delta_amplitude": 0.0008837895,
+        "loop_boundary_delta_dbfs": -61.073023,
+        "adjacent_delta_99pct": 0.1949792161,
+        "loop_boundary_vs_adjacent_delta_99pct": 0.004533
+      },
+      "output_pcm16": {
+        "frames": 13230,
+        "sample_rate": 22050,
+        "channels": 2,
+        "duration_seconds": 0.6,
+        "peak_amplitude": 0.479522705,
+        "peak_dbfs": -6.383816,
+        "rms_dbfs": -21.499262,
+        "dc_mean_per_channel": [
+          -3.49372e-05,
+          -2.82939e-05
+        ],
+        "first_sample_per_channel": [
+          -0.0003967285,
+          0.0008850098
+        ],
+        "last_sample_per_channel": [
+          0.0,
+          0.0
+        ],
+        "first_50ms_rms_dbfs": -28.906597,
+        "last_50ms_rms_dbfs": -37.83716,
+        "leading_below_minus65db_seconds": 0.0,
+        "trailing_below_minus65db_seconds": 0.004625850340136055,
+        "leading_below_minus80db_seconds": 0.0,
+        "trailing_below_minus80db_seconds": 0.0020861678004535146,
+        "loop_boundary_max_delta_amplitude": 0.0008850098,
+        "loop_boundary_delta_dbfs": -61.061039,
+        "adjacent_delta_99pct": 0.1949768066,
+        "loop_boundary_vs_adjacent_delta_99pct": 0.004539
+      },
+      "expected_logical_seconds": 0.6,
+      "expected_pcm_frames": 13230,
+      "container_padding_explanation": "MP3 container duration includes encoder delay/padding; FFmpeg automatically honors gapless skip/discard. No explicit -t or trim filter is used.",
+      "processing": {
+        "eq": false,
+        "gain_change": false,
+        "normalization": false,
+        "added_notes": false,
+        "explicit_trim": false,
+        "fade": false,
+        "crossfade": false,
+        "resampling": "48000 Hz to 22050 Hz using FFmpeg default sample-rate conversion",
+        "output_codec": "pcm_s16le",
+        "channels": 2
+      },
+      "conversion_command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-y",
+        "-i",
+        "user_audio_sources/collision_cat_long_600ms_project.mp3",
+        "-map",
+        "0:a:0",
+        "-map_metadata",
+        "0",
+        "-ac",
+        "2",
+        "-ar",
+        "22050",
+        "-c:a",
+        "pcm_s16le",
+        "assets/sound/sfx_ghost_contact.wav"
+      ],
+      "quantization_max_absolute_error": 1.5258789e-05,
+      "quantization_error_rms": 8.783072e-06,
+      "source_vs_output_peak_difference_db": 0.000257,
+      "source_vs_output_rms_difference_db": -5e-06,
+      "output_sample_dtype": "int16",
+      "clipped_pcm_samples": 0,
+      "deterministic_wav_sha256_reproduction": true,
+      "potential_loop_discontinuity_for_review": false,
+      "loop_edit_applied": false
+    }
+  ]
+}

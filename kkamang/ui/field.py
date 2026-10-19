@@ -2,7 +2,7 @@
 
 import math
 import pygame
-from .theme import text, wrapped, panel, CREAM, INK, NIGHT, PAPER, GOLD, SAGE
+from .theme import text, fit_text, wrapped, panel, CREAM, INK, NIGHT, PAPER, GOLD, SAGE
 from .illustration import cat, ghost, prop, glow, quest_prop
 from .ghost_sprites import movement_direction
 from .map_sprites import (
@@ -792,13 +792,14 @@ def draw_game(
         radius=14,
     )
     quest_prop(surface, q, (505, 29, 42, 42))
-    text(
+    fit_text(
         surface,
         assets,
         q['name'] + ('  회수 완료' if q['collected'] else '  찾아오기'),
-        (558, 39),
+        (558, 30, 324, 39),
         19,
         CREAM,
+        anchor='midleft',
     )
 
     # ── 상단: 현재 온기와 목표 온기 ──
@@ -853,6 +854,10 @@ def draw_game(
         magnet_flights=magnet_flights,
         ghost_facings=ghost_facings,
     )
+    if s['protection']:
+        # A cold-memory cue only: collisions and animation timing stay in core.
+        pygame.draw.rect(surface, (170, 211, 225), (29, 104, 982, 554), 3,
+               border_radius=9)
 
     # ── 오른쪽: 필수 물건과 복원 설명 ──
     panel(
@@ -865,7 +870,7 @@ def draw_game(
     text(
         surface,
         assets,
-        '오늘 되찾을 기억',
+        '필수 아이템',
         (1058, 115),
         18,
         INK,
@@ -876,11 +881,11 @@ def draw_game(
         q,
         (1098, 154, 102, 102),
     )
-    text(
+    fit_text(
         surface,
         assets,
         q['name'],
-        (1149, 269),
+        (1056, 256, 188, 38),
         21,
         INK,
         True,
@@ -891,9 +896,9 @@ def draw_game(
         assets,
         q['restoration'],
         (1060, 303, 178, 104),
-        17,
+        15,
         INK,
-        5,
+        4,
     )
 
     # ── 오른쪽: 추가 목표와 보상 안내 ──
@@ -920,11 +925,11 @@ def draw_game(
     wrapped(
         surface,
         assets,
-        '온기 최소 4점 획득\n필수 아이템 획득\n\n유령에게 잡히지 않기\n',
+        '아이템 + 온기 4점\n귀환점에서 E\n\n유령을 피해 용기를 지켜요',
         (1060, 465, 175, 139),
         15,
         INK,
-        5,
+        4,
     )
     magnet = s.get('magnet')
     if magnet is not None:

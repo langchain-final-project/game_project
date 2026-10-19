@@ -18,6 +18,7 @@ from .lobby import (
 from .likes import draw_likes, draw_choice
 from .map_sprites import map_image
 from .ghost_sprites import ghost_frame
+from .memories import draw_memory, draw_cinematic
 
 W, H = 1280, 720
 _COVER_CACHE: dict = {}
@@ -88,9 +89,9 @@ def _story(ctx, number=None):
         return ctx['story']
     all_stories = _stories(ctx)
     return next((s for s in all_stories if int(s.get('stage', 0)) == n),
-                {'stage': n, 'name': f'{n}번째 방', 'title': '조금 더 따뜻한 밤',
-                 'photo': '함께한 순간', 'before': '흩어진 온기를 찾아 돌아와요.',
-                 'lines': [], 'restoration': '방에 작은 불빛이 돌아왔어요.', 'teaser': ''})
+                {'stage': n, 'name': f'{n}번째 방', 'title': '기억',
+                 'photo': '', 'before': '아이템 + 온기 4점 이상',
+                 'lines': [], 'restoration': '', 'teaser': ''})
 
 
 def _story_ghost_id(ctx):
@@ -105,6 +106,24 @@ def _story_ghost_id(ctx):
 def _level(ctx, number=None):
     n = int(number or ctx.get('stage', 1))
     return next((l for l in ctx.get('levels', []) if int(l.get('stage', 0)) == n), {})
+
+
+def _regions(ctx, memory_id):
+    completed = set(_data(ctx).get('completed', []))
+    return [stage in completed for stage in range((memory_id-1)*4+1, memory_id*4+1)]
+
+
+def _memory_label(memory_id, regions):
+    return f'기억 {memory_id} · {sum(regions)} / 4'
+
+
+def _memory_art(surface, memory_id, regions, rect, **kwargs):
+    """Fit the whole fixed picture inside the UI without cropping or stretching."""
+    bounds = pygame.Rect(rect)
+    scale = min(bounds.w / 1280, bounds.h / 720)
+    picture = pygame.Rect(0, 0, max(1, round(1280*scale)), max(1, round(720*scale)))
+    picture.center = bounds.center
+    draw_memory(surface, memory_id, regions, picture, **kwargs)
 
 
 def _home_art(completed):
@@ -122,7 +141,10 @@ def _background(surface, assets, name='title_background.png', shade=0, ctx=None,
     ctx = ctx or {}
     data = _data(ctx)
     draw_lobby(surface, data.get('completed', []),
-               before=ctx.get('home_view') == 'before', show_actors=actors)
+               before=ctx.get('scene')=='home' and ctx.get('home_view')=='before',
+               show_actors=actors,
+               released_variants=ctx.get('released_variants', ()),
+               show_residents=ctx.get('active_ending')!='sad')
     if shade:
         _overlay(surface, (0, 0, W, H), alpha=min(shade,140))
 
@@ -209,143 +231,16 @@ def _lanterns(surface, assets, completed, rect):
 
 
 
-def _emblem(surface, assets, kind, rect, locked=False, large=False):
-    """Original prop illustrations, deliberately distinct from full story scenes."""
-    r = pygame.Rect(rect)
-    color = (95, 79, 108) if not locked else (156, 142, 139)
-    panel(surface, r, fill=color, border=(196, 174, 139), radius=8)
-    # Quiet wallpaper and arched window create a consistent album frame.
-    for x in range(r.x+16, r.right, 30):
-        pygame.draw.line(surface, (104, 88, 116) if not locked else (162, 149, 143),
-                         (x, r.y+5), (x, r.bottom-5), 1)
-    cx, cy = r.center
-    s = min(r.w, r.h) / 125
-    def rr(x, y, w, h, col, width=0, radius=3):
-        pygame.draw.rect(surface, col, (round(cx+x*s), round(cy+y*s),
-                                       max(1, round(w*s)), max(1, round(h*s))),
-                         width=width, border_radius=max(1, round(radius*s)))
-    def line(p, q, col=GOLD, width=3):
-        pygame.draw.line(surface, col, (int(cx+p[0]*s), int(cy+p[1]*s)),
-                         (int(cx+q[0]*s), int(cy+q[1]*s)), max(1, round(width*s)))
-    def circle(x, y, rad, col):
-        pygame.draw.circle(surface, col, (round(cx+x*s), round(cy+y*s)), max(1,round(rad*s)))
-    if locked:
-        pygame.draw.arc(surface, (224, 210, 181),
-                        pygame.Rect(cx-16*s, cy-24*s, 32*s, 36*s), 0, math.pi, max(2, round(5*s)))
-        rr(-23, -7, 46, 35, (224, 210, 181), radius=7)
-        circle(0, 6, 4, color)
-        line((0, 8), (0, 16), color, 4)
-        return
-    if kind in ('towel', 'scarf'):
-        rr(-44, -33, 88, 63, (197, 177, 211), radius=10)
-        for x in range(-35, 40, 10):
-            line((x, -30), (x, 28), (220, 205, 228), 1)
-        for x in range(-37, 42, 8):
-            line((x, 30), (x, 39), (226, 214, 229), 2)
-        circle(22, -8, 5, (238, 207, 141))
-    elif kind in ('sign', 'frame'):
-        rr(-45, -35, 90, 68, GOLD, radius=5)
-        rr(-38, -28, 76, 54, (116, 94, 135), radius=2)
-        circle(0, 6, 12, (237, 208, 157))
-        for x,y in [(-16,-7),(-6,-15),(7,-15),(18,-6)]:
-            circle(x,y,6,(237,208,157))
-    elif kind == 'plant':
-        pygame.draw.polygon(surface, (198, 137, 113),
-                            [(cx-26*s,cy+10*s),(cx+26*s,cy+10*s),(cx+19*s,cy+41*s),(cx-19*s,cy+41*s)])
-        line((0, 10), (0, -35), (174, 199, 148), 4)
-        for x, y, angle in [(-17,-15,-25),(15,-28,25),(-13,-34,-20)]:
-            pygame.draw.ellipse(surface, (158, 184, 136), (cx+x*s-12*s, cy+y*s-6*s,26*s,13*s))
-    elif kind in ('music', 'ensemble'):
-        rr(-42, -20, 84, 55, (195, 165, 125), radius=6)
-        rr(-36, 8, 72, 20, (247, 227, 185), radius=2)
-        for i in range(7):
-            line((-34+i*10, 8), (-34+i*10, 27), (107, 88, 98), 1)
-        line((7,-15),(7,-43),GOLD,3)
-        line((7,-43),(23,-38),GOLD,3)
-        circle(0,-15,7,GOLD)
-        if kind=='ensemble':
-            circle(-22,-36,5,(184,210,169))
-    elif kind == 'window':
-        rr(-35, -42, 70, 84, (215, 185, 137), radius=26)
-        rr(-28, -35, 56, 70, (86, 103, 146), radius=20)
-        line((0,-32),(0,35),(220,190,144),4)
-        line((-28,0),(28,0),(220,190,144),4)
-        circle(13,-22,7,(245,226,172))
-    elif kind == 'cushion':
-        pygame.draw.ellipse(surface, (177, 175, 141), (cx-48*s,cy-19*s,96*s,61*s))
-        pygame.draw.ellipse(surface, (209, 205, 165), (cx-40*s,cy-14*s,80*s,43*s), max(1,round(2*s)))
-        circle(0,7,9,(141,135,118))
-        for x,y in [(-13,-2),(-5,-9),(6,-9),(15,-1)]:circle(x,y,4,(141,135,118))
-    else:
-        # Tea, or a book when the chapter has a dedicated scene.
-        rr(-34, -29, 68, 57, (206, 178, 136), radius=3)
-        rr(-28, -23, 27, 44, (246, 227, 190), radius=1)
-        rr(2, -23, 26, 44, (246, 227, 190), radius=1)
-        line((0,-27),(0,27),(155,124,109),2)
-        for yy in [-12,-3,6]:line((8,yy),(21,yy),(192,169,140),1)
-    if large:
-        text(surface, assets, '물건 곁에 남은 작은 기억', (cx, r.bottom-15), size=15,
-             color=(232,218,193), anchor='midbottom')
-
-
-def _photo(surface, assets, story, rect, locked=False, large=False, frame='default', cosmetics=None):
-    r = pygame.Rect(rect)
-    panel(surface, r, fill=(255, 249, 230), border=(179, 153, 123), radius=3)
-    inner = r.inflate(-14, -14)
-    if not locked:
-        n = int(story.get('stage',1))
-        key=('lobby_memory_v1',n,inner.size)
-        if key not in _COVER_CACHE:
-            scene=pygame.Surface((1280,720),pygame.SRCALPHA)
-            draw_lobby(scene, range(1, n + 1))
-            _COVER_CACHE[key]=pygame.transform.smoothscale(scene,inner.size)
-        surface.blit(_COVER_CACHE[key],inner)
-    else:
-        _emblem(surface, assets, story.get('emblem', 'book'), inner, True, large)
-    tape = pygame.Surface((max(28, int(r.w*.22)), 12), pygame.SRCALPHA)
-    tape.fill((197, 176, 129, 155))
-    surface.blit(tape, (r.centerx-tape.get_width()//2, r.y-4))
-    if frame != 'default' and not locked:
-        frame_color = SAGE if frame == 'leaves' else LAVENDER
-        pygame.draw.rect(surface, frame_color, r.inflate(-2,-2), width=4, border_radius=4)
-        for x,y in [r.topleft,r.topright,r.bottomleft,r.bottomright]:
-            x=max(r.left+10,min(r.right-10,x));y=max(r.top+10,min(r.bottom-10,y))
-            if frame=='leaves':
-                pygame.draw.ellipse(surface,(191,211,163),(x-8,y-4,17,8))
-                pygame.draw.line(surface,(106,137,110),(x-6,y+2),(x+6,y-2),1)
-            else:
-                pygame.draw.line(surface,GOLD,(x-7,y),(x+7,y),3)
-                pygame.draw.line(surface,GOLD,(x,y-7),(x,y+7),3)
-
-
 def _home_keepsakes(surface, assets, ctx, data):
-    """Live vignette makes selected cosmetics visible beside the painted room."""
-    r=pygame.Rect(988,409,250,134)
-    _overlay(surface,r,alpha=201,radius=15)
-    pygame.draw.rect(surface,(185,155,121),r,width=1,border_radius=15)
-    text(surface,assets,'까망이가 고른 작은 취향',(1004,419),size=15,color=CREAM)
-    cosmetics=data.get('cosmetics',{})
-    rug=cosmetics.get('rug','default')
-    color={'default':(156,136,172),'stars':(124,117,160),'leaves':(131,156,135)}.get(rug,(156,136,172))
-    pygame.draw.ellipse(surface,color,(1005,502,112,27))
-    pygame.draw.ellipse(surface,GOLD,(1009,506,104,19),1)
-    if rug=='stars':
-        for x in (1020,1100):
-            pygame.draw.line(surface,GOLD,(x-3,515),(x+3,515),1)
-            pygame.draw.line(surface,GOLD,(x,512),(x,518),1)
-    elif rug=='leaves':
-        for x in (1020,1100):pygame.draw.ellipse(surface,(203,219,176),(x-4,511,8,4))
-    if hasattr(assets,'cat'):
-        cat=assets.cat((93,89),cosmetics.get('scarf','default'))
-    else:cat=assets.icon('art/kkamang_character.png',(93,89))
-    surface.blit(cat,(1012,439))
-    photos=data.get('photos',[])
-    favorite=ctx.get('preferred_photo') or (max(photos) if photos else None)
-    if favorite in photos:
-        _photo(surface,assets,_story(ctx,favorite),(1123,449,99,73),frame=cosmetics.get('frame','default'),cosmetics=cosmetics)
-    else:
-        _photo(surface,assets,{'emblem':'frame'},(1123,449,99,73),locked=True,
-               frame=cosmetics.get('frame','default'),cosmetics=cosmetics)
+    r = pygame.Rect(988, 409, 250, 134)
+    _overlay(surface, r, alpha=201, radius=15)
+    text(surface, assets, '기억 앨범', (1005, 422), size=16, color=CREAM)
+    for memory_id in range(1, 4):
+        regions = _regions(ctx, memory_id)
+        x = 1006 + (memory_id-1)*74
+        _memory_art(surface, memory_id, regions, (x, 453, 66, 48))
+        text(surface, assets, f'{sum(regions)}/4', (x+33, 515), size=14,
+             color=CREAM, anchor='center')
 
 
 class _UI:
@@ -391,12 +286,12 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         ghost(surface,(1110,515),125,time=elapsed,resident=True)
         # The art was composed with quiet space at left for the live title.
         _overlay(surface, (0, 0, 660, H), alpha=115)
-        text(surface, assets, '작은 발걸음이 남긴 따뜻한 밤', (68, 110), size=19,
+        text(surface, assets, 'KKAMANG MANOR', (68, 110), size=19,
              color=(224, 204, 177))
         surface.blit(assets.title_font(54).render('까망이와',True,CREAM),(64,154))
         surface.blit(assets.title_font(51).render('잠 못 드는 저택',True,CREAM),(64,224))
         pygame.draw.line(surface, GOLD, (70, 312), (410, 312), 2)
-        wrapped(surface, assets, '폭풍을 피해 들어온 낯선 집.\n잃어버린 물건과 온기를 찾아, 돌아올 자리를 만들어 주세요.',
+        wrapped(surface, assets, '아이템 1개 + 온기 4점 이상\n귀환점에서 E',
                 pygame.Rect(70, 337, 470, 90), size=20, color=CREAM, line_gap=9)
         has_save = bool(ctx.get('has_save'))
         if has_save:
@@ -409,51 +304,52 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             ui.control('tutorial', (256, 528, 174, 46), '어떻게 걷나요?')
         ui.control('quit', (70, 590, 174, 44), '나가기')
         if has_save:
-            _chip(surface, assets, f'간직한 기억  {len(photos)} / 12', (900, 43, 320, 43))
+            _chip(surface, assets, f'완료한 방  {len(completed)} / 12', (900, 43, 320, 43))
         _footer(surface, assets, '방향키 선택 · Enter 확인 · 마우스로도 선택할 수 있어요')
 
     elif screen == 'home':
         old_view = ctx.get('home_view') == 'before'
-        _background(surface, assets, 'shelter_before.png' if old_view else _home_art(completed),ctx=ctx)
-        title = '처음 만났던 밤' if old_view else '까망이의 쉼터'
-        subtitle = '비를 피할 자리는 처음부터 여기 있었어요.' if not completed else '작은 일이 모여, 돌아오고 싶은 집이 되었어요.'
-        _header(surface, assets, title, subtitle,
-                f'기억 {len(photos)} / 12 · 별 {int(ctx.get("total_stars", 0))} / 36')
-        _lanterns(surface, assets, completed, (745, 124, 500, 65))
-        restoration_note = '아직은 조용한 쉼터예요. 첫 번째 방으로 걸어가 볼까요?'
+        _background(surface, assets, ctx=ctx)
+        _header(surface, assets, '쉼터', '',
+                f'완료 {len(completed)} / 12 · 별 {int(ctx.get("total_stars", 0))} / 36')
+        _lanterns(surface, assets, completed, (662, 124, 575, 65))
+        for memory_id in range(1, 4):
+            regions = _regions(ctx, memory_id)
+            r = pygame.Rect(38+(memory_id-1)*184, 126, 170, 108)
+            panel(surface, r, fill=NIGHT, border=GOLD, radius=12)
+            _memory_art(surface, memory_id, regions, (r.x+8, r.y+8, 154, 65))
+            text(surface, assets, _memory_label(memory_id, regions),
+                 (r.centerx, r.bottom-19), size=15, anchor='center')
+            ui.control(f'memory:{memory_id}', r, f'기억 {memory_id}', custom=True)
         if completed:
+            ui.control('toggle_home_view', (1004,205,233,38),
+                       '현재 쉼터' if old_view else '처음 쉼터')
+        if len(completed) == 12:
+            _chip(surface, assets, f'수집 배지 {ctx.get("warmth_count",0)} / 12',
+                  (662,205,322,38), size=17)
+            ui.control('ending',(1004,253,233,40),'현재 엔딩 보기',
+                       disabled=not ctx.get('selected_ending'))
+        _overlay(surface,(0,560,W,160),alpha=190)
+        note = '귀환 조건: 아이템 1개 + 온기 4점 이상 · 귀환점에서 E'
+        if completed and max(completed) in LOBBY_ITEMS:
             latest_stage = max(completed)
-            restoration_note = {
-                1: '수건 선반이 놓이고, 보송이 쉼터에 찾아왔어요.',
-                4: '정원 안내서가 놓이고, 도레가 쉼터에 찾아왔어요.',
-                7: '잃어버린 악보를 되찾고, 이파리가 쉼터에 찾아왔어요.',
-            }.get(latest_stage, '')
-            if not restoration_note and latest_stage in LOBBY_ITEMS:
-                restoration_note = '쉼터에 돌아온 물건 · ' + LOBBY_ITEMS[latest_stage].name
-            ui.control('toggle_home_view', (1004, 568, 233, 32),
-                       '지금의 쉼터 보기' if old_view else '처음의 쉼터 보기')
-        # Nonintrusive fireflies are decorative and never overlap controls.
-        for i in range(9):
-            x = 700+i*53
-            y = 330+math.sin(elapsed*.7+i*2)*28+(i%3)*50
-            pygame.draw.circle(surface, (235, 209, 148), (int(x),int(y)), 2)
-#        _home_keepsakes(surface,assets,ctx,data)
-        _overlay(surface, (0, 560, W, 160), alpha=190)
-        note = ('열두 방의 불빛이 돌아왔어요. 언제든 다시 만나요.'
-                if len(completed) == 12 else restoration_note)
+            restored = LOBBY_ITEMS[latest_stage].name
+            resident = {1: '보송', 4: '도레', 7: '이파리'}.get(latest_stage)
+            note = f'쉼터 복원: {restored}' + (f' · {resident} 표시' if resident else '')
+        if len(completed)==12:
+            note = '대표 기억의 호감도와 최고 별점에 따라 여섯 가지 결말을 만나요.'
         if old_view:
-            note = '까망이와 처음 만났던, 아직 아무것도 채워지지 않은 쉼터예요.'
-        _fit_text(surface, assets, note, (40, 568, 940, 32), size=18, color=CREAM)
-        ui.control('explore', (38, 613, 300, 52), '기억 속으로 다시 걷기' if len(completed)==12 else '다음 방으로 걷기', primary=True)
-        ui.control('album', (352, 613, 215, 52), '기억 앨범')
-        ui.control('appearance', (581, 613, 215, 52), '쉼터 꾸미기')
-        # ui.control('rooms', (810, 613, 215, 52), '구역 살펴보기')
-        ui.control('likes', (810, 613, 215, 52), '유령 호감도')
-        ui.control('settings', (1039, 613, 199, 52), '설정')
-        _footer(surface, assets)
+            note = '처음 쉼터 보기 · 저장된 완료 기록 유지'
+        _fit_text(surface,assets,note,(40,567,1198,35),size=17,color=CREAM)
+        ui.control('explore',(38,613,300,52),'방 다시 탐험' if len(completed)==12 else '탐험',primary=True)
+        ui.control('album',(352,613,215,52),'기억 앨범')
+        ui.control('appearance',(581,613,215,52),'꾸미기')
+        ui.control('likes',(810,613,215,52),'호감도 기록')
+        ui.control('settings',(1039,613,199,52),'설정')
+        _footer(surface,assets)
     elif screen in ('likes', 'ending_conditions'):
         _background(surface, assets, ctx=ctx, actors=False)
-        _header(surface, assets, '유령 호감도', '이 방에 남긴 기억이 친구들의 마음에 쌓여요.')
+        _header(surface, assets, '호감도 기록', '대표 기록 기준')
         draw_likes(surface, assets, ctx, ui)
         _footer(surface, assets)
 
@@ -490,12 +386,13 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
                 _icon(surface,assets,'badge_unhurt',(rect.right-42,rect.y+8,29,29))
             ui.control(f'stage:{n}', rect, st.get('name', ''), disabled=not unlocked, custom=True)
         ui.control('back', (38, 626, 174, 40), '쉼터로')
-        text(surface,assets,'완료한 방은 다시 도전해 별과 최고 점수를 높일 수 있어요.',(240,635),size=17)
+        _fit_text(surface,assets,'다시 도전해 별과 최고 점수를 높이고, 방마다 남길 대표 기억을 골라요.',
+                  (240,628,998,33),size=17,color=CREAM)
         _footer(surface, assets)
 
     elif screen == 'briefing':
         _background(surface, assets, _home_art(completed), 175,ctx=ctx)
-        _header(surface, assets, f'{stage:02d}  {story.get("name", "탐사 준비")}', '필수 물건과 온기를 챙겨, 종이 울리기 전에 돌아와요.', mode_label)
+        _header(surface, assets, f'{stage:02d}  {story.get("name", "탐사 준비")}', '아이템 + 온기 4점 이상 · 귀환점 E', mode_label)
         panel(surface, (38, 126, 805, 492), fill=(55,45,65), border=GOLD, radius=17)
         snapshot = ctx.get('snapshot')
         if snapshot:
@@ -515,10 +412,10 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         for i,(lab,val) in enumerate(rows):
             y=311+i*39
             text(surface,assets,lab,(889,y),size=17,color=(131,112,112))
-            text(surface,assets,val,(1216,y),size=18,color=INK,anchor='topright',bold=True)
+            _fit_text(surface,assets,val,(986,y,230,28),size=18,color=INK,anchor='topright',bold=True)
         badge_notes = [
-            ('badge_warmth', '모든 온기를 수집하면 뱃지 획득'),
-            ('badge_unhurt', '유령에게 한 번도 잡히지 않으면 뱃지 획득'),
+            ('badge_warmth', '온기 10점 이상 귀환 · 수집 배지'),
+            ('badge_unhurt', '유령에게 잡히지 않고 귀환 · 무피격 배지'),
         ]
         for i, (icon, label) in enumerate(badge_notes):
             y = 481 + i * 34
@@ -581,15 +478,16 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
                 x=79+i*210
                 text(surface,assets,label,(x,456),size=17,color=(132,111,109))
                 text(surface,assets,f'{value} / {maximum}',(x,483),size=21,color=INK,bold=True)
-            msg = ('새 기억을 앨범에 담았어요.' if reward.get('new_photo')
-                   else '다시 걸은 밤도 기록에 남아요.')
-            if reward.get('new_cosmetics'):
-                msg += ' 새 꾸미기도 열렸어요!'
+            msg='기억 영역 +1' if reward.get('first_complete') else '탐사 기록 저장'
+            if reward.get('new_cosmetics'):msg+=' 새 꾸미기도 열렸어요!'
+            if reward.get('new_ending'):
+                msg+=' · 새로운 엔딩을 볼 수 있어요'
             next_points=int(score.get('next_star_points',0))
             stars = int(score.get('stars', 0))
             star_note = (f'이번 탐험에서 별 {stars}개를 얻었어요.' if stars else
                          f'다음 별까지 {next_points}점')
-            _fit_text(surface,assets,star_note+' · '+msg,(79,535,647,32),size=17,color=(135,99,98))
+            text(surface,assets,star_note,(79,536),size=16,color=(135,99,98))
+            _fit_text(surface,assets,msg,(79,559,645,32),size=17,color=(135,99,98))
         elif success:
             wrapped(surface,assets,
                     '여유 모드는 연습 전용이에요. 이번 결과는 별, 꾸미기, 호감도, 이야기 진행에 반영되지 않아요.',
@@ -610,114 +508,110 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
                   '첫 번째 대표 기억을 남겼어요.')
             _chip(surface,assets,note,(831,522,376,49),size=18)
         else:
-            _chip(surface,assets,'온기보다 네가 먼저야.',(831,522,376,49),size=22)
+            _chip(surface,assets,'기록 유지 · 다시 도전 가능',(831,522,376,49),size=22)
         ui.control('retry',(42,624,206,44),'같은 방 다시 걷기')
         ui.control('home',(264,624,173,44),'쉼터로')
         if success and practice:
             ui.control('rooms',(964,624,243,44),'방 선택으로',primary=True)
         elif success:
-            label='새 기억 펼치기' if reward.get('new_photo') else ('정원으로' if stage==12 else '다음 방으로')
-            ui.control('view_memory' if reward.get('new_photo') or stage==12 else 'next_stage',
-                       (964,624,243,44),label,primary=True)
+            if reward.get('first_complete'):
+                ident,label='view_memory','기억 공개'
+            elif reward.get('new_ending'):
+                ident,label='ending','엔딩 보기'
+            elif stage==12:
+                ident,label='ending','엔딩 보기'
+            else:
+                ident,label='next_stage','다음 방으로'
+            ui.control(ident,(964,624,243,44),label,primary=True)
         else:
             ui.control('rooms',(964,624,243,44),'다른 방 살펴보기',primary=True)
         _footer(surface,assets)
 
     elif screen == 'ending':
         content = ctx.get('ending_content') or {}
-        _background(surface,assets,content.get('art', 'ending_scene.png'),ctx=ctx)
-        if content.get('art') and (assets.root / 'art' / content['art']).is_file():
-            _art(surface, assets, content['art'], (0, 0, W, H))
-        _header(surface,assets,content.get('title', '함께 남긴 밤'),content.get('subtitle', '열두 방의 기억 · 평가 전 공통 이야기'),'기억 12 / 12')
-        if ctx.get('ending_art_only'):
-            has_epilogue = bool(content.get('lines'))
-            ui.control('ending_continue',(1000,630,240,50),
-                       '후일담 보기' if has_epilogue else '쉼터로 돌아가기',primary=True)
-            if has_epilogue:
-                ui.control('story_skip',(40,630,200,50),'쉼터로 돌아가기')
+        ending = ctx.get('ending_id')
+        art_only = bool(ctx.get('ending_art_only'))
+        lines = content.get('lines') or []
+        if not art_only and ending in ('normal','happy_all'):
+            draw_cinematic(surface, 'true_end' if ending=='happy_all' else 'basic_end',
+                           float(ctx.get('scene_elapsed', elapsed)), completed=completed,
+                           cosmetics=data.get('cosmetics'), released=ending=='happy_all',
+                           released_variants=(0,1,2) if ending=='happy_all' else ())
+        else:
+            _background(surface,assets,ctx=ctx,actors=False)
+            _art(surface,assets,content.get('art'),(0,0,W,H))
+        _header(surface,assets,content.get('title','기억의 결말'),
+                content.get('subtitle',''),'엔딩' if art_only else '후일담')
+        if art_only or not lines:
+            ui.control('ending_continue',(1000,610,240,50),
+                       '후일담 보기' if lines else '쉼터로 돌아가기',primary=True)
+            if lines:
+                ui.control('story_skip',(40,610,200,50),'쉼터로 돌아가기')
+            _footer(surface,assets,'Enter / Space 선택 · Esc 쉼터로')
             return ui.controls
-        panel(surface,(38,488,1204,179),fill=PAPER,border=GOLD,radius=18)
-        speaker,line=ctx.get('dialogue') or ('이야기','다음 비 오는 날, 까망이는 다시 저택을 찾아왔어요.')
-        text(surface,assets,speaker,(64,508),size=21,color=(145,99,104),bold=True)
-        wrapped(surface,assets,line,pygame.Rect(64,546,933,105),size=23,color=INK,line_gap=8)
+        # Spoken words appear only after the selected ending's silent artwork.
+        panel(surface,(38,583,1204,84),fill=PAPER,border=GOLD,radius=18)
+        speaker,line=ctx.get('dialogue') or ('','')
+        text(surface,assets,speaker,(64,592),size=18,color=(145,99,104),bold=True)
+        wrapped(surface,assets,line,pygame.Rect(64,622,933,34),size=23,color=INK,line_gap=5)
         index=int(ctx.get('dialogue_index',0))+1
-        total=max(1,int(ctx.get('total_dialogue',1)))
-        text(surface,assets,f'{min(index,total)} / {total}',(1214,510),size=16,color=(138,119,113),anchor='topright')
-        ui.control('ending_continue',(1032,579,184,57),'다음 이야기' if index<total else '쉼터로 돌아가기',primary=True)
-        ui.control('story_skip',(1041,123,199,38),'쉼터로 돌아가기')
-        _footer(surface,assets,'완료한 방과 기억 앨범은 언제든 다시 찾아갈 수 있어요')
+        total=max(1,int(ctx.get('total_dialogue',3)))
+        text(surface,assets,f'{min(index,total)} / {total}',(1011,594),size=16,
+             color=(138,119,113),anchor='topright')
+        ui.control('ending_continue',(1032,600,184,49),'다음' if index<total else '쉼터로',primary=True)
+        ui.control('story_skip',(1041,123,199,38),'넘기기')
+        _footer(surface,assets,'Enter / Space 다음 · Esc 넘기기')
 
     elif screen == 'story':
-        ending=False
-        _background(surface,assets,ctx=ctx,actors=False)
-        draw_story_character(surface, 'cat', (235, 178, 240, 290))
-        ghost_id = _story_ghost_id(ctx)
-        if ghost_id is not None:
-            draw_story_character(surface, ghost_id, (779, 180, 240, 260))
-        if ctx.get('story_kind') != 'prologue':
-            draw_story_item(surface, stage, (564, 275, 170, 170))
-        _overlay(surface,(0,0,W,66),alpha=162)
-        title='비가 그친 뒤에도' if ending else story.get('title','처음 만난 밤')
-        if ctx.get('story_kind')=='prologue':title='비가 몹시 내리던 밤'
-        text(surface,assets,title,(36,17),size=26,bold=True)
-        if not ending and ctx.get('story_kind')!='prologue':
-            text(surface,assets,f'기억 {stage:02d} · {story.get("photo", "")}',(1243,24),size=18,anchor='topright')
-        panel(surface,(38,488,1204,179),fill=PAPER,border=GOLD,radius=18)
-        dialogue=ctx.get('dialogue') or ('보송','이 집에 작은 불빛이 하나 더 켜졌어.')
-        if isinstance(dialogue,dict):speaker,line=dialogue.get('speaker',''),dialogue.get('line','')
-        else:speaker,line=dialogue
-        text(surface,assets,speaker or '이야기',(64,508),size=21,color=(145,99,104),bold=True)
-        wrapped(surface,assets,line,pygame.Rect(64,546,933,105),size=23,color=INK,line_gap=8)
-        index=int(ctx.get('dialogue_index',0))+1
-        total=int(ctx.get('total_dialogue',1))
-        text(surface,assets,f'{min(index,total)} / {max(total,1)}',(1214,510),size=16,color=(138,119,113),anchor='topright')
-        # Once a newly earned room memory has fully appeared, let the player
-        # choose whether to return home or continue straight to the next room.
-        source_lines=story.get('lines', []) if isinstance(story, dict) else []
-        final_line_complete=(index == total and len(source_lines) >= total
-                             and len(line) >= len(source_lines[total-1][1]))
-        can_continue=(ctx.get('story_kind') == 'memory' and not ctx.get('replay')
-                      and stage < 12 and final_line_complete)
-        if can_continue:
-            ui.control('story_finish_next',(836,579,190,58),'다음 방으로')
-            ui.control('story_finish_home',(1037,579,177,58),'기억 간직하기',primary=True)
+        kind=ctx.get('cinematic_kind') or ctx.get('story_kind') or 'memory'
+        scene_time=float(ctx.get('scene_elapsed',0))
+        if kind == 'memory':
+            memory_id=int(ctx.get('memory_id',(stage-1)//4+1))
+            regions=ctx.get('regions',_regions(ctx,memory_id))
+            surface.fill((26,25,39))
+            panel(surface,(28,80,1224,548),fill=(61,49,64),border=GOLD,radius=18)
+            _memory_art(surface,memory_id,regions,(44,96,1192,516),
+                        previous_regions=ctx.get('previous_regions'),
+                        reveal_region=ctx.get('reveal_region'),
+                        progress=float(ctx.get('reveal_progress',1)),
+                        item_kind=ctx.get('item_kind'),elapsed=scene_time)
+            text(surface,assets,_memory_label(memory_id,regions),(38,27),size=25,bold=True)
+            ready=float(ctx.get('reveal_progress',1))>=1
+            if ready and not ctx.get('replay') and stage<12:
+                ui.control('story_finish_next',(826,636,190,40),'다음 방으로')
+                ui.control('story_finish_home',(1034,636,204,40),'쉼터로',primary=True)
+            else:
+                ui.control('story_next',(1034,636,204,40),'계속',primary=True)
         else:
-            ui.control('ending_continue' if ending else 'story_next',(1037,579,177,58),'다음 이야기' if index<total else ('쉼터로' if ending else '기억 간직하기'),primary=True)
-        ui.control('story_skip',(1041,81,199,38),'이야기 건너뛰기')
-        _footer(surface,assets,'Enter / Space 다음 이야기 · 사진과 보상은 이미 안전하게 반영됐어요' if ctx.get('story_kind')!='prologue' else 'Enter / Space 다음 이야기 · Esc 건너뛰기')
+            draw_cinematic(surface,kind,scene_time,completed=completed,
+                           cosmetics=data.get('cosmetics'),released=ctx.get('released',False),
+                           released_variants=ctx.get('ending_released_variants')
+                           if kind=='liberation' else ctx.get('released_variants'))
+            ui.control('story_next',(1034,619,204,45),'계속',primary=True)
+        ui.control('story_skip',(1041,20,199,38),'넘기기')
 
     elif screen == 'album':
-        _background(surface,assets,_home_art(completed),155,ctx=ctx)
-        _header(surface,assets,'까망이의 기억 앨범','작은 일이 모여, 돌아오고 싶은 집이 되었어요.',f'사진 {len(photos)} / 12')
-        panel(surface,(32,119,1216,496),fill=PAPER,border=(170,143,115),radius=21)
-        pygame.draw.line(surface,(214,194,163),(634,137),(634,594),3)
-        text(surface,assets,'처음부터 열두 번째 밤까지',(57,139),size=20,color=INK,bold=True)
-        selected=int(ctx.get('photo_selected',max(photos) if photos else 1))
-        for n in range(1,13):
-            col,row=(n-1)%4,(n-1)//4
-            r=pygame.Rect(55+col*142,183+row*129,128,112)
-            acquired=n in photos
-            st=_story(ctx,n)
-            _photo(surface,assets,st,(r.x,r.y,r.w,83),locked=not acquired,cosmetics=data.get('cosmetics',{}))
-            text(surface,assets,f'{n:02d}',(r.x+4,r.y+88),size=17,color=INK,bold=True)
-            text(surface,assets,'담은 기억' if acquired else '아직 빈자리',(r.right-4,r.y+90),size=13,
-                 color=(139,118,108),anchor='topright')
-            if n==selected:
-                pygame.draw.rect(surface,(158,124,176),r.inflate(7,7),width=3,border_radius=7)
-            ui.control(f'photo:{n}',r,f'{n}번째 사진',custom=True)
-        st=_story(ctx,selected)
-        acquired=selected in photos
-        _fit_text(surface,assets,f'{selected:02d} {st.get("photo", "아직 빈자리")}',(661,137,557,35),size=27,color=INK,bold=True)
-        _photo(surface,assets,st,(665,190,553,286),locked=not acquired,large=True,
-               frame=data.get('cosmetics',{}).get('frame','default'),cosmetics=data.get('cosmetics',{}))
-        caption=st.get('restoration','함께한 작은 순간이 사진에 담겼어요.') if acquired else '물건과 온기를 함께 가져오면, 이 방의 기억이 여기에 담겨요.'
-        wrapped(surface,assets,caption,pygame.Rect(665,492,553,66),size=18,color=INK)
-        ui.control('replay_memory',(665,559,264,42),'기억 다시 보기',primary=True,disabled=not acquired)
-        ui.control('visit_photo',(943,559,275,42),'그 방으로 가기',disabled=not acquired)
-        ui.control('back',(36,630,181,39),'쉼터로')
-        text(surface,assets,'각 구역을 처음 완료하면 사진 한 장을 간직해요.',(246,638),size=17)
-        ui.control('favorite_photo',(992,630,246,39),'대표 기억으로 간직하기' if ctx.get('preferred_photo')!=selected else '대표 기억으로 간직 중',disabled=not acquired)
-        _footer(surface,assets)
+        _background(surface,assets,shade=140,ctx=ctx,actors=False)
+        selected=max(1,min(3,int(ctx.get('memory_selected',1))))
+        full_count=sum(all(_regions(ctx,m)) for m in range(1,4))
+        _header(surface,assets,'기억 앨범','',f'완성 {full_count} / 3')
+        panel(surface,(32,120,1216,490),fill=PAPER,border=GOLD,radius=18)
+        for memory_id in range(1,4):
+            regions=_regions(ctx,memory_id)
+            r=pygame.Rect(53,142+(memory_id-1)*144,288,128)
+            _memory_art(surface,memory_id,regions,(r.x,r.y,184,104))
+            text(surface,assets,f'기억 {memory_id}',(r.x+201,r.y+22),size=19,color=INK,bold=True)
+            text(surface,assets,f'{sum(regions)} / 4',(r.x+201,r.y+62),size=18,color=INK)
+            if selected==memory_id:
+                pygame.draw.rect(surface,(158,124,176),r.inflate(8,8),3,border_radius=8)
+            ui.control(f'memory:{memory_id}',r,f'기억 {memory_id}',custom=True)
+        regions=_regions(ctx,selected)
+        _memory_art(surface,selected,regions,(365,143,852,395))
+        text(surface,assets,_memory_label(selected,regions),(382,554),size=22,color=INK,bold=True)
+        ui.control('replay_memory',(818,552,190,40),'다시 보기',primary=True,disabled=not any(regions))
+        ui.control('visit_memory',(1024,552,190,40),'방 선택',disabled=not any(regions))
+        ui.control('back',(38,630,181,39),'쉼터로')
+        _footer(surface,assets,'완료한 방만 그림에 공개됩니다 · 같은 방 재도전은 기억 영역을 늘리지 않습니다')
 
     elif screen == 'appearance':
         _background(surface,assets,_home_art(completed),130,ctx=ctx)
@@ -813,7 +707,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             text(surface,assets,'진행이 아직 저장되지 않았어요.',(318,474),size=16,color=(155,101,100))
             ui.control('save_retry',(749,465,207,39),'저장 다시 시도')
         else:
-            text(surface,assets,'기본 / 여유 모드의 기록은 따로 남겨요.',(318,470),size=16,color=(138,113,107))
+            text(surface,assets,'여유 모드는 연습 전용 · 진행 기록을 남기지 않아요.',(318,470),size=16,color=(138,113,107))
         if paused:
             ui.control('resume',(318,520,639,55),'계속 걷기',primary=True)
             ui.control('restart',(318,591,309,44),'같은 방 다시 시작')
