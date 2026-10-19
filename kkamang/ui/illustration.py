@@ -203,7 +203,7 @@ def shelter(surface, completed=(), cosmetics=None,time=0.,before=False,show_acto
         for x in range(370,970,85):d.ellipse(surface,SAGE,(x,492,17,8))
     if show_actors:
         # 로비에서는 앉아 있는 까망이 PNG를 발 위치에 맞춰 표시합니다.
-        seated_cat = _png_image('kkamang_wait.png', (132, 132))
+        seated_cat = _png_image('character/kkamang_wait.png', (132, 132))
         surface.blit(seated_cat, seated_cat.get_rect(midbottom=(615, 532)))
         ghost(surface,(490,440),97,time,True,0)
         if 6 in done:

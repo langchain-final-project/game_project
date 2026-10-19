@@ -2,6 +2,7 @@ name: Game contracts
 on: [push, pull_request]
 jobs:
   test:
+    timeout-minutes: 15
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]

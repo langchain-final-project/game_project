@@ -5,7 +5,17 @@ import pygame
 from .theme import text, wrapped, panel, CREAM, INK, NIGHT, PAPER, GOLD, SAGE
 from .illustration import cat, ghost, prop, glow, quest_prop
 from .ghost_sprites import movement_direction
-from .map_sprites import FRAME_SHEETS, SHEET_PATH as MAP_SHEET, WARMTH_SHEET, map_image
+from .map_sprites import (
+    FRAME_SHEETS, SHEET_PATH as MAP_SHEET, WARMTH_SHEET, map_image,
+    wall_variant_image,
+)
+
+# 왼쪽 1·2·3열의 고정 배치를 오른쪽 14·15·16열에도 좌우 대칭으로 표시합니다.
+# v=덩굴, f=꽃입니다. 양쪽 세 열에는 모두 이미지를 적용합니다.
+SIDE_WALL_LAYOUTS = {
+    1: ('vvv', 'vvv', 'ffv', 'ffv', 'vvv', 'vvv', 'ffv', 'vvv', 'vvv'),
+    2: ('vvv', 'ffv', 'vvv', 'vvv', 'vvv', 'ffv', 'ffv', 'vvv', 'vvv'),
+}
 
 # Paths are relative to assets. Atlas entries select their named frame below;
 # None retains the existing drawing for artwork that has not been supplied.
@@ -197,6 +207,7 @@ def draw_field(
     # 나중에 높이 순서대로 그릴 가구와 캐릭터를 보관합니다.
     # 각 항목은 (화면의 y좌표, 그리기 함수) 형태입니다.
     tasks = []
+    side_wall_layout = SIDE_WALL_LAYOUTS.get(s['stage'])
 
     # ── 바닥과 벽 ──
     # 장식만 그리며, 실제 이동 가능 여부는 게임의 grid가 결정합니다.
@@ -234,7 +245,21 @@ def draw_field(
                 #         )
 
             else:
-                _draw_png(surface, assets, 'wall', rr)
+                side_column = min(x, len(row) - 1 - x)
+                wall_style = (
+                    side_wall_layout[y][side_column]
+                    if side_wall_layout and side_column < 3 and y < len(side_wall_layout)
+                    else '.'
+                )
+                if wall_style == '.':
+                    _draw_png(surface, assets, 'wall', rr)
+                else:
+                    kind = 'flowers' if wall_style == 'f' else 'vine'
+                    image = wall_variant_image(
+                        kind, rr.size, (side_column % 2, y % 2),
+                        mirrored=x >= len(row) - 3,
+                    )
+                    surface.blit(image, rr.topleft)
 
                 # if not _draw_png(surface, assets, 'wall', rr):
                 #     d.rect(surface, (78, 69, 87), rr)
@@ -256,7 +281,11 @@ def draw_field(
                 #         )
 
                 # 가구는 벽 칸에만 배치합니다.
-                if y > 0 and y < 8 and x not in (0, 15):
+                # 1·2스테이지의 2·3·14·15열은 가구 없이 벽만 표시합니다.
+                if (
+                    y > 0 and y < 8 and x not in (0, 15)
+                    and not (s['stage'] in (1, 2) and x in (1, 2, 13, 14))
+                ):
                     kind = (
                         'shelf',
                         'plant',

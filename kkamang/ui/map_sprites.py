@@ -9,6 +9,11 @@ SHEET_PATH = 'art/map/map.png'
 SHEET_SIZE = (1122, 1402)
 WARMTH_SHEET = 'art/map/warmth.png'
 SHEET_SIZES = {SHEET_PATH: SHEET_SIZE, WARMTH_SHEET: (1278, 1230)}
+WALL_VARIANT_SHEETS = {
+    'vine': 'art/map/wall_vine.png',
+    'flowers': 'art/map/wall_flowers.png',
+}
+SHEET_SIZES.update({path: (256, 256) for path in WALL_VARIANT_SHEETS.values()})
 # Furniture crops from warmth.png are handled separately in illustration.py.
 # Base tiles use their opaque interiors, excluding the atlas's outer bevels.
 FRAMES = {
@@ -39,12 +44,22 @@ FRAMES.update(WARMTH_FRAMES)
 FRAME_SHEETS.update({key: WARMTH_SHEET for key in WARMTH_FRAMES})
 
 
-@lru_cache(maxsize=2)
+@lru_cache(maxsize=len(SHEET_SIZES))
 def _sheet(path=SHEET_PATH):
     image = pygame.image.load(str(ASSET_DIR / path))
     if image.get_size() != SHEET_SIZES[path]:
         raise ValueError(f'Atlas {path} must be {SHEET_SIZES[path]}; update frame rectangles for a new layout')
     return image.convert_alpha() if pygame.display.get_surface() else image
+
+
+@lru_cache(maxsize=64)
+def wall_variant_image(kind, size, quadrant, mirrored=False):
+    """Use a 2-by-2 tile texture without fading or shrinking its stonework."""
+    sheet = _sheet(WALL_VARIANT_SHEETS[kind])
+    column, row = quadrant
+    frame = sheet.subsurface((column * 128, row * 128, 128, 128))
+    image = pygame.transform.scale(frame, size)
+    return pygame.transform.flip(image, True, False) if mirrored else image
 
 
 @lru_cache(maxsize=len(FRAMES))
