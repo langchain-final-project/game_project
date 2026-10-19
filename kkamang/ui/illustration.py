@@ -26,6 +26,14 @@ QUEST_RECTS = {
     'memory_12': (850, 705, 190, 365),
 }
 
+# warmth.png에서 가구를 잘라낼 영역입니다.
+# 순서: 왼쪽 위치, 위쪽 위치, 가로 길이, 세로 길이
+FURNITURE_RECTS = {
+    'table': (35, 365, 285, 230),
+    'plant': (995, 40, 215, 285),
+    'shelf': (650, 40, 280, 285),
+}
+
 
 @lru_cache(maxsize=4)
 def _png_file(filename):
@@ -138,10 +146,12 @@ def prop_image(kind,size=64,lit=True):
         if lit:d.ellipse(s,CREAM,(43,45,17,27))
     return pygame.transform.smoothscale(s,(int(size),int(size)))
 
-def prop(surface,kind,rect,lit=True):
-    rect=pygame.Rect(rect)
-    if kind in ('shelf', 'table', 'plant'):
-        surface.blit(_png_image(f'{kind}.png', rect.size), rect)
+def prop(surface, kind, rect, lit=True):
+    rect = pygame.Rect(rect)
+    if kind in FURNITURE_RECTS:
+        # assets/art/map/warmth.png에서 해당 가구만 가져옵니다.
+        image = _png_image('map/warmth.png', rect.size, FURNITURE_RECTS[kind])
+        surface.blit(image, rect)
         return
     im=prop_image(kind,max(rect.size),lit)
     surface.blit(pygame.transform.smoothscale(im,rect.size),rect)
@@ -194,7 +204,8 @@ def shelter(surface, completed=(), cosmetics=None,time=0.,before=False,show_acto
     if show_actors:
         cat(surface,(615,532),132,time=time,mood='happy' if 10 in done else 'idle',scarf=cosmetics.get('scarf','default'))
         ghost(surface,(490,440),97,time,True,0)
-        if 6 in done:ghost(surface,(220,488),84,time,True,1)
+        if 6 in done:
+            ghost(surface,(220,488),110,time,True,1)  # B 유령만 기존보다 10픽셀 크게 표시합니다.
         if 7 in done:ghost(surface,(978,473),90,time,True,2)
         if 7 in done:
             for i in range(3):

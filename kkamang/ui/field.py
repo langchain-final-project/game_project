@@ -61,45 +61,43 @@ def _draw_png(surface, assets, key, rect):
     return True
 
 def _draw_rug(surface, assets, rr):
-    """PNG 경로가 있으면 이미지로, 없으면 기존 도형으로 러그를 그립니다."""
+    """러그를 PNG로 표시합니다. 예전 도형 코드는 참고용으로 남깁니다."""
 
-    # PNG를 그렸다면 여기서 함수를 끝냅니다.
     if _draw_png(surface, assets, 'rug', rr):
         return
 
-    # PNG가 없을 때 사용하는 기존 러그 그림입니다.
-    d = pygame.draw
-
-    d.rect(
-        surface,
-        (149, 117, 139),
-        rr,
-        border_radius=9,
-    )
-    d.rect(
-        surface,
-        (191, 158, 163),
-        rr.inflate(-5, -5),
-        1,
-        border_radius=6,
-    )
-
+    # d = pygame.draw
+    #
+    # d.rect(
+    #     surface,
+    #     (149, 117, 139),
+    #     rr,
+    #     border_radius=9,
+    # )
+    # d.rect(
+    #     surface,
+    #     (191, 158, 163),
+    #     rr.inflate(-5, -5),
+    #     1,
+    #     border_radius=6,
+    # )
+    #
     # 러그 위아래의 장식 선입니다.
-    for dx in range(5, rr.w - 4, 6):
-        d.line(
-            surface,
-            (191, 158, 163),
-            (rr.x + dx, rr.y - 3),
-            (rr.x + dx, rr.y + 2),
-            1,
-        )
-        d.line(
-            surface,
-            (191, 158, 163),
-            (rr.x + dx, rr.bottom - 2),
-            (rr.x + dx, rr.bottom + 3),
-            1,
-        )
+    # for dx in range(5, rr.w - 4, 6):
+    #     d.line(
+    #         surface,
+    #         (191, 158, 163),
+    #         (rr.x + dx, rr.y - 3),
+    #         (rr.x + dx, rr.y + 2),
+    #         1,
+    #     )
+    #     d.line(
+    #         surface,
+    #         (191, 158, 163),
+    #         (rr.x + dx, rr.bottom - 2),
+    #         (rr.x + dx, rr.bottom + 3),
+    #         1,
+    #     )
 
 
 def _draw_warmth(surface, assets, center, tile, value, show_value=True):
@@ -120,23 +118,23 @@ def _draw_warmth(surface, assets, center, tile, value, show_value=True):
     image_rect = pygame.Rect(0, 0, size, size)
     image_rect.center = (int(cx), int(cy))
 
-    if _draw_png(surface, assets, key, image_rect):
-        pass
+    _draw_png(surface, assets, key, image_rect)
 
-    else:
-        # PNG가 없을 때 사용하는 기존 온기 그림입니다.
-        pygame.draw.circle(
-            surface,
-            GOLD,
-            (int(cx), int(cy)),
-            int(tile * (.16 if value == 1 else .22)),
-        )
-        pygame.draw.circle(
-            surface,
-            CREAM,
-            (int(cx - 2), int(cy - 3)),
-            int(tile * .09),
-        )
+    # if _draw_png(surface, assets, key, image_rect):
+    #     pass
+    # else:
+    #     pygame.draw.circle(
+    #         surface,
+    #         GOLD,
+    #         (int(cx), int(cy)),
+    #         int(tile * (.16 if value == 1 else .22)),
+    #     )
+    #     pygame.draw.circle(
+    #         surface,
+    #         CREAM,
+    #         (int(cx - 2), int(cy - 3)),
+    #         int(tile * .09),
+    #     )
 
     # 점수 안내는 이미지와 별도로 표시합니다.
     if value == 3 and show_value:
@@ -208,50 +206,54 @@ def draw_field(
 
             # 먼저 현재 칸이 바닥인지 확인합니다.
             if c == '.':
-                if not _draw_png(surface, assets, 'floor', rr):
-                    color = (
-                        130 + (x + y) % 3 * 3,
-                        107 + (x + y) % 3 * 2,
-                        103 + (x + y) % 3 * 2,
-                    )
+                _draw_png(surface, assets, 'floor', rr)
 
-                    d.rect(surface, color, rr)
-                    d.line(
-                        surface,
-                        (145, 121, 113),
-                        rr.topleft,
-                        rr.topright,
-                        1,
-                    )
-
-                    if (x + y) % 4 == 0:
-                        d.line(
-                            surface,
-                            (121, 99, 98),
-                            (rr.x + 8, rr.bottom - 12),
-                            (rr.right - 7, rr.bottom - 12),
-                            1,
-                        )
+                # if not _draw_png(surface, assets, 'floor', rr):
+                #     color = (
+                #         130 + (x + y) % 3 * 3,
+                #         107 + (x + y) % 3 * 2,
+                #         103 + (x + y) % 3 * 2,
+                #     )
+                #
+                #     d.rect(surface, color, rr)
+                #     d.line(
+                #         surface,
+                #         (145, 121, 113),
+                #         rr.topleft,
+                #         rr.topright,
+                #         1,
+                #     )
+                #
+                #     if (x + y) % 4 == 0:
+                #         d.line(
+                #             surface,
+                #             (121, 99, 98),
+                #             (rr.x + 8, rr.bottom - 12),
+                #             (rr.right - 7, rr.bottom - 12),
+                #             1,
+                #         )
 
             else:
-                if not _draw_png(surface, assets, 'wall', rr):
-                    d.rect(surface, (78, 69, 87), rr)
+                _draw_png(surface, assets, 'wall', rr)
 
-                    if y in (0, 8):
-                        d.line(
-                            surface,
-                            (100, 82, 98),
-                            (rr.x + tile / 2, rr.y + 6),
-                            (rr.x + tile / 2, rr.bottom - 6),
-                            1,
-                        )
-                        d.line(
-                            surface,
-                            (167, 127, 106),
-                            (rr.x, rr.bottom - 5),
-                            (rr.right, rr.bottom - 5),
-                            3,
-                        )
+                # if not _draw_png(surface, assets, 'wall', rr):
+                #     d.rect(surface, (78, 69, 87), rr)
+                #
+                #     if y in (0, 8):
+                #         d.line(
+                #             surface,
+                #             (100, 82, 98),
+                #             (rr.x + tile / 2, rr.y + 6),
+                #             (rr.x + tile / 2, rr.bottom - 6),
+                #             1,
+                #         )
+                #         d.line(
+                #             surface,
+                #             (167, 127, 106),
+                #             (rr.x, rr.bottom - 5),
+                #             (rr.right, rr.bottom - 5),
+                #             3,
+                #         )
 
                 # 가구는 벽 칸에만 배치합니다.
                 if y > 0 and y < 8 and x not in (0, 15):
@@ -261,6 +263,7 @@ def draw_field(
                         'table',
                     )[(x + y + s['stage']) % 3]
 
+                    # 화분은 칸 안쪽에 여백을 두고, 다른 가구는 기존 크기를 사용합니다.
                     # 기본 인자에 현재 rr, kind를 보관하여
                     # 나중에 함수를 실행해도 이 칸의 가구를 그립니다.
                     tasks.append(
@@ -269,18 +272,22 @@ def draw_field(
                             lambda rr=rr, kind=kind: prop(
                                 surface,
                                 kind,
-                                rr.inflate(-2, 8),
+                                rr.inflate(-4, -4) if kind == 'plant' else rr.inflate(-2, 8),
                             ),
                         )
                     )
 
                 elif y == 0 and x in (3, 8, 12):
-                    if not _draw_png(surface, assets, 'window', rr):
-                        prop(surface, 'window', rr.inflate(-5, -4))
+                    _draw_png(surface, assets, 'window', rr)
+
+                    # if not _draw_png(surface, assets, 'window', rr):
+                    #     prop(surface, 'window', rr.inflate(-5, -4))
 
                 elif y == 0 and x in (5, 10):
-                    if not _draw_png(surface, assets, 'lantern', rr):
-                        prop(surface, 'lantern', rr.inflate(-10, -9))
+                    _draw_png(surface, assets, 'lantern', rr)
+
+                    # if not _draw_png(surface, assets, 'lantern', rr):
+                    #     prop(surface, 'lantern', rr.inflate(-10, -9))
                     glow(surface, rr.center, 65)
 
     # ── 바닥의 러그 장식 ──
@@ -295,18 +302,20 @@ def draw_field(
     ex = box(s['exit'])
     return_rect = ex.inflate(-7, -7)
 
-    if not _draw_png(surface, assets, 'return_base', return_rect):
-        d.rect(
-            surface,
-            (145, 174, 151),
-            return_rect,
-            border_radius=12,
-        )
+    # if not _draw_png(surface, assets, 'return_base', return_rect):
+    #     d.rect(
+    #         surface,
+    #         (145, 174, 151),
+    #         return_rect,
+    #         border_radius=12,
+    #     )
 
     return_ready = s['quest']['collected'] and s['carried'] >= s['target']
     return_key = 'return_open' if return_ready else 'return_closed'
-    if not _draw_png(surface, assets, return_key, ex):
-        prop(surface, 'garden', ex.inflate(-9, -4))
+    _draw_png(surface, assets, return_key, ex)
+
+    # if not _draw_png(surface, assets, return_key, ex):
+    #     prop(surface, 'garden', ex.inflate(-9, -4))
 
     # ── 샛문과 조작 장치 ──
     for sc in s['shortcuts']:
@@ -316,60 +325,58 @@ def draw_field(
         # Use the same destination in both states so opening never shifts a gate.
         gate_rect = gate.inflate(-2, -2)
         if not sc['opened']:
+            _draw_png(surface, assets, 'gate_closed', gate_rect)
 
-            if not _draw_png(
-                surface, assets, 'gate_closed', gate_rect
-            ):
-                d.rect(
-                    surface,
-                    (91, 72, 82),
-                    gate_rect,
-                    border_radius=10,
-                )
-
-                for k in range(3):
-                    d.line(
-                        surface,
-                        GOLD,
-                        (gate.x + 15 + k * 12, gate.y + 8),
-                        (gate.x + 15 + k * 12, gate.bottom - 8),
-                        2,
-                    )
+            # PNG로 대체한 예전 닫힌 샛문 도형입니다.
+            # if not _draw_png(
+            #     surface, assets, 'gate_closed', gate_rect
+            # ):
+            #     d.rect(
+            #         surface,
+            #         (91, 72, 82),
+            #         gate_rect,
+            #         border_radius=10,
+            #     )
+            #
+            #     for k in range(3):
+            #         d.line(
+            #             surface,
+            #             GOLD,
+            #             (gate.x + 15 + k * 12, gate.y + 8),
+            #             (gate.x + 15 + k * 12, gate.bottom - 8),
+            #             2,
+            #         )
 
         else:
-            if not _draw_png(
-                surface, assets, 'gate_open', gate_rect
-            ):
-                d.rect(
-                    surface,
-                    SAGE,
-                    gate_rect,
-                    2,
-                    border_radius=10,
-                )
+            _draw_png(surface, assets, 'gate_open', gate_rect)
+
+            # PNG로 대체한 예전 열린 샛문 도형입니다.
+            # if not _draw_png(
+            #     surface, assets, 'gate_open', gate_rect
+            # ):
+            #     d.rect(
+            #         surface,
+            #         SAGE,
+            #         gate_rect,
+            #         2,
+            #         border_radius=10,
+            #     )
 
         # Keep A/B readable beside the sun/moon, without covering the symbols.
-        radius = int(tile * .29)
         terminal_rect = pygame.Rect(0, 0, round(tile * .8), round(tile * .8))
         terminal_rect.center = term.center
 
         key = f"terminal_{sc['id'].lower()}"
 
-        if not _draw_png(surface, assets, key, terminal_rect):
-            d.circle(surface, SAGE, term.center, radius)
+        _draw_png(surface, assets, key, terminal_rect)
+        # PNG로 대체한 예전 조작 장치 도형입니다.
+        # radius = int(tile * .29)
+        # if not _draw_png(surface, assets, key, terminal_rect):
+        #     d.circle(surface, SAGE, term.center, radius)
 
         label_pos = (term.right - 8, term.bottom - 9)
-        d.circle(surface, NIGHT, label_pos, 9)
-        text(
-            surface,
-            assets,
-            sc['id'],
-            label_pos,
-            13,
-            CREAM,
-            True,
-            'center',
-        )
+        # d.circle(surface, NIGHT, label_pos, 9)
+        #text(surface, assets, sc['id'], label_pos, 13, CREAM, True, 'center')
 
     # ── 배경 위에 반투명 색상 덧씌우기 ──
     # veil = pygame.Surface(r.size, pygame.SRCALPHA)
@@ -414,35 +421,38 @@ def draw_field(
 
         quest_rect = rr.inflate(-4, -4)
 
-        if not _draw_png(surface, assets, 'quest_frame', quest_rect):
-            d.rect(
-                surface,
-                (238, 213, 164),
-                quest_rect,
-                2,
-                border_radius=12,
-            )
+        _draw_png(surface, assets, 'quest_frame', quest_rect)
+        # PNG로 대체한 예전 필수 물건 테두리입니다.
+        # if not _draw_png(surface, assets, 'quest_frame', quest_rect):
+        #     d.rect(
+        #         surface,
+        #         (238, 213, 164),
+        #         quest_rect,
+        #         2,
+        #         border_radius=12,
+        #     )
 
         atlas_frame = FIELD_IMAGES['quest_frame'] == MAP_SHEET
         quest_prop(surface, q, rr.inflate(-24, -24) if atlas_frame else rr.inflate(-10, -10))
         glow(surface, rr.center, 60)
 
-        badge_rect = pygame.Rect(0, 0, 14, 14)
-        badge_rect.center = (rr.right - 9, rr.y + 8)
-
-        if not atlas_frame and not _draw_png(surface, assets, 'quest_badge', badge_rect):
-            d.circle(
-                surface,
-                GOLD,
-                (rr.right - 9, rr.y + 8),
-                7,
-            )
-
-        if not atlas_frame:
-            text(
-                surface, assets, '!', (rr.right - 9, rr.y + 7),
-                11, INK, True, 'center',
-            )
+        # map.png의 테두리에 느낌표가 포함되어 있어 예전 배지는 사용하지 않습니다.
+        # badge_rect = pygame.Rect(0, 0, 14, 14)
+        # badge_rect.center = (rr.right - 9, rr.y + 8)
+        #
+        # if not atlas_frame and not _draw_png(surface, assets, 'quest_badge', badge_rect):
+        #     d.circle(
+        #         surface,
+        #         GOLD,
+        #         (rr.right - 9, rr.y + 8),
+        #         7,
+        #     )
+        #
+        # if not atlas_frame:
+        #     text(
+        #         surface, assets, '!', (rr.right - 9, rr.y + 7),
+        #         11, INK, True, 'center',
+        #     )
 
     # ── 유령 캐릭터 ──
     ghost_facings = ghost_facings or {}
@@ -468,7 +478,10 @@ def draw_field(
 
         # 나중에 그릴 순찰형의 화면 좌표를 보관합니다.
         def draw_patrol(pt=pt, ghost_id=g['id'], direction=direction):
-            ghost(surface, pt, int(tile * .75), elapsed,
+            size = int(tile * .75)
+            if ghost_id == 'B':
+                size += 10  # B 유령의 그림만 10픽셀 크게 표시합니다.
+            ghost(surface, pt, size, elapsed,
                   ghost_id=ghost_id, direction=direction)
 
         tasks.append((pt[1], draw_patrol))
@@ -534,13 +547,13 @@ def draw_field(
 
     pt = foot(pos)
 
-    if magnet is not None and magnet['remaining_ticks'] > 0:
-        # 사각형 범위는 고양이와 함께 이동하며 벽 위에도 표시됩니다.
-        extent = math.ceil(tile * 3)
-        aura = pygame.Surface((extent, extent), pygame.SRCALPHA)
-        pygame.draw.rect(aura, (225, 187, 112, 14), aura.get_rect(), border_radius=10)
-        pygame.draw.rect(aura, (250, 212, 143, 110), aura.get_rect(), 2, border_radius=10)
-        surface.blit(aura, aura.get_rect(center=box(pos).center))
+    # if magnet is not None and magnet['remaining_ticks'] > 0:
+    #     # 사각형 범위는 고양이와 함께 이동하며 벽 위에도 표시됩니다.
+    #     extent = math.ceil(tile * 3)
+    #     aura = pygame.Surface((extent, extent), pygame.SRCALPHA)
+    #     pygame.draw.rect(aura, (225, 187, 112, 14), aura.get_rect(), border_radius=10)
+    #     pygame.draw.rect(aura, (250, 212, 143, 110), aura.get_rect(), 2, border_radius=10)
+    #     surface.blit(aura, aura.get_rect(center=box(pos).center))
 
     # 표정과 발걸음은 독립적입니다. 피격 중에도 이동하면 걷습니다.
     cm = (
@@ -652,8 +665,10 @@ def draw_field(
             d.rect(surface, NIGHT, rr, border_radius=9)
         if show_key:
             key_rect = pygame.Rect(rr.x + 2, rr.y + 1, 24, 24)
-            _draw_png(surface, assets, 'interaction_key', key_rect)
-            text(surface, assets, 'E', key_rect.center, 13, INK, True, 'center')
+            text(surface, assets, 'E', key_rect.center, 13, CREAM, True, 'center' )
+            # key_rect = pygame.Rect(rr.x + 2, rr.y + 1, 24, 24)
+            # _draw_png(surface, assets, 'interaction_key', key_rect)
+            # text(surface, assets, 'E', key_rect.center, 13, INK, True, 'center')
         text(
             surface,
             assets,
@@ -689,7 +704,7 @@ def draw_game(
         surface, assets, 'game_background', surface.get_rect()
     ):
         surface.fill((36, 34, 49))
-    d = pygame.draw
+    # d = pygame.draw  # 예전 하트와 구분선 도형에서만 사용했습니다.
 
     # ── 상단: 게임 이름과 스테이지 ──
     text(
@@ -715,24 +730,27 @@ def draw_game(
         key = 'heart_full' if i < s['courage'] else 'heart_empty'
         heart_rect = pygame.Rect(341 + i * 31, 43, 31, 29)
 
-        if not _draw_png(surface, assets, key, heart_rect):
-            c = (
-                (208, 148, 157)
-                if i < s['courage']
-                else (81, 71, 88)
-            )
+        _draw_png(surface, assets, key, heart_rect)
 
-            d.circle(surface, c, (350 + i * 31, 52), 9)
-            d.circle(surface, c, (362 + i * 31, 52), 9)
-            d.polygon(
-                surface,
-                c,
-                [
-                    (341 + i * 31, 53),
-                    (371 + i * 31, 53),
-                    (356 + i * 31, 71),
-                ],
-            )
+        # PNG로 대체한 예전 용기 하트 도형입니다.
+        # if not _draw_png(surface, assets, key, heart_rect):
+        #     c = (
+        #         (208, 148, 157)
+        #         if i < s['courage']
+        #         else (81, 71, 88)
+        #     )
+        #
+        #     d.circle(surface, c, (350 + i * 31, 52), 9)
+        #     d.circle(surface, c, (362 + i * 31, 52), 9)
+        #     d.polygon(
+        #         surface,
+        #         c,
+        #         [
+        #             (341 + i * 31, 53),
+        #             (371 + i * 31, 53),
+        #             (356 + i * 31, 71),
+        #         ],
+        #     )
 
     # ── 상단: 필수 물건의 회수 상태 ──
     q = s['quest']
@@ -852,13 +870,15 @@ def draw_game(
     # ── 오른쪽: 추가 목표와 보상 안내 ──
     divider_rect = pygame.Rect(1059, 409, 182, 14)
 
-    if not _draw_png(surface, assets, 'info_divider', divider_rect):
-        d.line(
-            surface,
-            (203, 177, 144),
-            (1059, 416),
-            (1240, 416),
-        )
+    _draw_png(surface, assets, 'info_divider', divider_rect)
+    # PNG로 대체한 예전 설명 패널 구분선입니다.
+    # if not _draw_png(surface, assets, 'info_divider', divider_rect):
+    #     d.line(
+    #         surface,
+    #         (203, 177, 144),
+    #         (1059, 416),
+    #         (1240, 416),
+    #     )
     text(
         surface,
         assets,

@@ -5,7 +5,7 @@
     "No claim about human difficulty, real-time input, UI or Windows execution.",
     "All tested phase combinations use the authored routes and directions."
   ],
-  "reference_fixture_sha256": "9cce48f0ae362c6637a48d93e0d04267da4d6c4a701d56e31fa4f7f61b0e67e6",
+  "reference_fixture_sha256": "4bf74d880b4b3bdc74b98aae266d6dbe115200430a6fd72c387573c76e35dea1",
   "original_results_sha256": null,
   "implementation_sha256": {
     "core.py": "16244123494b12ae9d14e12831fba30527989ca28b73e4e4b337f0812366e40a",
@@ -20,14 +20,14 @@
   "level_hashes": [
     {
       "stage_id": "stage_01",
-      "expected_sha256": "b513a7563a1faf514d4518297d9f778b41c36367a4394048bd66d3b4cf4366b2",
-      "actual_sha256": "b513a7563a1faf514d4518297d9f778b41c36367a4394048bd66d3b4cf4366b2",
+      "expected_sha256": "89e6974a9018c95293eeb74ed268d1de2f4e811485a387b15bd46544019111c2",
+      "actual_sha256": "89e6974a9018c95293eeb74ed268d1de2f4e811485a387b15bd46544019111c2",
       "passed": true
     },
     {
       "stage_id": "stage_02",
-      "expected_sha256": "947d3ca765a794fc086afc7899bb8791417c1efd2665d41b44556dfdb49c4479",
-      "actual_sha256": "947d3ca765a794fc086afc7899bb8791417c1efd2665d41b44556dfdb49c4479",
+      "expected_sha256": "686ee12b411efcddbb1b8f835aa842f89c13286988d9b56fd2efec487573f6d9",
+      "actual_sha256": "686ee12b411efcddbb1b8f835aa842f89c13286988d9b56fd2efec487573f6d9",
       "passed": true
     },
     {
@@ -154,6 +154,6 @@
     }
   },
   "failures": [],
-  "elapsed_seconds": 0.154,
+  "elapsed_seconds": 0.276,
   "all_passed": true
 }

@@ -137,8 +137,8 @@ def test_magnet_flights_animate_without_mutating_rules_pause_and_reset(tmp_path)
         app.campaign.data['completed'] = [1]
         app.stage = 2
         app.start_run()
-        app.core._state['position'] = [3, 3]
-        app.core._motion_position = [3, 3]
+        app.core._state['position'] = [6, 3]
+        app.core._motion_position = [6, 3]
         app.previous = app.core.snapshot()
         result = app.core.advance(1, .3)
         app._process_result(result)
@@ -178,12 +178,12 @@ def test_safe_planner_rejects_remote_rich_collection_not_just_rich_tiles():
     from tools.evaluate import safe_path
     from tools.plan_routes import rollout
     config = load_level(1)
-    config['magnet'] = {'position': [3, 3], 'duration_ticks': 13}
+    config['magnet'] = {'position': [6, 3], 'duration_ticks': 13}
     game = GameCore(config)
-    game._state['position'] = [3, 2]
+    game._state['position'] = [6, 2]
     assert rollout(game, [1]) is not None
     assert rollout(game, [1], forbid_rich=True) is None
-    assert safe_path(game.snapshot(), (3, 3), interact=False, forbid_rich=True) is None
+    assert safe_path(game.snapshot(), (6, 3), interact=False, forbid_rich=True) is None
 
 
 def test_planner_finds_a_complete_magnet_route_without_mutating_input():
@@ -267,18 +267,18 @@ def test_invincibility_renderer_tracks_effect_expiry_pause_and_reset(tmp_path):
 def test_path_search_allows_only_item_protected_contacts_and_preserves_live_game():
     from tools.evaluate import find_path, project_path
     config = load_level(1)
-    config['invincibility'] = {'position': [3, 3], 'duration_ticks': 10}
-    config['ghosts'] = [{'id': 'A', 'route': [[3, 4], [3, 5]], 'direction': 1,
+    config['invincibility'] = {'position': [6, 3], 'duration_ticks': 10}
+    config['ghosts'] = [{'id': 'A', 'route': [[6, 4], [6, 5]], 'direction': 1,
                          'initial_index': 0, 'initial_countdown': 100, 'ticks_per_move': 1}]
     game = GameCore(config)
-    game._state['position'] = [3, 2]
+    game._state['position'] = [6, 2]
     before = game.snapshot()
-    path = find_path(game, (3, 5), interact=False, allow_item_invincibility=True)
+    path = find_path(game, (6, 5), interact=False, allow_item_invincibility=True)
     assert path == [1, 1, 1] and game.snapshot() == before
     assert project_path(game, path) is None
     checked = project_path(game, path, allow_item_invincibility=True)
     assert checked and checked[0].snapshot()['damage_count'] == 0
-    strict = find_path(game, (3, 5), interact=False, allow_item_invincibility=False)
+    strict = find_path(game, (6, 5), interact=False, allow_item_invincibility=False)
     assert strict and len(strict) > len(path)
     assert project_path(game, strict) is not None
     game.step(1)
@@ -292,7 +292,7 @@ def test_path_search_allows_only_item_protected_contacts_and_preserves_live_game
     assert project_path(game, [1], allow_item_invincibility=True) is None
     del config['invincibility']
     ordinary = GameCore(config)
-    ordinary._state.update(position=[3, 3], protection=3)
+    ordinary._state.update(position=[6, 3], protection=3)
     assert project_path(ordinary, [1], allow_item_invincibility=True) is None
 
 
@@ -335,19 +335,19 @@ def test_invincibility_reference_routes_collect_item_and_return_without_damage(s
 def test_search_avoids_chaser_without_invincibility_and_preserves_live_state(magnet):
     from tools.evaluate import find_path, project_path
     config = load_level(1)
-    config['chaser'] = {'id': 'C', 'spawn_position': [8, 6],
+    config['chaser'] = {'id': 'C', 'spawn_position': [11, 6],
                          'initial_countdown': 1, 'ticks_per_move': 1}
     if magnet:
-        config['magnet'] = {'position': [3, 3], 'duration_ticks': 13}
+        config['magnet'] = {'position': [6, 3], 'duration_ticks': 13}
     game = GameCore(config)
-    game._state['position'] = [3, 3]
+    game._state['position'] = [6, 3]
     game._state['quest']['collected'] = True
-    game._state['chaser'].update(active=True, position=[3, 4], countdown=1)
+    game._state['chaser'].update(active=True, position=[6, 4], countdown=1)
     initial, actions = game.snapshot(), game.actions
     initial_rng = game._rng.getstate()
     assert project_path(game, [1]) is None
     diagnostics = {}
-    path = find_path(game, (3, 4), interact=False, diagnostics=diagnostics)
+    path = find_path(game, (6, 4), interact=False, diagnostics=diagnostics)
     assert path and len(path) > 1
     assert diagnostics['status'] == 'found'
     assert project_path(game, path) is not None
@@ -358,23 +358,23 @@ def test_search_avoids_chaser_without_invincibility_and_preserves_live_state(mag
 def test_search_diagnostics_distinguish_limits_time_and_blocked_goals():
     from tools.evaluate import find_path
     config = load_level(1)
-    config['chaser'] = {'id': 'C', 'spawn_position': [8, 6],
+    config['chaser'] = {'id': 'C', 'spawn_position': [11, 6],
                          'initial_countdown': 1, 'ticks_per_move': 1}
     game = GameCore(config)
-    game._state['position'] = [3, 3]
+    game._state['position'] = [6, 3]
     game._state['quest']['collected'] = True
-    game._state['chaser'].update(active=True, position=[3, 4], countdown=1)
+    game._state['chaser'].update(active=True, position=[6, 4], countdown=1)
     info = {}
-    assert find_path(game, (3, 4), interact=False, max_nodes=1, diagnostics=info) is None
+    assert find_path(game, (6, 4), interact=False, max_nodes=1, diagnostics=info) is None
     assert info == {'status': 'node_limit', 'expanded_nodes': 1}
-    assert find_path(game, (3, 4), interact=False) is not None
+    assert find_path(game, (6, 4), interact=False) is not None
     game._state['remaining_ticks'] = 1
-    assert find_path(game, (3, 5), interact=False, diagnostics=info) is None
+    assert find_path(game, (6, 5), interact=False, diagnostics=info) is None
     assert info['status'] == 'insufficient_time'
     assert find_path(game, (0, 0), diagnostics=info) is None
     assert info['status'] == 'unreachable'
     game.abort()
-    assert find_path(game, (3, 5), diagnostics=info) is None
+    assert find_path(game, (6, 5), diagnostics=info) is None
     assert info['status'] == 'terminal'
 
 

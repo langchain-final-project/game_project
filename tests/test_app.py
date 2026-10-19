@@ -453,7 +453,7 @@ class AppIntegrationTests(unittest.TestCase):
         after = self.app.core.snapshot()
 
         # advance()를 호출하기 전부터 이동 행동이 실행되어야 합니다.
-        self.assertEqual(after['position'], [2, 1])
+        self.assertEqual(after['position'], [5, 1])
         self.assertEqual(after['tick'], before['tick'] + 1)
         self.app.draw()
 
@@ -515,27 +515,27 @@ class AppIntegrationTests(unittest.TestCase):
         self.app.advance(0.2)
         self.assertEqual(self.app.core.actions[-1], Action.INTERACT)
         self.assertEqual(self.app.core.snapshot()['tick'], before['tick'] + 1)
-        self.assertEqual(self.app.core.snapshot()['position'], [2, 1])
+        self.assertEqual(self.app.core.snapshot()['position'], [5, 1])
         self.app.advance(0.3)
         self.assertEqual(
             self.app.core.snapshot()['position'],
-            [3, 1],
+            [6, 1],
         )
 
     def test_early_held_turn_continues_straight_then_turns_at_opening(self):
         self.app.start_run()
-        self.app.core._state['position'] = [3, 4]
+        self.app.core._state['position'] = [6, 4]
         self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_w))
-        self.assertEqual(self.app.core.snapshot()['position'], [3, 3])
+        self.assertEqual(self.app.core.snapshot()['position'], [6, 3])
         self.app.advance(.1)
         self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_d))
         self.assertEqual(self.app.core.snapshot()['tick'], 1)
         self.app.advance(.2)
-        self.assertEqual(self.app.core.snapshot()['position'], [3, 2])
+        self.assertEqual(self.app.core.snapshot()['position'], [6, 2])
         self.app.advance(.3)
-        self.assertEqual(self.app.core.snapshot()['position'], [3, 1])
+        self.assertEqual(self.app.core.snapshot()['position'], [6, 1])
         self.app.advance(.3)
-        self.assertEqual(self.app.core.snapshot()['position'], [4, 1])
+        self.assertEqual(self.app.core.snapshot()['position'], [7, 1])
         with patch('kkamang.ui.field.cat') as draw_cat:
             self.app.draw()
             corner = draw_cat.call_args.args[1]
@@ -549,29 +549,29 @@ class AppIntegrationTests(unittest.TestCase):
 
     def test_releasing_reserved_turn_cancels_it_after_one_attempt(self):
         self.app.start_run()
-        self.app.core._state['position'] = [3, 3]
+        self.app.core._state['position'] = [6, 3]
         self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_w))
         self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_d))
         self.app.handle_event(pygame.event.Event(pygame.KEYUP, key=pygame.K_d))
         self.app.advance(.3)
-        self.assertEqual(self.app.core.snapshot()['position'], [3, 1])
+        self.assertEqual(self.app.core.snapshot()['position'], [6, 1])
         self.app.advance(.3)
-        self.assertEqual(self.app.core.snapshot()['position'], [3, 1])
+        self.assertEqual(self.app.core.snapshot()['position'], [6, 1])
         self.assertEqual(self.app.core.actions[-1], Action.UP)
 
     def test_interaction_preserves_reserved_turn_without_extra_ticks(self):
         self.app.start_run()
-        self.app.core._state['position'] = [3, 3]
+        self.app.core._state['position'] = [6, 3]
         self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_w))
         self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_d))
         self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_e))
         self.app.advance(.3)
-        self.assertEqual(self.app.core.snapshot()['position'], [3, 2])
+        self.assertEqual(self.app.core.snapshot()['position'], [6, 2])
         self.assertEqual(self.app.core.actions[-1], Action.INTERACT)
         self.app.advance(.3)
-        self.assertEqual(self.app.core.snapshot()['position'], [3, 1])
+        self.assertEqual(self.app.core.snapshot()['position'], [6, 1])
         self.app.advance(.3)
-        self.assertEqual(self.app.core.snapshot()['position'], [4, 1])
+        self.assertEqual(self.app.core.snapshot()['position'], [7, 1])
         self.assertEqual(self.app.core.snapshot()['tick'], 4)
 
     def test_hurt_expression_keeps_walking_in_sync_with_movement(self):
@@ -643,7 +643,7 @@ class AppIntegrationTests(unittest.TestCase):
         for _ in range(8):
             self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_LEFT))
         self.assertEqual(self.app.core.snapshot()['tick'], 1)
-        self.assertEqual(self.app.core.snapshot()['position'], [1, 1])
+        self.assertEqual(self.app.core.snapshot()['position'], [4, 1])
         self.app.handle_event(pygame.event.Event(pygame.KEYUP, key=pygame.K_LEFT))
         for _ in range(8):
             self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_LEFT))
@@ -662,7 +662,7 @@ class AppIntegrationTests(unittest.TestCase):
         self.assertEqual(self.app.core.actions[-1], Action.INTERACT)
         self.app.advance(.3)
         self.assertEqual(self.app.core.actions[-1], Action.DOWN)
-        self.assertEqual(self.app.core.snapshot()['position'], [2, 2])
+        self.assertEqual(self.app.core.snapshot()['position'], [5, 2])
 
     def test_patrol_and_chaser_draw_each_turn_without_a_diagonal_shortcut(self):
         for kind in ('patrol', 'chaser'):
@@ -673,7 +673,7 @@ class AppIntegrationTests(unittest.TestCase):
                 state = self.app.core._state
                 if kind == 'patrol':
                     state['ghosts'][0].update(countdown=1, ticks_per_move=1)
-                    corner = [6, 2]
+                    corner = [9, 2]
                     position = lambda snapshot: snapshot['ghosts'][0]['position']
                 else:
                     state['ghosts'] = []
@@ -724,8 +724,8 @@ class AppIntegrationTests(unittest.TestCase):
         self.app.previous = self.app.core.snapshot()
         self.app.advance(.65)
         self.assertEqual(self.app.core.snapshot()['tick'], 2)
-        self.assertEqual(self.app.previous['ghosts'][0]['position'], [6, 2])
-        self.assertEqual(self.app.core.snapshot()['ghosts'][0]['position'], [6, 3])
+        self.assertEqual(self.app.previous['ghosts'][0]['position'], [9, 2])
+        self.assertEqual(self.app.core.snapshot()['ghosts'][0]['position'], [9, 3])
         self.assertAlmostEqual(self.app.ghost_elapsed, .05)
 
     def test_restart_discards_partial_tick_and_queued_interaction(self):

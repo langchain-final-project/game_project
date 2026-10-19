@@ -14,19 +14,19 @@ def fixture(*, ghosts=0, budget=80):
     config = load_level(1)
     config['time_budget_ticks'] = budget
     config['star_fast_ticks'] = max(0, budget - 1)
-    config['quest']['position'] = [1,2]
+    config['quest']['position'] = [4,2]
     if ghosts:
         config['stage'] = 2 if ghosts == 1 else 7
         config['id'] = f"stage_{config['stage']:02}"
         config['ghosts'] = [
-            {'id': chr(65 + n), 'route': [[2, 1], [3, 1]],
+            {'id': chr(65 + n), 'route': [[5, 1], [6, 1]],
              'initial_index': 0, 'direction': 1, 'initial_countdown': 2,
              'ticks_per_move': 2}
             for n in range(ghosts)
         ]
     if ghosts == 2:
-        config['shortcuts'] = [{'id': 'A', 'terminal': [4, 5],
-                                'gate': [4, 6], 'initially_open': False}]
+        config['shortcuts'] = [{'id': 'A', 'terminal': [7, 5],
+                                'gate': [7, 6], 'initially_open': False}]
     return config
 
 
@@ -35,7 +35,7 @@ class CoreContractTests(unittest.TestCase):
         for stage in (1, 5):
             game = GameCore(load_level(stage))
             state = game._state
-            positions = [[1, 1], [0, 1]]  # floor/wall and boundary checks
+            positions = [list(state['position']), [0, 1]]  # start floor and outer wall
             if state['shortcuts']:
                 gate = state['shortcuts'][0]['gate']
                 positions.extend([[gate[0] - 1, gate[1]],
@@ -96,7 +96,7 @@ class CoreContractTests(unittest.TestCase):
         # 오른쪽 온기 칸에 들어가면 E 없이 바로 획득합니다.
         first = game.step(Action.RIGHT)
 
-        self.assertEqual(first.snapshot['position'], [2, 1])
+        self.assertEqual(first.snapshot['position'], [5, 1])
         self.assertEqual(first.snapshot['carried'], 1)
         self.assertEqual(first.snapshot['tick'], 1)
         self.assertEqual(
@@ -141,12 +141,12 @@ class CoreContractTests(unittest.TestCase):
     def test_blocked_move_and_empty_interact_consume_one_tick(self):
         game = GameCore(load_level(1))
         blocked = game.step(Action.LEFT)
-        self.assertEqual(blocked.snapshot['position'], [1, 1])
+        self.assertEqual(blocked.snapshot['position'], [4, 1])
         self.assertEqual(blocked.snapshot['remaining_ticks'], 79)
         self.assertTrue(any(e['type'] == 'blocked' for e in blocked.events))
         game.step(Action.DOWN)
         empty = game.step(Action.INTERACT)
-        self.assertEqual(empty.snapshot['position'], [1, 2])
+        self.assertEqual(empty.snapshot['position'], [4, 2])
         self.assertEqual(empty.snapshot['tick'], 3)
         self.assertFalse(empty.terminated)
 
@@ -197,21 +197,21 @@ class CoreContractTests(unittest.TestCase):
 
     def test_edge_swap_counts_as_contact(self):
         config = fixture(ghosts=1)
-        config['ghosts'][0]['route'] = [[2, 2], [1, 2]]
+        config['ghosts'][0]['route'] = [[5, 2], [4, 2]]
         game = GameCore(config)
         first = game.step(Action.DOWN)
         self.assertEqual(first.snapshot['courage'], 3)
         second = game.step(Action.RIGHT)
-        self.assertEqual(second.snapshot['position'], [2, 2])
-        self.assertEqual(second.snapshot['ghosts'][0]['position'], [1, 2])
+        self.assertEqual(second.snapshot['position'], [5, 2])
+        self.assertEqual(second.snapshot['ghosts'][0]['position'], [4, 2])
         self.assertEqual(second.snapshot['courage'], 2)
 
     def test_entering_a_departed_cell_without_swap_is_not_contact(self):
         config = fixture(ghosts=1)
         config['ghosts'][0]['initial_countdown'] = 1
         result = GameCore(config).step(Action.RIGHT)
-        self.assertEqual(result.snapshot['position'], [2, 1])
-        self.assertEqual(result.snapshot['ghosts'][0]['position'], [3, 1])
+        self.assertEqual(result.snapshot['position'], [5, 1])
+        self.assertEqual(result.snapshot['ghosts'][0]['position'], [6, 1])
         self.assertEqual(result.snapshot['courage'], 3)
         self.assertFalse(any(e['type'] == 'contact' for e in result.events))
 
@@ -266,7 +266,7 @@ class CoreContractTests(unittest.TestCase):
         state['items'][0]['value'] = 888
         state['ghosts'][0]['route'][0][0] = 777
         fresh = game.snapshot()
-        self.assertEqual(fresh['position'], [1, 1])
+        self.assertEqual(fresh['position'], [4, 1])
         self.assertEqual(fresh['items'][0]['value'], 1)
         self.assertNotEqual(fresh['ghosts'][0]['route'][0][0], 777)
         result = game.step(Action.RIGHT)
@@ -376,12 +376,12 @@ class CoreContractTests(unittest.TestCase):
 class MagnetTests(unittest.TestCase):
     def config(self):
         config = load_level(1)
-        config['magnet'] = {'position': [3, 3], 'duration_ticks': 13}
+        config['magnet'] = {'position': [6, 3], 'duration_ticks': 13}
         return config
 
     def test_pickup_collects_both_values_and_diagonals_without_extra_action(self):
         game = GameCore(self.config())
-        game._state['position'] = [3, 2]
+        game._state['position'] = [6, 2]
         result = game.step(Action.DOWN)
         self.assertTrue(result.snapshot['magnet']['collected'])
         self.assertEqual(result.snapshot['magnet']['remaining_ticks'], 12)
@@ -391,17 +391,17 @@ class MagnetTests(unittest.TestCase):
         collected = [e for e in result.events if e['type'] == 'collect']
         self.assertEqual({e['item_id'] for e in collected}, {'heat_02', 'heat_08'})
         self.assertTrue(all(e['magnetic'] for e in collected))
-        self.assertEqual(next(e['source_position'] for e in collected if e['value'] == 3), [2, 2])
-        self.assertTrue(all(e['position'] == [3, 3] for e in collected))
+        self.assertEqual(next(e['source_position'] for e in collected if e['value'] == 3), [5, 2])
+        self.assertTrue(all(e['position'] == [6, 3] for e in collected))
         again = game.step(Action.WAIT)
         self.assertEqual(again.snapshot['carried'], 4)
         self.assertFalse(any(e['type'] == 'collect' for e in again.events))
 
     def test_exactly_thirteen_ticks_including_pickup_and_last_tick_collection(self):
         config = self.config()
-        config['items'][6]['position'] = [3, 6]
+        config['items'][6]['position'] = [6, 6]
         game = GameCore(config)
-        game._state['position'] = [3, 2]
+        game._state['position'] = [6, 2]
         game.step(Action.DOWN)
         for remaining in range(11, 0, -1):
             self.assertEqual(game.step(Action.WAIT).snapshot['magnet']['remaining_ticks'], remaining)
@@ -430,24 +430,24 @@ class MagnetTests(unittest.TestCase):
 
     def test_walls_and_closed_doors_do_not_block_diagonal_attraction(self):
         config = load_level(1)
-        config['items'][4]['position'] = [6, 1]
-        config['items'][8]['position'] = [5, 2]
-        config['shortcuts'] = [{'id': 'A', 'terminal': [1, 2], 'gate': [5, 1],
+        config['items'][4]['position'] = [9, 1]
+        config['items'][8]['position'] = [8, 2]
+        config['shortcuts'] = [{'id': 'A', 'terminal': [4, 2], 'gate': [8, 1],
                                 'initially_open': False}]
-        config['magnet'] = {'position': [4, 1], 'duration_ticks': 13}
+        config['magnet'] = {'position': [7, 1], 'duration_ticks': 13}
         game = GameCore(config)
-        game._state['position'] = [3, 1]
+        game._state['position'] = [6, 1]
         result = game.step(Action.RIGHT)
-        self.assertEqual(result.snapshot['grid'][2][4], '#')
+        self.assertEqual(result.snapshot['grid'][2][7], '#')
         self.assertFalse(result.snapshot['shortcuts'][0]['opened'])
         self.assertFalse(result.snapshot['items'][8]['active'])
-        self.assertTrue(any(e['type'] == 'collect' and e['source_position'] == [5, 2]
+        self.assertTrue(any(e['type'] == 'collect' and e['source_position'] == [8, 2]
                             for e in result.events))
 
     def test_reset_restores_magnet_and_snapshots_do_not_alias(self):
         game = GameCore(self.config())
         initial = game.snapshot()
-        game._state['position'] = [3, 2]
+        game._state['position'] = [6, 2]
         game.step(Action.DOWN)
         snapshot = game.snapshot()
         snapshot['magnet']['remaining_ticks'] = 0
@@ -457,9 +457,9 @@ class MagnetTests(unittest.TestCase):
 
     def test_blocked_actions_consume_effect_and_return_does_not_reactivate(self):
         config = load_level(1)
-        config['magnet'] = {'position': [3, 4], 'duration_ticks': 13}
+        config['magnet'] = {'position': [6, 4], 'duration_ticks': 13}
         game = GameCore(config)
-        game._state['position'] = [3, 3]
+        game._state['position'] = [6, 3]
         game.step(Action.DOWN)
         blocked = game.step(Action.RIGHT)
         self.assertTrue(any(e['type'] == 'blocked' for e in blocked.events))
@@ -470,18 +470,18 @@ class MagnetTests(unittest.TestCase):
         self.assertFalse(any(e['type'] == 'magnet_collect' for e in returned.events))
 
     def test_invalid_magnet_config_rejected(self):
-        for magnet in (None, {}, {'position': [3, 3], 'duration_ticks': True},
-                       {'position': [3, 3], 'duration_ticks': 12},
+        for magnet in (None, {}, {'position': [6, 3], 'duration_ticks': True},
+                       {'position': [6, 3], 'duration_ticks': 12},
                        {'position': [0, 0], 'duration_ticks': 13},
-                       {'position': [2, 1], 'duration_ticks': 13},
-                       {'position': [3, 3], 'duration_ticks': 13, 'radius': 2}):
+                       {'position': [5, 1], 'duration_ticks': 13},
+                       {'position': [6, 3], 'duration_ticks': 13, 'radius': 2}):
             with self.subTest(magnet=magnet):
                 config = self.config()
                 config['magnet'] = magnet
                 with self.assertRaises(ValueError):
                     validate_level(config)
         config = load_level(2)
-        config['magnet']['position'] = [5, 2]
+        config['magnet']['position'] = [8, 2]
         with self.assertRaisesRegex(ValueError, 'ghost route'):
             validate_level(config)
 
@@ -489,15 +489,15 @@ class MagnetTests(unittest.TestCase):
 class InvincibilityTests(unittest.TestCase):
     def config(self):
         config = load_level(1)
-        config['invincibility'] = {'position': [3, 3], 'duration_ticks': 10}
-        config['ghosts'] = [{'id': 'A', 'route': [[3, 4], [3, 5]],
+        config['invincibility'] = {'position': [6, 3], 'duration_ticks': 10}
+        config['ghosts'] = [{'id': 'A', 'route': [[6, 4], [6, 5]],
                              'direction': 1, 'initial_index': 0,
                              'initial_countdown': 100, 'ticks_per_move': 1}]
         return config
 
     def test_ten_ticks_including_pickup_then_damage_without_extra_protection(self):
         game = GameCore(self.config())
-        game._state['position'] = [3, 2]
+        game._state['position'] = [6, 2]
         first = game.step(Action.DOWN)
         self.assertEqual(first.snapshot['invincibility']['remaining_ticks'], 9)
         self.assertEqual(sum(e['type'] == 'invincibility_collect' for e in first.events), 1)
@@ -534,7 +534,7 @@ class InvincibilityTests(unittest.TestCase):
     def test_normal_protection_decays_independently_and_pickup_does_not_repeat(self):
         game = GameCore(self.config())
         initial = game.snapshot()
-        game._state['position'] = [3, 2]
+        game._state['position'] = [6, 2]
         game._state['protection'] = 3
         game.step(Action.DOWN)
         moved = game.step(Action.DOWN)
@@ -550,9 +550,9 @@ class InvincibilityTests(unittest.TestCase):
 
     def test_blocked_move_and_interaction_consume_item_time(self):
         config = load_level(1)
-        config['invincibility'] = {'position': [3, 4], 'duration_ticks': 10}
+        config['invincibility'] = {'position': [6, 4], 'duration_ticks': 10}
         game = GameCore(config)
-        game._state['position'] = [3, 3]
+        game._state['position'] = [6, 3]
         game.step(Action.DOWN)
         result = game.step(Action.RIGHT)
         self.assertTrue(any(e['type'] == 'blocked' for e in result.events))
@@ -560,28 +560,28 @@ class InvincibilityTests(unittest.TestCase):
         self.assertEqual(game.step(Action.INTERACT).snapshot['invincibility']['remaining_ticks'], 7)
 
     def test_invalid_item_configuration_and_overlaps_rejected(self):
-        for item in (None, {}, {'position': [3, 3], 'duration_ticks': True},
-                     {'position': [3, 3], 'duration_ticks': 9},
+        for item in (None, {}, {'position': [6, 3], 'duration_ticks': True},
+                     {'position': [6, 3], 'duration_ticks': 9},
                      {'position': [0, 0], 'duration_ticks': 10},
-                     {'position': [2, 1], 'duration_ticks': 10},
-                     {'position': [3, 4], 'duration_ticks': 10},
-                     {'position': [3, 3], 'duration_ticks': 10, 'radius': 1}):
+                     {'position': [5, 1], 'duration_ticks': 10},
+                     {'position': [6, 4], 'duration_ticks': 10},
+                     {'position': [6, 3], 'duration_ticks': 10, 'radius': 1}):
             with self.subTest(item=item):
                 config = self.config()
                 config['invincibility'] = item
                 with self.assertRaises(ValueError):
                     validate_level(config)
         config = self.config()
-        config['magnet'] = {'position': [3, 3], 'duration_ticks': 13}
+        config['magnet'] = {'position': [6, 3], 'duration_ticks': 13}
         with self.assertRaises(ValueError):
             validate_level(config)
 
     def test_both_item_effects_can_run_independently(self):
         config = load_level(1)
-        config['magnet'] = {'position': [3, 3], 'duration_ticks': 13}
-        config['invincibility'] = {'position': [3, 4], 'duration_ticks': 10}
+        config['magnet'] = {'position': [6, 3], 'duration_ticks': 13}
+        config['invincibility'] = {'position': [6, 4], 'duration_ticks': 10}
         game = GameCore(config)
-        game._state['position'] = [3, 2]
+        game._state['position'] = [6, 2]
         game.step(Action.DOWN)
         result = game.step(Action.DOWN)
         self.assertEqual(result.snapshot['magnet']['remaining_ticks'], 11)
