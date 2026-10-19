@@ -53,10 +53,9 @@ def test_settlement_is_idempotent_even_after_save_reload(tmp_path):
     assert c.data == before
 
 
-def test_unique_badges_cross_modes_and_cosmetics_thresholds():
+def test_unique_badges_and_cosmetics_thresholds():
     c = Campaign()
     clear(c, 1, banked=10)
-    clear(c, 1, mode='relaxed', banked=14)
     assert c.optional_badges() == 2
     assert c.unlocked_cosmetics('scarf') == ['default']
     assert not c.set_cosmetic('scarf', 'peach')
@@ -75,6 +74,18 @@ def test_unique_badges_cross_modes_and_cosmetics_thresholds():
     c2 = Campaign(c.data)
     assert c2.optional_badges() == 24
     assert c2.data['cosmetics']['scarf'] == 'peach'
+
+
+def test_relaxed_mode_is_complete_practice_and_never_changes_campaign_data():
+    c = Campaign()
+    before = deepcopy(c.data)
+
+    result = clear(c, 1, mode='relaxed', banked=14)
+
+    assert result['practice_mode']
+    assert not result['eligible']
+    assert result['score']['stars'] == 3
+    assert c.data == before
 
 
 def test_stars_keep_only_a_room_best_score_and_friend_memory_is_independent():
@@ -118,15 +129,15 @@ def test_failed_low_aborted_locked_and_ai_runs_do_not_unlock_story():
     assert c.data['records']['ai']['basic']['hash-A']['stage_01']['complete'] == 1
 
 
-def test_records_are_partitioned_by_mode_hash_controller():
+def test_only_basic_runs_are_saved_in_campaign_records():
     c = Campaign()
-    for i, (mode, hash_, ctrl) in enumerate([('basic', 'A', 'human'), ('relaxed', 'A', 'human'),
-                                            ('basic', 'B', 'human'), ('basic', 'A', 'ai')]):
+    for i, (mode, hash_, ctrl) in enumerate([('basic', 'A', 'human'), ('basic', 'B', 'human'),
+                                            ('basic', 'A', 'ai')]):
         c.settle(level(), outcome(), hash_, mode, str(i), ctrl)
     r = c.data['records']
     assert r['human']['basic']['A']['stage_01']['episodes'] == 1
     assert r['human']['basic']['B']['stage_01']['episodes'] == 1
-    assert r['human']['relaxed']['A']['stage_01']['episodes'] == 1
+    assert 'relaxed' not in r['human']
     assert r['ai']['basic']['A']['stage_01']['episodes'] == 1
     assert c.optional_badges() == 2
 

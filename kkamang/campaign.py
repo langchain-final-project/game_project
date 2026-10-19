@@ -316,7 +316,7 @@ class Campaign:
             raise ValueError('settlement_id must be a non-empty string')
         empty = {'first_complete': False, 'new_photo': False, 'new_badges': [],
                  'new_cosmetics': [], 'new_stars': 0, 'best_star_improved': False,
-                 'new_friend_memory': False, 'score': None}
+                 'new_friend_memory': False, 'practice_mode': False, 'score': None}
         if settlement_id in self.data['settled_ids']:
             return {**empty, 'already_settled': True}
         if mode not in ('basic', 'relaxed'):
@@ -362,6 +362,12 @@ class Campaign:
                     or memory_record['banked'] != numbers['banked']
                     or memory_record['ticks_used'] != numbers['ticks_used']):
                 raise ValueError('memory does not match this settlement')
+        # Relaxed mode is a complete practice mode. Its result may be shown to
+        # the player, but it must not create records, unlock rooms, grant
+        # cosmetics, update stars, or affect relationship memories and endings.
+        if mode == 'relaxed':
+            return {**empty, 'eligible': False, 'already_settled': False,
+                    'practice_mode': True, 'score': score}
         before_cosmetics = {f'{k}:{v}' for k in COSMETICS for v in self.unlocked_cosmetics(k)}
         # Build updates in a copy: a malformed record cannot partially pay rewards.
         updated = deepcopy(self.data)
