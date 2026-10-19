@@ -393,8 +393,8 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             text(surface,assets,lab,(889,y),size=17,color=(131,112,112))
             _fit_text(surface,assets,val,(986,y,230,28),size=18,color=INK,anchor='topright',bold=True)
         badge_notes = [
-            ('badge_warmth', '모든 온기를 수집하면 뱃지 획득'),
-            ('badge_unhurt', '유령에게 한 번도 잡히지 않으면 뱃지 획득'),
+            ('badge_warmth', '온기 10점 이상 귀환 · 수집 배지'),
+            ('badge_unhurt', '유령에게 잡히지 않고 귀환 · 무피격 배지'),
         ]
         for i, (icon, label) in enumerate(badge_notes):
             y = 481 + i * 34
@@ -668,7 +668,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             text(surface,assets,'진행이 아직 저장되지 않았어요.',(318,474),size=16,color=(155,101,100))
             ui.control('save_retry',(749,465,207,39),'저장 다시 시도')
         else:
-            text(surface,assets,'기본 / 여유 모드의 기록은 따로 남겨요.',(318,470),size=16,color=(138,113,107))
+            text(surface,assets,'여유 모드는 연습 전용 · 진행 기록을 남기지 않아요.',(318,470),size=16,color=(138,113,107))
         if paused:
             ui.control('resume',(318,520,639,55),'계속 걷기',primary=True)
             ui.control('restart',(318,591,309,44),'같은 방 다시 시작')

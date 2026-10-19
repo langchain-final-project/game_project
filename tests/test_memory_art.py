@@ -80,28 +80,35 @@ def test_animation_cannot_change_previous_reveals_or_expose_other_regions(memory
 def test_final_storm_reveal_keeps_faces_warmth_and_threshold_together():
     labels=pixels(memories.memory_region_mask(3))[:,:,0]
     # Three faces, all escaping warmth and the open garden handle wait for 12.
-    # Coordinates are measured against the final raster at canonical 1280×720.
-    for point in ((644,457),(743,467),(850,474),(666,375),(961,432),
-                  (549,406),(85,228),(403,584),(1057,558),
-                  (530,456),(945,465),(914,495)):
+    # Coordinates follow the character-style raster at canonical 1280×720.
+    # Include the outermost wisps and every large floating circular orb, whose
+    # positions differ from the ordinary golden candle/rim light in the room.
+    for point in ((545,430),(678,445),(837,450),(516,337),(825,338),
+                  (349,458),(955,487),(1032,515),(75,227),
+                  (456,351),(504,307),(568,346),(614,337),(653,317),
+                  (739,324),(777,347),(883,357),(945,402),(992,448),
+                  (402,405),(287,491),(323,462),(957,435),(1035,494)):
         assert labels[point]==4,point
     hidden=draw(3,[True,True,True,False]);fog=draw(3,[False]*4)
     np.testing.assert_array_equal(pixels(hidden)[labels==4],pixels(fog)[labels==4])
-    assert labels[1100,235]==1  # Empty chair's back.
-    assert labels[740,555]==2  # Solid blanket, without the faces.
-    # The final raster removes lower glints and restores opaque bodies/tails.
-    for point in ((455,575),(500,588),(558,562),(585,578),(610,588),(622,575),
-                  (847,580),(918,588),(950,590),(1025,604)):
+    assert labels[1100,250]==1  # Empty chair's back.
+    assert labels[740,575]==2  # Solid blanket, without the faces.
+    # Three opaque tails and the little front paws precede the upper change.
+    for point in ((360,595),(448,615),(565,610),(650,625),(875,628),(1010,617),
+                  (475,499),(565,496),(613,502),(698,515),(774,522)):
         assert labels[point]==2,point
-    assert labels[800,335]==3  # Embers inside the hearth.
-    assert labels[640,269]==3  # Last score on its stand.
+    assert labels[850,295]==3  # Embers inside the hearth, above the orbs.
+    assert labels[630,266]==3  # Last score on its stand.
+    assert labels[789,31]==3  # Stopped clock.
 
 
 @pytest.mark.parametrize('memory_id,landmarks',(
-    (1,((850,550,1),(100,200,2),(340,546,2),(874,405,3),(650,530,3),
-        (695,451,4),(640,500,4),(555,505,4),(580,347,4),(644,315,4))),
-    (2,((200,455,1),(20,220,1),(473,255,2),(330,245,2),(1160,232,3),
-        (1040,180,3),(650,400,4),(550,430,4))),
+    (1,((800,600,1),(400,590,1),(100,200,2),(400,674,2),
+        (840,455,3),(1180,400,3),(620,565,3),(665,560,3),
+        (649,449,4),(668,505,4),(535,510,4),(550,377,4),(619,345,4),
+        (950,220,4))),
+    (2,((270,475,1),(180,530,1),(25,210,1),(454,279,2),(330,220,2),
+        (1140,280,3),(1025,250,3),(670,431,4),(550,451,4))),
 ))
 def test_welcome_and_afternoon_landmarks_follow_their_raster_reveal_order(memory_id,landmarks):
     labels=pixels(memories.memory_region_mask(memory_id))[:,:,0]

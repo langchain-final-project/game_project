@@ -827,7 +827,7 @@ def draw_game(
     )
     if s['protection']:
         # A cold-memory cue only: collisions and animation timing stay in core.
-        d.rect(surface, (170, 211, 225), (29, 104, 982, 554), 3,
+        pygame.draw.rect(surface, (170, 211, 225), (29, 104, 982, 554), 3,
                border_radius=9)
 
     # ── 오른쪽: 필수 물건과 복원 설명 ──
@@ -896,7 +896,7 @@ def draw_game(
     wrapped(
         surface,
         assets,
-        '온기 최소 4점 획득\n필수 아이템 획득\n\n유령에게 잡히지 않기\n',
+        '아이템 + 온기 4점\n귀환점에서 E\n\n유령을 피해 용기를 지켜요',
         (1060, 465, 175, 139),
         15,
         INK,
