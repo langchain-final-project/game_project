@@ -179,11 +179,11 @@
   "quest": {
     "id": "memory_12",
     "name": "정원 손잡이",
-    "kind": "garden",
+    "kind": "handle",
     "position": [
       14,
       7
     ],
-    "restoration": "정원문이 열리고 까망이가 새벽 공기를 맞아요."
+    "restoration": "기억 3 · 4번 영역"
   }
 }

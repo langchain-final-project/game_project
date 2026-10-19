@@ -79,8 +79,8 @@ class AppIntegrationTests(unittest.TestCase):
         # Result layout places its gold main CTA last. Inspect the actual
         # renderer output so a mismatched visual label/action cannot be missed.
         primary = self.app.controls[-1]
-        if self.app.last_reward.get('new_photo'):
-            self.assertEqual(primary['label'], '새 기억 펼치기')
+        if self.app.last_reward.get('first_complete'):
+            self.assertEqual(primary['label'], '기억 공개')
             self.assertEqual(primary['id'], 'view_memory')
         self.click_control(primary['id'])
 
@@ -201,15 +201,23 @@ class AppIntegrationTests(unittest.TestCase):
                 self.click_result_primary()
                 self.assert_rendered('story')
                 self.app.dispatch('story_skip')
-                self.assert_rendered('ending' if stage == 12 else 'home')
+                if stage == 12:
+                    self.assert_rendered('story')
+                    self.assertEqual(self.app.story_kind, 'garden')
+                    self.app.dispatch('story_skip')
+                    self.assertEqual(self.app.story_kind, 'liberation')
+                    self.app.dispatch('story_skip')
+                    self.assert_rendered('ending')
+                else:
+                    self.assert_rendered('home')
         self.assertEqual(self.app.campaign.data['completed'], list(range(1, 13)))
         self.assertEqual(self.app.campaign.data['photos'], list(range(1, 13)))
         self.assertEqual(self.app.campaign.optional_badges(), 24)
         self.assertEqual(len(self.app.campaign.unlocked_cosmetics('frame')), 3)
         ending_count = len(self.app.dialogues)
         self.assertGreater(ending_count, 0)
-        self.assertTrue(self.app.ending_art_only)
-        self.click_control('ending_continue')
+        self.assertEqual(ending_count, 3)
+        self.assertEqual(self.app.ending_id, 'true')
         for _ in range(ending_count):
             self.assertEqual(self.app.scene, 'ending')
             self.app.advance(30)  # Complete the current typewriter line.

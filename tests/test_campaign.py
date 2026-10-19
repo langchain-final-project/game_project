@@ -283,7 +283,9 @@ def test_twelve_story_entries_match_levels_and_real_assets():
         assert story['stage'] == stage
         cfg = json.loads((project / f'data/levels/stage_{stage:02d}.json').read_text('utf-8'))
         assert cfg['name'] == story['name']
-        assert story['lines'] and story['restoration'] and story['before'] and story['teaser']
+        assert story['lines'] == []
+        assert story['restoration'] and story['before']
+        assert story['teaser'] == ''
         if story['art']:
             # Match the renderer: bare filenames use art/, paths are relative
             # to assets/ (including the reorganized background/ directory).
@@ -291,8 +293,8 @@ def test_twelve_story_entries_match_levels_and_real_assets():
             assert (project / 'assets' / image).is_file()
         else:
             assert story['emblem']
-    assert len(STAGES) == 12 and PROLOGUE and ENDING
-    assert STAGES[-1]['lines'][-1] == ('보송', '오늘은 문, 열어 둘게.')
+    assert len(STAGES) == 12 and PROLOGUE == [] and len(ENDING) == 3
+    assert ('보송', '왔네. 수건은 저기 있어.') in ENDING
 
 
 def test_parseable_but_damaged_records_are_preserved_as_corrupt(tmp_path):

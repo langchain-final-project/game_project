@@ -178,12 +178,12 @@
   "validation_scope": "v0.2: see validation/upgrade_report.json for replay evidence",
   "quest": {
     "id": "memory_10",
-    "name": "포근한 담요",
-    "kind": "towel",
+    "name": "담요",
+    "kind": "cushion",
     "position": [
       11,
       6
     ],
-    "restoration": "보송이 담요를 펴고 까망이가 꾹꾹이를 해요."
+    "restoration": "기억 3 · 2번 영역"
   }
 }

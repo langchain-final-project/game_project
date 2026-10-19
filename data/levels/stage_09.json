@@ -174,11 +174,11 @@
   "quest": {
     "id": "memory_09",
     "name": "커튼 끈",
-    "kind": "window",
+    "kind": "cord",
     "position": [
       13,
       4
     ],
-    "restoration": "커튼이 열리고 까망이의 창가 자리가 생겨요."
+    "restoration": "기억 3 · 1번 영역"
   }
 }

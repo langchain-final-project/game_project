@@ -1,0 +1,2 @@
+# Replay validation hashes the authored files on both Windows and Linux.
+data/levels/stage_*.json text eol=lf

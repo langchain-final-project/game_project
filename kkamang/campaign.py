@@ -48,6 +48,7 @@ def _default() -> dict:
         'star_records': {}, 'friend_memories': {}, 'legacy_cosmetic_stars': 0,
         'settled_ids': [], 'favorite_photo': None,
         'likes': likes.empty_state(),
+        'narrative': {'basic_seen': False, 'true_seen': False, 'liberation_seen': False},
     }
 
 
@@ -169,6 +170,14 @@ def _normalized(data: dict) -> dict:
             result['cosmetics'][kind] = chosen
     for flag in ('intro_seen', 'tutorial_seen'):
         result[flag] = bool(data.get(flag, False))
+    narrative = data.get('narrative', {})
+    if not isinstance(narrative, dict):
+        raise SaveFormatError('이야기 감상 기록을 읽을 수 없어요.')
+    for flag in result['narrative']:
+        value = narrative.get(flag, False)
+        if not isinstance(value, bool):
+            raise SaveFormatError('이야기 감상 기록 값이 올바르지 않아요.')
+        result['narrative'][flag] = value
     records = data.get('records', {})
     if not isinstance(records, dict):
         raise SaveFormatError('기록 목록을 읽을 수 없어요.')
@@ -243,6 +252,20 @@ class Campaign:
     def optional_badges(self) -> int:
         return len(set(self.data['badges']))
 
+    def memory_regions(self, memory_id: int) -> list[bool]:
+        """Derive four permanent picture regions from first-completed rooms."""
+        if type(memory_id) is not int or not 1 <= memory_id <= 3:
+            raise ValueError('memory_id must be an integer in 1..3')
+        first_stage = (memory_id - 1) * 4 + 1
+        completed = set(self.data['completed'])
+        return [stage in completed for stage in range(first_stage, first_stage + 4)]
+
+    def memory_progress(self) -> list[int]:
+        return [sum(self.memory_regions(memory_id)) for memory_id in range(1, 4)]
+
+    def memory_complete(self, memory_id: int) -> bool:
+        return all(self.memory_regions(memory_id))
+
     def total_stars(self) -> int:
         return sum(entry['stars'] for entry in self.data['star_records'].values())
 
@@ -297,6 +320,16 @@ class Campaign:
                 'total': score['total'], 'stars': score['stars']}
         return likes.choose_memory(self.data['likes'], replace)
 
+    def warmth_memories(self) -> list[int]:
+        """Rooms whose warmth was recovered, including existing save badges."""
+        badges = set(self.data['badges'])
+        return [stage for stage in range(1, 13)
+                if self.completed(stage) and f'stage_{stage:02d}:rich' in badges]
+
+    def extended_ending_unlocked(self) -> bool:
+        """Unlock the warmth-recovery epilogue independently of affection endings."""
+        return len(self.warmth_memories()) == 12
+
     def unlocked_cosmetics(self, kind: str) -> list[str]:
         if kind not in COSMETICS:
             raise ValueError(f'Unknown cosmetic kind: {kind}')
@@ -314,7 +347,7 @@ class Campaign:
                settlement_id: str, controller: str = 'human', memory_record=None) -> dict:
         if not isinstance(settlement_id, str) or not settlement_id:
             raise ValueError('settlement_id must be a non-empty string')
-        empty = {'first_complete': False, 'new_photo': False, 'new_badges': [],
+        empty = {'first_complete': False, 'new_photo': False, 'new_ending': False, 'new_badges': [],
                  'new_cosmetics': [], 'new_stars': 0, 'best_star_improved': False,
                  'new_friend_memory': False, 'practice_mode': False, 'score': None}
         if settlement_id in self.data['settled_ids']:
@@ -368,6 +401,7 @@ class Campaign:
         if mode == 'relaxed':
             return {**empty, 'eligible': False, 'already_settled': False,
                     'practice_mode': True, 'score': score}
+        had_extended_ending = self.extended_ending_unlocked()
         before_cosmetics = {f'{k}:{v}' for k in COSMETICS for v in self.unlocked_cosmetics(k)}
         # Build updates in a copy: a malformed record cannot partially pay rewards.
         updated = deepcopy(self.data)
@@ -423,6 +457,7 @@ class Campaign:
                 result['memory_status'] = likes.offer_memory(updated['likes'], memory_record)
         updated['settled_ids'].append(settlement_id)
         self.data = updated
+        result['new_ending'] = not had_extended_ending and self.extended_ending_unlocked()
         after_cosmetics = {f'{k}:{v}' for k in COSMETICS for v in self.unlocked_cosmetics(k)}
         result['new_cosmetics'] = sorted(after_cosmetics - before_cosmetics)
         return result

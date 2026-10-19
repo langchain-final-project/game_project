@@ -1,5 +1,34 @@
 # v0.2 실제 검증 결과
 
+## 2026-10-19 · 스토리 개정 3.0 검증 범위
+
+현재 스토리는 고정 그림 세 장의 누적 공개와 기본·진엔딩 후일담으로 구성합니다. 아래 기존 `main` 검증 기록은 당시 실행 결과로 보존하며, 이번 개정의 검사는 다음 항목을 추가합니다. 이전 기록의 사진 화면·대사 흐름을 현재 UI 사양으로 해석하지 않습니다.
+
+`main`의 `1c85cd9`를 기준으로 전체 자동 테스트 **393개와 하위 사례 137개**를 통과했습니다. 기존 칸 단위 참조 경로 **36/36**, 레벨 해시 **12/12**, JSON 스키마 **12/12**도 통과했습니다. 기본 자유 이동으로 7·12번 방과 앨범·기억 화면을 각각 headless 실행했으며, 800×450 앨범과 후일담 화면을 렌더해 확인했습니다. `core.py`·`realtime.py`·`env.py`·`levels.py`·`input.py`·`likes.py`·`scoring.py` 및 참조 행동열은 해당 `main`과 동일합니다.
+
+- `tests/test_visual_story_campaign.py`: 완료 집합에서 세 장의 네 영역을 계산하고 첫 성공·재도전·정산 중복·실패·중단·AI·잠긴 방의 차이를 검사합니다. 구저장의 사진·대표 사진을 보존하면서 완료 없는 사진을 해금 근거로 사용하지 않고, 증거 없는 온기 달성을 생성하지 않는지 확인합니다.
+- `tests/test_visual_story_app.py`, `tests/test_story_endings.py`: 무대사 프롤로그, 약 2초의 부분 공개, 완성 그림 대기·앨범 재생·다음 방 이동, 정원문→해방→세 줄 후일담을 검사합니다. 온기 기록을 먼저 채운 경우 기본 엔딩을 강제하지 않으며, 나중에 채운 경우 쉼터 해방을 한 번만 재생하는지 확인합니다.
+- `tests/test_memory_art.py`: 원본 복사·완성 화면 일치, 네 마스크의 전체 픽셀 덮기, 해상도 변경과 애니메이션 중 미공개 영역의 불투명성, 이전 공개 픽셀의 불변성을 검사합니다. 세 번째 기억의 마지막 정보가 조기 노출되지 않고 현재의 엔딩 연출이 과거 원본을 변경하지 않는지 확인합니다.
+- 게임 실행에는 Pygame만 필요합니다. 새 프로세스에서 NumPy·`pygame.surfarray` 가져오기를 차단하고 실제 기억·앨범·시네마틱 렌더를 검사했습니다. 픽셀 비교용 NumPy는 검증 환경에서만 사용합니다.
+- `tests/test_visual_story_audio.py`: 실제 SDL dummy mixer로 음악 레이어·음량·무음 복구·종료·장치 오류를 검사합니다. 기억 3의 차가운 선율, 해방 후에만 들리는 골골·시계 소리, 파형 클리핑과 루프 경계도 검사합니다. 실제 스피커 청취 검사는 포함하지 않습니다.
+- `tests/test_story_rebase.py`, `tests/test_likes_app.py`, `tests/test_campaign.py`: 별점·호감도·대표 기억·기존 6종 분류 함수와 감상 기록을 보존합니다. 현재 화면에는 기본·진엔딩만 표시하고 감상 상태는 `narrative`의 별도 플래그에 기록하는지 검사합니다. 대표 기억 선택 우선 처리, 저장 실패·재시도와 저장 왕복도 포함합니다.
+- 온기 회수는 방마다 성공 귀환 10점 기록으로 판정합니다. 반복 점수 합산·무피해·별점·전체 온기 수집을 추가 조건으로 삼지 않는지 검사하며, 실패 후 기존 해금·온기 기록도 보존합니다.
+- 레벨의 물건 이름·종류·기능 표시를 제외한 맵·좌표·시간·규칙을 최신 `main`과 비교합니다. 최신 참조 행동열을 유지하고 변경된 레벨 해시를 연결해 기존 칸 단위 경로 및 스키마를 검사합니다.
+- 최신 `main`의 기본 자유 이동, 1/60초 입력, 0.3초 세계 틱, 자동 온기 수집, 추격 유령과 시간제 자석·무적은 별도 실시간 검사군과 함께 유지합니다. 스토리의 칸 단위 참조 경로 테스트는 `movement_mode='grid'`를 명시하며 자유 이동 검증을 대신하지 않습니다.
+
+실행 명령:
+
+```sh
+python -m pip install -r requirements-dev.txt
+python -m pytest -q
+python -m pytest -q tests/test_visual_story_campaign.py tests/test_visual_story_app.py tests/test_memory_art.py tests/test_story_endings.py tests/test_story_rebase.py tests/test_likes_app.py
+python tools/check_level_schema.py
+python tools/replay_validation.py
+python main.py --headless --no-audio --frames 5 --dev-stage 7
+```
+
+검증 전용 NumPy를 사용하는 픽셀 비교와 SDL dummy 화면 검사는 사람의 그림 이해·실제 모니터 조작·실제 오디오 청취를 대신하지 않습니다. 그림의 정보 순서와 아이템 연결을 처음 보는 플레이어가 이해하는지, 후일담과 음악의 분위기가 적절한지는 별도 플레이 확인 대상입니다.
+
 ## 자유 이동 전환 후 로컬 검사
 
 - 전체 자동 테스트 297개, 하위 사례 137개 통과. 이 중 `tests/test_realtime.py`의 80개 검사는 기본 자유 이동 컨트롤러·공유 코어·전용 학습 환경을 검사합니다.
