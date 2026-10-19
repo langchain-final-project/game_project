@@ -10,7 +10,35 @@
 
 자유 이동에서도 보상은 기존 완료·귀환 온기 및 선택적 실제 피해 패널티입니다. 방향 변경·키 반복은 유령/타이머를 추가 갱신하지 않습니다. 프레임 진행률과 실제 중심 좌표가 관측되어 같은 칸 안의 서로 다른 상태를 구별할 수 있습니다.
 
-`tools/plan_routes.py`와 `tools/evaluate.py`는 아직 칸 단위 정책 도구입니다. 평가 보고서에 `control_mode=grid`를 기록하고 자유 이동 코어 입력을 거부합니다. 아래의 과거 난이도·경로 결과를 현재 자유 이동에 대한 성능 결과로 사용하지 마세요. 새 제어 방식의 정책 학습과 난이도 비교는 별도 실험이 필요합니다.
+`tools/evaluate.py`는 이제 기본 CLI 실행에서 자유 이동을 평가합니다. 기존 칸 단위 평가는 `--control-mode grid`로 명시합니다. `tools/plan_routes.py`와 기존 36개 경로는 계속 칸 단위 검사이며, 아래 과거 결과를 자유 이동의 무피해·성능 근거로 재사용하지 않습니다.
+
+### 현재 자유 이동의 비교 정책과 경로 검증
+
+```sh
+# 무작위/규칙 기반 정책을 같은 stage/episode seed와 초기 위상에서 비교
+python tools/evaluate.py --control-mode realtime --episodes 1 --stages 1 2 --output reports/local/realtime_evaluation
+
+# 12개 방에서 필수 물건+온기 4점 이상, 접촉 없는 완료 경로 생성·재생
+python tools/validate_realtime_routes.py --targets 4 --output reports/local/realtime_routes
+
+# 높은 온기 목표와 무적 아이템 접촉 허용을 명시한 추가 검사
+python tools/validate_realtime_routes.py --stages 3 11 --targets 10 14 --contact-policy item_invincible --output reports/local/realtime_rich_routes
+
+# 생성한 60Hz 행동 기록 하나를 다시 재생
+python tools/replay_validation.py --record reports/local/realtime_routes/replays/stage_01_target_04.json
+```
+
+`RealtimeGreedyPolicy`는 현재 코어를 복제해 이동의 **매 1/60초 프레임**을 검사합니다. 18프레임의 중심 간 이동, 짧은 대기, 1프레임 E로 경로를 구성하며, 중간 프레임의 접촉도 제외합니다. 평가에서는 실제 무적 아이템이 적용된 접촉만 허용하고, 경로 검증은 기본적으로 모든 접촉을 금지합니다. 피격 후 보호는 접촉 허용 근거가 아닙니다. 샛문 개방과 모든 칸 중간 회전을 탐색하지 않는 제한된 기준선입니다.
+
+물건 회수를 우선하고 추가 수집마다 귀환 경로와 세계 틱 2개만큼의 여유를 확인합니다. `--target-warmth`의 기본값은 14이지만, 더 모을 경로를 찾지 못하면 온기 4점 이상의 합법적 완료로 귀환할 수 있습니다. 따라서 `complete_rate`와 목표 온기까지 달성한 `target_rate`를 구분합니다. 경로 검증은 요청한 목표 온기 이상·피해 0·접촉 정책 충족·전체 최종 스냅샷 재생 일치가 모두 필요합니다. 목표는 최소 온기이며 정확히 4점으로만 귀환한다는 뜻은 아닙니다. 탐색 실패는 맵 불가능성의 증거가 아닙니다.
+
+CLI 탐색 예산은 목표당 realtime 128노드, grid 1,500노드가 기본입니다. `--max-search-nodes`로 동일 비교 예산을 명시할 수 있습니다. 경로 도구의 초기 위상은 기본적으로 설계값이며 `--randomize-phase`로 seed 변형을 사용합니다. 평가 도구는 기본 seed 변형, `--fixed-phase`로 설계값을 사용합니다. 위상 조건이 다른 결과를 같은 실험으로 비교하지 않습니다.
+
+`episodes.csv`는 `episode_steps`(환경 명령 수), `physics_frames`(자유 이동만), `ticks_used`(세계 틱), 시뮬레이션 초, 확정 온기·100점·별·피해·접촉·물건 회수와 계산 시간을 구분합니다. `summary.json`은 제어 방식·관측 버전·설정 해시·구현 해시·탐색 예산과 요약을 기록합니다. `replays/`에는 실제 행동과 초기 위상, 새 기록의 전체 최종 상태 해시를 저장합니다. 출력은 기본적으로 Git에서 제외되는 `reports/local/`에 보관합니다.
+
+이 기준선은 **오프라인 계획 도구**입니다. 경로 계산 중의 실제 대기 시간은 시뮬레이션 시계를 진행시키지 않습니다. `policy_compute_seconds`, 평균·최대 행동 계산 시간은 별도 기록하며, 실제 60Hz에서 실행 가능한 AI라는 주장으로 해석하지 않습니다. 무작위 정책도 매 프레임 새 행동을 뽑으므로 인간처럼 방향키를 오래 유지하는 정책은 아닙니다. 모델 체크포인트 로드·PPO/DQN 학습·미지 맵 일반화는 이번 도구에 포함하지 않았습니다.
+
+`--max-episode-steps`는 외부 평가 중단이며, realtime에서는 프레임 수입니다. 외부 중단은 `truncated`, 게임 자체의 시간 초과는 `terminated`로 유지합니다. `evaluate()` 파이썬 함수의 기본 `control_mode='grid'`는 기존 호출 호환용이고, CLI 기본값은 `realtime`입니다. 새 코드에서는 제어 방식을 명시하세요.
 
 ## 기존 칸 단위 실행 계약
 
@@ -47,7 +75,7 @@
 ### 통일된 평가 정책으로 비교하기
 
 ```sh
-python tools/evaluate.py --episodes 30 --seed 20261018 --max-search-nodes 1500 --output reports/local/unified_evaluation
+python tools/evaluate.py --control-mode grid --episodes 30 --seed 20261018 --max-search-nodes 1500 --output reports/local/unified_evaluation
 ```
 
 정책 버전은 `unified_core_v1`입니다. 모든 스테이지에 같은 탐색 예산과 접촉 허용 규칙을 적용합니다. 무작위·탐욕 정책은 스테이지와 회차마다 같은 seed 및 초기 순찰 위상을 사용합니다. `--fixed-phase`를 지정하면 설계된 초기 위상을 유지합니다. 게임 규칙·보상·온기·유령·아이템 배치·시간 설정은 평가 실행으로 바뀌지 않습니다.

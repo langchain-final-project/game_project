@@ -1,6 +1,6 @@
 """Reproducible random-vs-planner smoke evaluation, NOT an RL training result.
 
-Run: python tools/evaluate.py --episodes 10 --output reports/evaluation
+Run: python tools/evaluate.py --control-mode realtime --episodes 10
 Both policies use the same stage/episode seed. A timed greedy planner uses only
 the fully visible snapshot: known routes, current phase, map, items and time.
 It is a useful sanity baseline, not an optimal solver or a learned policy.
@@ -18,6 +18,7 @@ import json
 import math
 from pathlib import Path
 import sys
+from time import perf_counter
 import traceback
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,7 +28,10 @@ if str(ROOT) not in sys.path:
 import numpy as np
 from gymnasium.utils.env_checker import check_env
 
-from kkamang.env import MansionEnv, OBSERVATION_VERSION
+from kkamang.env import MansionEnv, RealtimeMansionEnv, OBSERVATION_VERSION
+from kkamang.realtime import PHYSICS_HZ, FRAMES_PER_TICK, REALTIME_OBSERVATION_VERSION
+from tools.realtime_policy import RealtimeGreedyPolicy, POLICY_VERSION as REALTIME_POLICY_VERSION
+from tools.replay_validation import snapshot_digest
 
 MOVES = ((0, 0, -1), (1, 0, 1), (2, -1, 0), (3, 1, 0), (5, 0, 0))
 POLICY_VERSION = 'unified_core_v1'
@@ -383,28 +387,60 @@ class TimedGreedyPolicy:
 
 def evaluate(episodes: int, stages: list[int], seed: int, mode: str,
              randomize_phase: bool, *, max_search_nodes=DEFAULT_SEARCH_NODES,
-             progress=None) -> tuple[list[dict], dict]:
+             progress=None, control_mode='grid', target_warmth=14,
+             max_episode_steps=None, record_dir=None) -> tuple[list[dict], dict]:
+    if control_mode not in ('grid', 'realtime'):
+        raise ValueError('control_mode must be grid or realtime')
+    if (type(episodes) is not int or episodes < 1 or not stages or len(set(stages)) != len(stages)
+            or any(type(stage) is not int or not 1 <= stage <= 12 for stage in stages)
+            or type(seed) is not int or seed < 0
+            or type(max_search_nodes) is not int or max_search_nodes < 1
+            or type(target_warmth) is not int or not 4 <= target_warmth <= 14):
+        raise ValueError('invalid episode, stage, seed, target or search budget')
+    if control_mode == 'grid' and target_warmth != 14:
+        raise ValueError('target_warmth is configurable only in realtime mode')
+    realtime = control_mode == 'realtime'
+    env_class = RealtimeMansionEnv if realtime else MansionEnv
+    if record_dir is not None:
+        record_dir = Path(record_dir)
+        record_dir.mkdir(parents=True, exist_ok=True)
     rows = []
     errors = []
     for stage in stages:
         for policy_name in ('random', 'timed_greedy'):
             group_start = len(rows)
-            env = MansionEnv(stage, mode=mode, randomize_phase=randomize_phase)
+            env = env_class(stage, mode=mode, randomize_phase=randomize_phase,
+                            max_episode_steps=max_episode_steps)
             try:
-                check_env(env, skip_render_check=True)
+                # Gym's checker deliberately rejects a first-step cutoff. Check
+                # the game interface before applying the external rollout limit.
+                limit = env.max_episode_steps
+                env.max_episode_steps = None
+                try:
+                    check_env(env, skip_render_check=True)
+                finally:
+                    env.max_episode_steps = limit
                 for episode in range(episodes):
                     episode_seed = seed + stage * 100000 + episode
                     _, info = env.reset(seed=episode_seed)
                     random = np.random.default_rng(episode_seed)
                     initial_phase = json.dumps(env.core.replay_record()['initial_phase'], sort_keys=True)
-                    planner = TimedGreedyPolicy(core=env.core, max_search_nodes=max_search_nodes)
+                    planner = (RealtimeGreedyPolicy(core=env.core, max_search_nodes=max_search_nodes,
+                                                    target_warmth=target_warmth) if realtime else
+                               TimedGreedyPolicy(core=env.core, max_search_nodes=max_search_nodes))
                     cumulative_reward = 0.0
+                    policy_seconds = 0.0
+                    max_policy_seconds = 0.0
                     contacts = Counter()
                     magnetic_heat = 0
                     terminated = truncated = False
                     while not (terminated or truncated):
+                        started = perf_counter()
                         action = (int(random.integers(6)) if policy_name == 'random'
                                   else planner.action(info['snapshot']))
+                        elapsed = perf_counter() - started
+                        policy_seconds += elapsed
+                        max_policy_seconds = max(max_policy_seconds, elapsed)
                         obs, reward, terminated, truncated, info = env.step(action)
                         if not env.observation_space.contains(obs):
                             raise AssertionError('rollout escaped observation space')
@@ -426,11 +462,21 @@ def evaluate(episodes: int, stages: list[int], seed: int, mode: str,
                         'status': outcome.get('status', 'TRUNCATED'),
                         'reason': outcome.get('reason', info.get('truncation_reason', 'unknown')),
                         'complete': outcome.get('status') == 'COMPLETE',
+                        'target_reached': outcome.get('status') == 'COMPLETE'
+                                          and outcome.get('banked', 0) >= target_warmth,
                         'returned': outcome.get('status') in ('COMPLETE', 'RETURN_LOW'),
                         'banked': outcome.get('banked', 0),
                         'carried': info['snapshot']['carried'],
                         'damage_count': outcome.get('damage_count', 0),
-                        'ticks_used': info['episode_steps'],
+                        'ticks_used': snapshot['tick'],
+                        'episode_steps': info['episode_steps'],
+                        'physics_frames': info['episode_steps'] if realtime else None,
+                        'simulated_seconds': (info['episode_steps'] / PHYSICS_HZ if realtime
+                                              else snapshot['tick'] * env.core.config['tick_seconds']),
+                        'policy_compute_seconds': policy_seconds,
+                        'mean_policy_action_ms': 1000 * policy_seconds / info['episode_steps'],
+                        'max_policy_action_ms': 1000 * max_policy_seconds,
+                        'control_mode': control_mode,
                         'remaining_ticks': info['snapshot']['remaining_ticks'],
                         'initial_ticks': snapshot['initial_ticks'],
                         'initial_phase': initial_phase,
@@ -462,6 +508,15 @@ def evaluate(episodes: int, stages: list[int], seed: int, mode: str,
                         'truncated': truncated, 'config_hash': info['config_hash'],
                         'observation_version': info['observation_version'],
                     })
+                    if record_dir is not None:
+                        record = env.core.replay_record()
+                        record['final_snapshot_sha256'] = snapshot_digest(snapshot)
+                        record['evaluation'] = {'policy': policy_name, 'episode_seed': episode_seed,
+                            'target_warmth': target_warmth, 'truncated': truncated,
+                            'truncation_reason': info.get('truncation_reason')}
+                        filename = f'stage_{stage:02d}_{policy_name}_{episode:04d}.json'
+                        (record_dir / filename).write_text(
+                            json.dumps(record, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
             except Exception as exc:
                 errors.append({'stage': stage, 'policy': policy_name, 'error': repr(exc),
                                'traceback': traceback.format_exc()})
@@ -480,10 +535,15 @@ def evaluate(episodes: int, stages: list[int], seed: int, mode: str,
             complete = [r for r in subset if r['complete']]
             summaries.append({'stage': stage, 'policy': policy, 'episodes': n,
                 'complete_rate': sum(r['complete'] for r in subset) / n,
+                'target_rate': sum(r['target_reached'] for r in subset) / n,
                 'return_rate': sum(r['returned'] for r in subset) / n,
                 'mean_banked': sum(r['banked'] for r in subset) / n,
                 'mean_damage': sum(r['damage_count'] for r in subset) / n,
                 'mean_ticks': sum(r['ticks_used'] for r in subset) / n,
+                'mean_episode_steps': sum(r['episode_steps'] for r in subset) / n,
+                'mean_physics_frames': (sum(r['physics_frames'] for r in subset) / n if realtime else None),
+                'mean_simulated_seconds': sum(r['simulated_seconds'] for r in subset) / n,
+                'mean_policy_compute_seconds': sum(r['policy_compute_seconds'] for r in subset) / n,
                 'mean_complete_ticks': (sum(r['ticks_used'] for r in complete) / len(complete)
                                         if complete else None),
                 'mean_complete_remaining_ticks': (sum(r['remaining_ticks'] for r in complete) / len(complete)
@@ -491,6 +551,7 @@ def evaluate(episodes: int, stages: list[int], seed: int, mode: str,
                 'mean_score_warmth': sum(r['score_warmth'] for r in subset) / n,
                 'mean_score_speed': sum(r['score_speed'] for r in subset) / n,
                 'mean_score_courage': sum(r['score_courage'] for r in subset) / n,
+                'mean_score_total': sum(r['score_total'] for r in subset) / n,
                 'mean_stars': sum(r['stars'] for r in subset) / n,
                 'magnet_collection_rate': sum(r['magnet_collected'] for r in subset) / n,
                 'invincibility_collection_rate': sum(r['invincibility_collected'] for r in subset) / n,
@@ -504,20 +565,36 @@ def evaluate(episodes: int, stages: list[int], seed: int, mode: str,
                 'statuses': dict(Counter(r['status'] for r in subset)),
                 'end_reasons': dict(Counter(r['reason'] for r in subset))})
     report = {'evaluation_kind': 'headless_smoke_baselines_not_trained_RL',
-              'control_mode': 'grid',
-              'observation_version': OBSERVATION_VERSION, 'base_seed': seed,
+              'control_mode': control_mode,
+              'observation_version': REALTIME_OBSERVATION_VERSION if realtime else OBSERVATION_VERSION,
+              'physics_hz': PHYSICS_HZ if realtime else None,
+              'episode_step_unit': 'physics_frame' if realtime else 'world_tick',
+              'target_warmth': target_warmth,
+              'max_episode_steps': max_episode_steps,
+              'base_seed': seed,
               'episodes_per_stage_policy': episodes, 'mode': mode,
               'randomize_phase': randomize_phase,
-              'policy_version': POLICY_VERSION,
+              'policy_version': REALTIME_POLICY_VERSION if realtime else POLICY_VERSION,
               'policy_implementation_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+              'source_sha256': {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
+                  for name in ('tools/evaluate.py', 'tools/realtime_policy.py', 'kkamang/core.py',
+                               'kkamang/realtime.py', 'kkamang/env.py')},
               'max_search_nodes': max_search_nodes,
               'contact_policy': 'item_invincible_only',
               'return_reserve_ticks': 2,
-              'notes': ['No policy was trained.', 'This evaluates grid movement, not the realtime desktop controller.',
+              'notes': ['No policy was trained.',
+                        ('This evaluates the realtime desktop controller, one action per physics frame.' if realtime else
+                         'This evaluates grid movement, not the realtime desktop controller.'),
+                        'ticks_used counts world ticks; episode_steps counts environment actions.',
+                        'Policy compute time includes planning and excludes environment stepping; it is not target-device FPS.',
+                        'This is an offline planning baseline: planning wall time does not advance the simulated game.',
+                        'Uniform random samples a new action every environment step, including every 1/60s frame in realtime.',
+                        'The realtime planner searches tile-center walks and waits, not every mid-cell turn.',
                         'Failed or externally truncated runs bank zero.',
                         'Timed greedy uses public map, route and phase data; it is not optimal.',
-                        'All stages use actual GameCore transitions with the same search budget and contact rule.',
+                        'All stages use the selected actual core with the same search budget and contact rule.',
                         'Search counters describe attempted legs, not proven causes of episode failure.',
+                        'Fallback counters count planning decisions, not physics frames.',
                         'Score averages include failed runs as zero; completed-run time averages are separate.',
                         'Same seed and fixed map are reproducibility checks, not unseen-map generalization.',
                         'Training must reserve separate validation/test seeds; compare fixed protocol and budgets.'],
@@ -528,22 +605,35 @@ def evaluate(episodes: int, stages: list[int], seed: int, mode: str,
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--episodes', type=int, default=10)
+    parser.add_argument('--control-mode', choices=('realtime', 'grid'), default='realtime',
+                        help='Desktop free movement by default; grid retains legacy checks')
+    parser.add_argument('--target-warmth', type=int, default=14,
+                        help='Realtime greedy collection target in 4..14; may legally return less')
+    parser.add_argument('--max-episode-steps', type=int,
+                        help='External cutoff in physics frames (realtime) or world ticks (grid)')
     parser.add_argument('--stages', type=int, nargs='+', default=list(range(1, 13)))
     parser.add_argument('--seed', type=int, default=20261014)
-    parser.add_argument('--max-search-nodes', type=int, default=DEFAULT_SEARCH_NODES,
-                        help='Same A* node budget per target for every stage')
+    parser.add_argument('--max-search-nodes', type=int,
+                        help='A* nodes per target: realtime default 128, grid default 1500')
     parser.add_argument('--mode', choices=('basic', 'relaxed'), default='basic')
     parser.add_argument('--fixed-phase', action='store_true',
                         help='Keep designed ghost starting phases instead of seeded variations')
-    parser.add_argument('--output', type=Path, default=Path('reports/evaluation'))
+    parser.add_argument('--output', type=Path, default=Path('reports/local/evaluation'))
     args = parser.parse_args()
+    if args.max_search_nodes is None:
+        args.max_search_nodes = 128 if args.control_mode == 'realtime' else DEFAULT_SEARCH_NODES
     if (args.episodes < 1 or args.seed < 0 or args.max_search_nodes < 1
-            or any(s < 1 or s > 12 for s in args.stages)):
-        parser.error('episodes/search nodes >= 1, seed >= 0, and stages in 1..12 are required')
+            or any(s < 1 or s > 12 for s in args.stages) or len(set(args.stages)) != len(args.stages)
+            or not 4 <= args.target_warmth <= 14
+            or (args.control_mode == 'grid' and args.target_warmth != 14)
+            or (args.max_episode_steps is not None and args.max_episode_steps < 1)):
+        parser.error('positive budgets, seed >= 0, stages in 1..12 and target in 4..14 required; grid target is 14')
     def progress(stage, policy, complete, count):
         print(f'stage {stage:02d} {policy}: {complete}/{count} complete', flush=True)
     rows, report = evaluate(args.episodes, args.stages, args.seed, args.mode, not args.fixed_phase,
-                            max_search_nodes=args.max_search_nodes, progress=progress)
+                            max_search_nodes=args.max_search_nodes, progress=progress,
+                            control_mode=args.control_mode, target_warmth=args.target_warmth,
+                            max_episode_steps=args.max_episode_steps, record_dir=args.output / 'replays')
     args.output.mkdir(parents=True, exist_ok=True)
     csv_path = args.output / 'episodes.csv'
     if rows:
