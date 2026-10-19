@@ -114,6 +114,7 @@ class GameApp:
             self.pause_accumulator=self.accumulator
         self.transition_counter += 1
         self.scene = scene
+        self.audio.set_scene(scene, self.stage, story_kind=self.story_kind)
         self.scene_elapsed = 0.
         self.focus = 0
         self.needs_focus = True
@@ -593,6 +594,7 @@ class GameApp:
         """Display shared core events and settle an ended run exactly once."""
         for event in result.events:
             kind = event['type']
+            self.audio.play_event(event, quest=self.core.config['quest'] if kind == 'quest_collect' else None)
 
             if kind == 'move':
                 dx = event['to'][0] - event['from'][0]
@@ -609,11 +611,6 @@ class GameApp:
                 self.mood_timer = .5
 
             if kind == 'quest_collect':
-                item_kind = self.core.config['quest']['kind']
-                sound = ('quest_cloth' if item_kind in ('towel', 'scarf', 'cushion', 'blanket', 'seeds')
-                         else 'quest_ceramic' if item_kind in ('tea', 'cup', 'bowl')
-                         else 'quest_paper')
-                self.audio.play(sound)
                 self.toast = (
                     event['name']
                     + ' 회수! 온기와 함께 문으로 돌아가요.'
@@ -635,7 +632,6 @@ class GameApp:
                         'age': 0.,
                         'duration': .34,
                     })
-                self.audio.play('warmth_large' if event['value'] == 3 else 'warmth_small')
                 self.toast = (
                     f'온기를 모았어요 · 보유 '
                     f'{result.snapshot["carried"]}점'
@@ -643,24 +639,20 @@ class GameApp:
                 self.toast_timer = 1.5
 
             elif kind == 'magnet_collect':
-                self.audio.play('collect')
                 self.toast = '자석 획득! 13틱 동안 주변 3×3 온기를 끌어와요'
                 self.toast_timer = 2.
 
             elif kind == 'invincibility_collect':
-                self.audio.play('collect')
                 self.toast = '무적 획득! 10틱 동안 유령과 부딪혀도 안전해요'
                 self.toast_timer = 2.
 
             elif kind == 'open':
-                self.audio.play('open')
                 self.toast = '낮은 샛문이 열렸어요'
                 self.toast_timer = 1.5
 
             elif kind == 'damage':
                 self.cat_mood = 'surprised'
                 self.mood_timer = .9
-                self.audio.play('damage')
                 self.toast = (
                     '용기 -1 · 다음 3틱 보호'
                 )
@@ -746,6 +738,7 @@ class GameApp:
                     self.dispatch(button['id'])
 
     def advance(self, dt):
+        self.audio.update(dt)
         self.elapsed += dt
         self.scene_elapsed += dt
         self.dialogue_time += dt
