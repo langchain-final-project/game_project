@@ -49,7 +49,9 @@ def draw_likes(surface, assets, ctx, ui):
     if state['pending'] is not None:
         ui.control('choose_memory', (470, 619, 300, 45), '남길 기억 선택하기')
     complete = len(ctx['campaign'].data['completed']) == ROOM_COUNT
-    ui.control('show_ending', (965, 619, 275, 45), '현재 기억의 결말 보기', disabled=not complete)
+    ui.control('show_ending', (965, 619, 275, 45),
+               '대표 기억 평가 필요' if complete and unscored else '현재 기억의 결말 보기',
+               disabled=not complete or bool(unscored))
 
 
 def draw_choice(surface, assets, ctx, ui):

@@ -12,15 +12,15 @@ import pytest
 from kkamang.ui import illustration, memories
 
 
-def render(kind, elapsed):
+def render(kind, elapsed, **kwargs):
     surface=pygame.Surface(memories.SIZE)
-    memories.draw_cinematic(surface,kind,elapsed)
+    memories.draw_cinematic(surface,kind,elapsed,**kwargs)
     return surface
 
 
-def clock_face(kind, elapsed):
+def clock_face(kind, elapsed, **kwargs):
     # The inner dial excludes the time-dependent room light and other actors.
-    return pygame.image.tobytes(render(kind,elapsed).subsurface((350,125,35,35)),'RGB')
+    return pygame.image.tobytes(render(kind,elapsed,**kwargs).subsurface((350,125,35,35)),'RGB')
 
 
 @pytest.mark.parametrize('kind',('prologue','garden','basic_end'))
@@ -40,6 +40,20 @@ def test_true_ending_clock_ticks_without_changing_the_hour_and_minute():
     assert clock_face('true_end',0.)!=clock_face('true_end',1.1)
     assert clock_face('true_end',1.1)==clock_face('true_end',1.9)
     assert clock_face('true_end',1.1)==clock_face('true_end',61.1)
+
+
+@pytest.mark.parametrize('variants',((),(0,),(1,),(2,)))
+def test_partial_liberation_keeps_night_and_the_clock_stopped(variants):
+    # Completing the picture alone must not turn an individual ending into
+    # the best ending's dawn or restart its frozen clock.
+    assert clock_face('liberation',0.,released_variants=variants)==clock_face(
+        'liberation',8.7,released_variants=variants)
+
+
+def test_explicit_best_liberation_keeps_the_existing_dawn_timing():
+    options={'released_variants':(0,1,2)}
+    assert clock_face('liberation',2.19,**options)==clock_face('liberation',0.,**options)
+    assert clock_face('liberation',3.3,**options)==clock_face('true_end',1.1,**options)
 
 
 def test_true_ending_has_four_sleepers_without_the_awake_only_png_atlas():

@@ -38,7 +38,8 @@ def test_first_success_reveals_one_permanent_region_per_room():
     assert campaign.total_stars() == 0
     assert not campaign.extended_ending_unlocked()
     assert campaign.data['narrative'] == {
-        'basic_seen': False, 'true_seen': False, 'liberation_seen': False}
+        'basic_seen': False, 'true_seen': False, 'liberation_seen': False,
+        'active_ending': None}
 
 
 def test_replaying_a_room_or_settlement_does_not_add_picture_regions():
@@ -132,7 +133,7 @@ def test_existing_saves_derive_regions_from_completed_without_inventing_warmth(t
     assert SaveStore(path).load().data == before
 
 
-def test_warmth_recovery_uses_each_rooms_success_record_without_stars_or_no_damage():
+def test_warmth_badges_keep_success_threshold_without_selecting_a_best_ending():
     campaign = Campaign()
     for stage in range(1, 13):
         result = settle(campaign, stage, 9 if stage == 5 else 10)
@@ -143,8 +144,10 @@ def test_warmth_recovery_uses_each_rooms_success_record_without_stars_or_no_dama
     settle(campaign, 5, 9)
     assert not campaign.extended_ending_unlocked()
     result = settle(campaign, 5, 10)
-    assert result['new_ending']
-    assert campaign.extended_ending_unlocked()
+    assert not result['new_ending']
+    assert campaign.selected_ending() is None
+    assert not campaign.extended_ending_unlocked()
+    assert campaign.released_variants() == ()
     assert campaign.total_stars() == 0
     assert not any(badge.endswith(':quiet') for badge in campaign.data['badges'])
     assert campaign.warmth_memories() == list(range(1, 13))
@@ -158,7 +161,9 @@ def test_warmth_recovery_uses_each_rooms_success_record_without_stars_or_no_dama
 
 
 @pytest.mark.parametrize('value', [None, [], 'seen', 1, {'basic_seen': 1},
-                                  {'true_seen': 'false'}, {'liberation_seen': None}])
+                                  {'true_seen': 'false'}, {'liberation_seen': None},
+                                  {'active_ending': 'true'}, {'active_ending': True},
+                                  {'active_ending': []}])
 def test_malformed_narrative_flags_are_rejected(value):
     with pytest.raises(SaveFormatError):
         Campaign({'narrative': value})
@@ -167,7 +172,8 @@ def test_malformed_narrative_flags_are_rejected(value):
 def test_narrative_flags_are_independent_and_survive_save_roundtrip(tmp_path):
     campaign = Campaign({'completed': [1], 'photos': [1], 'narrative': {'basic_seen': True}})
     assert campaign.data['narrative'] == {
-        'basic_seen': True, 'true_seen': False, 'liberation_seen': False}
+        'basic_seen': True, 'true_seen': False, 'liberation_seen': False,
+        'active_ending': None}
     campaign.data['narrative']['liberation_seen'] = True
     campaign.data['narrative']['true_seen'] = True
     before = deepcopy(campaign.data)
@@ -177,6 +183,8 @@ def test_narrative_flags_are_independent_and_survive_save_roundtrip(tmp_path):
     assert reloaded.data == before
     assert reloaded.memory_progress() == [1, 0, 0]
     assert not reloaded.extended_ending_unlocked()
+    assert reloaded.active_ending() is None
+    assert reloaded.released_variants() == ()
 
 
 def test_silent_stage_contract_and_specified_objects_match_the_three_memories():

@@ -8,7 +8,7 @@ import math
 import pygame
 
 from .illustration import (cat, _resident_cat_frame, resident_cat, ghost, prop, glow,
-                           shelter, INK, CREAM, GOLD)
+                           shelter, _released_residents, INK, CREAM, GOLD)
 from ..paths import ASSET_DIR
 
 SIZE = (1280, 720)
@@ -312,13 +312,20 @@ def _cinematic_fixtures(surface,elapsed,*,door_open=False,dawn=False):
     d.circle(surface,INK,center,3)
 
 
-def draw_cinematic(surface,kind,elapsed,*,completed=(),cosmetics=None,released=False):
+def draw_cinematic(surface,kind,elapsed,*,completed=(),cosmetics=None,released=False,
+                   released_variants=None):
     """Silent present-day scenes; no calls can alter past memory originals."""
     allowed=('prologue','garden','liberation','basic_end','true_end')
     if kind not in allowed:raise ValueError('unknown cinematic kind')
     cosmetics=cosmetics or {};t=max(0.,float(elapsed));s=pygame.Surface(SIZE)
     all_done=range(1,13) if kind!='prologue' else ()
-    dawn=kind=='true_end' or (kind=='liberation' and t>=2.2)
+    # Legacy liberation/true-end calls restored everyone, even without the old
+    # released flag. Explicit variants always describe the exact current or
+    # target state, so an individual ending cannot accidentally release others.
+    legacy_release=released or kind in ('liberation','true_end')
+    living=_released_residents(legacy_release,released_variants,before=kind=='prologue')
+    all_living=len(living)==3
+    dawn=all_living and (kind!='liberation' or t>=2.2)
     shelter(s,all_done,cosmetics,time=t,before=kind=='prologue',show_actors=False,released=dawn,story_time=t)
     clock_time=max(0.,t-2.2) if kind=='liberation' else t
     _cinematic_fixtures(s,clock_time,door_open=kind!='prologue',dawn=dawn)
@@ -335,15 +342,22 @@ def draw_cinematic(surface,kind,elapsed,*,completed=(),cosmetics=None,released=F
         step=_ease(t/2.2)
         cat(s,(297-128*step,544+24*step),130,time=t,scarf=scarf,walking=step<1.,walk_progress=step*2.)
         for variant,(x,y) in enumerate(((384,453),(476,510),(578,459))):
-            ghost(s,(x+_ease(t/2.)*(variant-1)*26,y),96,t,True,variant)
+            pos=(x+_ease(t/2.)*(variant-1)*26,y)
+            if variant in living:resident_cat(s,pos,96,t,variant)
+            else:ghost(s,pos,96,t,True,variant)
     elif kind=='liberation':
         p=_ease((t-.5)/2.2)
         cat(s,(615,550),137,time=t,mood='happy',scarf=scarf)
         for variant,(x,y) in enumerate(((468,476),(801,523),(943,469))):
-            body=pygame.Surface(SIZE,pygame.SRCALPHA)
-            ghost(body,(x,y-8),106,t,True,variant);body.set_alpha(round(255*(1-p)));s.blit(body,(0,0))
-            body=pygame.Surface(SIZE,pygame.SRCALPHA)
-            resident_cat(body,(x,y),106,t,variant);body.set_alpha(round(255*p));s.blit(body,(0,0))
+            if variant not in living:
+                ghost(s,(x,y-8),106,t,True,variant)
+                continue
+            if p<1.:
+                body=pygame.Surface(SIZE,pygame.SRCALPHA)
+                ghost(body,(x,y-8),106,t,True,variant);body.set_alpha(round(255*(1-p)));s.blit(body,(0,0))
+            if p>0.:
+                body=pygame.Surface(SIZE,pygame.SRCALPHA)
+                resident_cat(body,(x,y),106,t,variant);body.set_alpha(round(255*p));s.blit(body,(0,0))
             for k in range(7):
                 a=(k/7.+t*.22)%1.;xx=367+(x-367)*a;yy=350+(y-350)*a-math.sin(a*math.pi)*38
                 if p<1.:d.circle(s,GOLD,(round(xx),round(yy)),3)
@@ -351,15 +365,19 @@ def draw_cinematic(surface,kind,elapsed,*,completed=(),cosmetics=None,released=F
         arrival=_ease(t/2.)
         cat(s,(225+380*arrival,546),133,time=t,mood='happy',scarf=scarf,walking=arrival<1.,walk_progress=arrival*3.)
         prop(s,'towel',(406,454,96,70))
-        for variant,(x,y) in enumerate(((461,451),(785,511),(956,461))):ghost(s,(x,y),101,t,True,variant)
+        for variant,pos in enumerate(((461,451),(785,511),(956,461))):
+            if variant in living:resident_cat(s,pos,101,t,variant)
+            else:ghost(s,pos,101,t,True,variant)
         prop(s,'plant',(799,429,68,82));prop(s,'music',(943,467,67,62))
     else:
         _blanket(s,(300,424,705,184))
-        # Four physical bodies share the same blanket; Kkamang sleeps inside.
-        _sleeping(s,(445,493),0,time=t)
-        _sleeping(s,(773,493),2,time=t)
+        # The best ending shares four physical bodies on the same blanket.
+        for variant,pos in ((0,(445,493)),(2,(773,493))):
+            if variant in living:_sleeping(s,pos,variant,time=t)
+            else:ghost(s,pos,101,t,True,variant)
         _sleeping(s,(593,550),None,scarf,t)
-        _sleeping(s,(889,553),1,time=t)
-        d.arc(s,(161,153,184),(483,428,293,90),0,math.pi,11)
+        if 1 in living:_sleeping(s,(889,553),1,time=t)
+        else:ghost(s,(889,553),101,t,True,1)
+        if 2 in living:d.arc(s,(161,153,184),(483,428,293,90),0,math.pi,11)
     if surface.get_size()!=SIZE:s=pygame.transform.smoothscale(s,surface.get_size())
     surface.blit(s,(0,0))

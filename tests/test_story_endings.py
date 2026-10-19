@@ -14,7 +14,10 @@ import pytest
 from kkamang.app import GameApp
 from kkamang.campaign import Campaign, SaveStore
 from kkamang.levels import load_level
-from kkamang import story
+from kkamang import likes
+from kkamang.ending_content import ENDING_CONTENT, released_variants
+from kkamang.likes_preview import configure_preview, sample_record, SAMPLES
+from kkamang.ui.memories import memory_original
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -86,186 +89,131 @@ def click(app, ident):
                                      pos=control['rect'].center, button=1))
 
 
-def progress_snapshot(app):
+def gameplay_progress(app):
     data = deepcopy(app.campaign.data)
     data.pop('narrative')
+    data['likes'].pop('seen_endings')
     return data
 
 
-def finish_silent_resolution(app, extended=False):
+def finish_resolution(app):
     assert app.scene == 'story' and app.story_kind == 'garden'
     assert app.dialogues == []
     app.advance(3.2)
-    if extended:
+    if app.ending_released_variants:
         assert app.scene == 'story' and app.story_kind == 'liberation'
-        assert not app.campaign.data['narrative']['liberation_seen']
+        assert app.context()['ending_released_variants'] == app.ending_released_variants
         app.advance(4.)
-        assert app.campaign.data['narrative']['liberation_seen']
-    assert app.scene == 'ending'
+    assert app.scene == 'ending' and app.ending_art_only
 
 
-def test_quiet_badges_do_not_restore_body_warmth():
-    campaign = Campaign({'completed': list(range(1, 13)),
-                         'badges': [f'stage_{stage:02d}:quiet' for stage in range(1, 13)]})
-    assert campaign.optional_badges() == 12
-    assert campaign.warmth_memories() == []
-    assert not campaign.extended_ending_unlocked()
-
-
-def test_warmth_progress_counts_distinct_completed_rooms_only():
-    campaign = Campaign({'completed': list(range(1, 12)),
-                         'badges': [f'stage_{stage:02d}:rich' for stage in range(1, 13)]})
-    # A repeated in-memory badge must not stand in for a different room.
-    campaign.data['badges'].extend(['stage_01:rich'] * 12)
-    assert campaign.warmth_memories() == list(range(1, 12))
-    assert not campaign.extended_ending_unlocked()
-    campaign.data['completed'].append(12)
-    campaign.data['badges'].remove('stage_12:rich')
-    assert campaign.warmth_memories() == list(range(1, 12))
-    assert not campaign.extended_ending_unlocked()
-
-
-def test_ten_point_threshold_unlocks_once_when_an_earlier_room_is_replayed():
-    campaign = Campaign()
-    for stage in range(1, 13):
-        reward = settle(campaign, stage, 9 if stage == 7 else 10)
-        assert not reward['new_ending']
-    assert campaign.warmth_memories() == [stage for stage in range(1, 13) if stage != 7]
-    reward = settle(campaign, 7, 10, settlement_id='last-warmth')
-    assert reward['new_ending']
-    assert not reward['new_photo']
-    assert campaign.extended_ending_unlocked()
-    assert campaign.warmth_memories() == list(range(1, 13))
-    before = deepcopy(campaign.data)
-    repeated = settle(campaign, 7, 10, settlement_id='last-warmth')
-    assert repeated['already_settled'] and not repeated['new_ending']
-    assert campaign.data == before
-    assert not settle(campaign, 7, 14)['new_ending']
-    assert campaign.warmth_memories() == list(range(1, 13))
-
-
-@pytest.mark.parametrize('legacy', [False, True], ids=['existing-v1', 'legacy-v0'])
-def test_existing_save_restores_warmth_progress_and_unlock_after_reload(tmp_path, legacy):
-    campaign = completed_campaign(missing_rich=12)
-    payload = deepcopy(campaign.data)
-    if legacy:
-        payload['version'] = 0
-        payload.pop('save_version')
-        payload['first_complete'] = {f'stage_{stage:02d}': True for stage in payload.pop('completed')}
-        payload['unique_badges'] = payload.pop('badges') + ['stage_01:rich']
+@pytest.mark.parametrize('ending_id', likes.ENDING_IDS)
+def test_six_main_endings_are_playable_after_the_shared_three_memories(app, ending_id):
+    configure_preview(app, ending_id)
+    before = gameplay_progress(app)
+    original = pygame.image.tobytes(memory_original(3), 'RGB')
+    finish_resolution(app)
+    assert app.ending_id == ending_id
+    assert app.context()['ending_content'] == ENDING_CONTENT[ending_id]
+    assert app.campaign.active_ending() == ending_id
+    assert app.context()['released_variants'] == released_variants(ending_id)
+    assert app.campaign.data['likes']['seen_endings'] == [ending_id]
+    assert app.campaign.memory_progress() == [4, 4, 4]
+    rendered = controls(app)
+    assert 'ending_continue' in rendered
+    click(app, 'ending_continue')
+    if ending_id == 'sad':
+        assert app.scene == 'home' and app.dialogues == []
     else:
-        payload['save_version'] = 1
-    path = tmp_path / 'existing-save.json'
-    path.write_text(json.dumps(payload), encoding='utf-8')
-    store = SaveStore(path)
-    loaded = store.load()
-    assert store.error is None
-    assert loaded.warmth_memories() == list(range(1, 12))
-    assert not loaded.extended_ending_unlocked()
-    assert settle(loaded, 12, 10, settlement_id='old-save-last-warmth')['new_ending']
-    assert store.save(loaded)
-    reloaded = SaveStore(path).load()
-    assert reloaded.warmth_memories() == list(range(1, 13))
-    assert reloaded.extended_ending_unlocked()
-    before = deepcopy(reloaded.data)
-    assert not settle(reloaded, 12, 10, settlement_id='old-save-last-warmth')['new_ending']
-    assert reloaded.data == before
+        assert app.scene == 'ending' and not app.ending_art_only
+        assert app.dialogues == ENDING_CONTENT[ending_id]['lines']
+        while app.scene == 'ending':
+            app.dialogue_time = 99.
+            app.next_dialogue()
+        assert app.scene == 'home'
+    assert gameplay_progress(app) == before
+    assert pygame.image.tobytes(memory_original(3), 'RGB') == original
+    assert SaveStore(app.store.path).load().active_ending() == ending_id
+    with patch.object(app.audio, 'configure', wraps=app.audio.configure) as configure:
+        app.draw()
+    assert configure.call_args.kwargs['released'] == (ending_id == 'happy_all')
 
 
-def test_ending_cannot_open_before_all_rooms_complete(app):
+def test_last_room_reveals_the_last_picture_before_choosing_any_ending(app):
+    for stage in range(1, 12):
+        settle(app.campaign, stage, 4)
+        likes.offer_memory(app.campaign.data['likes'], sample_record(stage, SAMPLES['normal']))
+    play_reference(app, 12, 14)
+    assert app.last_reward['first_complete'] and app.last_reward['new_ending']
+    assert app.campaign.selected_ending() == 'normal'
+    assert app.campaign.active_ending() is None
+    assert controls(app)[app.controls[app.focus]['id']]['id'] == 'view_memory'
+    before = gameplay_progress(app)
+    click(app, 'view_memory')
+    assert app.story_kind == 'memory' and app.memory_selected == 3
+    app.advance(2.)
+    assert app.scene == 'story' and app.campaign.memory_progress() == [4, 4, 4]
+    assert app.campaign.data['likes']['seen_endings'] == []
+    click(app, 'story_next')
+    finish_resolution(app)
+    assert app.ending_id == 'normal'
+    assert gameplay_progress(app) == before
+
+
+def test_replacing_pending_representative_refreshes_the_result_ending_action(app):
+    state = likes.empty_state()
+    for stage in range(1, 13):
+        likes.offer_memory(state, sample_record(stage, (30, 17, 10) if stage == 1 else (42, 17, 10)))
+    app.campaign.data['completed'] = list(range(1, 13))
+    app.campaign.data['likes'] = state
+    assert app.campaign.selected_ending() == 'normal'
+    likes.offer_memory(state, sample_record(1, (60, 10, 5), 'replacement'))
+    app.last_outcome = {'status': 'COMPLETE', 'banked': 14, 'carried': 14, 'ticks_used': 30}
+    app.last_reward = {'first_complete': False, 'new_ending': False}
+    app.stage = 1
+    app.transition('memory_choice')
+    app.dispatch('memory_replace')
+    assert app.scene == 'result' and app.last_reward['new_ending']
+    assert app.campaign.selected_ending() == 'ghost_a'
+    assert app.campaign.active_ending() is None
+    assert not controls(app)['ending']['disabled']
+    click(app, 'ending')
+    finish_resolution(app)
+    assert app.ending_id == 'ghost_a' and app.campaign.released_variants() == (0,)
+
+
+def test_replay_changes_no_active_world_or_gameplay_progress(app):
+    configure_preview(app, 'happy_all')
+    finish_resolution(app)
+    app.finish_story()
+    assert app.campaign.active_ending() == 'happy_all'
+    normal_state = likes.empty_state()
+    for stage in range(1, 13):
+        likes.offer_memory(normal_state, sample_record(stage, SAMPLES['normal']))
+    normal_state['seen_endings'] = ['happy_all', 'normal']
+    app.campaign.data['likes'] = normal_state
+    before = deepcopy(app.campaign.data)
+    app.start_ending(replay=True)
+    assert app.scene == 'ending' and app.ending_id == 'normal' and app.ending_art_only
+    assert app.campaign.active_ending() == 'happy_all'
+    app.next_dialogue()
+    app.finish_story()
+    assert app.campaign.data == before
+    app.transition('home')
+    assert app.context()['released_variants'] == (0, 1, 2)
+    assert app.context()['released']
+
+
+def test_ending_cannot_open_before_all_rooms_or_before_legacy_scores_are_known(app):
     app.campaign = Campaign({'completed': list(range(1, 12))})
     before = deepcopy(app.campaign.data)
     app.start_ending()
-    assert app.scene == 'likes'
-    app.dispatch('ending')
-    assert app.scene == 'likes'
-    assert app.campaign.data == before
-    assert 'ending' not in controls(app)
-
-
-def test_minimum_warmth_completions_open_basic_ending_without_changing_rewards(app):
-    for stage in range(1, 13):
-        assert not settle(app.campaign, stage, 4)['new_ending']
-    assert not app.campaign.extended_ending_unlocked()
-    before = progress_snapshot(app)
+    assert app.scene == 'likes' and app.campaign.data == before
+    configure_preview(app, 'normal')
+    app.campaign.data['likes']['representatives']['1']['scores'] = None
+    app.campaign.data['badges'] = [f'stage_{n:02d}:rich' for n in range(1, 13)]
+    before = deepcopy(app.campaign.data)
     app.start_ending()
-    finish_silent_resolution(app)
-    assert app.ending_id == 'basic'
-    assert app.ending_variant == 'basic'
-    assert app.dialogues == list(story.ENDING)
-    click(app, 'story_skip')
-    assert app.scene == 'home'
-    assert progress_snapshot(app) == before
-    assert app.campaign.data['narrative']['basic_seen']
-    assert not app.campaign.data['narrative']['true_seen']
-    click(app, 'ending')
-    assert app.ending_variant == 'basic'
-    app.go_back()
-    assert progress_snapshot(app) == before
-
-
-def test_last_warmth_in_earlier_room_opens_extended_ending_from_result_and_home(app):
-    app.campaign = completed_campaign(missing_rich=1)
-    app.campaign.data['tutorial_seen'] = True
-    assert not app.campaign.extended_ending_unlocked()
-    play_reference(app, 1, 14)
-    assert app.last_reward['new_ending'] and not app.last_reward['new_photo']
-    assert app.campaign.extended_ending_unlocked()
-    rendered = controls(app)
-    assert rendered['ending']['label'] == '진엔딩 보기'
-    assert app.controls[app.focus]['id'] == 'ending'
-    before = progress_snapshot(app)
-    click(app, 'ending')
-    finish_silent_resolution(app, extended=True)
-    assert app.ending_id == 'true'
-    assert app.ending_variant == 'extended'
-    assert app.dialogues == list(story.EXTENDED_ENDING)
-    click(app, 'story_skip')
-    assert app.scene == 'home'
-    assert progress_snapshot(app) == before
-    assert app.campaign.data['narrative']['true_seen']
-    click(app, 'ending')
-    assert app.ending_variant == 'extended'
-    app.go_back()
-    assert app.scene == 'home'
-    assert progress_snapshot(app) == before
-    reloaded = SaveStore(app.store.path).load()
-    assert reloaded.extended_ending_unlocked()
-
-
-def test_new_final_room_memory_has_priority_over_new_ending(app):
-    for stage in range(1, 12):
-        settle(app.campaign, stage, 10)
-    play_reference(app, 12, 14)
-    assert app.last_reward['new_photo'] and app.last_reward['new_ending']
-    controls(app)
-    assert app.controls[app.focus]['id'] == 'view_memory'
-    before = progress_snapshot(app)
-    click(app, 'view_memory')
-    assert app.scene == 'story'
-    assert app.story_kind == 'memory' and app.dialogues == []
-    assert app.memory_selected == 3
-    app.advance(2.)
-    assert app.campaign.memory_progress() == [4, 4, 4]
-    click(app, 'story_next')
-    finish_silent_resolution(app, extended=True)
-    assert app.ending_variant == 'extended'
-    assert progress_snapshot(app) == before
-
-
-def test_old_home_comparison_does_not_hide_the_restored_ending(app):
-    from kkamang.ui.illustration import shelter
-    from kkamang.ui.memories import draw_cinematic
-
-    app.campaign = completed_campaign()
-    app.dispatch('toggle_home_view')
-    with patch('kkamang.ui.menus.shelter', wraps=shelter) as draw_shelter:
-        controls(app)
-        assert draw_shelter.call_args.kwargs['before'] is True
-        app.dispatch('ending')
-        finish_silent_resolution(app, extended=True)
-    with patch('kkamang.ui.menus.draw_cinematic', wraps=draw_cinematic) as draw_ending:
-        controls(app)
-        assert app.ending_variant == 'extended'
-        assert draw_ending.call_args.args[1] == 'true_end'
-        assert draw_ending.call_args.kwargs['released'] is True
+    assert app.scene == 'likes' and app.campaign.data == before
+    assert controls(app)['show_ending']['disabled']
+    assert app.campaign.active_ending() is None

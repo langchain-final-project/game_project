@@ -13,6 +13,7 @@ from .levels import load_levels
 from .campaign import Campaign, SaveStore
 from .story import STAGES, PROLOGUE, ENDING, EXTENDED_ENDING, MEMORIES, memory_for_stage
 from . import likes
+from .ending_content import ENDING_CONTENT, released_variants as ending_releases
 from .input import InputAdapter
 from .audio import AudioEngine
 from .ui.theme import Assets, text, panel, CREAM, INK, NIGHT
@@ -34,6 +35,9 @@ class GameApp:
         # Owner-supplied callable(level, outcome, snapshot, mode) -> score_breakdown | None.
         self.score_provider = score_provider
         self.ending_id = None
+        self.ending_art_only = False
+        self.ending_replay = False
+        self.ending_released_variants = ()
         self.accumulator = 0.
         self.ghost_elapsed = 0.3
         pygame.display.init()
@@ -126,8 +130,6 @@ class GameApp:
             self.ghost_elapsed = float(
                 self.core.config.get('tick_seconds', 0.3)
             )
-        if scene == 'home':
-            self._maybe_start_liberation()
 
     def persist(self, next_scene=None):
         ok = self.store.save(self.campaign)
@@ -212,61 +214,58 @@ class GameApp:
             self.campaign.data['intro_seen'] = True
             self.persist('home')
         elif self.story_kind == 'ending':
-            key = 'true_seen' if self.ending_variant == 'extended' else 'basic_seen'
-            if not self.campaign.data['narrative'][key]:
-                self.campaign.data['narrative'][key] = True
-                self.persist('home')
-            else:
-                self.transition('home')
+            self.persist('home')
         elif self.story_kind == 'garden':
-            if (self.ending_variant == 'extended'
-                    and not self.campaign.data['narrative']['liberation_seen']):
+            if self.ending_released_variants:
                 self._start_cinematic('liberation')
             else:
                 self._start_afterword()
         elif self.story_kind == 'liberation':
-            self.campaign.data['narrative']['liberation_seen'] = True
             self._start_afterword(save=True)
         elif self.story_return == 'ending':
             self.start_ending()
         else:
             self.transition(self.story_return)
 
-    def _maybe_start_liberation(self):
-        narrative = self.campaign.data['narrative']
-        if (narrative['basic_seen'] and not narrative['liberation_seen']
-                and self.campaign.extended_ending_unlocked()
-                and self.campaign.data['likes']['pending'] is None):
-            self.ending_id = 'true'
-            self.ending_variant = 'extended'
-            self._start_cinematic('liberation')
-
     def _start_afterword(self, save=False):
-        self.dialogues = list(EXTENDED_ENDING if self.ending_variant == 'extended' else ENDING)
+        # The same six IDs, original artwork and dialogue as main. History is
+        # independent of the world shown after a newly completed resolution.
+        self.dialogues = list(ENDING_CONTENT[self.ending_id]['lines'])
         self.dialogue_index = 0
         self.dialogue_time = 0.
         self.story_kind = 'ending'
-        if save:
-            self.persist('ending')
-        else:
-            self.transition('ending')
+        self.ending_art_only = True
+        self.campaign.record_ending(self.ending_id, activate=not self.ending_replay)
+        self.persist('ending')
 
     def start_ending(self, replay=False):
         if self.campaign.data['likes']['pending'] is not None:
             self.transition('memory_choice')
             return
-        if len(self.campaign.data['completed']) != likes.ROOM_COUNT:
+        selected = self.campaign.selected_ending()
+        if selected is None:
+            # Incomplete or unevaluated legacy memories cannot manufacture an
+            # ending. The affection screen identifies records still unscored.
             self.transition('likes')
             return
-        self.ending_variant = 'extended' if self.campaign.extended_ending_unlocked() else 'basic'
-        self.ending_id = 'true' if self.ending_variant == 'extended' else 'basic'
-        seen_key = 'true_seen' if self.ending_variant == 'extended' else 'basic_seen'
-        if replay and self.campaign.data['narrative'][seen_key]:
+        self.ending_id = selected
+        self.ending_variant = 'extended' if selected == 'happy_all' else 'basic'
+        self.ending_replay = bool(replay)
+        self.replaying_story = bool(replay)
+        self.ending_released_variants = ending_releases(selected)
+        if replay:
             self._start_afterword()
         else:
             self._start_cinematic('garden')
 
     def next_dialogue(self):
+        if self.scene == 'ending' and self.ending_art_only:
+            if not self.dialogues:
+                self.finish_story()
+            else:
+                self.ending_art_only = False
+                self.dialogue_time = 0.
+            return
         if self.dialogue_index >= len(self.dialogues):
             self.finish_story()
             return
@@ -353,7 +352,8 @@ class GameApp:
         if ident in ('memory_keep', 'memory_replace'):
             self.resolve_memory(ident == 'memory_replace')
         elif ident == 'show_ending':
-            self.start_ending(replay=True)
+            self.start_ending(replay=self.campaign.selected_ending() in
+                              self.campaign.data['likes']['seen_endings'])
         elif ident == 'choose_memory':
             self.transition('memory_choice')
         elif ident == 'quit':
@@ -428,7 +428,9 @@ class GameApp:
         elif ident == 'story_finish_home':
             self.finish_story()
         elif ident == 'ending':
-            self.start_ending(replay=True)
+            self.start_ending(replay=self.scene != 'result' and
+                              self.campaign.selected_ending() in
+                              self.campaign.data['likes']['seen_endings'])
         elif ident == 'story_next':
             self.next_dialogue()
         elif ident == 'story_skip':
@@ -558,6 +560,9 @@ class GameApp:
         if self.campaign.choose_friend_memory(replace):
             if self.last_reward is not None:
                 self.last_reward['friend_memory_replaced' if replace else 'friend_memory_kept'] = True
+                selected = self.campaign.selected_ending()
+                self.last_reward['new_ending'] = bool(
+                    selected and selected not in self.campaign.data['likes']['seen_endings'])
             # A reloaded pending choice has no transient result-screen context.
             self.persist('result' if self.last_outcome is not None else 'likes')
 
@@ -826,7 +831,8 @@ class GameApp:
         if self.scene == 'briefing':
             snapshot=self.preview
         dialogue=None
-        if self.scene == 'ending' and self.dialogues and self.dialogue_index < len(self.dialogues):
+        if (self.scene == 'ending' and not self.ending_art_only
+                and self.dialogues and self.dialogue_index < len(self.dialogues)):
             speaker,line=self.dialogues[self.dialogue_index]
             dialogue=(speaker,line[:int(self.dialogue_time*38)])
         story=self.story
@@ -839,14 +845,11 @@ class GameApp:
         regions = list(self.campaign.memory_regions(self.memory_selected))
         showing_memory = self.scene == 'story' and self.story_kind == 'memory'
         silent = self.scene == 'story' and self.story_kind in ('prologue', 'memory', 'garden', 'liberation')
-        released = (self.campaign.extended_ending_unlocked()
-                    and self.campaign.data['narrative']['liberation_seen'])
+        active_ending = self.campaign.active_ending()
+        released = active_ending == 'happy_all'
         duration = CINEMATIC_DURATIONS.get(self.story_kind, MEMORY_REVEAL_SECONDS)
         quest = self.levels[self.stage - 1]['quest']
-        ending_content = {
-            'title': '조금만 비켜 줘' if self.ending_variant == 'extended' else '네 자리는 여기',
-            'subtitle': '',
-        }
+        ending_content = ENDING_CONTENT.get(self.ending_id)
         return dict(scene=self.scene,campaign=self.campaign,levels=self.levels,stories=STAGES,stage=self.stage,mode=self.mode,
             snapshot=snapshot,outcome=self.last_outcome,reward=self.last_reward,story=story,dialogue=dialogue,
             display_elapsed_seconds=(self.display_elapsed_seconds
@@ -857,7 +860,11 @@ class GameApp:
             elapsed=self.elapsed,scene_elapsed=self.scene_elapsed,dialogue_index=self.dialogue_index,total_dialogue=len(self.dialogues),
             story_kind=self.story_kind, ending_variant=self.ending_variant,
             warmth_count=len(self.campaign.warmth_memories()),
-            released=released,
+            released=released,active_ending=active_ending,
+            selected_ending=self.campaign.selected_ending(),
+            released_variants=self.campaign.released_variants(),
+            ending_released_variants=self.ending_released_variants,
+            ending_art_only=self.ending_art_only,
             confirm_kind=self.confirm_kind,confirm_title=title,confirm_text=message,save_error=self.store.error,
             replay=self.replaying_story,settings_return=self.settings_return,home_view=self.home_view,
             total_stars=self.campaign.total_stars(),
@@ -878,8 +885,7 @@ class GameApp:
     def draw(self):
         self.audio.configure(self.campaign.data['settings'],
                              completed=self.campaign.data['completed'],
-                             released=(self.campaign.extended_ending_unlocked()
-                                       and self.campaign.data['narrative']['liberation_seen']))
+                             released=self.campaign.active_ending() == 'happy_all')
         self.canvas.fill(NIGHT)
         if self.scene == 'game':
             snapshot=self.core.snapshot()

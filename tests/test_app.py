@@ -217,7 +217,10 @@ class AppIntegrationTests(unittest.TestCase):
         ending_count = len(self.app.dialogues)
         self.assertGreater(ending_count, 0)
         self.assertEqual(ending_count, 3)
-        self.assertEqual(self.app.ending_id, 'true')
+        self.assertEqual(self.app.ending_id, 'happy_all')
+        self.assertTrue(self.app.ending_art_only)
+        self.click_control('ending_continue')
+        self.assertFalse(self.app.ending_art_only)
         for _ in range(ending_count):
             self.assertEqual(self.app.scene, 'ending')
             self.app.advance(30)  # Complete the current typewriter line.
@@ -233,6 +236,8 @@ class AppIntegrationTests(unittest.TestCase):
         saved = SaveStore(self.save_path).load()
         self.assertEqual(saved.data['completed'], list(range(1, 13)))
         self.assertEqual(saved.optional_badges(), 24)
+        self.assertEqual(saved.active_ending(), 'happy_all')
+        self.assertIn('happy_all', saved.data['likes']['seen_endings'])
 
     def test_pause_and_focus_loss_freeze_clock_and_clear_held_key(self):
         self.first_start()

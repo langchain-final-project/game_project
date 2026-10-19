@@ -353,9 +353,17 @@ def glow(surface,pos,radius=75):
     im=halo(radius);surface.blit(im,(int(pos[0]-radius),int(pos[1]-radius)))
 
 # Keep the simplified lobby; live resident actions are presentation-only.
-def shelter(surface, completed=(), cosmetics=None,time=0.,before=False,show_actors=True,*,focus_stage=None,released=False,story_time=0.):
+def _released_residents(released=False,released_variants=None,*,before=False):
+    """Resolve renderer variants (Bosong, Ipari, Dore), without changing inputs."""
+    if before:return frozenset()
+    if released_variants is None:return frozenset((0,1,2) if released else ())
+    return frozenset(variant for variant in released_variants if variant in (0,1,2))
+
+
+def shelter(surface, completed=(), cosmetics=None,time=0.,before=False,show_actors=True,*,focus_stage=None,released=False,story_time=0.,released_variants=None,show_residents=True):
     cosmetics=cosmetics or {};done=set() if before else set(completed);d=pygame.draw
-    released=bool(released and not before)
+    living=_released_residents(released,released_variants,before=before)
+    released=len(living)==3
     surface.fill((145,116,105) if released else (40,39,57))
     for y in range(200,720,40):
         floor=(143+(y//40%2)*3,110,100) if released else (75+(y//40%2)*3,60,69)
@@ -417,7 +425,7 @@ def shelter(surface, completed=(), cosmetics=None,time=0.,before=False,show_acto
         # chapter-object displays; the simplified PNG lobby stays uncluttered.
         towel=(445,484) if 8 in done else (390,462) if 4 in done else (345,442)
         prop(surface,'towel',(*towel,88,62))
-        if 6 in done:
+        if show_residents and 6 in done:
             plant=(positions[1][0]+39,positions[1][1]-55)
             prop(surface,'plant',(*plant,48,59))
             for k in range(3):
@@ -426,13 +434,12 @@ def shelter(surface, completed=(), cosmetics=None,time=0.,before=False,show_acto
         # Keep the seated main PNG while the fourth place moves into the group.
         seated_cat = _png_image('kkamang_wait.png', (132, 132))
         surface.blit(seated_cat, seated_cat.get_rect(midbottom=(round(player[0]), round(player[1]))))
-        if released:
-            for variant,pos in enumerate(positions):resident_cat(surface,pos,97,time,variant)
-        else:
-            ghost(surface,positions[0],97,time,True,0)
-            if 6 in done:ghost(surface,positions[1],110,time,True,1)
-            if 7 in done:ghost(surface,positions[2],90,time,True,2)
-        if 7 in done:
+        if show_residents:
+            for variant,pos in enumerate(positions):
+                if variant in living:resident_cat(surface,pos,97,time,variant)
+                elif variant==0 or (variant==1 and 6 in done) or (variant==2 and 7 in done):
+                    ghost(surface,pos,(97,110,90)[variant],time,True,variant)
+        if show_residents and 7 in done:
             for i in range(3):
                 yy=positions[2][1]-73-(time*18+i*22)%75
                 xx=positions[2][0]+22+math.sin(time+i)*17

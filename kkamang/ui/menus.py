@@ -132,6 +132,8 @@ def _background(surface, assets, name='title_background.png', shade=0, ctx=None,
             float(ctx.get('elapsed', 0)),
             before=ctx.get('scene')=='home' and ctx.get('home_view')=='before',
             show_actors=actors, released=ctx.get('released', False),
+            released_variants=ctx.get('released_variants'),
+            show_residents=ctx.get('active_ending')!='sad',
             story_time=float(ctx.get('scene_elapsed', 0)))
     if shade:
         _overlay(surface, (0, 0, W, H), alpha=min(shade,140))
@@ -313,11 +315,12 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             ui.control('toggle_home_view', (1004,205,233,38),
                        '현재 쉼터' if old_view else '처음 쉼터')
         if len(completed) == 12:
-            _chip(surface, assets, f'온기 회수 {ctx.get("warmth_count",0)} / 12',
+            _chip(surface, assets, f'수집 배지 {ctx.get("warmth_count",0)} / 12',
                   (662,205,322,38), size=17)
-            ui.control('ending',(1004,253,233,40),'후일담 다시 보기')
+            ui.control('ending',(1004,253,233,40),'현재 엔딩 보기',
+                       disabled=not ctx.get('selected_ending'))
         _overlay(surface,(0,560,W,160),alpha=190)
-        note = ('온기 회수: 각 방에서 아이템 + 온기 10점 이상 성공 귀환 · 12개 방 달성 시 진엔딩'
+        note = ('대표 기억의 호감도와 최고 별점에 따라 여섯 가지 결말을 만나요.'
                 if len(completed)==12 else '귀환 조건: 아이템 1개 + 온기 4점 이상 · 귀환점에서 E')
         _fit_text(surface,assets,note,(40,567,1198,35),size=17,color=CREAM)
         ui.control('explore',(38,613,300,52),'방 다시 탐험' if len(completed)==12 else '탐험',primary=True)
@@ -365,7 +368,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
                 _icon(surface,assets,'badge_unhurt',(rect.right-42,rect.y+8,29,29))
             ui.control(f'stage:{n}', rect, st.get('name', ''), disabled=not unlocked, custom=True)
         ui.control('back', (38, 626, 174, 40), '쉼터로')
-        _fit_text(surface,assets,'다시 도전해 별과 최고 점수를 높여요. 온기 10점 × 열두 방은 온기 회복 후일담을 열어요.',
+        _fit_text(surface,assets,'다시 도전해 별과 최고 점수를 높이고, 방마다 남길 대표 기억을 골라요.',
                   (240,628,998,33),size=17,color=CREAM)
         _footer(surface, assets)
 
@@ -460,7 +463,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             msg='기억 영역 +1' if reward.get('first_complete') else '탐사 기록 저장'
             if reward.get('new_cosmetics'):msg+=' 새 꾸미기도 열렸어요!'
             if reward.get('new_ending'):
-                msg='온기 회수 12 / 12 · 진엔딩 해금'
+                msg+=' · 새로운 엔딩을 볼 수 있어요'
             next_points=int(score.get('next_star_points',0))
             stars = int(score.get('stars', 0))
             star_note = (f'이번 탐험에서 별 {stars}개를 얻었어요.' if stars else
@@ -496,9 +499,9 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             if reward.get('first_complete'):
                 ident,label='view_memory','기억 공개'
             elif reward.get('new_ending'):
-                ident,label='ending','진엔딩 보기'
+                ident,label='ending','엔딩 보기'
             elif stage==12:
-                ident,label='ending','정원으로'
+                ident,label='ending','엔딩 보기'
             else:
                 ident,label='next_stage','다음 방으로'
             ui.control(ident,(964,624,243,44),label,primary=True)
@@ -507,12 +510,28 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         _footer(surface,assets)
 
     elif screen == 'ending':
-        extended = ctx.get('ending_variant') == 'extended'
-        draw_cinematic(surface, 'true_end' if extended else 'basic_end',
-                       float(ctx.get('scene_elapsed', elapsed)), completed=completed,
-                       cosmetics=data.get('cosmetics'), released=extended)
-        # Spoken words appear only here, after the silent resolution.
-        _header(surface,assets,'후일담', '', '진엔딩' if extended else '기본 엔딩')
+        content = ctx.get('ending_content') or {}
+        ending = ctx.get('ending_id')
+        art_only = bool(ctx.get('ending_art_only'))
+        lines = content.get('lines') or []
+        if not art_only and ending in ('normal','happy_all'):
+            draw_cinematic(surface, 'true_end' if ending=='happy_all' else 'basic_end',
+                           float(ctx.get('scene_elapsed', elapsed)), completed=completed,
+                           cosmetics=data.get('cosmetics'), released=ending=='happy_all',
+                           released_variants=(0,1,2) if ending=='happy_all' else ())
+        else:
+            _background(surface,assets,ctx=ctx,actors=False)
+            _art(surface,assets,content.get('art'),(0,0,W,H))
+        _header(surface,assets,content.get('title','기억의 결말'),
+                content.get('subtitle',''),'엔딩' if art_only else '후일담')
+        if art_only or not lines:
+            ui.control('ending_continue',(1000,610,240,50),
+                       '후일담 보기' if lines else '쉼터로 돌아가기',primary=True)
+            if lines:
+                ui.control('story_skip',(40,610,200,50),'쉼터로 돌아가기')
+            _footer(surface,assets,'Enter / Space 선택 · Esc 쉼터로')
+            return ui.controls
+        # Spoken words appear only after the selected ending's silent artwork.
         panel(surface,(38,583,1204,84),fill=PAPER,border=GOLD,radius=18)
         speaker,line=ctx.get('dialogue') or ('','')
         text(surface,assets,speaker,(64,592),size=18,color=(145,99,104),bold=True)
@@ -547,7 +566,9 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
                 ui.control('story_next',(1034,636,204,40),'계속',primary=True)
         else:
             draw_cinematic(surface,kind,scene_time,completed=completed,
-                           cosmetics=data.get('cosmetics'),released=ctx.get('released',False))
+                           cosmetics=data.get('cosmetics'),released=ctx.get('released',False),
+                           released_variants=ctx.get('ending_released_variants')
+                           if kind=='liberation' else ctx.get('released_variants'))
             ui.control('story_next',(1034,619,204,45),'계속',primary=True)
         ui.control('story_skip',(1041,20,199,38),'넘기기')
 
@@ -720,8 +741,8 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             (
                 '06', '엔딩 조건',
                 '12개 스테이지 클리어 후,\n'
-                '방마다 온기 10점 이상 귀환하면\n'
-                '진엔딩이 열려요.',
+                '유령 호감도와 탐사 기록에 따라\n'
+                '6가지 엔딩 중 하나를 만나요.',
                 (('map', 'heart_full'),),
             ),
         ]

@@ -1,7 +1,7 @@
-"""Three silent, cumulative memories and two short spoken epilogues.
+"""Three silent, cumulative memories followed by the six affection endings.
 
 Picture regions follow completed rooms. Narrative text is confined to the
-ending epilogues; stage labels below provide only functional game information.
+six ending epilogues; stage labels below provide only functional game information.
 """
 from .levels import load_levels
 
@@ -36,17 +36,11 @@ for _level in load_levels():
         'art': '', 'emblem': _quest['kind'], 'act': _memory_id,
     })
 
-ENDING = [
-    ('보송', '왔네. 수건은 저기 있어.'),
-    ('이파리', '네 자리도 그대로야.'),
-    ('도레', '그럼, 오늘은 작게 연주할게.'),
-]
-
-EXTENDED_ENDING = [
-    ('보송', '꼬리 좀…… 내 코에 닿아.'),
-    ('도레', '내 거 아닌데.'),
-    ('이파리', '쉿. 까망이 잔다.'),
-]
+# Compatibility names share main's dialogue source; the controller selects all
+# six entries from ENDING_CONTENT rather than treating these as two branches.
+from .ending_content import ENDING_CONTENT
+ENDING = ENDING_CONTENT['normal']['lines']
+EXTENDED_ENDING = ENDING_CONTENT['happy_all']['lines']
 
 SPEAKERS = {'보송': '보송', '이파리': '이파리', '도레': '도레'}
 COSMETIC_LABELS = {

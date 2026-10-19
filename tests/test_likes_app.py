@@ -10,7 +10,7 @@ os.environ.setdefault('SDL_AUDIODRIVER', 'dummy')
 import pygame
 import pytest
 
-from kkamang.app import GameApp
+from kkamang.app import GameApp, CINEMATIC_DURATIONS
 from kkamang.campaign import SaveStore
 from kkamang.likes_preview import configure_preview, sample_record
 
@@ -33,6 +33,15 @@ def complete(app, stage=1):
         result = app.core.step(action)
     assert result.outcome['status'] == 'COMPLETE'
     app.finish_run(result)
+
+
+def show_ending_art(app):
+    for _ in range(3):
+        if app.scene == 'ending':
+            break
+        assert app.scene == 'story' and app.story_kind in ('garden', 'liberation')
+        app.advance(CINEMATIC_DURATIONS[app.story_kind])
+    assert app.scene == 'ending' and app.ending_art_only
 
 
 def test_real_completion_provider_choice_escape_and_no_star_loss(app):
@@ -194,18 +203,19 @@ def test_ending_waits_for_choice_and_preserves_seen_history(app):
     app.dispatch('memory_keep')
     app.dispatch('show_ending')
     assert app.scene == 'story' and app.story_kind == 'garden'
-    app.advance(3.2)
-    assert app.ending_id == 'basic'
-    assert app.scene == 'ending'
+    show_ending_art(app)
+    assert app.ending_id == 'normal'
+    assert app.campaign.active_ending() == 'normal'
     app.finish_story()
-    assert app.campaign.data['narrative']['basic_seen']
+    assert app.campaign.data['likes']['seen_endings'] == ['normal']
+    before = deepcopy(app.campaign.data)
     app.start_ending(replay=True)
-    assert app.scene == 'ending'
-    assert app.campaign.data['likes']['seen_endings'] == []
+    assert app.scene == 'ending' and app.ending_art_only
+    assert app.campaign.data == before
     app.campaign.data['likes']['representatives']['1']['scores'] = None
     app.start_ending(replay=True)
-    assert app.ending_id == 'basic'
-    assert app.campaign.data['likes']['seen_endings'] == []
+    assert app.scene == 'likes'
+    assert app.campaign.data['likes']['seen_endings'] == ['normal']
 
 
 @pytest.mark.parametrize('preview', ['overview', 'choice', 'happy_all', 'sad', 'ghost_a', 'ghost_b', 'ghost_c', 'normal'])
@@ -221,33 +231,58 @@ def test_new_screens_read_only_and_controls_on_canvas(app, preview):
 
 
 @pytest.mark.parametrize('ending', ['happy_all', 'sad', 'ghost_a', 'ghost_b', 'ghost_c', 'normal'])
-def test_legacy_ending_assets_and_classification_survive_the_silent_story(app, ending):
+def test_six_ending_art_epilogue_keyboard_and_save_preservation(app, ending):
     from kkamang.ending_content import ENDING_CONTENT
     from kkamang import likes
-    from kkamang.story import ENDING
     configure_preview(app, ending)
     assert likes.select_ending(app.campaign.data['likes'], app.campaign.data['completed']) == ending
     assert (ROOT / 'assets' / 'art' / ENDING_CONTENT[ending]['art']).is_file()
-    before = deepcopy(app.campaign.data['likes'])
-    assert app.ending_id == 'basic'
+    representatives = deepcopy(app.campaign.data['likes']['representatives'])
+    stars = deepcopy(app.campaign.data['likes']['best_stars'])
+    assert app.ending_id == ending
     assert app.scene == 'story' and app.story_kind == 'garden'
     assert app.context()['dialogue'] is None
-    app.advance(3.2)
-    assert app.scene == 'ending' and app.dialogues == ENDING
-    app.draw()
-    # Enter first completes the typewriter line, then the same UI action moves
-    # through exactly the common three-line afterword, without a six-way screen.
-    app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_RETURN, mod=0))
-    assert app.dialogue_index == 0
-    for _ in ENDING:
-        app.dialogue_time = 99
+    show_ending_art(app)
+    assert app.dialogues == ENDING_CONTENT[ending]['lines']
+    assert app.context()['ending_content'] == ENDING_CONTENT[ending]
+    assert app.context()['ending_art_only']
+    with patch('kkamang.ui.menus.wrapped') as dialogue_box:
         app.draw()
-        app.dispatch('ending_continue')
+    dialogue_box.assert_not_called()
+    continue_button = next(c for c in app.controls if c['id']=='ending_continue')
+    assert continue_button['label'] == ('후일담 보기' if app.dialogues else '쉼터로 돌아가기')
+    app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_RETURN, mod=0))
+    if ending == 'sad':
+        assert app.dialogues == [] and app.scene == 'home'
+    else:
+        assert not app.ending_art_only and app.dialogue_index == 0
+        assert app.dialogue_time == 0
+        with patch('kkamang.ui.menus.draw_cinematic') as cinematic:
+            with patch('kkamang.ui.menus._art') as art:
+                app.draw()
+        if ending in ('normal','happy_all'):
+            assert cinematic.call_args.args[1] == ('true_end' if ending=='happy_all' else 'basic_end')
+            assert cinematic.call_args.kwargs['released_variants'] == ((0,1,2) if ending=='happy_all' else ())
+            art.assert_not_called()
+        else:
+            cinematic.assert_not_called()
+            assert art.call_args.args[2] == ENDING_CONTENT[ending]['art']
+        for _ in ENDING_CONTENT[ending]['lines']:
+            app.dialogue_time = 99
+            app.draw()
+            app.dispatch('ending_continue')
     assert app.scene == 'home'
-    assert app.campaign.data['narrative']['basic_seen']
-    assert app.campaign.data['likes'] == before
-    assert SaveStore(app.store.path).load().data['likes'] == before
+    assert app.campaign.active_ending() == ending
+    assert app.campaign.data['likes']['seen_endings'] == [ending]
+    assert app.campaign.data['likes']['representatives'] == representatives
+    assert app.campaign.data['likes']['best_stars'] == stars
+    saved = SaveStore(app.store.path).load()
+    assert saved.data['likes'] == app.campaign.data['likes']
+    assert saved.active_ending() == ending
+    assert saved.released_variants() == app.campaign.released_variants()
+    before = deepcopy(app.campaign.data)
     app.start_ending(replay=True)
-    assert app.scene == 'ending' and app.dialogues == ENDING
+    assert app.scene == 'ending' and app.ending_art_only
     app.go_back()
     assert app.scene == 'home'
+    assert app.campaign.data == before

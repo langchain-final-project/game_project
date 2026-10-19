@@ -1,4 +1,4 @@
-"""Silent memory reveals and two epilogues over the current realtime controller."""
+"""Silent memory reveals and six affection endings over the current realtime controller."""
 from copy import deepcopy
 import os
 from unittest.mock import patch
@@ -12,8 +12,9 @@ import pytest
 from kkamang.app import GameApp, CINEMATIC_DURATIONS
 from kkamang.campaign import Campaign, SaveStore
 from kkamang.levels import load_level
-from kkamang.likes_preview import sample_record
+from kkamang.likes_preview import sample_record, SAMPLES
 from kkamang import likes, story
+from kkamang.ending_content import ENDING_CONTENT
 from kkamang.realtime import FRAME_SECONDS, FRAMES_PER_TICK, RealtimeGameCore
 
 
@@ -38,9 +39,13 @@ def settle(campaign, stage, banked=4):
     return outcome, reward
 
 
-def complete_all(campaign, missing_rich=None, rich=False):
+def complete_all(campaign, missing_rich=None, rich=False, ending="normal"):
     for stage in range(1, 13):
         settle(campaign, stage, 10 if rich and stage != missing_rich else 4)
+    state = likes.empty_state()
+    for stage in range(1, 13):
+        likes.offer_memory(state, sample_record(stage, SAMPLES[ending]))
+    campaign.data['likes'] = state
 
 
 def test_silent_intro_never_unlocks_a_memory(app):
@@ -131,73 +136,68 @@ def test_album_memory_selection_is_separate_from_legacy_photo_selection(app):
     assert app.stage == 11
 
 
-def test_basic_ending_has_only_three_epilogue_lines_and_preserves_legacy_endings(app):
+def test_normal_ending_uses_main_art_and_three_lines_without_altering_records(app):
     complete_all(app.campaign)
     app.campaign.data['likes']['seen_endings'] = ['normal', 'ghost_a']
     original_likes = deepcopy(app.campaign.data['likes'])
     original_records = deepcopy(app.campaign.data['records'])
     app.start_ending()
     assert app.scene == 'story' and app.story_kind == 'garden'
-    assert app.ending_id == 'basic' and app.context()['dialogue'] is None
+    assert app.ending_id == 'normal' and app.context()['dialogue'] is None
     app.finish_story()
-    assert app.scene == 'ending' and app.dialogues == story.ENDING
-    assert len(app.dialogues) == 3
+    assert app.scene == 'ending' and app.ending_art_only
+    assert app.dialogues == ENDING_CONTENT['normal']['lines']
+    app.next_dialogue()
+    assert not app.ending_art_only and len(app.dialogues) == 3
     app.finish_story()
-    assert app.scene == 'home'
-    assert app.campaign.data['narrative'] == {
-        'basic_seen': True, 'true_seen': False, 'liberation_seen': False}
+    assert app.scene == 'home' and app.campaign.active_ending() == 'normal'
     assert app.campaign.data['likes'] == original_likes
     assert app.campaign.data['records'] == original_records
     app.dispatch('ending')
-    assert app.scene == 'ending' and app.dialogues == story.ENDING
+    assert app.scene == 'ending' and app.ending_art_only
+    assert app.dialogues == story.ENDING
 
 
-def test_all_warmth_on_first_journey_goes_directly_to_true_resolution(app):
-    complete_all(app.campaign, rich=True)
+def test_best_affection_on_first_journey_releases_all_without_rich_badges(app):
+    complete_all(app.campaign, ending='happy_all')
+    assert app.campaign.warmth_memories() == []
     app.start_memory(12)
     app.finish_story()
-    assert app.story_kind == 'garden' and app.ending_id == 'true'
+    assert app.story_kind == 'garden' and app.ending_id == 'happy_all'
     app.advance(CINEMATIC_DURATIONS['garden'])
     assert app.story_kind == 'liberation' and app.dialogues == []
-    assert not app.campaign.data['narrative']['liberation_seen']
+    assert app.campaign.active_ending() is None
     app.advance(CINEMATIC_DURATIONS['liberation'])
     assert app.scene == 'ending' and app.dialogues == story.EXTENDED_ENDING
-    assert app.context()['released']
-    assert not app.campaign.data['narrative']['basic_seen']
+    assert app.ending_art_only and app.context()['released']
+    assert app.context()['released_variants'] == (0, 1, 2)
     app.finish_story()
     restored = SaveStore(app.store.path).load()
-    assert restored.data['narrative'] == {
-        'basic_seen': False, 'true_seen': True, 'liberation_seen': True}
+    assert restored.active_ending() == 'happy_all'
+    assert restored.data['likes']['seen_endings'] == ['happy_all']
 
 
-def test_later_warmth_unlock_automatically_releases_once_on_home_entry(app):
+def test_rich_badges_and_legacy_flags_do_not_auto_release_on_home_entry(app):
     complete_all(app.campaign, missing_rich=3, rich=True)
-    app.campaign.data['narrative']['basic_seen'] = True
+    app.campaign.data['narrative'].update(basic_seen=True, true_seen=True, liberation_seen=True)
     app.last_outcome, app.last_reward = settle(app.campaign, 3, 10)
-    assert app.last_reward['new_ending']
+    assert app.campaign.warmth_memories() == list(range(1, 13))
     app.transition('home')
-    assert app.scene == 'story' and app.story_kind == 'liberation'
-    app.dispatch('story_skip')
-    assert app.scene == 'ending' and app.campaign.data['narrative']['liberation_seen']
-    app.dispatch('story_skip')
-    assert app.scene == 'home'
-    app.transition('home')
-    assert app.scene == 'home'
+    assert app.scene == 'home' and not app.context()['released']
+    assert app.context()['released_variants'] == ()
+    assert app.campaign.selected_ending() == 'normal'
     app.dispatch('show_ending')
-    assert app.scene == 'ending' and app.ending_id == 'true'
+    assert app.story_kind == 'garden' and app.ending_id == 'normal'
+    app.finish_story()
+    assert app.scene == 'ending' and app.campaign.active_ending() == 'normal'
     app.finish_story()
     app.start_memory(11, replay=True)
-    assert app.context()['released']
-    assert app.context()['regions'] == [True] * 4
-    app.finish_story()
-    app.transition('home')
-    assert app.context()['released']
+    assert not app.context()['released'] and app.context()['regions'] == [True] * 4
 
 
 def test_pending_representative_choice_still_blocks_ending(app):
     complete_all(app.campaign, rich=True)
     state = app.campaign.data['likes']
-    likes.offer_memory(state, sample_record(1, (60, 20, 15), run_id='old'))
     likes.offer_memory(state, sample_record(1, (60, 25, 15), run_id='new'))
     before = deepcopy(state)
     app.start_ending()
@@ -207,7 +207,7 @@ def test_pending_representative_choice_still_blocks_ending(app):
 
 
 def test_save_failure_during_release_keeps_progress_and_retry_target(app):
-    complete_all(app.campaign, rich=True)
+    complete_all(app.campaign, ending='happy_all')
     app.start_ending()
     app.finish_story()
     assert app.story_kind == 'liberation'
@@ -215,11 +215,11 @@ def test_save_failure_during_release_keeps_progress_and_retry_target(app):
     with patch.object(app.store, '_atomic_write', side_effect=OSError('disk full')):
         app.finish_story()
     assert app.scene == 'save_error' and app.save_return == 'ending'
-    assert app.campaign.data['narrative']['liberation_seen']
+    assert app.campaign.active_ending() == 'happy_all'
     assert app.campaign.data['completed'] == before_completed
     app.dispatch('save_retry')
     assert app.scene == 'ending' and app.dialogues == story.EXTENDED_ENDING
-    assert SaveStore(app.store.path).load().data['narrative']['liberation_seen']
+    assert SaveStore(app.store.path).load().active_ending() == 'happy_all'
 
 
 def test_default_realtime_motion_and_automatic_warmth_pickup_remain_active(app):
@@ -261,8 +261,8 @@ def test_realtime_clock_and_result_precision_stay_separate_from_official_outcome
     assert app.campaign.data == before
 
 
-def test_real_menu_controls_follow_silent_resolution_then_three_line_afterword(app):
-    complete_all(app.campaign, rich=True)
+def test_real_menu_controls_follow_silent_resolution_then_main_art_and_afterword(app):
+    complete_all(app.campaign, ending='happy_all')
     app.start_memory(12)
 
     def click(ident):
@@ -277,7 +277,9 @@ def test_real_menu_controls_follow_silent_resolution_then_three_line_afterword(a
     click('story_skip')
     assert app.story_kind == 'liberation' and app.context()['dialogue'] is None
     click('story_skip')
-    assert app.scene == 'ending' and len(app.dialogues) == 3
+    assert app.scene == 'ending' and app.ending_art_only and len(app.dialogues) == 3
+    click('ending_continue')
+    assert not app.ending_art_only
     click('story_skip')
     app.draw()
     assert app.scene == 'home' and app.context()['released']

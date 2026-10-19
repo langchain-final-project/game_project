@@ -13,6 +13,7 @@ from pathlib import Path
 import tempfile
 import uuid
 from . import likes
+from .ending_content import released_variants as ending_released_variants
 
 from .scoring import COURAGE_POINTS, SPEED_POINTS, STAR_THRESHOLDS, WARMTH_POINTS, score_outcome
 
@@ -48,7 +49,8 @@ def _default() -> dict:
         'star_records': {}, 'friend_memories': {}, 'legacy_cosmetic_stars': 0,
         'settled_ids': [], 'favorite_photo': None,
         'likes': likes.empty_state(),
-        'narrative': {'basic_seen': False, 'true_seen': False, 'liberation_seen': False},
+        'narrative': {'basic_seen': False, 'true_seen': False, 'liberation_seen': False,
+                      'active_ending': None},
     }
 
 
@@ -173,11 +175,15 @@ def _normalized(data: dict) -> dict:
     narrative = data.get('narrative', {})
     if not isinstance(narrative, dict):
         raise SaveFormatError('이야기 감상 기록을 읽을 수 없어요.')
-    for flag in result['narrative']:
+    for flag in ('basic_seen', 'true_seen', 'liberation_seen'):
         value = narrative.get(flag, False)
         if not isinstance(value, bool):
             raise SaveFormatError('이야기 감상 기록 값이 올바르지 않아요.')
         result['narrative'][flag] = value
+    active_ending = narrative.get('active_ending')
+    if active_ending is not None and active_ending not in likes.ENDING_IDS:
+        raise SaveFormatError('현재 엔딩 기록이 올바르지 않아요.')
+    result['narrative']['active_ending'] = active_ending
     records = data.get('records', {})
     if not isinstance(records, dict):
         raise SaveFormatError('기록 목록을 읽을 수 없어요.')
@@ -327,8 +333,32 @@ class Campaign:
                 if self.completed(stage) and f'stage_{stage:02d}:rich' in badges]
 
     def extended_ending_unlocked(self) -> bool:
-        """Unlock the warmth-recovery epilogue independently of affection endings."""
-        return len(self.warmth_memories()) == 12
+        """Compatibility name for the main rules' best ending selection."""
+        return self.selected_ending() == 'happy_all'
+
+    def selected_ending(self) -> str | None:
+        return likes.select_ending(self.data['likes'], self.data['completed'])
+
+    def active_ending(self) -> str | None:
+        return self.data['narrative']['active_ending']
+
+    def released_variants(self) -> tuple[int, ...]:
+        """Read the displayed world's last activated ending, not a pending choice."""
+        return ending_released_variants(self.active_ending())
+
+    def record_ending(self, ending_id: str, activate: bool = False) -> bool:
+        """Record a validated ending ID after the app has checked its selection."""
+        if ending_id not in likes.ENDING_IDS:
+            raise ValueError('Unknown ending ID')
+        changed = False
+        seen = self.data['likes']['seen_endings']
+        if ending_id not in seen:
+            seen.append(ending_id)
+            changed = True
+        if activate and self.active_ending() != ending_id:
+            self.data['narrative']['active_ending'] = ending_id
+            changed = True
+        return changed
 
     def unlocked_cosmetics(self, kind: str) -> list[str]:
         if kind not in COSMETICS:
@@ -401,7 +431,6 @@ class Campaign:
         if mode == 'relaxed':
             return {**empty, 'eligible': False, 'already_settled': False,
                     'practice_mode': True, 'score': score}
-        had_extended_ending = self.extended_ending_unlocked()
         before_cosmetics = {f'{k}:{v}' for k in COSMETICS for v in self.unlocked_cosmetics(k)}
         # Build updates in a copy: a malformed record cannot partially pay rewards.
         updated = deepcopy(self.data)
@@ -457,7 +486,9 @@ class Campaign:
                 result['memory_status'] = likes.offer_memory(updated['likes'], memory_record)
         updated['settled_ids'].append(settlement_id)
         self.data = updated
-        result['new_ending'] = not had_extended_ending and self.extended_ending_unlocked()
+        selected_ending = self.selected_ending()
+        result['new_ending'] = (selected_ending is not None
+                                and selected_ending not in self.data['likes']['seen_endings'])
         after_cosmetics = {f'{k}:{v}' for k in COSMETICS for v in self.unlocked_cosmetics(k)}
         result['new_cosmetics'] = sorted(after_cosmetics - before_cosmetics)
         return result
