@@ -446,12 +446,19 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         tick_seconds=float(level.get('tick_seconds',.3))
         ticks=(snapshot or {}).get('initial_ticks',level.get('time_budget_ticks',0))
         rows=[('필수 물건',level.get('quest',{}).get('name','물건')),('제한 시간',f'{ticks*tick_seconds:.1f}초'),
-              ('순찰 잔상',f'{len(level.get("ghosts",[]))}명'),('선택 샛문',f'{len(level.get("shortcuts",[]))}개')]
+              ('순찰 유령',f'{len(level.get("ghosts",[]))}명'),('선택 샛문',f'{len(level.get("shortcuts",[]))}개')]
         for i,(lab,val) in enumerate(rows):
             y=311+i*39
             text(surface,assets,lab,(889,y),size=17,color=(131,112,112))
             text(surface,assets,val,(1216,y),size=18,color=INK,anchor='topright',bold=True)
-        wrapped(surface,assets,'물건 + 온기 4점 이상 → 귀환\n E: 수집 · 장치 · 귀환',pygame.Rect(889,482,326,70),size=17,color=INK)
+        badge_notes = [
+            ('badge_warmth', '모든 온기를 수집하면 뱃지 획득'),
+            ('badge_unhurt', '유령에게 한 번도 잡히지 않으면 뱃지 획득'),
+        ]
+        for i, (icon, label) in enumerate(badge_notes):
+            y = 481 + i * 34
+            _icon(surface,assets,icon,(889,y,26,26))
+            _fit_text(surface,assets,label,(922,y+2,292,24),size=15,color=INK)
         _chip(surface,assets,'멈춰 있어도 탐사 시간은 흘러요',(888,568,327,32),fill=(228,217,196),color=INK,size=15)
         ui.control('back',(38,630,165,39),'방 선택으로')
         ui.control('tutorial',(218,630,202,39),'조작 다시 보기')
@@ -494,7 +501,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
 
         rows = [
             ('탐사 중 모은 온기', f'{outcome.get("carried", 0)}점'),
-            ('잔상에 놀란 횟수', f'{outcome.get("damage_count", 0)}회'),
+            ('유령에 놀란 횟수', f'{outcome.get("damage_count", 0)}회'),
             ('걸어간 시간', f'{used_seconds:.1f}초'),
         ]
         for i,(lab,val) in enumerate(rows):
@@ -509,12 +516,15 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
                 x=79+i*210
                 text(surface,assets,label,(x,456),size=17,color=(132,111,109))
                 text(surface,assets,f'{value} / {maximum}',(x,483),size=21,color=INK,bold=True)
-            msg='새 기억을 앨범에 담았어요.' if reward.get('new_photo') else '다시 걸은 밤도 기록에 남겼어요.'
-            if reward.get('new_stars',0): msg+=f' 별 {reward["new_stars"]}개가 늘었어요!'
-            if reward.get('new_cosmetics'):msg+=' 새 꾸미기도 열렸어요!'
+            msg = ('새 기억을 앨범에 담았어요.' if reward.get('new_photo')
+                   else '다시 걸은 밤도 기록에 남아요.')
+            if reward.get('new_cosmetics'):
+                msg += ' 새 꾸미기도 열렸어요!'
             next_points=int(score.get('next_star_points',0))
-            star_note='세 개의 별을 모두 얻었어요.' if score.get('stars',0)>=3 else f'다음 별까지 {next_points}점'
-            text(surface,assets,star_note+' · '+msg,(79,551),size=17,color=(135,99,98))
+            stars = int(score.get('stars', 0))
+            star_note = (f'이번 탐험에서 별 {stars}개를 얻었어요.' if stars else
+                         f'다음 별까지 {next_points}점')
+            _fit_text(surface,assets,star_note+' · '+msg,(79,535,647,32),size=17,color=(135,99,98))
         elif success:
             wrapped(surface,assets,
                     '여유 모드는 연습 전용이에요. 이번 결과는 별, 꾸미기, 호감도, 이야기 진행에 반영되지 않아요.',
@@ -757,7 +767,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
                ('02','온기는 자동 획득','온기는 자동 획득!\n물건·장치·귀환은 같은 칸에서 E!','warmth_3'),
                ('03','물건과 온기 함께','방의 필수 물건 + 온기 4점.\n둘을 모두 챙겨 귀환해야 해요.','lantern_on'),
                ('04','돌아올 자리','목표를 채운 뒤 귀환점에서 E!\n조건 부족 시 탐사는 계속돼요.','return_portal'),
-               ('05','순찰 잔상을 조심','다음 칸과 이동 예고를 살펴요.\n닿으면 용기가 한 칸 줄어요.','echo_body'),
+               ('05','순찰 유령을 조심','다음 칸과 이동 예고를 살펴요.\n닿으면 용기가 한 칸 줄어요.','echo_body'),
                ('06','종이 울리기 전에','시간 초과나 용기 0이면 실패.\nEsc로 언제든 잠깐 쉴 수 있어요.','bell')]
         for i,(num,title,desc,icon) in enumerate(cards):
             r=pygame.Rect(39+(i%3)*407,126+(i//3)*231,389,213)
