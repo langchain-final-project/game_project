@@ -159,6 +159,8 @@ def test_relaxed_completion_is_practice_only_and_has_no_progress_actions(app):
 
     assert app.scene == 'result'
     assert app.last_reward['practice_mode']
+    before['collection']['practice_rooms'] = [1]
+    before['collection']['unlocked'] = [1]
     assert app.campaign.data == before
     app.draw()
     assert {'retry', 'home', 'rooms'} <= {c['id'] for c in app.controls}
@@ -175,6 +177,7 @@ def test_practice_can_run_with_a_pending_basic_memory_without_resolving_it(app):
     with patch.object(app,'score_provider',side_effect=AssertionError('practice relationship score')):
         complete(app)
     assert app.scene == 'result' and app.last_reward['practice_mode']
+    before['collection']['practice_rooms'] = [1]
     assert app.campaign.data == before
     assert SaveStore(app.store.path).load().data == before
     app.dispatch('next_stage')

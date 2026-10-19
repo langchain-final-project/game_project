@@ -12,12 +12,13 @@ import os
 from pathlib import Path
 import tempfile
 import uuid
-from . import likes
+from . import likes, collection
 from .ending_content import released_variants as ending_released_variants
 
 from .scoring import COURAGE_POINTS, SPEED_POINTS, STAR_THRESHOLDS, WARMTH_POINTS, score_outcome
 
-SAVE_VERSION = 4
+SAVE_VERSION = 5
+# 이전 저장의 외형 선택은 호환용으로 보존한다. 새 수집장에서는 사용하지 않는다.
 COSMETICS = {
     'scarf': (6, ('default', 'peach', 'lavender')),
     'rug': (12, ('default', 'stars', 'leaves')),
@@ -49,6 +50,7 @@ def _default() -> dict:
         'star_records': {}, 'friend_memories': {}, 'legacy_cosmetic_stars': 0,
         'settled_ids': [], 'favorite_photo': None,
         'likes': likes.empty_state(),
+        'collection': collection.empty_state(),
         'narrative': {'basic_seen': False, 'true_seen': False, 'liberation_seen': False,
                       'active_ending': None},
     }
@@ -76,7 +78,7 @@ def _normalized(data: dict) -> dict:
     if not isinstance(data, dict):
         raise SaveFormatError('저장 파일의 구조가 올바르지 않아요.')
     version = data.get('save_version', data.get('version', 0))
-    if version not in (0, 1, 2, 3, SAVE_VERSION) or isinstance(version, bool):
+    if version not in (0, 1, 2, 3, 4, SAVE_VERSION) or isinstance(version, bool):
         raise UnsupportedSaveVersion(f'지원하지 않는 저장 버전({version})이에요. 원본을 보존했어요.')
     # v0 is the pre-release format. Complete stages and unique badges determine
     # photos, restored rooms and cosmetics once, without granting new currency.
@@ -224,7 +226,7 @@ def _normalized(data: dict) -> dict:
             result['favorite_photo'] = favorite
     try:
         result['likes'] = likes.normalize_state(data.get('likes', likes.empty_state()))
-        if version < SAVE_VERSION:
+        if version < 4:
             for stage_key, memory in result['friend_memories'].items():
                 stage = _stage_number(stage_key)
                 if str(stage) not in result['likes']['representatives']:
@@ -241,6 +243,11 @@ def _normalized(data: dict) -> dict:
             raise ValueError('memory belongs to an incomplete room')
     except (ValueError, TypeError) as exc:
         raise SaveFormatError(f'호감도 기록을 읽을 수 없어요: {exc}') from exc
+    try:
+        result['collection'] = collection.normalize(data.get('collection', collection.empty_state()))
+        collection.sync(result)
+    except (ValueError, TypeError) as exc:
+        raise SaveFormatError(f'수집장 기록을 읽을 수 없어요: {exc}') from exc
     return result
 
 
@@ -379,7 +386,8 @@ class Campaign:
             raise ValueError('settlement_id must be a non-empty string')
         empty = {'first_complete': False, 'new_photo': False, 'new_ending': False, 'new_badges': [],
                  'new_cosmetics': [], 'new_stars': 0, 'best_star_improved': False,
-                 'new_friend_memory': False, 'practice_mode': False, 'score': None}
+                 'new_friend_memory': False, 'practice_mode': False, 'score': None,
+                 'new_collection': []}
         if settlement_id in self.data['settled_ids']:
             return {**empty, 'already_settled': True}
         if mode not in ('basic', 'relaxed'):
@@ -425,12 +433,12 @@ class Campaign:
                     or memory_record['banked'] != numbers['banked']
                     or memory_record['ticks_used'] != numbers['ticks_used']):
                 raise ValueError('memory does not match this settlement')
-        # Relaxed mode is a complete practice mode. Its result may be shown to
-        # the player, but it must not create records, unlock rooms, grant
-        # cosmetics, update stars, or affect relationship memories and endings.
+        # 연습은 수집장 성공 이력만 남긴다. 별·배지·방·호감도·엔딩은 갱신하지 않는다.
         if mode == 'relaxed':
+            new_collection = (collection.record_success(self.data, stage, practice=True)
+                              if eligible and status == 'COMPLETE' else [])
             return {**empty, 'eligible': False, 'already_settled': False,
-                    'practice_mode': True, 'score': score}
+                    'practice_mode': True, 'score': score, 'new_collection': new_collection}
         before_cosmetics = {f'{k}:{v}' for k in COSMETICS for v in self.unlocked_cosmetics(k)}
         # Build updates in a copy: a malformed record cannot partially pay rewards.
         updated = deepcopy(self.data)
@@ -491,6 +499,8 @@ class Campaign:
                                 and selected_ending not in self.data['likes']['seen_endings'])
         after_cosmetics = {f'{k}:{v}' for k in COSMETICS for v in self.unlocked_cosmetics(k)}
         result['new_cosmetics'] = sorted(after_cosmetics - before_cosmetics)
+        if eligible and status == 'COMPLETE':
+            result['new_collection'] = collection.record_success(self.data, stage)
         return result
 
 

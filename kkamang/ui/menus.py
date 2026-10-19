@@ -19,6 +19,7 @@ from .likes import draw_likes, draw_choice
 from .map_sprites import map_image
 from .ghost_sprites import ghost_frame
 from .memories import draw_memory, draw_cinematic
+from .collection import render_collection, draw_paw
 
 W, H = 1280, 720
 _COVER_CACHE: dict = {}
@@ -343,7 +344,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         _fit_text(surface,assets,note,(40,567,1198,35),size=17,color=CREAM)
         ui.control('explore',(38,613,300,52),'방 다시 탐험' if len(completed)==12 else '탐험',primary=True)
         ui.control('album',(352,613,215,52),'기억 앨범')
-        ui.control('appearance',(581,613,215,52),'꾸미기')
+        ui.control('appearance',(581,613,215,52),'수집장')
         ui.control('likes',(810,613,215,52),'호감도 기록')
         ui.control('settings',(1039,613,199,52),'설정')
         _footer(surface,assets)
@@ -478,8 +479,8 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
                 x=79+i*210
                 text(surface,assets,label,(x,456),size=17,color=(132,111,109))
                 text(surface,assets,f'{value} / {maximum}',(x,483),size=21,color=INK,bold=True)
-            msg='기억 영역 +1' if reward.get('first_complete') else '탐사 기록 저장'
-            if reward.get('new_cosmetics'):msg+=' 새 꾸미기도 열렸어요!'
+            msg='기억 영역 +1 · 물건 카드 +1' if reward.get('first_complete') else '탐사 기록 저장'
+            if reward.get('new_collection'):msg+=f' · 새로운 모습 {len(reward["new_collection"])}장 발견!'
             if reward.get('new_ending'):
                 msg+=' · 새로운 엔딩을 볼 수 있어요'
             next_points=int(score.get('next_star_points',0))
@@ -490,7 +491,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             _fit_text(surface,assets,msg,(79,559,645,32),size=17,color=(135,99,98))
         elif success:
             wrapped(surface,assets,
-                    '여유 모드는 연습 전용이에요. 이번 결과는 별, 꾸미기, 호감도, 이야기 진행에 반영되지 않아요.',
+                    '연습 성공은 수집장의 첫걸음 기록으로 남아요. 별, 배지, 호감도와 이야기 진행은 유지돼요.',
                     pygame.Rect(79,422,644,116),size=21,color=INK,line_gap=10)
         else:
             msg=('완료 목표는 한 번에 온기 4점 이상 귀환이에요.\n가져온 온기는 기록되고, 다음 방은 아직 닫혀 있어요.' if low else
@@ -501,7 +502,8 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         char = assets.icon('art/character/kkamang_wait.png', (300, 350))
         surface.blit(char,(863,169+int(math.sin(elapsed*2)*4)))
         if success and practice:
-            _chip(surface,assets,'연습을 마쳤어요',(831,522,376,49),size=16)
+            count=len(reward.get('new_collection', []))
+            _chip(surface,assets,f'새로운 모습 {count}장 발견!' if count else '연습을 마쳤어요',(831,522,376,49),size=16)
         elif success:
             note=('이번 기억을 대표 기억으로 남겼어요.' if reward.get('friend_memory_replaced') else
                   '기존 대표 기억을 그대로 간직해요.' if reward.get('friend_memory_kept') else
@@ -607,6 +609,9 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             ui.control(f'memory:{memory_id}',r,f'기억 {memory_id}',custom=True)
         regions=_regions(ctx,selected)
         _memory_art(surface,selected,regions,(365,143,852,395))
+        if all(regions) and 'memory_paw' not in data.get('collection', {}).get('discoveries', []):
+            draw_paw(surface,(1088,474,34,34))
+            ui.control('collection_memory_paw',(1082,468,46,46),'작은 발자국',custom=True)
         text(surface,assets,_memory_label(selected,regions),(382,554),size=22,color=INK,bold=True)
         ui.control('replay_memory',(818,552,190,40),'다시 보기',primary=True,disabled=not any(regions))
         ui.control('visit_memory',(1024,552,190,40),'방 선택',disabled=not any(regions))
@@ -614,68 +619,8 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         _footer(surface,assets,'완료한 방만 그림에 공개됩니다 · 같은 방 재도전은 기억 영역을 늘리지 않습니다')
 
     elif screen == 'appearance':
-        _background(surface,assets,_home_art(completed),130,ctx=ctx)
-        cosmetic_stars=max(int(ctx.get('total_stars',0)),int(data.get('legacy_cosmetic_stars',0)))
-        _header(surface,assets,'까망이의 작은 취향','꾸미기는 모습만 바꿔요. 탐사의 능력과 기록 조건은 같아요.',f'모은 별 {cosmetic_stars} / 36')
-        panel(surface,(37,125,474,485),fill=(70,57,82),border=GOLD,radius=20)
-        # The selected rug and scarf are live shapes, not baked into the art.
-        cosmetic=data.get('cosmetics',{})
-        rug=cosmetic.get('rug','default')
-        rugcolor={'default':(146,126,163),'stars':(124,117,160),'leaves':(131,156,135)}.get(rug,(146,126,163))
-        pygame.draw.ellipse(surface,rugcolor,(77,439,394,100))
-        pygame.draw.ellipse(surface,(223,195,145),(85,447,378,84),3)
-        if rug!='default':
-            for i in range(9):
-                x=111+i*37;y=477+math.sin(i*2)*17
-                if rug=='stars':
-                    pygame.draw.line(surface,GOLD,(x-4,y),(x+4,y),2)
-                    pygame.draw.line(surface,GOLD,(x,y-4),(x,y+4),2)
-                else:pygame.draw.ellipse(surface,(189,209,163),(x-6,y-3,12,7))
-        cat=(assets.cat((287,332),cosmetic.get('scarf','default')) if hasattr(assets,'cat')
-             else assets.icon('art/kkamang_character.png',(287,332)))
-        surface.blit(cat,(132,160))
-        scarf=cosmetic.get('scarf','default')
-        colors={'default':SAGE,'peach':(222,157,144),'lavender':(179,156,206)}
-        _chip(surface,assets,{'default':'세이지 목도리','peach':'복숭아 목도리','lavender':'라벤더 목도리'}.get(scarf,''),
-              (135,544,279,39),fill=colors.get(scarf,SAGE),color=INK)
-        text(surface,assets,'현재 선택한 모습',(275,142),size=21,anchor='midtop')
-        kind=ctx.get('appearance_kind','scarf')
-        tabs=[('scarf','목도리'),('rug','러그'),('frame','액자')]
-        for i,(k,label) in enumerate(tabs):
-            ui.control(f'appearance_tab:{k}',(539+i*235,126,222,46),label,primary=kind==k)
-        panel(surface,(537,193,704,417),fill=PAPER,border=GOLD,radius=18)
-        choices={'scarf':[('default','세이지'),('peach','복숭아'),('lavender','라벤더')],
-                 'rug':[('default','첫 러그'),('stars','별빛 무늬'),('leaves','잎사귀 무늬')],
-                 'frame':[('default','나무 액자'),('leaves','잎사귀 액자'),('stars','별빛 액자')]}
-        threshold={'scarf':6,'rug':12,'frame':18}.get(kind,6)
-        current=cosmetic.get(kind,'default')
-        text(surface,assets,dict(tabs).get(kind,'목도리')+' 고르기',(564,213),size=25,color=INK,bold=True)
-        for i,(value,label) in enumerate(choices.get(kind,choices['scarf'])):
-            r=pygame.Rect(562+i*220,268,201,219)
-            unlocked=value=='default' or cosmetic_stars>=threshold
-            panel(surface,r,fill=(245,232,205) if unlocked else (221,210,193),border=GOLD if current==value else (192,171,149),radius=12)
-            if kind=='scarf':
-                c=colors.get(value,SAGE)
-                pygame.draw.rect(surface,c,(r.x+39,r.y+38,122,45),border_radius=15)
-                pygame.draw.polygon(surface,c,[(r.x+113,r.y+60),(r.x+158,r.y+118),(r.x+120,r.y+119),(r.x+94,r.y+65)])
-            elif kind=='rug':
-                c={'default':(164,145,178),'stars':(124,117,160),'leaves':(131,156,135)}[value]
-                pygame.draw.ellipse(surface,c,(r.x+21,r.y+32,160,88))
-                pygame.draw.ellipse(surface,GOLD,(r.x+29,r.y+40,144,72),2)
-                text(surface,assets,{'default':'','stars':'✦','leaves':'잎'}.get(value,''),
-                     (r.centerx,r.y+74),size=32,color=CREAM,anchor='center')
-            else:
-                pygame.draw.rect(surface,{'default':(181,142,106),'leaves':SAGE,'stars':LAVENDER}[value],(r.x+42,r.y+25,117,110),border_radius=7)
-                pygame.draw.rect(surface,(94,73,112),(r.x+52,r.y+35,97,90),border_radius=3)
-                _icon(surface,assets,'paw_cursor',(r.x+70,r.y+51,61,61))
-            text(surface,assets,label,(r.centerx,r.y+146),size=21,color=INK,anchor='midtop',bold=True)
-            text(surface,assets,'사용 중' if current==value else ('선택하기' if unlocked else f'별 {threshold}개 필요'),
-                 (r.centerx,r.y+180),size=16,color=(134,107,99),anchor='midtop')
-            if not unlocked:_icon(surface,assets,'badge_locked',(r.right-40,r.y+8,30,30))
-            ui.control(f'cosmetic:{kind}:{value}',r,label,disabled=not unlocked,custom=True)
-        wrapped(surface,assets,'별은 소비하지 않아요. 방마다 최고 별만 합산되며,\n6개·12개·18개에서 새로운 꾸미기가 열려요.',pygame.Rect(566,519,639,67),size=18,color=INK)
-        ui.control('back',(38,630,181,39),'쉼터로')
-        _footer(surface,assets)
+        _background(surface,assets,ctx=ctx,actors=False)
+        render_collection(surface,assets,ctx,ui)
 
     elif screen == 'settings':
         paused=bool(ctx.get('from_game'))
@@ -823,4 +768,9 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
     # In-page toast never intercepts controls or changes state.
     if ctx.get('toast') and screen not in ('save_error','confirm'):
         _chip(surface,assets,str(ctx['toast']),(340,110,600,40),fill=NIGHT,color=CREAM,size=17)
+    if ctx.get('collection_notice') and screen in ('home','album'):
+        panel(surface,(352,48,650,62),fill=NIGHT,border=GOLD,radius=12)
+        text(surface,assets,ctx['collection_notice'],(370,69),size=17)
+        ui.control('collection_notice_open',(724,61,166,35),'수집장 보기')
+        ui.control('collection_notice_close',(904,61,78,35),'닫기')
     return ui.controls

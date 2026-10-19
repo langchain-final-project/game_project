@@ -1,5 +1,6 @@
 """Saved completion IDs control the lobby, independently of retries and draw calls."""
 from copy import deepcopy
+import json
 import os
 from pathlib import Path
 from unittest.mock import patch
@@ -92,7 +93,7 @@ def test_dialogue_background_hides_characters_even_after_all_stages_are_complete
     assert all(call.args[0] == 'item.png' for call in sprite.call_args_list)
 
 
-def test_home_and_before_toggle_use_saved_progress_without_changing_the_save(tmp_path):
+def test_home_and_before_toggle_only_adds_collection_discovery(tmp_path):
     from kkamang.app import GameApp
     from kkamang.ui import menus
 
@@ -113,8 +114,13 @@ def test_home_and_before_toggle_use_saved_progress_without_changing_the_save(tmp
             game.dispatch('toggle_home_view')
             game.draw()
             assert draw.call_args.kwargs['before'] is False
+        original['collection']['unlocked'] = [1, 2, 7]
+        original['collection']['discoveries'] = ['shelter_before', 'shelter_return']
         assert game.campaign.data == original
-        assert game.store.path.read_bytes() == saved_bytes
+        previous_save = json.loads(saved_bytes)
+        current_save = json.loads(game.store.path.read_bytes())
+        previous_save['collection'] = original['collection']
+        assert current_save == previous_save
     finally:
         game.close()
 
