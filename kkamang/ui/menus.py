@@ -795,7 +795,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
                 '01', '조작키',
                 'WASD / 방향키로 이동해요.\n'
                 'E로 필수 물건 획득·상호작용!',
-                (('file', 'icons/paw_cursor.png'),),
+                (('file', 'art/control.png'),),
             ),
             (
                 '02', '스테이지 클리어',
