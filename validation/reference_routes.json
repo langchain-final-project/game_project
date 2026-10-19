@@ -1,5 +1,5 @@
 {
-  "source": "v0.2 witnesses; stages 02 and 07 regenerated with magnet-aware beam search + GameCore rollout; not optimality proofs",
+  "source": "v0.2 witnesses; stages 02 and 07 regenerated for one-point-only magnet collection with beam search + GameCore rollout; not optimality proofs",
   "source_results_sha256": null,
   "routes": [
     {
@@ -2120,15 +2120,17 @@
         0,
         0,
         0,
+        3,
         0,
+        2,
         2,
         2,
         2,
         2,
         4
       ],
-      "ticks": 20,
-      "banked": 12,
+      "ticks": 22,
+      "banked": 10,
       "phase_offsets": [
         0
       ],
@@ -2559,15 +2561,14 @@
             8,
             4
           ],
-          "carried": 8,
+          "carried": 5,
           "quest_collected": true,
           "collected_ids": [
             "heat_00",
             "heat_01",
             "heat_02",
             "heat_03",
-            "heat_07",
-            "heat_08"
+            "heat_07"
           ],
           "opened_shortcut_ids": [],
           "ghosts": [
@@ -2597,16 +2598,14 @@
             8,
             3
           ],
-          "carried": 11,
+          "carried": 5,
           "quest_collected": true,
           "collected_ids": [
             "heat_00",
             "heat_01",
             "heat_02",
             "heat_03",
-            "heat_07",
-            "heat_08",
-            "heat_09"
+            "heat_07"
           ],
           "opened_shortcut_ids": [],
           "ghosts": [
@@ -2636,7 +2635,7 @@
             8,
             2
           ],
-          "carried": 12,
+          "carried": 6,
           "quest_collected": true,
           "collected_ids": [
             "heat_00",
@@ -2644,9 +2643,7 @@
             "heat_02",
             "heat_03",
             "heat_04",
-            "heat_07",
-            "heat_08",
-            "heat_09"
+            "heat_07"
           ],
           "opened_shortcut_ids": [],
           "ghosts": [
@@ -2673,10 +2670,10 @@
         {
           "tick": 15,
           "player": [
-            8,
-            1
+            9,
+            2
           ],
-          "carried": 12,
+          "carried": 10,
           "quest_collected": true,
           "collected_ids": [
             "heat_00",
@@ -2684,8 +2681,8 @@
             "heat_02",
             "heat_03",
             "heat_04",
+            "heat_05",
             "heat_07",
-            "heat_08",
             "heat_09"
           ],
           "opened_shortcut_ids": [],
@@ -2713,10 +2710,10 @@
         {
           "tick": 16,
           "player": [
-            7,
+            9,
             1
           ],
-          "carried": 12,
+          "carried": 10,
           "quest_collected": true,
           "collected_ids": [
             "heat_00",
@@ -2724,8 +2721,8 @@
             "heat_02",
             "heat_03",
             "heat_04",
+            "heat_05",
             "heat_07",
-            "heat_08",
             "heat_09"
           ],
           "opened_shortcut_ids": [],
@@ -2753,10 +2750,10 @@
         {
           "tick": 17,
           "player": [
-            6,
+            8,
             1
           ],
-          "carried": 12,
+          "carried": 10,
           "quest_collected": true,
           "collected_ids": [
             "heat_00",
@@ -2764,8 +2761,8 @@
             "heat_02",
             "heat_03",
             "heat_04",
+            "heat_05",
             "heat_07",
-            "heat_08",
             "heat_09"
           ],
           "opened_shortcut_ids": [],
@@ -2793,10 +2790,10 @@
         {
           "tick": 18,
           "player": [
-            5,
+            7,
             1
           ],
-          "carried": 12,
+          "carried": 10,
           "quest_collected": true,
           "collected_ids": [
             "heat_00",
@@ -2804,8 +2801,8 @@
             "heat_02",
             "heat_03",
             "heat_04",
+            "heat_05",
             "heat_07",
-            "heat_08",
             "heat_09"
           ],
           "opened_shortcut_ids": [],
@@ -2833,10 +2830,10 @@
         {
           "tick": 19,
           "player": [
-            4,
+            6,
             1
           ],
-          "carried": 12,
+          "carried": 10,
           "quest_collected": true,
           "collected_ids": [
             "heat_00",
@@ -2844,8 +2841,8 @@
             "heat_02",
             "heat_03",
             "heat_04",
+            "heat_05",
             "heat_07",
-            "heat_08",
             "heat_09"
           ],
           "opened_shortcut_ids": [],
@@ -2873,10 +2870,10 @@
         {
           "tick": 20,
           "player": [
-            4,
+            5,
             1
           ],
-          "carried": 12,
+          "carried": 10,
           "quest_collected": true,
           "collected_ids": [
             "heat_00",
@@ -2884,8 +2881,8 @@
             "heat_02",
             "heat_03",
             "heat_04",
+            "heat_05",
             "heat_07",
-            "heat_08",
             "heat_09"
           ],
           "opened_shortcut_ids": [],
@@ -2897,6 +2894,86 @@
                 3
               ],
               "current_index": 2,
+              "countdown": 2
+            }
+          ],
+          "magnet": {
+            "position": [
+              6,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 0
+          }
+        },
+        {
+          "tick": 21,
+          "player": [
+            4,
+            1
+          ],
+          "carried": 10,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_01",
+            "heat_02",
+            "heat_03",
+            "heat_04",
+            "heat_05",
+            "heat_07",
+            "heat_09"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                9,
+                3
+              ],
+              "current_index": 2,
+              "countdown": 1
+            }
+          ],
+          "magnet": {
+            "position": [
+              6,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 0
+          }
+        },
+        {
+          "tick": 22,
+          "player": [
+            4,
+            1
+          ],
+          "carried": 10,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_01",
+            "heat_02",
+            "heat_03",
+            "heat_04",
+            "heat_05",
+            "heat_07",
+            "heat_09"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                8,
+                3
+              ],
+              "current_index": 3,
               "countdown": 2
             }
           ],
@@ -3371,15 +3448,14 @@
             8,
             4
           ],
-          "carried": 8,
+          "carried": 5,
           "quest_collected": true,
           "collected_ids": [
             "heat_00",
             "heat_01",
             "heat_02",
             "heat_03",
-            "heat_07",
-            "heat_08"
+            "heat_07"
           ],
           "opened_shortcut_ids": [],
           "ghosts": [
@@ -3409,7 +3485,7 @@
             9,
             4
           ],
-          "carried": 9,
+          "carried": 6,
           "quest_collected": true,
           "collected_ids": [
             "heat_00",
@@ -3417,8 +3493,7 @@
             "heat_02",
             "heat_03",
             "heat_06",
-            "heat_07",
-            "heat_08"
+            "heat_07"
           ],
           "opened_shortcut_ids": [],
           "ghosts": [
@@ -3448,7 +3523,7 @@
             9,
             3
           ],
-          "carried": 12,
+          "carried": 9,
           "quest_collected": true,
           "collected_ids": [
             "heat_00",
@@ -3457,8 +3532,7 @@
             "heat_03",
             "heat_06",
             "heat_07",
-            "heat_08",
-            "heat_09"
+            "heat_08"
           ],
           "opened_shortcut_ids": [],
           "ghosts": [
@@ -24516,11 +24590,11 @@
         0,
         0,
         0,
+        0,
+        3,
         3,
         3,
         0,
-        0,
-        3,
         4,
         3,
         4,
@@ -25260,15 +25334,14 @@
         {
           "tick": 17,
           "player": [
-            9,
-            4
+            8,
+            3
           ],
-          "carried": 6,
+          "carried": 5,
           "quest_collected": false,
           "collected_ids": [
             "heat_00",
             "heat_02",
-            "heat_04",
             "heat_09"
           ],
           "opened_shortcut_ids": [],
@@ -25305,16 +25378,15 @@
         {
           "tick": 18,
           "player": [
-            10,
-            4
+            9,
+            3
           ],
-          "carried": 9,
+          "carried": 6,
           "quest_collected": false,
           "collected_ids": [
             "heat_00",
             "heat_02",
             "heat_04",
-            "heat_08",
             "heat_09"
           ],
           "opened_shortcut_ids": [],
@@ -25354,13 +25426,12 @@
             10,
             3
           ],
-          "carried": 9,
+          "carried": 6,
           "quest_collected": false,
           "collected_ids": [
             "heat_00",
             "heat_02",
             "heat_04",
-            "heat_08",
             "heat_09"
           ],
           "opened_shortcut_ids": [],
@@ -25397,8 +25468,8 @@
         {
           "tick": 20,
           "player": [
-            10,
-            2
+            11,
+            3
           ],
           "carried": 9,
           "quest_collected": false,
@@ -28065,8 +28136,6 @@
         1,
         1,
         1,
-        3,
-        3,
         1,
         1,
         1,
@@ -28075,38 +28144,45 @@
         3,
         3,
         3,
-        0,
-        0,
-        0,
-        3,
-        3,
-        1,
-        1,
         3,
         3,
         0,
         0,
         0,
         0,
-        2,
+        3,
+        3,
+        3,
+        3,
+        0,
         4,
-        3,
-        4,
+        1,
+        1,
+        1,
+        2,
+        1,
+        1,
         2,
         2,
+        0,
         2,
-        2,
+        1,
         2,
         2,
         0,
         2,
         2,
         2,
+        0,
+        0,
+        0,
+        0,
+        0,
         2,
         2,
         4
       ],
-      "ticks": 43,
+      "ticks": 48,
       "banked": 14,
       "phase_offsets": [
         0,
@@ -28277,8 +28353,8 @@
         {
           "tick": 4,
           "player": [
-            2,
-            4
+            1,
+            5
           ],
           "carried": 0,
           "quest_collected": false,
@@ -28317,14 +28393,12 @@
         {
           "tick": 5,
           "player": [
-            3,
-            4
+            1,
+            6
           ],
-          "carried": 3,
+          "carried": 0,
           "quest_collected": false,
-          "collected_ids": [
-            "heat_09"
-          ],
+          "collected_ids": [],
           "opened_shortcut_ids": [],
           "ghosts": [
             {
@@ -28359,14 +28433,12 @@
         {
           "tick": 6,
           "player": [
-            3,
-            5
+            1,
+            7
           ],
-          "carried": 3,
+          "carried": 0,
           "quest_collected": false,
-          "collected_ids": [
-            "heat_09"
-          ],
+          "collected_ids": [],
           "opened_shortcut_ids": [],
           "ghosts": [
             {
@@ -28401,14 +28473,12 @@
         {
           "tick": 7,
           "player": [
-            3,
-            6
+            2,
+            7
           ],
-          "carried": 3,
+          "carried": 0,
           "quest_collected": false,
-          "collected_ids": [
-            "heat_09"
-          ],
+          "collected_ids": [],
           "opened_shortcut_ids": [],
           "ghosts": [
             {
@@ -28446,11 +28516,9 @@
             3,
             7
           ],
-          "carried": 3,
+          "carried": 0,
           "quest_collected": false,
-          "collected_ids": [
-            "heat_09"
-          ],
+          "collected_ids": [],
           "opened_shortcut_ids": [],
           "ghosts": [
             {
@@ -28488,11 +28556,9 @@
             4,
             7
           ],
-          "carried": 3,
+          "carried": 0,
           "quest_collected": false,
-          "collected_ids": [
-            "heat_09"
-          ],
+          "collected_ids": [],
           "opened_shortcut_ids": [],
           "ghosts": [
             {
@@ -28530,11 +28596,9 @@
             5,
             7
           ],
-          "carried": 3,
+          "carried": 0,
           "quest_collected": false,
-          "collected_ids": [
-            "heat_09"
-          ],
+          "collected_ids": [],
           "opened_shortcut_ids": [],
           "ghosts": [
             {
@@ -28572,11 +28636,9 @@
             6,
             7
           ],
-          "carried": 3,
+          "carried": 0,
           "quest_collected": false,
-          "collected_ids": [
-            "heat_09"
-          ],
+          "collected_ids": [],
           "opened_shortcut_ids": [],
           "ghosts": [
             {
@@ -28614,11 +28676,9 @@
             7,
             7
           ],
-          "carried": 3,
+          "carried": 0,
           "quest_collected": false,
-          "collected_ids": [
-            "heat_09"
-          ],
+          "collected_ids": [],
           "opened_shortcut_ids": [],
           "ghosts": [
             {
@@ -28656,11 +28716,10 @@
             8,
             7
           ],
-          "carried": 4,
+          "carried": 1,
           "quest_collected": false,
           "collected_ids": [
-            "heat_00",
-            "heat_09"
+            "heat_00"
           ],
           "opened_shortcut_ids": [],
           "ghosts": [
@@ -28699,12 +28758,11 @@
             8,
             6
           ],
-          "carried": 5,
+          "carried": 2,
           "quest_collected": false,
           "collected_ids": [
             "heat_00",
-            "heat_02",
-            "heat_09"
+            "heat_02"
           ],
           "opened_shortcut_ids": [],
           "ghosts": [
@@ -28743,12 +28801,11 @@
             8,
             5
           ],
-          "carried": 5,
+          "carried": 2,
           "quest_collected": false,
           "collected_ids": [
             "heat_00",
-            "heat_02",
-            "heat_09"
+            "heat_02"
           ],
           "opened_shortcut_ids": [],
           "ghosts": [
@@ -28787,12 +28844,11 @@
             8,
             4
           ],
-          "carried": 5,
+          "carried": 2,
           "quest_collected": false,
           "collected_ids": [
             "heat_00",
-            "heat_02",
-            "heat_09"
+            "heat_02"
           ],
           "opened_shortcut_ids": [],
           "ghosts": [
@@ -28828,16 +28884,14 @@
         {
           "tick": 17,
           "player": [
-            9,
-            4
+            8,
+            3
           ],
-          "carried": 6,
+          "carried": 2,
           "quest_collected": false,
           "collected_ids": [
             "heat_00",
-            "heat_02",
-            "heat_04",
-            "heat_09"
+            "heat_02"
           ],
           "opened_shortcut_ids": [],
           "ghosts": [
@@ -28873,17 +28927,15 @@
         {
           "tick": 18,
           "player": [
-            10,
-            4
+            9,
+            3
           ],
-          "carried": 9,
+          "carried": 3,
           "quest_collected": false,
           "collected_ids": [
             "heat_00",
             "heat_02",
-            "heat_04",
-            "heat_08",
-            "heat_09"
+            "heat_04"
           ],
           "opened_shortcut_ids": [],
           "ghosts": [
@@ -28920,18 +28972,14 @@
           "tick": 19,
           "player": [
             10,
-            5
+            3
           ],
-          "carried": 11,
+          "carried": 3,
           "quest_collected": false,
           "collected_ids": [
             "heat_00",
             "heat_02",
-            "heat_03",
-            "heat_04",
-            "heat_06",
-            "heat_08",
-            "heat_09"
+            "heat_04"
           ],
           "opened_shortcut_ids": [],
           "ghosts": [
@@ -28967,20 +29015,16 @@
         {
           "tick": 20,
           "player": [
-            10,
-            6
+            11,
+            3
           ],
-          "carried": 12,
+          "carried": 6,
           "quest_collected": false,
           "collected_ids": [
             "heat_00",
-            "heat_01",
             "heat_02",
-            "heat_03",
             "heat_04",
-            "heat_06",
-            "heat_08",
-            "heat_09"
+            "heat_08"
           ],
           "opened_shortcut_ids": [],
           "ghosts": [
@@ -29016,20 +29060,17 @@
         {
           "tick": 21,
           "player": [
-            11,
-            6
+            12,
+            3
           ],
-          "carried": 12,
+          "carried": 7,
           "quest_collected": false,
           "collected_ids": [
             "heat_00",
-            "heat_01",
             "heat_02",
-            "heat_03",
             "heat_04",
-            "heat_06",
-            "heat_08",
-            "heat_09"
+            "heat_05",
+            "heat_08"
           ],
           "opened_shortcut_ids": [],
           "ghosts": [
@@ -29066,20 +29107,16 @@
           "tick": 22,
           "player": [
             12,
-            6
+            2
           ],
-          "carried": 13,
+          "carried": 7,
           "quest_collected": false,
           "collected_ids": [
             "heat_00",
-            "heat_01",
             "heat_02",
-            "heat_03",
             "heat_04",
-            "heat_06",
-            "heat_07",
-            "heat_08",
-            "heat_09"
+            "heat_05",
+            "heat_08"
           ],
           "opened_shortcut_ids": [],
           "ghosts": [
@@ -29116,21 +29153,16 @@
           "tick": 23,
           "player": [
             12,
-            5
+            2
           ],
-          "carried": 14,
-          "quest_collected": false,
+          "carried": 7,
+          "quest_collected": true,
           "collected_ids": [
             "heat_00",
-            "heat_01",
             "heat_02",
-            "heat_03",
             "heat_04",
             "heat_05",
-            "heat_06",
-            "heat_07",
-            "heat_08",
-            "heat_09"
+            "heat_08"
           ],
           "opened_shortcut_ids": [],
           "ghosts": [
@@ -29167,21 +29199,16 @@
           "tick": 24,
           "player": [
             12,
-            4
+            3
           ],
-          "carried": 14,
-          "quest_collected": false,
+          "carried": 7,
+          "quest_collected": true,
           "collected_ids": [
             "heat_00",
-            "heat_01",
             "heat_02",
-            "heat_03",
             "heat_04",
             "heat_05",
-            "heat_06",
-            "heat_07",
-            "heat_08",
-            "heat_09"
+            "heat_08"
           ],
           "opened_shortcut_ids": [],
           "ghosts": [
@@ -29218,21 +29245,16 @@
           "tick": 25,
           "player": [
             12,
-            3
+            4
           ],
-          "carried": 14,
-          "quest_collected": false,
+          "carried": 7,
+          "quest_collected": true,
           "collected_ids": [
             "heat_00",
-            "heat_01",
             "heat_02",
-            "heat_03",
             "heat_04",
             "heat_05",
-            "heat_06",
-            "heat_07",
-            "heat_08",
-            "heat_09"
+            "heat_08"
           ],
           "opened_shortcut_ids": [],
           "ghosts": [
@@ -29269,21 +29291,17 @@
           "tick": 26,
           "player": [
             12,
-            2
+            5
           ],
-          "carried": 14,
-          "quest_collected": false,
+          "carried": 8,
+          "quest_collected": true,
           "collected_ids": [
             "heat_00",
-            "heat_01",
             "heat_02",
-            "heat_03",
             "heat_04",
             "heat_05",
-            "heat_06",
             "heat_07",
-            "heat_08",
-            "heat_09"
+            "heat_08"
           ],
           "opened_shortcut_ids": [],
           "ghosts": [
@@ -29320,10 +29338,802 @@
           "tick": 27,
           "player": [
             11,
-            2
+            5
+          ],
+          "carried": 9,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_02",
+            "heat_04",
+            "heat_05",
+            "heat_06",
+            "heat_07",
+            "heat_08"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                11,
+                4
+              ],
+              "current_index": 2,
+              "countdown": 1
+            },
+            {
+              "id": "B",
+              "position": [
+                10,
+                7
+              ],
+              "current_index": 3,
+              "countdown": 1
+            }
+          ],
+          "magnet": {
+            "position": [
+              8,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 1
+          }
+        },
+        {
+          "tick": 28,
+          "player": [
+            11,
+            6
+          ],
+          "carried": 9,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_02",
+            "heat_04",
+            "heat_05",
+            "heat_06",
+            "heat_07",
+            "heat_08"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                10,
+                4
+              ],
+              "current_index": 3,
+              "countdown": 1
+            },
+            {
+              "id": "B",
+              "position": [
+                11,
+                7
+              ],
+              "current_index": 4,
+              "countdown": 1
+            }
+          ],
+          "magnet": {
+            "position": [
+              8,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 0
+          }
+        },
+        {
+          "tick": 29,
+          "player": [
+            11,
+            7
+          ],
+          "carried": 9,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_02",
+            "heat_04",
+            "heat_05",
+            "heat_06",
+            "heat_07",
+            "heat_08"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                10,
+                3
+              ],
+              "current_index": 0,
+              "countdown": 1
+            },
+            {
+              "id": "B",
+              "position": [
+                10,
+                7
+              ],
+              "current_index": 5,
+              "countdown": 1
+            }
+          ],
+          "magnet": {
+            "position": [
+              8,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 0
+          }
+        },
+        {
+          "tick": 30,
+          "player": [
+            10,
+            7
+          ],
+          "carried": 9,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_02",
+            "heat_04",
+            "heat_05",
+            "heat_06",
+            "heat_07",
+            "heat_08"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                11,
+                3
+              ],
+              "current_index": 1,
+              "countdown": 1
+            },
+            {
+              "id": "B",
+              "position": [
+                9,
+                7
+              ],
+              "current_index": 6,
+              "countdown": 1
+            }
+          ],
+          "magnet": {
+            "position": [
+              8,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 0
+          }
+        },
+        {
+          "tick": 31,
+          "player": [
+            9,
+            7
+          ],
+          "carried": 10,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_01",
+            "heat_02",
+            "heat_04",
+            "heat_05",
+            "heat_06",
+            "heat_07",
+            "heat_08"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                11,
+                4
+              ],
+              "current_index": 2,
+              "countdown": 1
+            },
+            {
+              "id": "B",
+              "position": [
+                8,
+                7
+              ],
+              "current_index": 7,
+              "countdown": 1
+            }
+          ],
+          "magnet": {
+            "position": [
+              8,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 0
+          }
+        },
+        {
+          "tick": 32,
+          "player": [
+            9,
+            6
+          ],
+          "carried": 11,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_01",
+            "heat_02",
+            "heat_03",
+            "heat_04",
+            "heat_05",
+            "heat_06",
+            "heat_07",
+            "heat_08"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                10,
+                4
+              ],
+              "current_index": 3,
+              "countdown": 1
+            },
+            {
+              "id": "B",
+              "position": [
+                7,
+                7
+              ],
+              "current_index": 0,
+              "countdown": 1
+            }
+          ],
+          "magnet": {
+            "position": [
+              8,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 0
+          }
+        },
+        {
+          "tick": 33,
+          "player": [
+            8,
+            6
+          ],
+          "carried": 11,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_01",
+            "heat_02",
+            "heat_03",
+            "heat_04",
+            "heat_05",
+            "heat_06",
+            "heat_07",
+            "heat_08"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                10,
+                3
+              ],
+              "current_index": 0,
+              "countdown": 1
+            },
+            {
+              "id": "B",
+              "position": [
+                8,
+                7
+              ],
+              "current_index": 1,
+              "countdown": 1
+            }
+          ],
+          "magnet": {
+            "position": [
+              8,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 0
+          }
+        },
+        {
+          "tick": 34,
+          "player": [
+            8,
+            7
+          ],
+          "carried": 11,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_01",
+            "heat_02",
+            "heat_03",
+            "heat_04",
+            "heat_05",
+            "heat_06",
+            "heat_07",
+            "heat_08"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                11,
+                3
+              ],
+              "current_index": 1,
+              "countdown": 1
+            },
+            {
+              "id": "B",
+              "position": [
+                9,
+                7
+              ],
+              "current_index": 2,
+              "countdown": 1
+            }
+          ],
+          "magnet": {
+            "position": [
+              8,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 0
+          }
+        },
+        {
+          "tick": 35,
+          "player": [
+            7,
+            7
+          ],
+          "carried": 11,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_01",
+            "heat_02",
+            "heat_03",
+            "heat_04",
+            "heat_05",
+            "heat_06",
+            "heat_07",
+            "heat_08"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                11,
+                4
+              ],
+              "current_index": 2,
+              "countdown": 1
+            },
+            {
+              "id": "B",
+              "position": [
+                10,
+                7
+              ],
+              "current_index": 3,
+              "countdown": 1
+            }
+          ],
+          "magnet": {
+            "position": [
+              8,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 0
+          }
+        },
+        {
+          "tick": 36,
+          "player": [
+            6,
+            7
+          ],
+          "carried": 11,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_01",
+            "heat_02",
+            "heat_03",
+            "heat_04",
+            "heat_05",
+            "heat_06",
+            "heat_07",
+            "heat_08"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                10,
+                4
+              ],
+              "current_index": 3,
+              "countdown": 1
+            },
+            {
+              "id": "B",
+              "position": [
+                11,
+                7
+              ],
+              "current_index": 4,
+              "countdown": 1
+            }
+          ],
+          "magnet": {
+            "position": [
+              8,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 0
+          }
+        },
+        {
+          "tick": 37,
+          "player": [
+            6,
+            6
+          ],
+          "carried": 11,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_01",
+            "heat_02",
+            "heat_03",
+            "heat_04",
+            "heat_05",
+            "heat_06",
+            "heat_07",
+            "heat_08"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                10,
+                3
+              ],
+              "current_index": 0,
+              "countdown": 1
+            },
+            {
+              "id": "B",
+              "position": [
+                10,
+                7
+              ],
+              "current_index": 5,
+              "countdown": 1
+            }
+          ],
+          "magnet": {
+            "position": [
+              8,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 0
+          }
+        },
+        {
+          "tick": 38,
+          "player": [
+            5,
+            6
+          ],
+          "carried": 11,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_01",
+            "heat_02",
+            "heat_03",
+            "heat_04",
+            "heat_05",
+            "heat_06",
+            "heat_07",
+            "heat_08"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                11,
+                3
+              ],
+              "current_index": 1,
+              "countdown": 1
+            },
+            {
+              "id": "B",
+              "position": [
+                9,
+                7
+              ],
+              "current_index": 6,
+              "countdown": 1
+            }
+          ],
+          "magnet": {
+            "position": [
+              8,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 0
+          }
+        },
+        {
+          "tick": 39,
+          "player": [
+            4,
+            6
+          ],
+          "carried": 11,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_01",
+            "heat_02",
+            "heat_03",
+            "heat_04",
+            "heat_05",
+            "heat_06",
+            "heat_07",
+            "heat_08"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                11,
+                4
+              ],
+              "current_index": 2,
+              "countdown": 1
+            },
+            {
+              "id": "B",
+              "position": [
+                8,
+                7
+              ],
+              "current_index": 7,
+              "countdown": 1
+            }
+          ],
+          "magnet": {
+            "position": [
+              8,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 0
+          }
+        },
+        {
+          "tick": 40,
+          "player": [
+            3,
+            6
+          ],
+          "carried": 11,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_01",
+            "heat_02",
+            "heat_03",
+            "heat_04",
+            "heat_05",
+            "heat_06",
+            "heat_07",
+            "heat_08"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                10,
+                4
+              ],
+              "current_index": 3,
+              "countdown": 1
+            },
+            {
+              "id": "B",
+              "position": [
+                7,
+                7
+              ],
+              "current_index": 0,
+              "countdown": 1
+            }
+          ],
+          "magnet": {
+            "position": [
+              8,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 0
+          }
+        },
+        {
+          "tick": 41,
+          "player": [
+            3,
+            5
+          ],
+          "carried": 11,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_01",
+            "heat_02",
+            "heat_03",
+            "heat_04",
+            "heat_05",
+            "heat_06",
+            "heat_07",
+            "heat_08"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                10,
+                3
+              ],
+              "current_index": 0,
+              "countdown": 1
+            },
+            {
+              "id": "B",
+              "position": [
+                8,
+                7
+              ],
+              "current_index": 1,
+              "countdown": 1
+            }
+          ],
+          "magnet": {
+            "position": [
+              8,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 0
+          }
+        },
+        {
+          "tick": 42,
+          "player": [
+            3,
+            4
           ],
           "carried": 14,
-          "quest_collected": false,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_01",
+            "heat_02",
+            "heat_03",
+            "heat_04",
+            "heat_05",
+            "heat_06",
+            "heat_07",
+            "heat_08",
+            "heat_09"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                11,
+                3
+              ],
+              "current_index": 1,
+              "countdown": 1
+            },
+            {
+              "id": "B",
+              "position": [
+                9,
+                7
+              ],
+              "current_index": 2,
+              "countdown": 1
+            }
+          ],
+          "magnet": {
+            "position": [
+              8,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 0
+          }
+        },
+        {
+          "tick": 43,
+          "player": [
+            3,
+            3
+          ],
+          "carried": 14,
+          "quest_collected": true,
           "collected_ids": [
             "heat_00",
             "heat_01",
@@ -29364,17 +30174,17 @@
             ],
             "duration_ticks": 13,
             "collected": true,
-            "remaining_ticks": 1
+            "remaining_ticks": 0
           }
         },
         {
-          "tick": 28,
+          "tick": 44,
           "player": [
-            11,
+            3,
             2
           ],
           "carried": 14,
-          "quest_collected": false,
+          "quest_collected": true,
           "collected_ids": [
             "heat_00",
             "heat_01",
@@ -29387,9 +30197,7 @@
             "heat_08",
             "heat_09"
           ],
-          "opened_shortcut_ids": [
-            "A"
-          ],
+          "opened_shortcut_ids": [],
           "ghosts": [
             {
               "id": "A",
@@ -29421,590 +30229,7 @@
           }
         },
         {
-          "tick": 29,
-          "player": [
-            12,
-            2
-          ],
-          "carried": 14,
-          "quest_collected": false,
-          "collected_ids": [
-            "heat_00",
-            "heat_01",
-            "heat_02",
-            "heat_03",
-            "heat_04",
-            "heat_05",
-            "heat_06",
-            "heat_07",
-            "heat_08",
-            "heat_09"
-          ],
-          "opened_shortcut_ids": [
-            "A"
-          ],
-          "ghosts": [
-            {
-              "id": "A",
-              "position": [
-                10,
-                3
-              ],
-              "current_index": 0,
-              "countdown": 1
-            },
-            {
-              "id": "B",
-              "position": [
-                10,
-                7
-              ],
-              "current_index": 5,
-              "countdown": 1
-            }
-          ],
-          "magnet": {
-            "position": [
-              8,
-              4
-            ],
-            "duration_ticks": 13,
-            "collected": true,
-            "remaining_ticks": 0
-          }
-        },
-        {
-          "tick": 30,
-          "player": [
-            12,
-            2
-          ],
-          "carried": 14,
-          "quest_collected": true,
-          "collected_ids": [
-            "heat_00",
-            "heat_01",
-            "heat_02",
-            "heat_03",
-            "heat_04",
-            "heat_05",
-            "heat_06",
-            "heat_07",
-            "heat_08",
-            "heat_09"
-          ],
-          "opened_shortcut_ids": [
-            "A"
-          ],
-          "ghosts": [
-            {
-              "id": "A",
-              "position": [
-                11,
-                3
-              ],
-              "current_index": 1,
-              "countdown": 1
-            },
-            {
-              "id": "B",
-              "position": [
-                9,
-                7
-              ],
-              "current_index": 6,
-              "countdown": 1
-            }
-          ],
-          "magnet": {
-            "position": [
-              8,
-              4
-            ],
-            "duration_ticks": 13,
-            "collected": true,
-            "remaining_ticks": 0
-          }
-        },
-        {
-          "tick": 31,
-          "player": [
-            11,
-            2
-          ],
-          "carried": 14,
-          "quest_collected": true,
-          "collected_ids": [
-            "heat_00",
-            "heat_01",
-            "heat_02",
-            "heat_03",
-            "heat_04",
-            "heat_05",
-            "heat_06",
-            "heat_07",
-            "heat_08",
-            "heat_09"
-          ],
-          "opened_shortcut_ids": [
-            "A"
-          ],
-          "ghosts": [
-            {
-              "id": "A",
-              "position": [
-                11,
-                4
-              ],
-              "current_index": 2,
-              "countdown": 1
-            },
-            {
-              "id": "B",
-              "position": [
-                8,
-                7
-              ],
-              "current_index": 7,
-              "countdown": 1
-            }
-          ],
-          "magnet": {
-            "position": [
-              8,
-              4
-            ],
-            "duration_ticks": 13,
-            "collected": true,
-            "remaining_ticks": 0
-          }
-        },
-        {
-          "tick": 32,
-          "player": [
-            10,
-            2
-          ],
-          "carried": 14,
-          "quest_collected": true,
-          "collected_ids": [
-            "heat_00",
-            "heat_01",
-            "heat_02",
-            "heat_03",
-            "heat_04",
-            "heat_05",
-            "heat_06",
-            "heat_07",
-            "heat_08",
-            "heat_09"
-          ],
-          "opened_shortcut_ids": [
-            "A"
-          ],
-          "ghosts": [
-            {
-              "id": "A",
-              "position": [
-                10,
-                4
-              ],
-              "current_index": 3,
-              "countdown": 1
-            },
-            {
-              "id": "B",
-              "position": [
-                7,
-                7
-              ],
-              "current_index": 0,
-              "countdown": 1
-            }
-          ],
-          "magnet": {
-            "position": [
-              8,
-              4
-            ],
-            "duration_ticks": 13,
-            "collected": true,
-            "remaining_ticks": 0
-          }
-        },
-        {
-          "tick": 33,
-          "player": [
-            9,
-            2
-          ],
-          "carried": 14,
-          "quest_collected": true,
-          "collected_ids": [
-            "heat_00",
-            "heat_01",
-            "heat_02",
-            "heat_03",
-            "heat_04",
-            "heat_05",
-            "heat_06",
-            "heat_07",
-            "heat_08",
-            "heat_09"
-          ],
-          "opened_shortcut_ids": [
-            "A"
-          ],
-          "ghosts": [
-            {
-              "id": "A",
-              "position": [
-                10,
-                3
-              ],
-              "current_index": 0,
-              "countdown": 1
-            },
-            {
-              "id": "B",
-              "position": [
-                8,
-                7
-              ],
-              "current_index": 1,
-              "countdown": 1
-            }
-          ],
-          "magnet": {
-            "position": [
-              8,
-              4
-            ],
-            "duration_ticks": 13,
-            "collected": true,
-            "remaining_ticks": 0
-          }
-        },
-        {
-          "tick": 34,
-          "player": [
-            8,
-            2
-          ],
-          "carried": 14,
-          "quest_collected": true,
-          "collected_ids": [
-            "heat_00",
-            "heat_01",
-            "heat_02",
-            "heat_03",
-            "heat_04",
-            "heat_05",
-            "heat_06",
-            "heat_07",
-            "heat_08",
-            "heat_09"
-          ],
-          "opened_shortcut_ids": [
-            "A"
-          ],
-          "ghosts": [
-            {
-              "id": "A",
-              "position": [
-                11,
-                3
-              ],
-              "current_index": 1,
-              "countdown": 1
-            },
-            {
-              "id": "B",
-              "position": [
-                9,
-                7
-              ],
-              "current_index": 2,
-              "countdown": 1
-            }
-          ],
-          "magnet": {
-            "position": [
-              8,
-              4
-            ],
-            "duration_ticks": 13,
-            "collected": true,
-            "remaining_ticks": 0
-          }
-        },
-        {
-          "tick": 35,
-          "player": [
-            7,
-            2
-          ],
-          "carried": 14,
-          "quest_collected": true,
-          "collected_ids": [
-            "heat_00",
-            "heat_01",
-            "heat_02",
-            "heat_03",
-            "heat_04",
-            "heat_05",
-            "heat_06",
-            "heat_07",
-            "heat_08",
-            "heat_09"
-          ],
-          "opened_shortcut_ids": [
-            "A"
-          ],
-          "ghosts": [
-            {
-              "id": "A",
-              "position": [
-                11,
-                4
-              ],
-              "current_index": 2,
-              "countdown": 1
-            },
-            {
-              "id": "B",
-              "position": [
-                10,
-                7
-              ],
-              "current_index": 3,
-              "countdown": 1
-            }
-          ],
-          "magnet": {
-            "position": [
-              8,
-              4
-            ],
-            "duration_ticks": 13,
-            "collected": true,
-            "remaining_ticks": 0
-          }
-        },
-        {
-          "tick": 36,
-          "player": [
-            6,
-            2
-          ],
-          "carried": 14,
-          "quest_collected": true,
-          "collected_ids": [
-            "heat_00",
-            "heat_01",
-            "heat_02",
-            "heat_03",
-            "heat_04",
-            "heat_05",
-            "heat_06",
-            "heat_07",
-            "heat_08",
-            "heat_09"
-          ],
-          "opened_shortcut_ids": [
-            "A"
-          ],
-          "ghosts": [
-            {
-              "id": "A",
-              "position": [
-                10,
-                4
-              ],
-              "current_index": 3,
-              "countdown": 1
-            },
-            {
-              "id": "B",
-              "position": [
-                11,
-                7
-              ],
-              "current_index": 4,
-              "countdown": 1
-            }
-          ],
-          "magnet": {
-            "position": [
-              8,
-              4
-            ],
-            "duration_ticks": 13,
-            "collected": true,
-            "remaining_ticks": 0
-          }
-        },
-        {
-          "tick": 37,
-          "player": [
-            6,
-            1
-          ],
-          "carried": 14,
-          "quest_collected": true,
-          "collected_ids": [
-            "heat_00",
-            "heat_01",
-            "heat_02",
-            "heat_03",
-            "heat_04",
-            "heat_05",
-            "heat_06",
-            "heat_07",
-            "heat_08",
-            "heat_09"
-          ],
-          "opened_shortcut_ids": [
-            "A"
-          ],
-          "ghosts": [
-            {
-              "id": "A",
-              "position": [
-                10,
-                3
-              ],
-              "current_index": 0,
-              "countdown": 1
-            },
-            {
-              "id": "B",
-              "position": [
-                10,
-                7
-              ],
-              "current_index": 5,
-              "countdown": 1
-            }
-          ],
-          "magnet": {
-            "position": [
-              8,
-              4
-            ],
-            "duration_ticks": 13,
-            "collected": true,
-            "remaining_ticks": 0
-          }
-        },
-        {
-          "tick": 38,
-          "player": [
-            5,
-            1
-          ],
-          "carried": 14,
-          "quest_collected": true,
-          "collected_ids": [
-            "heat_00",
-            "heat_01",
-            "heat_02",
-            "heat_03",
-            "heat_04",
-            "heat_05",
-            "heat_06",
-            "heat_07",
-            "heat_08",
-            "heat_09"
-          ],
-          "opened_shortcut_ids": [
-            "A"
-          ],
-          "ghosts": [
-            {
-              "id": "A",
-              "position": [
-                11,
-                3
-              ],
-              "current_index": 1,
-              "countdown": 1
-            },
-            {
-              "id": "B",
-              "position": [
-                9,
-                7
-              ],
-              "current_index": 6,
-              "countdown": 1
-            }
-          ],
-          "magnet": {
-            "position": [
-              8,
-              4
-            ],
-            "duration_ticks": 13,
-            "collected": true,
-            "remaining_ticks": 0
-          }
-        },
-        {
-          "tick": 39,
-          "player": [
-            4,
-            1
-          ],
-          "carried": 14,
-          "quest_collected": true,
-          "collected_ids": [
-            "heat_00",
-            "heat_01",
-            "heat_02",
-            "heat_03",
-            "heat_04",
-            "heat_05",
-            "heat_06",
-            "heat_07",
-            "heat_08",
-            "heat_09"
-          ],
-          "opened_shortcut_ids": [
-            "A"
-          ],
-          "ghosts": [
-            {
-              "id": "A",
-              "position": [
-                11,
-                4
-              ],
-              "current_index": 2,
-              "countdown": 1
-            },
-            {
-              "id": "B",
-              "position": [
-                8,
-                7
-              ],
-              "current_index": 7,
-              "countdown": 1
-            }
-          ],
-          "magnet": {
-            "position": [
-              8,
-              4
-            ],
-            "duration_ticks": 13,
-            "collected": true,
-            "remaining_ticks": 0
-          }
-        },
-        {
-          "tick": 40,
+          "tick": 45,
           "player": [
             3,
             1
@@ -30023,26 +30248,24 @@
             "heat_08",
             "heat_09"
           ],
-          "opened_shortcut_ids": [
-            "A"
-          ],
+          "opened_shortcut_ids": [],
           "ghosts": [
             {
               "id": "A",
               "position": [
                 10,
-                4
+                3
               ],
-              "current_index": 3,
+              "current_index": 0,
               "countdown": 1
             },
             {
               "id": "B",
               "position": [
-                7,
+                10,
                 7
               ],
-              "current_index": 0,
+              "current_index": 5,
               "countdown": 1
             }
           ],
@@ -30057,7 +30280,7 @@
           }
         },
         {
-          "tick": 41,
+          "tick": 46,
           "player": [
             2,
             1
@@ -30076,62 +30299,7 @@
             "heat_08",
             "heat_09"
           ],
-          "opened_shortcut_ids": [
-            "A"
-          ],
-          "ghosts": [
-            {
-              "id": "A",
-              "position": [
-                10,
-                3
-              ],
-              "current_index": 0,
-              "countdown": 1
-            },
-            {
-              "id": "B",
-              "position": [
-                8,
-                7
-              ],
-              "current_index": 1,
-              "countdown": 1
-            }
-          ],
-          "magnet": {
-            "position": [
-              8,
-              4
-            ],
-            "duration_ticks": 13,
-            "collected": true,
-            "remaining_ticks": 0
-          }
-        },
-        {
-          "tick": 42,
-          "player": [
-            1,
-            1
-          ],
-          "carried": 14,
-          "quest_collected": true,
-          "collected_ids": [
-            "heat_00",
-            "heat_01",
-            "heat_02",
-            "heat_03",
-            "heat_04",
-            "heat_05",
-            "heat_06",
-            "heat_07",
-            "heat_08",
-            "heat_09"
-          ],
-          "opened_shortcut_ids": [
-            "A"
-          ],
+          "opened_shortcut_ids": [],
           "ghosts": [
             {
               "id": "A",
@@ -30148,7 +30316,7 @@
                 9,
                 7
               ],
-              "current_index": 2,
+              "current_index": 6,
               "countdown": 1
             }
           ],
@@ -30163,7 +30331,7 @@
           }
         },
         {
-          "tick": 43,
+          "tick": 47,
           "player": [
             1,
             1
@@ -30182,9 +30350,7 @@
             "heat_08",
             "heat_09"
           ],
-          "opened_shortcut_ids": [
-            "A"
-          ],
+          "opened_shortcut_ids": [],
           "ghosts": [
             {
               "id": "A",
@@ -30198,10 +30364,61 @@
             {
               "id": "B",
               "position": [
-                10,
+                8,
                 7
               ],
+              "current_index": 7,
+              "countdown": 1
+            }
+          ],
+          "magnet": {
+            "position": [
+              8,
+              4
+            ],
+            "duration_ticks": 13,
+            "collected": true,
+            "remaining_ticks": 0
+          }
+        },
+        {
+          "tick": 48,
+          "player": [
+            1,
+            1
+          ],
+          "carried": 14,
+          "quest_collected": true,
+          "collected_ids": [
+            "heat_00",
+            "heat_01",
+            "heat_02",
+            "heat_03",
+            "heat_04",
+            "heat_05",
+            "heat_06",
+            "heat_07",
+            "heat_08",
+            "heat_09"
+          ],
+          "opened_shortcut_ids": [],
+          "ghosts": [
+            {
+              "id": "A",
+              "position": [
+                10,
+                4
+              ],
               "current_index": 3,
+              "countdown": 1
+            },
+            {
+              "id": "B",
+              "position": [
+                7,
+                7
+              ],
+              "current_index": 0,
               "countdown": 1
             }
           ],

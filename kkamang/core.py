@@ -200,10 +200,12 @@ class GameCore:
             raise RuntimeError("Episode has ended; call reset() before stepping again")
 
     def _collect_warmth(self, events: list[dict], *, magnetic: bool) -> None:
-        """획득은 즉시 확정하고, 흡입 애니메이션은 UI에서 처리합니다."""
+        """자석은 1점 온기만 끌어오며, 3점 온기는 직접 밟아야 획득합니다."""
         state = self._state
-        radius = 1 if magnetic else 0
         for item in state["items"]:
+            # 1점은 자석 범위(주변 3×3칸), 3점은 현재 칸에서만 수집합니다.
+            magnetic_pickup = magnetic and item["value"] == 1
+            radius = 1 if magnetic_pickup else 0
             if (item["active"] and all(
                     abs(item["position"][axis] - state["position"][axis]) <= radius
                     for axis in (0, 1))):
@@ -214,7 +216,7 @@ class GameCore:
                     "value": item["value"], "carried": state["carried"],
                     "position": list(state["position"]),
                     "source_position": list(item["position"]),
-                    "magnetic": magnetic,
+                    "magnetic": magnetic_pickup,
                 })
 
     def _next_chaser_position(self, origin: list[int]) -> list[int]:

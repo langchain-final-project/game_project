@@ -474,6 +474,9 @@ class GameApp:
             self.transition(self.confirm_return)
         elif s == 'save_error':
             self.transition(self.save_return)
+        elif s == 'home':
+            # 로비에서 ESC를 누르면 진행을 저장하고 시작 화면으로 돌아갑니다.
+            self.persist('title')
         elif s == 'title':
             self.request_confirm('quit')
         elif s == 'settings':
