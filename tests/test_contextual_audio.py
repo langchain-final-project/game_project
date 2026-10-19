@@ -36,6 +36,9 @@ class Channel:
     def get_busy(self):
         return self.busy
 
+    def get_sound(self):
+        return self.sound
+
     def stop(self):
         self.stops += 1
         self.sound, self.busy, self.paused = None, False, False

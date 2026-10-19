@@ -114,12 +114,52 @@ def test_volume_zero_mutes_both_music_and_cues_without_losing_progress(engine):
     assert all(channel.get_volume() == 0 for channel in engine.story_channels.values())
     engine.play('memory_complete')
     assert engine.sounds['memory_complete'].get_volume() == 0
+    # Let SDL mix several buffers: an asynchronous channel fade used to undo
+    # the mute after configure() had returned, even without another cue.
+    pygame.time.wait(100)
+    assert all(channel.get_volume() == 0 for channel in engine.story_channels.values())
     engine.configure(SETTINGS)
     assert pygame.mixer.music.get_volume() == pytest.approx(.6, abs=1/128)
     assert engine.story_channels['dawn'].get_volume() == pytest.approx(.6*.45, abs=1/128)
     assert engine.story_channels['phrase1'].get_volume() == pytest.approx(.6*.65, abs=1/128)
     engine.play('memory_complete')
     assert engine.sounds['memory_complete'].get_volume() == pytest.approx(.4, abs=1/128)
+    pygame.time.wait(100)
+    assert engine.story_channels['dawn'].get_volume() == pytest.approx(.6*.45, abs=1/128)
+    assert engine.story_channels['phrase1'].get_volume() == pytest.approx(.6*.65, abs=1/128)
+    assert engine.story_state == (True, True, True)
+
+
+def test_saturated_sfx_and_automatic_play_cannot_replace_reserved_story_layers(engine):
+    engine.configure(SETTINGS, completed=range(1, 13), released=True)
+    expected = {name: channel.get_sound() for name, channel in engine.story_channels.items()}
+    cue = engine.sounds['memory_complete']
+    # Persistent blockers make channel pressure independent of CI wall time.
+    for index in range(engine.RESERVED_CHANNELS, pygame.mixer.get_num_channels()):
+        pygame.mixer.Channel(index).play(cue, loops=-1)
+    engine.play('memory_complete')
+    assert cue.play() is None
+    assert expected == {name: channel.get_sound() for name, channel in engine.story_channels.items()}
+    free = pygame.mixer.Channel(engine.RESERVED_CHANNELS)
+    free.stop()
+    automatic = cue.play(loops=-1)
+    assert automatic is not None and free.get_sound() is cue
+    assert expected == {name: channel.get_sound() for name, channel in engine.story_channels.items()}
+
+
+def test_reconfigure_recovers_stopped_or_replaced_story_channels_without_losing_state(engine):
+    engine.configure(SETTINGS, completed=range(1, 13), released=True)
+    cue = engine.sounds['memory_complete']
+    engine.story_channels['dawn'].play(cue, loops=-1)
+    engine.story_channels['phrase1'].stop()
+    engine.story_channels['rain'].play(cue, loops=-1)
+    engine.configure(SETTINGS)
+    assert engine.story_state == (True, True, True)
+    for name in ('dawn', 'phrase1', 'phrase2'):
+        assert engine.story_channels[name].get_sound() is engine.story_sounds[name]
+    assert not engine.story_channels['rain'].get_busy()
+    pygame.time.wait(100)
+    assert engine.story_channels['dawn'].get_volume() == pytest.approx(.6*.45, abs=1/128)
 
 
 def test_generated_dawn_loop_is_faded_and_contains_a_quiet_low_body_sound(engine):

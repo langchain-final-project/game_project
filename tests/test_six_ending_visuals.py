@@ -9,7 +9,7 @@ import pygame
 import pytest
 
 from kkamang.ending_content import released_variants
-from kkamang.ui import illustration,memories
+from kkamang.ui import illustration,lobby,memories
 
 
 ENDINGS=(('happy_all',(0,1,2)),('ghost_a',(0,)),('ghost_b',(2,)),
@@ -81,7 +81,7 @@ def test_sad_lobby_hides_all_friends_but_keeps_the_player():
          patch.object(illustration,'prop',wraps=illustration.prop) as objects:
         illustration.shelter(canvas(),range(1,13),released_variants=(),show_residents=False)
     assert not alive.called and not spectral.called
-    assert sum(call.args[0]=='kkamang_wait.png' for call in image.call_args_list)==1
+    assert sum(call.args[0]=='character/kkamang_wait.png' for call in image.call_args_list)==1
     assert [call.args[1] for call in objects.call_args_list]==['towel']
 
 
@@ -104,3 +104,74 @@ def test_explicit_best_ending_has_four_sleepers_and_no_ghosts():
         memories.draw_cinematic(canvas(),'true_end',4.,released_variants=(0,1,2))
     assert called_variants(asleep,2)==(0,2,None,1)
     assert not spectral.called
+
+
+@pytest.mark.parametrize('ending,expected',ENDINGS)
+def test_png_lobby_six_active_states_replace_only_their_own_resident(ending,expected):
+    lobby._scene.cache_clear()
+    with patch.object(lobby,'resident_cat',wraps=lobby.resident_cat) as alive, \
+         patch.object(lobby,'_sprite',wraps=lobby._sprite) as sprite, \
+         patch.object(lobby,'_image',wraps=lobby._image) as image:
+        lobby.draw_lobby(canvas(),range(1,13),released_variants=expected,
+                         show_residents=ending!='sad')
+    assert called_variants(alive,4)==expected
+    ghosts={call.args[1].name for call in sprite.call_args_list
+            if call.args[0]=='character.png' and call.args[1].name!='까망이'}
+    if ending=='normal':
+        # Main's supplied final art already has all three ghosts and Kkamang.
+        assert [call.args[0] for call in image.call_args_list]==['after.png']
+        assert not sprite.called
+    else:
+        assert ghosts==({name for name,variant in lobby.RESIDENT_VARIANTS.items()
+                         if variant not in expected} if ending!='sad' else set())
+        assert sum(call.args[1].name=='까망이' for call in sprite.call_args_list)==1
+        assert sum(call.args[0]=='item.png' for call in sprite.call_args_list)==11
+    for call in alive.call_args_list:
+        spec=lobby.CHARACTERS[('A','B','C')[call.args[4]]]
+        assert call.args[1]==spec.foot
+        assert call.args[2]==spec.size[0]
+
+
+def test_png_lobby_default_final_art_and_variation_caches_stay_separate():
+    lobby._scene.cache_clear()
+    completed=list(range(1,13))
+    surface=canvas();lobby.draw_lobby(surface,completed)
+    expected=pygame.transform.smoothscale(lobby._image('after.png'),surface.get_size())
+    original=pygame.image.tobytes(surface,'RGB')
+    assert original==pygame.image.tobytes(expected,'RGB')
+    frames=[]
+    for living,residents in (((0,),True),((1,),True),((2,),True),((0,1,2),True),((),False)):
+        lobby.draw_lobby(surface,completed,released_variants=living,show_residents=residents)
+        frames.append(pygame.image.tobytes(surface,'RGB'))
+    assert len(set(frames+[original]))==6
+    lobby.draw_lobby(surface,completed)
+    assert pygame.image.tobytes(surface,'RGB')==original
+    lobby.draw_lobby(surface,completed,before=True,released_variants=(0,1,2))
+    initial=canvas();lobby.draw_lobby(initial,())
+    assert pygame.image.tobytes(surface,'RGB')==pygame.image.tobytes(initial,'RGB')
+    assert completed==list(range(1,13))
+
+
+@pytest.mark.parametrize('completed,expected',(((),()),((1,),(0,)),((4,),(2,)),((7,),(1,))))
+def test_png_lobby_released_bodies_keep_main_arrival_stages(completed,expected):
+    lobby._scene.cache_clear()
+    with patch.object(lobby,'resident_cat',wraps=lobby.resident_cat) as alive:
+        lobby.draw_lobby(canvas(),completed,released_variants=(0,1,2))
+    assert called_variants(alive,4)==expected
+
+
+def test_png_lobby_released_bodies_keep_depth_and_bosongs_folded_ear_rig():
+    lobby._scene.cache_clear();depths=[]
+    actual_sprite=lobby._sprite;actual_resident=lobby.resident_cat
+    def sprite(filename,spec):
+        depths.append(spec.foot[1])
+        return actual_sprite(filename,spec)
+    def resident(surface,foot,size,time,variant):
+        depths.append(foot[1])
+        return actual_resident(surface,foot,size,time,variant)
+    with patch.object(lobby,'_sprite',side_effect=sprite), \
+         patch.object(lobby,'resident_cat',side_effect=resident), \
+         patch.object(illustration,'_resident_cat_frame',wraps=illustration._resident_cat_frame) as rig:
+        lobby.draw_lobby(canvas(),range(1,13),released_variants=(0,1,2))
+    assert depths==sorted(depths)
+    assert [call.kwargs['folded_ears'] for call in rig.call_args_list]==[True,False,False]

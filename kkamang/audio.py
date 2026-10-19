@@ -276,12 +276,16 @@ class AudioEngine:
         for name, channel in self.story_channels.items():
             try:
                 if active[name]:
-                    if not channel.get_busy():
-                        channel.play(self.story_sounds[name], loops=-1, fade_ms=700)
+                    if (not channel.get_busy()
+                            or channel.get_sound() is not self.story_sounds[name]):
+                        # SDL fades keep writing channel volume on the mixer
+                        # thread, overriding later mute/unmute settings. These
+                        # generated loops already have their own soft attack.
+                        channel.play(self.story_sounds[name], loops=-1)
                         if self._world_paused:
                             channel.pause()
-                elif self.story_active.get(name, False):
-                    channel.fadeout(500)
+                elif channel.get_busy():
+                    channel.stop()
             except Exception:
                 pass
         self.story_active = active

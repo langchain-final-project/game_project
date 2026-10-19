@@ -9,7 +9,7 @@ import pygame
 
 from ..paths import ASSET_DIR
 
-SHEET_PATH = ASSET_DIR / 'art' / 'kkamang.png'
+SHEET_PATH = ASSET_DIR / 'art' / 'character' / 'kkamang.png'
 SHEET_SIZE = (1374, 1145)
 CANVAS_SIZE = (256, 288)
 GROUND_ANCHOR = (128, 272)

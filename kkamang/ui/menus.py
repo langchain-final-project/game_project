@@ -11,7 +11,10 @@ import pygame
 from .theme import (CREAM, INK, NIGHT, PAPER, GOLD, LAVENDER, SAGE,
                     text, wrapped, panel, button)
 
-from .illustration import shelter, cat as draw_cat, ghost, prop
+from .illustration import ghost
+from .lobby import (
+    ITEMS as LOBBY_ITEMS, draw_lobby, draw_story_character, draw_story_item,
+)
 from .likes import draw_likes, draw_choice
 from .map_sprites import map_image
 from .ghost_sprites import ghost_frame
@@ -91,6 +94,15 @@ def _story(ctx, number=None):
                  'lines': [], 'restoration': '', 'teaser': ''})
 
 
+def _story_ghost_id(ctx):
+    """Show a ghost only when that ghost is the current speaker."""
+    ghosts = {'보송': 'A', '이파리': 'B', '도레': 'C'}
+    dialogue = ctx.get('dialogue')
+    speaker = (dialogue.get('speaker', '') if isinstance(dialogue, dict)
+               else dialogue[0] if dialogue else '')
+    return ghosts.get(speaker)
+
+
 def _level(ctx, number=None):
     n = int(number or ctx.get('stage', 1))
     return next((l for l in ctx.get('levels', []) if int(l.get('stage', 0)) == n), {})
@@ -128,13 +140,11 @@ def _home_art(completed):
 def _background(surface, assets, name='title_background.png', shade=0, ctx=None, actors=True):
     ctx = ctx or {}
     data = _data(ctx)
-    shelter(surface, data.get('completed', []), data.get('cosmetics', {}),
-            float(ctx.get('elapsed', 0)),
-            before=ctx.get('scene')=='home' and ctx.get('home_view')=='before',
-            show_actors=actors, released=ctx.get('released', False),
-            released_variants=ctx.get('released_variants'),
-            show_residents=ctx.get('active_ending')!='sad',
-            story_time=float(ctx.get('scene_elapsed', 0)))
+    draw_lobby(surface, data.get('completed', []),
+               before=ctx.get('scene')=='home' and ctx.get('home_view')=='before',
+               show_actors=actors,
+               released_variants=ctx.get('released_variants', ()),
+               show_residents=ctx.get('active_ending')!='sad')
     if shade:
         _overlay(surface, (0, 0, W, H), alpha=min(shade,140))
 
@@ -271,7 +281,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
     if screen == 'title':
         _background(surface, assets,ctx=ctx,actors=False)
         # 시작 화면도 앉아 있는 까망이 PNG를 사용하고 발 위치를 유지합니다.
-        title_cat = assets.icon('art/kkamang_wait.png', (280, 315))
+        title_cat = assets.icon('art/character/kkamang_wait.png', (280, 315))
         surface.blit(title_cat, title_cat.get_rect(midbottom=(877, 595)))
         ghost(surface,(1110,515),125,time=elapsed,resident=True)
         # The art was composed with quiet space at left for the live title.
@@ -320,8 +330,16 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             ui.control('ending',(1004,253,233,40),'현재 엔딩 보기',
                        disabled=not ctx.get('selected_ending'))
         _overlay(surface,(0,560,W,160),alpha=190)
-        note = ('대표 기억의 호감도와 최고 별점에 따라 여섯 가지 결말을 만나요.'
-                if len(completed)==12 else '귀환 조건: 아이템 1개 + 온기 4점 이상 · 귀환점에서 E')
+        note = '귀환 조건: 아이템 1개 + 온기 4점 이상 · 귀환점에서 E'
+        if completed and max(completed) in LOBBY_ITEMS:
+            latest_stage = max(completed)
+            restored = LOBBY_ITEMS[latest_stage].name
+            resident = {1: '보송', 4: '도레', 7: '이파리'}.get(latest_stage)
+            note = f'쉼터 복원: {restored}' + (f' · {resident} 표시' if resident else '')
+        if len(completed)==12:
+            note = '대표 기억의 호감도와 최고 별점에 따라 여섯 가지 결말을 만나요.'
+        if old_view:
+            note = '처음 쉼터 보기 · 저장된 완료 기록 유지'
         _fit_text(surface,assets,note,(40,567,1198,35),size=17,color=CREAM)
         ui.control('explore',(38,613,300,52),'방 다시 탐험' if len(completed)==12 else '탐험',primary=True)
         ui.control('album',(352,613,215,52),'기억 앨범')
@@ -480,7 +498,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
                  '종이 울려 차가운 안개가 찼어요. 다음엔 조금 일찍 돌아와요.')
             wrapped(surface,assets,msg,pygame.Rect(79,422,644,116),size=21,color=INK,line_gap=10)
         # 탐사 결과 화면의 까망이는 앉아 있는 PNG를 사용합니다.
-        char = assets.icon('art/kkamang_wait.png', (300, 350))
+        char = assets.icon('art/character/kkamang_wait.png', (300, 350))
         surface.blit(char,(863,169+int(math.sin(elapsed*2)*4)))
         if success and practice:
             _chip(surface,assets,'연습을 마쳤어요',(831,522,376,49),size=16)

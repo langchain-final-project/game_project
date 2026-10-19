@@ -432,7 +432,7 @@ def shelter(surface, completed=(), cosmetics=None,time=0.,before=False,show_acto
                 yy=plant[1]+10+(time*18+k*7)%27
                 d.circle(surface,(171,204,212),(round(plant[0]-8-k*3),round(yy)),2)
         # Keep the seated main PNG while the fourth place moves into the group.
-        seated_cat = _png_image('kkamang_wait.png', (132, 132))
+        seated_cat = _png_image('character/kkamang_wait.png', (132, 132))
         surface.blit(seated_cat, seated_cat.get_rect(midbottom=(round(player[0]), round(player[1]))))
         if show_residents:
             for variant,pos in enumerate(positions):
