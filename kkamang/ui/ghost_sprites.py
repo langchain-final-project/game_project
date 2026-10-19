@@ -27,7 +27,7 @@ def movement_direction(origin, target, default='down'):
 
 @lru_cache(maxsize=3)
 def _atlas(ghost_id):
-    image = pygame.image.load(str(ASSET_DIR / 'art' / GHOST_FILES[ghost_id]))
+    image = pygame.image.load(str(ASSET_DIR / 'art' / 'character' / GHOST_FILES[ghost_id]))
     if image.get_size() != SHEET_SIZE:
         raise ValueError(f'Ghost {ghost_id} atlas must be {SHEET_SIZE}')
     if pygame.display.get_surface():

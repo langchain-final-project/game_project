@@ -11,7 +11,10 @@ import pygame
 from .theme import (CREAM, INK, NIGHT, PAPER, GOLD, LAVENDER, SAGE,
                     text, wrapped, panel, button)
 
-from .illustration import shelter, cat as draw_cat, ghost, prop
+from .illustration import ghost
+from .lobby import (
+    ITEMS as LOBBY_ITEMS, draw_lobby, draw_story_character, draw_story_item,
+)
 from .likes import draw_likes, draw_choice
 from .map_sprites import map_image
 from .ghost_sprites import ghost_frame
@@ -90,6 +93,15 @@ def _story(ctx, number=None):
                  'lines': [], 'restoration': '방에 작은 불빛이 돌아왔어요.', 'teaser': ''})
 
 
+def _story_ghost_id(ctx):
+    """Show a ghost only when that ghost is the current speaker."""
+    ghosts = {'보송': 'A', '이파리': 'B', '도레': 'C'}
+    dialogue = ctx.get('dialogue')
+    speaker = (dialogue.get('speaker', '') if isinstance(dialogue, dict)
+               else dialogue[0] if dialogue else '')
+    return ghosts.get(speaker)
+
+
 def _level(ctx, number=None):
     n = int(number or ctx.get('stage', 1))
     return next((l for l in ctx.get('levels', []) if int(l.get('stage', 0)) == n), {})
@@ -109,9 +121,8 @@ def _home_art(completed):
 def _background(surface, assets, name='title_background.png', shade=0, ctx=None, actors=True):
     ctx = ctx or {}
     data = _data(ctx)
-    shelter(surface, data.get('completed', []), data.get('cosmetics', {}),
-            float(ctx.get('elapsed', 0)), before=ctx.get('home_view')=='before',
-            show_actors=actors)
+    draw_lobby(surface, data.get('completed', []),
+               before=ctx.get('home_view') == 'before', show_actors=actors)
     if shade:
         _overlay(surface, (0, 0, W, H), alpha=min(shade,140))
 
@@ -283,10 +294,10 @@ def _photo(surface, assets, story, rect, locked=False, large=False, frame='defau
     inner = r.inflate(-14, -14)
     if not locked:
         n = int(story.get('stage',1))
-        key=('memory_v2',n,inner.size,tuple(sorted((cosmetics or {}).items())))
+        key=('lobby_memory_v1',n,inner.size)
         if key not in _COVER_CACHE:
             scene=pygame.Surface((1280,720),pygame.SRCALPHA)
-            shelter(scene,range(1,n+1),cosmetics or {},time=1.7)
+            draw_lobby(scene, range(1, n + 1))
             _COVER_CACHE[key]=pygame.transform.smoothscale(scene,inner.size)
         surface.blit(_COVER_CACHE[key],inner)
     else:
@@ -375,7 +386,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
     if screen == 'title':
         _background(surface, assets,ctx=ctx,actors=False)
         # 시작 화면도 앉아 있는 까망이 PNG를 사용하고 발 위치를 유지합니다.
-        title_cat = assets.icon('art/kkamang_wait.png', (280, 315))
+        title_cat = assets.icon('art/character/kkamang_wait.png', (280, 315))
         surface.blit(title_cat, title_cat.get_rect(midbottom=(877, 595)))
         ghost(surface,(1110,515),125,time=elapsed,resident=True)
         # The art was composed with quiet space at left for the live title.
@@ -409,19 +420,18 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         _header(surface, assets, title, subtitle,
                 f'기억 {len(photos)} / 12 · 별 {int(ctx.get("total_stars", 0))} / 36')
         _lanterns(surface, assets, completed, (745, 124, 500, 65))
+        restoration_note = '아직은 조용한 쉼터예요. 첫 번째 방으로 걸어가 볼까요?'
         if completed:
-            latest = _story(ctx, max(completed))
-            _overlay(surface, (37, 123, 570, 98), alpha=190, radius=16)
-            text(surface, assets, '이 집에 돌아온 변화', (57, 139), size=16, color=GOLD)
-            wrapped(surface, assets, latest.get('restoration', ''),
-                    pygame.Rect(57, 166, 530, 50), size=19, color=CREAM)
-            ui.control('toggle_home_view', (1004, 205, 233, 38),
+            latest_stage = max(completed)
+            restoration_note = {
+                1: '수건 선반이 놓이고, 보송이 쉼터에 찾아왔어요.',
+                4: '정원 안내서가 놓이고, 도레가 쉼터에 찾아왔어요.',
+                7: '잃어버린 악보를 되찾고, 이파리가 쉼터에 찾아왔어요.',
+            }.get(latest_stage, '')
+            if not restoration_note and latest_stage in LOBBY_ITEMS:
+                restoration_note = '쉼터에 돌아온 물건 · ' + LOBBY_ITEMS[latest_stage].name
+            ui.control('toggle_home_view', (1004, 568, 233, 32),
                        '지금의 쉼터 보기' if old_view else '처음의 쉼터 보기')
-        else:
-            _overlay(surface, (37, 133, 425, 103), alpha=185, radius=16)
-            text(surface, assets, '보송', (57, 148), size=18, color=GOLD, bold=True)
-            wrapped(surface, assets, '젖었구나. 괜찮아, 여기서 잠깐 쉬어 가.',
-                    pygame.Rect(57, 178, 383, 53), size=21, color=CREAM)
         # Nonintrusive fireflies are decorative and never overlap controls.
         for i in range(9):
             x = 700+i*53
@@ -429,8 +439,11 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             pygame.draw.circle(surface, (235, 209, 148), (int(x),int(y)), 2)
 #        _home_keepsakes(surface,assets,ctx,data)
         _overlay(surface, (0, 560, W, 160), alpha=190)
-        note = '열두 방의 불빛이 돌아왔어요. 언제든 다시 만나요.' if len(completed)==12 else '방의 소중한 물건과 온기 4점 이상을 가져오면, 연결등이 켜져요.'
-        text(surface, assets, note, (40, 575), size=18)
+        note = ('열두 방의 불빛이 돌아왔어요. 언제든 다시 만나요.'
+                if len(completed) == 12 else restoration_note)
+        if old_view:
+            note = '까망이와 처음 만났던, 아직 아무것도 채워지지 않은 쉼터예요.'
+        _fit_text(surface, assets, note, (40, 568, 940, 32), size=18, color=CREAM)
         ui.control('explore', (38, 613, 300, 52), '기억 속으로 다시 걷기' if len(completed)==12 else '다음 방으로 걷기', primary=True)
         ui.control('album', (352, 613, 215, 52), '기억 앨범')
         ui.control('appearance', (581, 613, 215, 52), '쉼터 꾸미기')
@@ -587,7 +600,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
                  '종이 울려 차가운 안개가 찼어요. 다음엔 조금 일찍 돌아와요.')
             wrapped(surface,assets,msg,pygame.Rect(79,422,644,116),size=21,color=INK,line_gap=10)
         # 탐사 결과 화면의 까망이는 앉아 있는 PNG를 사용합니다.
-        char = assets.icon('art/kkamang_wait.png', (300, 350))
+        char = assets.icon('art/character/kkamang_wait.png', (300, 350))
         surface.blit(char,(863,169+int(math.sin(elapsed*2)*4)))
         if success and practice:
             _chip(surface,assets,'연습을 마쳤어요',(831,522,376,49),size=16)
@@ -637,13 +650,12 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
     elif screen == 'story':
         ending=False
         _background(surface,assets,ctx=ctx,actors=False)
-        speaker0=(ctx.get('dialogue') or ('보송',''))[0]
-        mood='surprised' if ctx.get('story_kind')=='prologue' else ('happy' if int(ctx.get('dialogue_index',0))%2 else 'idle')
-        draw_cat(surface,(355,468),240,time=elapsed,mood=mood,
-            scarf=data.get('cosmetics',{}).get('scarf','default'))
-        ghost(surface,(899,440),183,time=elapsed,resident=True,variant={'이파리':1,'도레':2}.get(speaker0,2 if stage in (7,11) else 0))
-        if ctx.get('story_kind')!='prologue':
-            prop(surface,story.get('emblem','book'),(594,319,110,110))
+        draw_story_character(surface, 'cat', (235, 178, 240, 290))
+        ghost_id = _story_ghost_id(ctx)
+        if ghost_id is not None:
+            draw_story_character(surface, ghost_id, (779, 180, 240, 260))
+        if ctx.get('story_kind') != 'prologue':
+            draw_story_item(surface, stage, (564, 275, 170, 170))
         _overlay(surface,(0,0,W,66),alpha=162)
         title='비가 그친 뒤에도' if ending else story.get('title','처음 만난 밤')
         if ctx.get('story_kind')=='prologue':title='비가 몹시 내리던 밤'
