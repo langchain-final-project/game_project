@@ -457,23 +457,29 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         ui.control('tutorial',(218,630,202,39),'조작 다시 보기')
         ui.control('mode',(866,630,172,39),mode_label+' 변경')
         ui.control('start',(1052,630,189,39),'탐사 시작',primary=True)
-        _footer(surface,assets,'준비 화면에서는 시간이 흐르지 않아요 · Enter로 선택')
+        briefing_note = ('여유 모드는 연습 전용이에요 · 별 · 호감도 · 진행 기록이 남지 않아요'
+                         if mode == 'relaxed' else
+                         '준비 화면에서는 시간이 흐르지 않아요 · Enter로 선택')
+        _footer(surface,assets,briefing_note)
 
     elif screen == 'result':
         outcome=ctx.get('outcome') or {}
         reward=ctx.get('reward') or {}
+        practice=bool(reward.get('practice_mode'))
         status=outcome.get('status','FAILED')
         success=status=='COMPLETE'
         low=status=='RETURN_LOW'
         _background(surface,assets,'shelter_before.png',110,ctx=ctx)
-        _header(surface,assets,'무사히 돌아왔어요' if success else ('잠깐 쉬어 가요' if low else '괜찮아, 다시 걸으면 돼'),
+        _header(surface,assets,'연습을 마쳤어요' if practice and success else
+                ('무사히 돌아왔어요' if success else ('잠깐 쉬어 가요' if low else '괜찮아, 다시 걸으면 돼')),
                 f'{stage:02d} {story.get("name", "")} · {mode_label}')
         panel(surface,(42,127,722,478),fill=PAPER,border=GOLD,radius=22)
         _icon(surface,assets,'badge_complete' if success else 'lantern_off',(73,151,76,76))
-        text(surface,assets,'연결등이 켜졌어요' if success else ('이번엔 조금 일찍 돌아왔어요' if low else '이번 온기는 남기지 못했어요'),
+        text(surface,assets,'연습을 마쳤어요' if practice and success else
+             ('연결등이 켜졌어요' if success else ('이번엔 조금 일찍 돌아왔어요' if low else '이번 온기는 남기지 못했어요')),
              (164,163),size=27,color=INK,bold=True)
         score=outcome.get('score') or reward.get('score') or {}
-        if success:
+        if success and not practice:
             text(surface,assets,_stars(score.get('stars',0)),(520,171),size=34,color=GOLD,bold=True)
             text(surface,assets,f'{score.get("total",0)}점 / 100점',(520,210),size=23,color=INK,bold=True)
         text(surface,assets,'귀환해서 확정한 온기',(78,253),size=20,color=(134,109,102))
@@ -487,7 +493,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             text(surface,assets,lab,(346,y),size=18,color=(132,111,109))
             text(surface,assets,val,(721,y),size=22,color=INK,bold=True,anchor='topright')
         pygame.draw.line(surface,(202,181,153),(79,397),(726,397),1)
-        if success:
+        if success and not practice:
             text(surface,assets,'별 점수 구성',(79,417),size=20,color=INK,bold=True)
             rows=[('되찾은 온기',score.get('warmth',0),60),('귀환 속도',score.get('speed',0),25),('남은 용기',score.get('courage',0),15)]
             for i,(label,value,maximum) in enumerate(rows):
@@ -500,6 +506,10 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             next_points=int(score.get('next_star_points',0))
             star_note='세 개의 별을 모두 얻었어요.' if score.get('stars',0)>=3 else f'다음 별까지 {next_points}점'
             text(surface,assets,star_note+' · '+msg,(79,551),size=17,color=(135,99,98))
+        elif success:
+            wrapped(surface,assets,
+                    '여유 모드는 연습 전용이에요. 이번 결과는 별, 꾸미기, 호감도, 이야기 진행에 반영되지 않아요.',
+                    pygame.Rect(79,422,644,116),size=21,color=INK,line_gap=10)
         else:
             msg=('완료 목표는 한 번에 온기 4점 이상 귀환이에요.\n가져온 온기는 기록되고, 다음 방은 아직 닫혀 있어요.' if low else
                  '용기를 모두 잃었어요. 보송과 쉼터에서 쉬어 가요.' if outcome.get('reason')=='courage' else
@@ -508,7 +518,9 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         char=(assets.cat((300,350),data.get('cosmetics',{}).get('scarf','default')) if hasattr(assets,'cat')
               else assets.icon('art/kkamang_character.png',(300,350)))
         surface.blit(char,(863,169+int(math.sin(elapsed*2)*4)))
-        if success:
+        if success and practice:
+            _chip(surface,assets,'연습을 마쳤어요',(831,522,376,49),size=16)
+        elif success:
             note=('이번 기억을 대표 기억으로 남겼어요.' if reward.get('friend_memory_replaced') else
                   '기존 대표 기억을 그대로 간직해요.' if reward.get('friend_memory_kept') else
                   '첫 번째 대표 기억을 남겼어요.')
@@ -517,7 +529,9 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             _chip(surface,assets,'온기보다 네가 먼저야.',(831,522,376,49),size=22)
         ui.control('retry',(42,624,206,44),'같은 방 다시 걷기')
         ui.control('home',(264,624,173,44),'쉼터로')
-        if success:
+        if success and practice:
+            ui.control('rooms',(964,624,243,44),'방 선택으로',primary=True)
+        elif success:
             label='새 기억 펼치기' if reward.get('new_photo') else ('정원으로' if stage==12 else '다음 방으로')
             ui.control('view_memory' if reward.get('new_photo') or stage==12 else 'next_stage',
                        (964,624,243,44),label,primary=True)

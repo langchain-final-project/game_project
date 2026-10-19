@@ -128,6 +128,21 @@ def test_result_retry_returns_to_the_same_room_briefing(app):
     assert app.stage == 1
 
 
+def test_relaxed_completion_is_practice_only_and_has_no_progress_actions(app):
+    app.mode = 'relaxed'
+    app.campaign.data['settings']['mode'] = 'relaxed'
+    before = deepcopy(app.campaign.data)
+
+    complete(app)
+
+    assert app.scene == 'result'
+    assert app.last_reward['practice_mode']
+    assert app.campaign.data == before
+    app.draw()
+    assert {'retry', 'home', 'rooms'} <= {c['id'] for c in app.controls}
+    assert not {'next_stage', 'view_memory'} & {c['id'] for c in app.controls}
+
+
 def test_save_failure_retains_choice_then_can_retry(app):
     complete(app)
     complete(app)

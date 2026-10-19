@@ -135,7 +135,9 @@ class GameApp:
         self.transition('briefing')
 
     def start_run(self):
-        if self.campaign.data['likes']['pending'] is not None:
+        # A pending basic-mode memory should not prevent a separate practice
+        # run. Practice never creates or resolves relationship memories.
+        if self.mode == 'basic' and self.campaign.data['likes']['pending'] is not None:
             self.transition('memory_choice')
             return
         if not self.campaign.is_unlocked(self.stage):
@@ -250,7 +252,7 @@ class GameApp:
     def finish_run(self, result):
         self.last_outcome = result.outcome
         memory = None
-        if (result.outcome['status'] == 'COMPLETE'
+        if (self.core.mode == 'basic' and result.outcome['status'] == 'COMPLETE'
                 and self.run_id not in self.campaign.data['settled_ids']):
             scores = (self.score_provider(self.core.config, result.outcome,
                                          result.snapshot, self.core.mode)
@@ -263,7 +265,9 @@ class GameApp:
              memory_record=memory)
         self.write_replay()
         self.audio.play('return' if result.outcome['status'] in ('COMPLETE','RETURN_LOW') else 'fail')
-        self.persist('memory_choice' if self.campaign.data['likes']['pending'] else 'result')
+        needs_memory_choice = (self.core.mode == 'basic'
+                               and self.campaign.data['likes']['pending'] is not None)
+        self.persist('memory_choice' if needs_memory_choice else 'result')
 
     def abandon(self):
         if self.core and not self.core.snapshot()['terminal']:
@@ -328,6 +332,9 @@ class GameApp:
             else:
                 self.start_run()
         elif ident == 'next_stage':
+            if self.scene == 'result' and (self.last_reward or {}).get('practice_mode'):
+                self.transition('rooms')
+                return
             if self.scene == 'result' and (self.last_reward or {}).get('new_photo'):
                 self.start_memory()
             elif self.stage == 12:
