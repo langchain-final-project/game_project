@@ -479,9 +479,18 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         text(surface,assets,'귀환해서 확정한 온기',(78,253),size=20,color=(134,109,102))
         text(surface,assets,str(outcome.get('banked',0)),(80,291),size=72,color=(174,116,43),bold=True)
         text(surface,assets,'점',(183,334),size=26,color=INK)
-        rows=[('탐사 중 모은 온기',f'{outcome.get("carried",0)}점'),
-              ('잔상에 놀란 횟수',f'{outcome.get("damage_count",0)}회'),
-              ('걸어간 시간',f'{outcome.get("ticks_used",0)*.3:.1f}초')]
+        
+        tick_seconds = float(level.get("tick_seconds", 0.3))
+
+        used_seconds = ctx.get("display_elapsed_seconds")
+        if used_seconds is None:
+            used_seconds = outcome.get("ticks_used", 0) * tick_seconds
+
+        rows = [
+            ('탐사 중 모은 온기', f'{outcome.get("carried", 0)}점'),
+            ('잔상에 놀란 횟수', f'{outcome.get("damage_count", 0)}회'),
+            ('걸어간 시간', f'{used_seconds:.1f}초'),
+        ]
         for i,(lab,val) in enumerate(rows):
             y=264+i*43
             text(surface,assets,lab,(346,y),size=18,color=(132,111,109))
