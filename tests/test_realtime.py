@@ -248,17 +248,36 @@ def test_invincibility_pickup_protects_same_frame_and_keeps_chaser_stun():
     assert game.snapshot()['damage_count'] == 0
 
 
-def test_magnet_collects_rich_heat_across_wall_without_advancing_its_timer_per_frame():
+@pytest.mark.parametrize('value', [1, 3])
+def test_magnet_collects_only_one_point_heat_across_wall_without_advancing_timer_per_frame(value):
     game = RealtimeGameCore(load_level(2))
     place(game, game._state['magnet']['position'])
-    game._state['items'] = [dict(id='heat_00', position=[7, 4], value=3, active=True)]
+    game._state['items'] = [dict(id='heat_00', position=[7, 4], value=value, active=True)]
     assert game._state['grid'][4][7] == '#'
     result = game.step(Action.WAIT)
-    assert result.snapshot['carried'] == 3
+    assert result.snapshot['carried'] == (1 if value == 1 else 0)
+    assert result.snapshot['items'][0]['active'] == (value == 3)
     assert result.snapshot['magnet']['remaining_ticks'] == 13
-    assert any(event['type'] == 'collect' and event['magnetic'] for event in result.events)
+    collected = [event for event in result.events if event['type'] == 'collect']
+    assert len(collected) == (1 if value == 1 else 0)
+    assert all(event['magnetic'] and event['value'] == 1 for event in collected)
     game.advance(Action.WAIT, FRAME_SECONDS * 17)
     assert game.snapshot()['magnet']['remaining_ticks'] == 12
+
+
+def test_active_magnet_still_allows_direct_rich_heat_collection_in_realtime():
+    config = load_level(1)
+    config['magnet'] = {'position': [6, 3], 'duration_ticks': 13}
+    game = RealtimeGameCore(config)
+    place(game, [6, 2])
+    game.advance(Action.DOWN, .3)
+    nearby = game.advance(Action.LEFT, .3)
+    assert nearby.snapshot['items'][8]['active']
+    entered = game.advance(Action.UP, .3)
+    collected = [event for event in entered.events if event['type'] == 'collect' and event['value'] == 3]
+    assert len(collected) == 1 and not collected[0]['magnetic']
+    assert not entered.snapshot['items'][8]['active']
+    assert entered.snapshot['magnet']['remaining_ticks'] > 0
 
 
 @pytest.mark.parametrize('stage', range(1, 13))

@@ -374,7 +374,9 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
 
     if screen == 'title':
         _background(surface, assets,ctx=ctx,actors=False)
-        draw_cat(surface,(877,595),280,time=elapsed,scarf=data.get('cosmetics',{}).get('scarf','default'))
+        # 시작 화면도 앉아 있는 까망이 PNG를 사용하고 발 위치를 유지합니다.
+        title_cat = assets.icon('art/kkamang_wait.png', (280, 315))
+        surface.blit(title_cat, title_cat.get_rect(midbottom=(877, 595)))
         ghost(surface,(1110,515),125,time=elapsed,resident=True)
         # The art was composed with quiet space at left for the live title.
         _overlay(surface, (0, 0, 660, H), alpha=115)
@@ -425,7 +427,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             x = 700+i*53
             y = 330+math.sin(elapsed*.7+i*2)*28+(i%3)*50
             pygame.draw.circle(surface, (235, 209, 148), (int(x),int(y)), 2)
-        _home_keepsakes(surface,assets,ctx,data)
+#        _home_keepsakes(surface,assets,ctx,data)
         _overlay(surface, (0, 560, W, 160), alpha=190)
         note = '열두 방의 불빛이 돌아왔어요. 언제든 다시 만나요.' if len(completed)==12 else '방의 소중한 물건과 온기 4점 이상을 가져오면, 연결등이 켜져요.'
         text(surface, assets, note, (40, 575), size=18)
@@ -584,8 +586,8 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
                  '용기를 모두 잃었어요. 보송과 쉼터에서 쉬어 가요.' if outcome.get('reason')=='courage' else
                  '종이 울려 차가운 안개가 찼어요. 다음엔 조금 일찍 돌아와요.')
             wrapped(surface,assets,msg,pygame.Rect(79,422,644,116),size=21,color=INK,line_gap=10)
-        char=(assets.cat((300,350),data.get('cosmetics',{}).get('scarf','default')) if hasattr(assets,'cat')
-              else assets.icon('art/kkamang_character.png',(300,350)))
+        # 탐사 결과 화면의 까망이는 앉아 있는 PNG를 사용합니다.
+        char = assets.icon('art/kkamang_wait.png', (300, 350))
         surface.blit(char,(863,169+int(math.sin(elapsed*2)*4)))
         if success and practice:
             _chip(surface,assets,'연습을 마쳤어요',(831,522,376,49),size=16)
@@ -842,7 +844,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             ),
             (
                 '05', '자석과 무적 아이템',
-                '자석: 약 4초간 주변 온기 자동 획득\n'
+                '자석: 약 4초간 주변 1점 온기 자동 획득\n'
                 '무적: 3초간 유령과 닿아도 피해 없음\n'
                 '두 아이템 모두 획득 즉시 사용',
                 (('file', 'icons/items/magnet_item.png'),

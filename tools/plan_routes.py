@@ -164,7 +164,7 @@ def plan(game, target=4, width=18, allow_shortcuts=True, forbid_rich=False,
         raise ValueError('plan supports grid movement; realtime needs a frame-based policy')
     
     def route_path(core, goal, interact=True):
-        # +3 칸 통과뿐 아니라 자석의 자동 수집도 경로 생성 때 제외합니다.
+        # forbid_rich는 3점 온기 칸의 직접 방문을 막고 자석의 1점 수집은 허용합니다.
         return find_path(core, goal, interact=interact, forbid_rich=forbid_rich,
                          allow_item_invincibility=allow_item_invincibility)
 

@@ -80,8 +80,8 @@ def safe_path(snapshot: dict, goal: tuple[int, int], *, offset: int = 0,
     def effect(point, remaining, collected):
         if magnet and not collected and point == tuple(magnet['position']):
             remaining, collected = magnet['duration_ticks'], True
-        radius = 1 if remaining > 0 else 0
-        if any(max(abs(point[k] - item[k]) for k in (0, 1)) <= radius for item in rich):
+        # 자석은 3점 온기를 끌어오지 않으므로 직접 밟는 칸만 피합니다.
+        if point in rich:
             return None
         return max(0, remaining - 1), collected
 
@@ -122,10 +122,11 @@ def safe_path(snapshot: dict, goal: tuple[int, int], *, offset: int = 0,
 
 
 def collection_positions(snapshot: dict, item: dict) -> list[tuple[int, int]]:
-    """Magnet routes may collect a heat item from a neighboring floor tile."""
+    """Only one-point heat can be collected from a neighboring tile by a magnet."""
     x, y = item['position']
     magnet = snapshot.get('magnet')
-    radius = 1 if magnet and magnet['remaining_ticks'] > 0 else 0
+    radius = (1 if magnet and magnet['remaining_ticks'] > 0 and item['value'] == 1
+              else 0)
     return [(nx, ny) for ny in range(y - radius, y + radius + 1)
             for nx in range(x - radius, x + radius + 1)
             if 0 <= nx < snapshot['width'] and 0 <= ny < snapshot['height']

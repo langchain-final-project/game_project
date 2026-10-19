@@ -174,16 +174,25 @@ def test_magnet_flights_animate_without_mutating_rules_pause_and_reset(tmp_path)
         app.close()
 
 
-def test_safe_planner_rejects_remote_rich_collection_not_just_rich_tiles():
-    from tools.evaluate import safe_path
+def test_safe_planner_allows_nearby_rich_heat_but_rejects_direct_collection():
+    from tools.evaluate import collection_positions, safe_path
     from tools.plan_routes import rollout
     config = load_level(1)
     config['magnet'] = {'position': [6, 3], 'duration_ticks': 13}
     game = GameCore(config)
     game._state['position'] = [6, 2]
+    initial = game.snapshot()
     assert rollout(game, [1]) is not None
-    assert rollout(game, [1], forbid_rich=True) is None
-    assert safe_path(game.snapshot(), (6, 3), interact=False, forbid_rich=True) is None
+    checked = rollout(game, [1], forbid_rich=True)
+    assert checked is not None
+    assert safe_path(game.snapshot(), (6, 3), interact=False, forbid_rich=True) is not None
+    snapshot = checked[0].snapshot()
+    assert snapshot['items'][8]['active']
+    assert collection_positions(snapshot, snapshot['items'][8]) == [(5, 2)]
+    assert (6, 2) in collection_positions(snapshot, snapshot['items'][1])
+    assert rollout(game, [1, 2, 0], forbid_rich=True) is None
+    assert safe_path(snapshot, (5, 2), interact=False, forbid_rich=True) is None
+    assert game.snapshot() == initial
 
 
 def test_planner_finds_a_complete_magnet_route_without_mutating_input():
@@ -214,6 +223,7 @@ def test_magnet_reference_routes_use_effect_without_contact(stage):
     assert result.outcome['banked'] == 14
     assert game.snapshot()['magnet']['collected']
     assert attracted
+    assert all(event['value'] == 1 for event in attracted)
 
 
 def test_invincibility_renderer_tracks_effect_expiry_pause_and_reset(tmp_path):

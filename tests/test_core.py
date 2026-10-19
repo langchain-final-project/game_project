@@ -379,23 +379,43 @@ class MagnetTests(unittest.TestCase):
         config['magnet'] = {'position': [6, 3], 'duration_ticks': 13}
         return config
 
-    def test_pickup_collects_both_values_and_diagonals_without_extra_action(self):
-        game = GameCore(self.config())
+    def test_pickup_collects_only_one_point_heat_including_diagonals(self):
+        config = self.config()
+        config['items'][0]['position'] = [5, 4]
+        game = GameCore(config)
         game._state['position'] = [6, 2]
         result = game.step(Action.DOWN)
         self.assertTrue(result.snapshot['magnet']['collected'])
         self.assertEqual(result.snapshot['magnet']['remaining_ticks'], 12)
-        self.assertEqual(result.snapshot['carried'], 4)
+        self.assertEqual(result.snapshot['carried'], 2)
         self.assertEqual(result.snapshot['tick'], 1)
         self.assertEqual(result.snapshot['remaining_ticks'], 79)
         collected = [e for e in result.events if e['type'] == 'collect']
-        self.assertEqual({e['item_id'] for e in collected}, {'heat_02', 'heat_08'})
-        self.assertTrue(all(e['magnetic'] for e in collected))
-        self.assertEqual(next(e['source_position'] for e in collected if e['value'] == 3), [5, 2])
+        self.assertEqual({e['item_id'] for e in collected}, {'heat_00', 'heat_02'})
+        self.assertTrue(all(e['magnetic'] and e['value'] == 1 for e in collected))
+        self.assertTrue(result.snapshot['items'][8]['active'])
         self.assertTrue(all(e['position'] == [6, 3] for e in collected))
         again = game.step(Action.WAIT)
-        self.assertEqual(again.snapshot['carried'], 4)
+        self.assertEqual(again.snapshot['carried'], 2)
         self.assertFalse(any(e['type'] == 'collect' for e in again.events))
+
+    def test_active_magnet_collects_rich_heat_only_on_direct_entry(self):
+        game = GameCore(self.config())
+        game._state['position'] = [6, 2]
+        game.step(Action.DOWN)
+        nearby = game.step(Action.LEFT)
+        self.assertTrue(nearby.snapshot['items'][8]['active'])
+        self.assertGreater(nearby.snapshot['magnet']['remaining_ticks'], 0)
+
+        entered = game.step(Action.UP)
+        collected = [e for e in entered.events if e['type'] == 'collect' and e['value'] == 3]
+        self.assertEqual(len(collected), 1)
+        self.assertEqual(collected[0]['source_position'], [5, 2])
+        self.assertFalse(collected[0]['magnetic'])
+        self.assertFalse(entered.snapshot['items'][8]['active'])
+        self.assertGreater(entered.snapshot['magnet']['remaining_ticks'], 0)
+        self.assertFalse(any(e['type'] == 'collect' and e['value'] == 3
+                             for e in game.step(Action.WAIT).events))
 
     def test_exactly_thirteen_ticks_including_pickup_and_last_tick_collection(self):
         config = self.config()
@@ -431,7 +451,8 @@ class MagnetTests(unittest.TestCase):
     def test_walls_and_closed_doors_do_not_block_diagonal_attraction(self):
         config = load_level(1)
         config['items'][4]['position'] = [9, 1]
-        config['items'][8]['position'] = [8, 2]
+        config['items'][2]['position'] = [8, 2]
+        config['items'][8]['position'] = [6, 2]
         config['shortcuts'] = [{'id': 'A', 'terminal': [4, 2], 'gate': [8, 1],
                                 'initially_open': False}]
         config['magnet'] = {'position': [7, 1], 'duration_ticks': 13}
@@ -440,8 +461,10 @@ class MagnetTests(unittest.TestCase):
         result = game.step(Action.RIGHT)
         self.assertEqual(result.snapshot['grid'][2][7], '#')
         self.assertFalse(result.snapshot['shortcuts'][0]['opened'])
-        self.assertFalse(result.snapshot['items'][8]['active'])
+        self.assertFalse(result.snapshot['items'][2]['active'])
+        self.assertTrue(result.snapshot['items'][8]['active'])
         self.assertTrue(any(e['type'] == 'collect' and e['source_position'] == [8, 2]
+                            and e['value'] == 1 and e['magnetic']
                             for e in result.events))
 
     def test_reset_restores_magnet_and_snapshots_do_not_alias(self):
