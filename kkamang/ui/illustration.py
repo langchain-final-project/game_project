@@ -82,7 +82,7 @@ def cat_frame(size=100, direction='down', phase=0, mood='idle', scarf='default',
     return sprite_frame(int(size), direction, is_walking, index)
 
 @lru_cache(maxsize=2048)
-def _resident_cat_frame(size=100, direction='down', phase=0, mood='idle', scarf='default', palette=None, *, walking=None):
+def _resident_cat_frame(size=100, direction='down', phase=0, mood='idle', scarf='default', palette=None, *, walking=None, folded_ears=False):
     # Living residents keep their coats independently of Kkamang's PNG atlas.
     fur,light,belly,eye_color,rear = palette or (FUR,LIGHT,(88,79,95),GOLD,INK)
     s=pygame.Surface((160,180),pygame.SRCALPHA)
@@ -106,12 +106,19 @@ def _resident_cat_frame(size=100, direction='down', phase=0, mood='idle', scarf=
     else:offset=0
     # Ears and head, same proportions across portraits and field sprites.
     hx=offset; hy=-bob
-    pygame.draw.polygon(s,INK,[(29+hx,63+hy),(28+hx,13+hy),(64+hx,34+hy)])
-    pygame.draw.polygon(s,INK,[(94+hx,34+hy),(133+hx,13+hy),(130+hx,66+hy)])
-    pygame.draw.polygon(s,ROSE,[(36+hx,43+hy),(36+hx,24+hy),(56+hx,37+hy)])
-    pygame.draw.polygon(s,ROSE,[(104+hx,37+hy),(125+hx,24+hy),(122+hx,48+hy)])
+    if not folded_ears:
+        pygame.draw.polygon(s,INK,[(29+hx,63+hy),(28+hx,13+hy),(64+hx,34+hy)])
+        pygame.draw.polygon(s,INK,[(94+hx,34+hy),(133+hx,13+hy),(130+hx,66+hy)])
+        pygame.draw.polygon(s,ROSE,[(36+hx,43+hy),(36+hx,24+hy),(56+hx,37+hy)])
+        pygame.draw.polygon(s,ROSE,[(104+hx,37+hy),(125+hx,24+hy),(122+hx,48+hy)])
     pygame.draw.ellipse(s,INK,(21+hx,29+hy,118,86));pygame.draw.ellipse(s,fur,(25+hx,31+hy,110,79))
     pygame.draw.arc(s,light,(39+hx,35+hy,79,55),.3,2.9,3)
+    if folded_ears:
+        # Bosong's two soft ear flaps lie forward over the crown.
+        for x in (26,99):
+            pygame.draw.ellipse(s,INK,(x+hx,32+hy,36,29))
+            pygame.draw.ellipse(s,fur,(x+3+hx,33+hy,30,25))
+            pygame.draw.arc(s,light,(x+7+hx,36+hy,23,18),math.pi,math.tau,2)
     if direction!='up':
         eyes=[(56+hx,70+hy),(103+hx,70+hy)]
         if direction=='left':eyes=[(43+hx,70+hy),(83+hx,70+hy)]
@@ -165,7 +172,7 @@ def resident_cat(surface, center, size=80, time=0., variant=0):
         ((161,153,184),(193,182,210),(222,208,222),(124,104,160),(122,113,145)),
     ]
     scarf=('peach','default','lavender')[variant]
-    im=_resident_cat_frame(160,'down',int(time*3)%8,'happy',scarf,palettes[variant]).copy()
+    im=_resident_cat_frame(160,'down',int(time*3)%8,'happy',scarf,palettes[variant],folded_ears=variant==0).copy()
     d=pygame.draw
     if variant==0:
         # Bosong's soft white tufts and peach scarf.
