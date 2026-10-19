@@ -51,11 +51,29 @@ def test_repeated_or_reordered_completion_ids_render_the_same_room_without_mutat
     assert completed == original
 
 
-def test_final_lobby_is_exactly_the_supplied_after_art_without_duplicate_characters():
+@pytest.mark.parametrize('with_display', [False, True])
+def test_final_lobby_is_exactly_the_supplied_after_art_without_duplicate_characters(with_display):
     path = Path(__file__).resolve().parents[1] / 'assets/art/lobby/after.png'
-    expected = pygame.transform.smoothscale(pygame.image.load(str(path)), (1280, 720))
-    assert render(range(1, 13)) == pygame.image.tobytes(expected, 'RGB')
-    assert render([12]) != pygame.image.tobytes(expected, 'RGB')
+    lobby._image.cache_clear()
+    lobby._scene.cache_clear()
+    if with_display:
+        pygame.display.init()
+        pygame.display.set_mode((1, 1), pygame.HIDDEN)
+    else:
+        pygame.display.quit()
+    try:
+        expected = pygame.transform.smoothscale(pygame.image.load(str(path)), (1280, 720))
+        expected_pixels = pygame.image.tobytes(expected, 'RGB')
+        for background in ((0, 0, 0), (255, 255, 255)):
+            surface = pygame.Surface((1280, 720))
+            surface.fill(background)
+            lobby.draw_lobby(surface, range(1, 13))
+            assert pygame.image.tobytes(surface, 'RGB') == expected_pixels
+        assert render([12]) != expected_pixels
+    finally:
+        lobby._image.cache_clear()
+        lobby._scene.cache_clear()
+        pygame.display.quit()
 
 
 def test_before_view_shows_the_initial_room_without_erasing_progress():

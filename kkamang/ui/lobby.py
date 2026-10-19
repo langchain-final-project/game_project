@@ -59,7 +59,11 @@ def lobby_layers(completed, *, show_actors=True):
 @lru_cache(maxsize=4)
 def _image(filename):
     image = pygame.image.load(str(ASSET_DIR / 'art' / 'lobby' / filename))
-    return image.convert_alpha() if pygame.display.get_surface() else image
+    # Keep opaque room art in RGB. Adding alpha before smoothscale can round
+    # opacity below 255 and mix the final picture with the previous frame.
+    if image.get_flags() & pygame.SRCALPHA and pygame.display.get_surface():
+        return image.convert_alpha()
+    return image
 
 
 @lru_cache(maxsize=48)
