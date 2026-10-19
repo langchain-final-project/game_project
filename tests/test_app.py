@@ -179,10 +179,17 @@ class AppIntegrationTests(unittest.TestCase):
         self.assertEqual(self.app.campaign.data['completed'], [1])
         self.assertGreater(len(self.app.campaign.data['badges']), len(first_badges))
         self.assertEqual(self.app.campaign.optional_badges(), 2)
+        elapsed = self.app.display_elapsed_seconds
+        self.assertAlmostEqual(
+            elapsed,
+            self.app.last_outcome['ticks_used'] * self.app.core.config['tick_seconds'],
+        )
         # Settling the same result again remains idempotent at the app boundary.
         before = deepcopy(self.app.campaign.data)
         self.app.finish_run(type('Result', (), {'outcome': self.app.last_outcome})())
         self.assertEqual(self.app.campaign.data, before)
+        self.assertEqual(self.app.display_elapsed_seconds, elapsed)
+        self.assertNotIn('display_elapsed_seconds', self.app.last_outcome)
 
     def test_all_twelve_stages_complete_with_saved_photos_and_ending(self):
         self.first_start()

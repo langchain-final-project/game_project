@@ -482,10 +482,9 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         
         tick_seconds = float(level.get("tick_seconds", 0.3))
 
-        used_seconds = outcome.get(
-            "display_elapsed_seconds",
-            outcome.get("ticks_used", 0) * tick_seconds,
-        )
+        used_seconds = ctx.get("display_elapsed_seconds")
+        if used_seconds is None:
+            used_seconds = outcome.get("ticks_used", 0) * tick_seconds
 
         rows = [
             ('탐사 중 모은 온기', f'{outcome.get("carried", 0)}점'),

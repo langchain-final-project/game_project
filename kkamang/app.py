@@ -70,6 +70,7 @@ class GameApp:
         self.toast = ''
         self.toast_timer = 0.
         self.last_outcome = None
+        self.display_elapsed_seconds = None
         self.last_reward = None
         self.run_id = None
         self.dialogues = []
@@ -154,6 +155,7 @@ class GameApp:
         self.magnet_flights.clear()
         self.run_id = uuid.uuid4().hex
         self.last_outcome = None
+        self.display_elapsed_seconds = None
         self.last_reward = None
         self.toast = '필수 물건과 온기 4점! 같은 칸에서 E로 회수해요.'
         self.toast_timer = 3.
@@ -257,10 +259,14 @@ class GameApp:
             self.last_replay_error = str(exc)
 
     def finish_run(self, result):
-        # 화면 표시용 결과를 따로 만듭니다.
+        # 공식 결과는 리플레이와 같은 형태로 유지합니다.
         self.last_outcome = dict(result.outcome)
 
-        motion = result.snapshot.get("motion")
+        # 중복 정산에서는 outcome만 전달될 수 있습니다.
+        snapshot = getattr(result, "snapshot", None)
+        if snapshot is None:
+            snapshot = self.core.snapshot()
+        motion = snapshot.get("motion")
 
         if motion is not None:
             # 실시간 모드: 1/60초 단위의 진행 횟수로 계산합니다.
@@ -272,7 +278,8 @@ class GameApp:
             )
             used_seconds = result.outcome["ticks_used"] * tick_seconds
 
-        self.last_outcome["display_elapsed_seconds"] = used_seconds
+        # 표시용 정밀 시간은 공식 결과·저장·점수 계산과 분리합니다.
+        self.display_elapsed_seconds = used_seconds
         memory = None
         if (result.outcome['status'] == 'COMPLETE'
                 and self.run_id not in self.campaign.data['settled_ids']):
@@ -750,6 +757,8 @@ class GameApp:
         title,message=confirm_messages.get(self.confirm_kind,('확인','계속할까요?'))
         return dict(campaign=self.campaign,levels=self.levels,stories=STAGES,stage=self.stage,mode=self.mode,
             snapshot=snapshot,outcome=self.last_outcome,reward=self.last_reward,story=story,dialogue=dialogue,
+            display_elapsed_seconds=(self.display_elapsed_seconds
+                                     if self.last_outcome is not None else None),
             photo_selected=self.photo_selected,appearance_kind=self.appearance_kind,has_save=self.store.has_save,
             preferred_photo=self.campaign.data.get('favorite_photo'),
             message=('저장되지 않은 진행이 있어요. 다시 저장해 주세요.' if self.store.error else ''),from_game=self.scene=='pause',background_snapshot=snapshot,
@@ -769,10 +778,6 @@ class GameApp:
         self.canvas.fill(NIGHT)
         if self.scene == 'game':
             snapshot=self.core.snapshot()
-            tick_seconds = float(
-                self.core.config.get('tick_seconds', 0.3)
-            )
-
             tick_seconds = float(
                 self.core.config.get('tick_seconds', 0.3)
             )

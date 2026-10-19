@@ -341,6 +341,54 @@ def test_realtime_completion_still_settles_and_persists_once(app):
     from tools.replay_validation import replay_game_record
     record = json.loads(record_file.read_text(encoding='utf-8'))
     assert replay_game_record(record)['outcome'] == app.last_outcome
+    assert app.display_elapsed_seconds == pytest.approx(
+        app.core.snapshot()['motion']['frame'] * FRAME_SECONDS
+    )
+    context = app.context()
+    assert context['display_elapsed_seconds'] == app.display_elapsed_seconds
+    before = deepcopy(app.last_outcome)
+    with patch('kkamang.ui.menus.text') as rendered_text:
+        app.draw()
+    labels = [call.args[2] for call in rendered_text.call_args_list]
+    assert f'{app.display_elapsed_seconds:.1f}초' in labels
+    assert app.last_outcome == before
+    app.start_run()
+    assert app.display_elapsed_seconds is None
+    assert app.context()['display_elapsed_seconds'] is None
+
+
+@pytest.mark.parametrize('movement_mode', ['grid', 'realtime'])
+def test_countdown_display_is_smooth_and_read_only_across_pause(tmp_path, movement_mode):
+    game = GameApp(save_path=tmp_path / 'save.json', headless=True, no_audio=True,
+                   movement_mode=movement_mode)
+    try:
+        game.start_run()
+        tick_seconds = game.core.config['tick_seconds']
+        initial_seconds = game.core.snapshot()['remaining_ticks'] * tick_seconds
+
+        def displayed_seconds():
+            before = game.core.snapshot()
+            with patch('kkamang.app.draw_game') as draw:
+                game.draw()
+            assert game.core.snapshot() == before
+            return draw.call_args.kwargs['remaining_seconds']
+
+        assert displayed_seconds() == pytest.approx(initial_seconds)
+        game.advance(.1)
+        assert game.core.snapshot()['tick'] == 0
+        assert displayed_seconds() == pytest.approx(initial_seconds - .1)
+        game.advance(.2)
+        assert game.core.snapshot()['tick'] == 1
+        assert displayed_seconds() == pytest.approx(initial_seconds - .3)
+
+        before_pause = game.core.snapshot()
+        game.transition('pause')
+        game.advance(2.)
+        assert game.core.snapshot() == before_pause
+        game.transition('game')
+        assert displayed_seconds() == pytest.approx(initial_seconds - .3)
+    finally:
+        game.close()
 
 
 @pytest.mark.parametrize('route', ROUTES,

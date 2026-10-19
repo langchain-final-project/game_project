@@ -681,8 +681,7 @@ def draw_game(
     player_interpolation=None,
     magnet_flights=(),
     ghost_facings=None,
-    remaining_seconds = None,
-
+    remaining_seconds=None,
 ):
     # 게임 전체 화면의 배경을 채웁니다.
     s = snapshot
@@ -767,11 +766,11 @@ def draw_game(
     )
 
     # ── 상단: 남은 시간 ──
-    # 단위 1틱(0.3초) -> 0.1초 변경 
+    # 틱은 0.3초로 유지하고, 표시에는 틱 사이의 경과 시간도 반영합니다.
     if remaining_seconds is None:
         remaining = s['remaining_ticks'] * .3
     else:
-        remaining = max(0. , remaining_seconds)
+        remaining = max(0., remaining_seconds)
 
     text(
         surface,
