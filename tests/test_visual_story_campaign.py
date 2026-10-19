@@ -58,13 +58,15 @@ def test_replaying_a_room_or_settlement_does_not_add_picture_regions():
     assert campaign.memory_regions(1) == [True, False, False, False]
 
 
-def test_practice_first_success_never_reveals_a_region_or_saves_rewards():
+def test_practice_first_success_only_saves_collection_reward():
     campaign = Campaign()
     before = deepcopy(campaign.data)
     reward = settle(campaign, banked=14, mode='relaxed')
     assert reward['practice_mode'] and not reward['eligible']
     assert not reward['first_complete'] and not reward['new_photo'] and not reward['new_ending']
     assert campaign.memory_progress() == [0, 0, 0]
+    before['collection']['practice_rooms'] = [1]
+    before['collection']['unlocked'] = [1]
     assert campaign.data == before
 
 
@@ -79,6 +81,7 @@ def test_practice_cannot_fill_the_last_warmth_or_change_seen_endings(tmp_path):
     assert reward['practice_mode'] and not reward['new_ending']
     assert campaign.memory_progress() == [4, 4, 4]
     assert not campaign.extended_ending_unlocked()
+    before['collection']['practice_rooms'] = [5]
     assert campaign.data == before
     store = SaveStore(tmp_path / 'practice-save.json')
     assert store.save(campaign)

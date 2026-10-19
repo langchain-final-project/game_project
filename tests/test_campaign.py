@@ -79,7 +79,7 @@ def test_unique_badges_and_cosmetics_thresholds():
     assert c2.data['cosmetics']['scarf'] == 'peach'
 
 
-def test_relaxed_mode_is_complete_practice_and_never_changes_campaign_data():
+def test_relaxed_mode_only_records_collection_success():
     c = Campaign()
     before = deepcopy(c.data)
 
@@ -88,6 +88,8 @@ def test_relaxed_mode_is_complete_practice_and_never_changes_campaign_data():
     assert result['practice_mode']
     assert not result['eligible']
     assert result['score']['stars'] == 3
+    before['collection']['practice_rooms'] = [1]
+    before['collection']['unlocked'] = [1]
     assert c.data == before
 
 
@@ -443,6 +445,7 @@ def test_practice_cannot_record_or_activate_an_unseen_selected_ending():
     assert campaign.selected_ending() == 'happy_all'
     assert campaign.active_ending() == 'ghost_c'
     assert campaign.released_variants() == (1,)
+    before['collection']['practice_rooms'] = [1]
     assert campaign.data == before
 
 

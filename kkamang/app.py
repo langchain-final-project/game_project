@@ -12,7 +12,7 @@ from .realtime import RealtimeGameCore, FRAME_SECONDS, FRAMES_PER_TICK
 from .levels import load_levels
 from .campaign import Campaign, SaveStore
 from .story import STAGES, PROLOGUE, ENDING, EXTENDED_ENDING, MEMORIES, memory_for_stage
-from . import likes
+from . import likes, collection
 from .ending_content import ENDING_CONTENT, released_variants as ending_releases
 from .input import InputAdapter
 from .audio import AudioEngine
@@ -20,6 +20,7 @@ from .ui.theme import Assets, text, panel, CREAM, INK, NIGHT
 from .ui.field import draw_game
 from .ui.ghost_sprites import movement_direction
 from .ui.menus import render_menu
+from .ui.collection import move_focus as collection_focus
 
 SIZE = (1280, 720)
 MEMORY_REVEAL_SECONDS = 2.
@@ -91,7 +92,11 @@ class GameApp:
         self.reveal_region = None
         self.memory_completion_sound_played = False
         self.previous_regions = list(self.campaign.memory_regions(self.memory_selected))
-        self.appearance_kind = 'scarf'
+        self.collection_tab = 'looks'
+        self.collection_detail = None
+        self.collection_selected = None
+        self.collection_cover = False
+        self.collection_notice = ''
         self.settings_return = 'title'
         self.tutorial_return = 'title'
         self.tutorial_starts_run = False
@@ -372,6 +377,7 @@ class GameApp:
                 self.request_confirm('new_game')
             else:
                 self.campaign = Campaign()
+                self.collection_notice = ''
                 self.stage = 1
                 self.start_prologue()
         # 엔딩 조건
@@ -442,6 +448,8 @@ class GameApp:
                 self.transition('home')
         elif ident == 'toggle_home_view':
             self.home_view = 'before' if self.home_view == 'current' else 'current'
+            event = 'shelter_before' if self.home_view == 'before' else 'shelter_return'
+            self._collection_discovery(event)
         elif ident == 'album':
             self.transition('album')
         elif ident == 'friends':
@@ -473,12 +481,47 @@ class GameApp:
                 self.campaign.data['favorite_photo']=self.photo_selected
                 self.persist()
         elif ident == 'appearance':
+            collection.sync(self.campaign.data)
+            self.collection_tab = 'looks'
+            self.collection_detail = None
+            self.collection_selected = None
+            self.collection_cover = self.campaign.data['collection']['favorite'] is not None
             self.transition('appearance')
-        elif ident.startswith('appearance_tab:'):
-            self.appearance_kind = ident.split(':')[1]
-        elif ident.startswith('cosmetic:'):
-            _,kind,value=ident.split(':')
-            self.campaign.set_cosmetic(kind,value)
+        elif ident.startswith(('collection_tab:', 'collection_open:')):
+            self.collection_tab = ident.split(':')[1]
+            self.collection_detail = None
+            self.collection_selected = None
+            self.collection_cover = False
+            self.transition('appearance')
+        elif ident.startswith('collection_card:'):
+            _, kind, number = ident.split(':')
+            self.collection_detail = (kind, int(number))
+            self.collection_selected = int(number)
+            self.transition('appearance')
+            if kind == 'looks' and collection.mark_seen(self.campaign.data, int(number)):
+                self.persist()
+        elif ident == 'collection_favorite':
+            if (self.collection_detail and self.collection_detail[0] == 'looks'
+                    and collection.set_favorite(self.campaign.data, self.collection_detail[1])):
+                self.persist()
+        elif ident == 'collection_cover':
+            self.collection_detail = None
+            self.collection_cover = True
+            self.transition('appearance')
+        elif ident == 'collection_close':
+            self.collection_detail = None
+            self.transition('appearance')
+        elif ident == 'collection_memory_paw':
+            if self.scene == 'album' and self.campaign.memory_complete(self.memory_selected):
+                self._collection_discovery('memory_paw')
+        elif ident == 'collection_notice_close':
+            self.collection_notice = ''
+        elif ident == 'collection_notice_open':
+            self.collection_notice = ''
+            self.collection_detail = None
+            self.collection_cover = False
+            self.collection_tab = 'looks'
+            self.transition('appearance')
             self.persist()
         elif ident == 'remember_friend':
             self.resolve_memory(True)
@@ -514,6 +557,7 @@ class GameApp:
             elif kind == 'new_game':
                 self.abandon()
                 self.campaign=Campaign()
+                self.collection_notice = ''
                 self.stage=1
                 self.mode='basic'
                 self.start_prologue()
@@ -532,7 +576,10 @@ class GameApp:
 
     def go_back(self):
         s=self.scene
-        if s == 'memory_choice':
+        if s == 'appearance' and self.collection_detail:
+            self.collection_detail = None
+            self.transition('appearance')
+        elif s == 'memory_choice':
             self.resolve_memory(False)
         elif s == 'game':
             self.transition('pause')
@@ -555,6 +602,14 @@ class GameApp:
             self.transition('rooms' if s == 'briefing' else self.tutorial_return)
         else:
             self.transition('home')
+
+    def _collection_discovery(self, event):
+        before = tuple(self.campaign.data['collection']['discoveries'])
+        new = collection.discover(self.campaign.data, event)
+        if new:
+            self.collection_notice = f'새로운 모습 {len(new)}장을 발견했어요'
+        if new or before != tuple(self.campaign.data['collection']['discoveries']):
+            self.persist()
 
     def resolve_memory(self, replace):
         if self.campaign.choose_friend_memory(replace):
@@ -729,6 +784,8 @@ class GameApp:
                 self.go_back()
             elif self.scene in ('story','ending') and event.key in (pygame.K_RETURN,pygame.K_SPACE):
                 self.next_dialogue()
+            elif self.scene == 'appearance' and event.key in (pygame.K_DOWN, pygame.K_UP, pygame.K_LEFT, pygame.K_RIGHT):
+                self.focus = collection_focus(self.controls, self.focus, event.key)
             elif event.key in (pygame.K_TAB,pygame.K_DOWN,pygame.K_UP,pygame.K_LEFT,pygame.K_RIGHT):
                 direction=-1 if event.key in (pygame.K_UP,pygame.K_LEFT) or (event.key==pygame.K_TAB and event.mod & pygame.KMOD_SHIFT) else 1
                 if self.controls:
@@ -854,7 +911,10 @@ class GameApp:
             snapshot=snapshot,outcome=self.last_outcome,reward=self.last_reward,story=story,dialogue=dialogue,
             display_elapsed_seconds=(self.display_elapsed_seconds
                                      if self.last_outcome is not None else None),
-            photo_selected=self.photo_selected,appearance_kind=self.appearance_kind,has_save=self.store.has_save,
+            photo_selected=self.photo_selected,has_save=self.store.has_save,
+            collection_tab=self.collection_tab,collection_detail=self.collection_detail,
+            collection_cover=self.collection_cover,
+            collection_notice=getattr(self, 'collection_notice', ''),
             preferred_photo=self.campaign.data.get('favorite_photo'),
             message=('저장되지 않은 진행이 있어요. 다시 저장해 주세요.' if self.store.error else ''),from_game=self.scene=='pause',background_snapshot=snapshot,
             elapsed=self.elapsed,scene_elapsed=self.scene_elapsed,dialogue_index=self.dialogue_index,total_dialogue=len(self.dialogues),
@@ -940,7 +1000,11 @@ class GameApp:
                     'settings':['back'], 'briefing':['start'], 'rooms':[f'stage:{min(12,len(self.campaign.data["completed"])+1)}'],
                     'home':['explore'], 'friends':['back'], 'story':['story_finish_home','story_next'], 'ending':['ending_continue'],
                     'tutorial':['tutorial_done'], 'confirm':['confirm_no'], 'save_error':['save_retry'],
-                    'album':[f'memory:{self.memory_selected}',f'photo:{self.photo_selected}'], 'appearance':[f'appearance_tab:{self.appearance_kind}']}.get(self.scene,[])
+                    'album':[f'memory:{self.memory_selected}',f'photo:{self.photo_selected}'],
+                    'appearance':(['collection_favorite','collection_close'] if self.collection_detail else
+                        ['collection_open:looks'] if self.collection_cover else
+                        [f'collection_card:{self.collection_tab}:{self.collection_selected}',
+                         f'collection_tab:{self.collection_tab}'])}.get(self.scene,[])
                 for ident in preferred:
                     match=next((i for i,b in enumerate(self.controls) if b['id']==ident and not b.get('disabled')),None)
                     if match is not None:

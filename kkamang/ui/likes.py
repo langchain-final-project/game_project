@@ -89,6 +89,6 @@ def draw_choice(surface, assets, ctx, ui):
     #     if before is not None and after is not None:
     #         label += f'  ({after - before:+.1f})'
     #     text(surface, assets, label, (40 + i * 410, 537), 20, CREAM)
-    text(surface, assets, '세 친구의 기억을 함께 교체해요. 최고 별점과 꾸미기 해금은 유지돼요.', (40, 570), 17, CREAM)
+    text(surface, assets, '세 친구의 기억을 함께 교체해요. 최고 별점과 수집장 해금은 유지돼요.', (40, 570), 17, CREAM)
     ui.control('memory_keep', (40, 619, 580, 45), '기존 기억 유지', primary=True)
     ui.control('memory_replace', (660, 619, 580, 45), '이번 기억으로 교체')

@@ -1,0 +1,172 @@
+[
+  {
+    "id": 1,
+    "name": "비옷 까망이",
+    "file": "01_raincoat_black.png",
+    "rule": "first_success",
+    "goal": 1
+  },
+  {
+    "id": 2,
+    "name": "할로윈 까망이",
+    "file": "02_halloween_black.png",
+    "rule": "shelter_return",
+    "goal": 1,
+    "hint": "처음 쉼터를 돌아보고, 지금의 쉼터로 돌아와요."
+  },
+  {
+    "id": 3,
+    "name": "크리스마스 까망이",
+    "file": "03_christmas_black.png",
+    "rule": "stars",
+    "goal": 18
+  },
+  {
+    "id": 4,
+    "name": "별왕관 까망이",
+    "file": "04_royal_black.png",
+    "rule": "stars",
+    "goal": 36
+  },
+  {
+    "id": 5,
+    "name": "루돌프 하양이",
+    "file": "05_rudolph_white.png",
+    "rule": "stars",
+    "goal": 3
+  },
+  {
+    "id": 6,
+    "name": "마린 하양이",
+    "file": "06_sailor_white.png",
+    "rule": "stars",
+    "goal": 6
+  },
+  {
+    "id": 7,
+    "name": "샴 사서",
+    "file": "07_siamese_librarian.png",
+    "rule": "rooms",
+    "goal": 3
+  },
+  {
+    "id": 8,
+    "name": "은고등어 우체부",
+    "file": "08_silver_post.png",
+    "rule": "stars",
+    "goal": 9
+  },
+  {
+    "id": 9,
+    "name": "삼색 정원사",
+    "file": "09_calico_gardener.png",
+    "rule": "rich",
+    "goal": 3
+  },
+  {
+    "id": 10,
+    "name": "카오스 약초사",
+    "file": "10_tortie_herbalist.png",
+    "rule": "rich",
+    "goal": 6
+  },
+  {
+    "id": 11,
+    "name": "크림포인트 화가",
+    "file": "11_cream_artist.png",
+    "rule": "rich",
+    "goal": 9
+  },
+  {
+    "id": 12,
+    "name": "파스텔 삼색 재봉사",
+    "file": "12_dilute_tailor.png",
+    "rule": "rich",
+    "goal": 12
+  },
+  {
+    "id": 13,
+    "name": "턱시도 집사",
+    "file": "13_tuxedo_butler.png",
+    "rule": "quiet",
+    "goal": 3
+  },
+  {
+    "id": 14,
+    "name": "래그돌 잠옷",
+    "file": "14_ragdoll_pajama.png",
+    "rule": "quiet",
+    "goal": 6
+  },
+  {
+    "id": 15,
+    "name": "민트 스파",
+    "file": "15_mint_spa.png",
+    "rule": "quiet",
+    "goal": 9
+  },
+  {
+    "id": 16,
+    "name": "보랏빛 반딧불지기",
+    "file": "16_violet_firefly.png",
+    "rule": "quiet",
+    "goal": 12
+  },
+  {
+    "id": 17,
+    "name": "벵갈 탐험가",
+    "file": "17_bengal_explorer.png",
+    "rule": "stars",
+    "goal": 12
+  },
+  {
+    "id": 18,
+    "name": "스모크 시계공",
+    "file": "18_smoke_clockmaker.png",
+    "rule": "stars",
+    "goal": 15
+  },
+  {
+    "id": 19,
+    "name": "블랙 실버 연주자",
+    "file": "19_silver_musician.png",
+    "rule": "stars",
+    "goal": 21
+  },
+  {
+    "id": 20,
+    "name": "시나몬 낚시꾼",
+    "file": "20_cinnamon_fisher.png",
+    "rule": "stars",
+    "goal": 24
+  },
+  {
+    "id": 21,
+    "name": "실버 친칠라 스케이터",
+    "file": "21_chinchilla_skater.png",
+    "rule": "stars",
+    "goal": 27
+  },
+  {
+    "id": 22,
+    "name": "블루포인트 천문학자",
+    "file": "22_bluepoint_astronomer.png",
+    "rule": "stars",
+    "goal": 30
+  },
+  {
+    "id": 23,
+    "name": "복숭아 무도회",
+    "file": "23_peach_ballroom.png",
+    "rule": "memory_paw",
+    "goal": 1,
+    "hint": "기억 앨범의 완성된 그림에서 작은 발자국을 찾아요."
+  },
+  {
+    "id": 24,
+    "name": "밤바다 등산가",
+    "file": "24_midnight_climber.png",
+    "rule": "stars",
+    "goal": 33
+  }
+]
