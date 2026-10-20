@@ -1,4 +1,4 @@
-"""Human application controller. Rendering reads state; only GameCore advances runs."""
+"""게임 화면과 입력 흐름을 제어한다. 탐사 규칙은 코어에 위임하고 결과 정산·저장·엔딩을 연결한다."""
 from pathlib import Path
 import json
 import math
@@ -33,7 +33,7 @@ class GameApp:
             raise ValueError('movement_mode must be realtime or grid')
         self.movement_mode = movement_mode
         self.motion_accumulator = 0.
-        # Owner-supplied callable(level, outcome, snapshot, mode) -> score_breakdown | None.
+        # 외부 채점 함수는 (level, outcome, snapshot, mode)를 받아 점수 내역 또는 None을 반환한다.
         self.score_provider = score_provider
         self.ending_id = None
         self.ending_art_only = False
@@ -155,8 +155,7 @@ class GameApp:
         self.transition('briefing')
 
     def start_run(self):
-        # A pending basic-mode memory should not prevent a separate practice
-        # run. Practice never creates or resolves relationship memories.
+        # 기본 모드의 대표 기록 선택이 남아 있어도 연습은 시작할 수 있으며 호감도 기록은 바꾸지 않는다.
         if self.mode == 'basic' and self.campaign.data['likes']['pending'] is not None:
             self.transition('memory_choice')
             return
@@ -233,8 +232,7 @@ class GameApp:
             self.transition(self.story_return)
 
     def _start_afterword(self, save=False):
-        # The same six IDs, original artwork and dialogue as main. History is
-        # independent of the world shown after a newly completed resolution.
+        # 엔딩 이력과 PNG·내레이션을 분리하고 다시 보기는 활성화된 쉼터 상태를 바꾸지 않는다.
         self.dialogues = list(ENDING_CONTENT[self.ending_id]['lines'])
         self.dialogue_index = 0
         self.dialogue_time = 0.
@@ -249,8 +247,7 @@ class GameApp:
             return
         selected = self.campaign.selected_ending()
         if selected is None:
-            # Incomplete or unevaluated legacy memories cannot manufacture an
-            # ending. The affection screen identifies records still unscored.
+            # 미완료·미평가 기록으로 엔딩을 만들지 않고 호감도 화면에서 누락 점수를 확인한다.
             self.transition('likes')
             return
         self.ending_id = selected
@@ -264,12 +261,13 @@ class GameApp:
             self._start_cinematic('garden')
 
     def next_dialogue(self):
-        if self.scene == 'ending' and self.ending_art_only:
-            if not self.dialogues:
-                self.finish_story()
-            else:
+        if self.scene == 'ending':
+            if self.ending_art_only and self.dialogues:
                 self.ending_art_only = False
                 self.dialogue_time = 0.
+            else:
+                # 내레이션 다음 복귀 입력은 문장 표시를 기다리지 않고 즉시 처리한다.
+                self.finish_story()
             return
         if self.dialogue_index >= len(self.dialogues):
             self.finish_story()
@@ -287,7 +285,7 @@ class GameApp:
         self.confirm_kind = kind
         self.confirm_return = self.scene
         self.transition('confirm')
-        self.focus = 0  # Menus put safe cancel first.
+        self.focus = 0
 
     def write_replay(self):
         if not self.core:
@@ -300,7 +298,7 @@ class GameApp:
             record['settlement_id'] = self.run_id
             path = folder / f'{self.core.config["id"]}_{self.run_id}.json'
             path.write_text(json.dumps(record,ensure_ascii=False,indent=2),encoding='utf-8')
-            # Keep local disk usage bounded; replay export is separate from campaign save.
+            # 탐사 재생 파일은 캠페인 저장과 분리하며 최근 50개만 보관한다.
             old = sorted(folder.glob('*.json'), key=lambda p:p.stat().st_mtime)
             for p in old[:-50]:
                 p.unlink()
@@ -308,26 +306,23 @@ class GameApp:
             self.last_replay_error = str(exc)
 
     def finish_run(self, result):
-        # 공식 결과는 리플레이와 같은 형태로 유지합니다.
         self.last_outcome = dict(result.outcome)
 
-        # 중복 정산에서는 outcome만 전달될 수 있습니다.
+        # 중복 정산 호출에는 결과만 전달될 수 있다.
         snapshot = getattr(result, "snapshot", None)
         if snapshot is None:
             snapshot = self.core.snapshot()
         motion = snapshot.get("motion")
 
         if motion is not None:
-            # 실시간 모드: 1/60초 단위의 진행 횟수로 계산합니다.
             used_seconds = motion["frame"] * FRAME_SECONDS
         else:
-            # 격자 모드는 기존 틱 기준 계산을 유지합니다.
             tick_seconds = float(
                 self.core.config.get("tick_seconds", 0.3)
             )
             used_seconds = result.outcome["ticks_used"] * tick_seconds
 
-        # 표시용 정밀 시간은 공식 결과·저장·점수 계산과 분리합니다.
+        # 표시용 정밀 시간은 공식 결과·저장·점수 계산과 분리한다.
         self.display_elapsed_seconds = used_seconds
         memory = None
         if (self.core.mode == 'basic' and result.outcome['status'] == 'COMPLETE'
@@ -380,7 +375,6 @@ class GameApp:
                 self.collection_notice = ''
                 self.stage = 1
                 self.start_prologue()
-        # 엔딩 조건
         elif ident in ('ending_conditions', 'likes'):
             self.transition('likes')
         elif ident in ('explore','rooms'):
@@ -403,8 +397,7 @@ class GameApp:
             self.tutorial_starts_run = False
             self.transition('tutorial')
         elif ident == 'retry':
-            # 결과 화면의 재도전은 바로 탐사를 시작하지 않는다. 방의 목표와
-            # 모드를 다시 확인할 수 있도록 같은 방의 준비 화면으로 돌아간다.
+            # 재도전은 같은 방의 준비 화면으로 돌아가 목표와 모드를 다시 확인한다.
             self.prepare(self.stage)
         elif ident == 'restart':
             if self.scene in ('pause','game'):
@@ -424,9 +417,7 @@ class GameApp:
         elif ident in ('memory','view_memory'):
             self.start_memory()
         elif ident == 'story_finish_next':
-            # A newly unlocked room can be entered immediately after its
-            # memory story.  Album replays and the final room keep their
-            # existing return/ending flows instead.
+            # 새 기억 감상 후에는 다음 방으로 이동하되 앨범 다시 보기와 마지막 방은 원래 복귀 흐름을 따른다.
             if self.story_kind == 'memory' and not self.replaying_story and self.stage < 12:
                 self.prepare(self.stage + 1)
             else:
@@ -592,7 +583,6 @@ class GameApp:
         elif s == 'save_error':
             self.transition(self.save_return)
         elif s == 'home':
-            # 로비에서 ESC를 누르면 진행을 저장하고 시작 화면으로 돌아갑니다.
             self.persist('title')
         elif s == 'title':
             self.request_confirm('quit')
@@ -618,16 +608,15 @@ class GameApp:
                 selected = self.campaign.selected_ending()
                 self.last_reward['new_ending'] = bool(
                     selected and selected not in self.campaign.data['likes']['seen_endings'])
-            # A reloaded pending choice has no transient result-screen context.
+            # 불러온 미확정 기록에는 직전 결과 화면의 임시 문맥이 없을 수 있다.
             self.persist('result' if self.last_outcome is not None else 'likes')
 
     def _perform_action(self, action, animation_age=0.):
-        """한 틱을 실행하고 보간의 시작점에는 실제 이전 칸을 보관합니다."""
+        """한 틱을 실행하고 보간 시작점에는 실제 이전 칸을 보관한다."""
         if self.scene != 'game' or self.core is None:
             return
 
-        # 화면의 중간 좌표를 다음 구간의 시작점으로 쓰면 방향 전환 시
-        # 두 축이 동시에 보간됩니다. 코어의 정수 좌표만 보관합니다.
+        # 방향 전환 때 두 축이 동시에 보간되지 않도록 화면 중간 좌표 대신 코어의 정수 좌표를 보관한다.
         before = self.core.snapshot()
         self.previous = before
         result = self.core.step(action)
@@ -637,7 +626,7 @@ class GameApp:
         return result
 
     def _remember_ghost_facings(self, before, after):
-        """Retain presentation-only facing during waits and contact stuns."""
+        """대기·접촉 정지 중에도 화면에 표시할 유령 방향을 유지한다."""
         old = {g['id']: g['position'] for g in before['ghosts']}
         if before.get('chaser') and before['chaser']['active']:
             old[before['chaser']['id']] = before['chaser']['position']
@@ -651,7 +640,7 @@ class GameApp:
                     self.ghost_facings.get(ghost['id'], 'down'))
 
     def _process_result(self, result):
-        """Display shared core events and settle an ended run exactly once."""
+        """공통 코어 이벤트를 표시하고 끝난 탐사는 한 번만 정산한다."""
         for event in result.events:
             kind = event['type']
             self.audio.play_event(event, quest=self.core.config['quest'] if kind == 'quest_collect' else None)
@@ -722,7 +711,7 @@ class GameApp:
         if result.terminated:
             self.finish_run(result)
 
-        # 같은 틱에 여러 온기를 얻어도 아이템 안내가 덮이지 않게 합니다.
+        # 같은 틱에 여러 온기를 얻어도 필수 물건 안내를 덮어쓰지 않는다.
         if (any(event['type'] == 'magnet_collect' for event in result.events)
                 and not any(event['type'] == 'damage' for event in result.events)):
             self.toast = '자석 획득! 13틱 동안 주변 3×3 온기를 끌어와요'
@@ -758,8 +747,7 @@ class GameApp:
 
             self.input.handle(event)
 
-            # 첫 입력만 즉시 시작합니다. 이후 모든 입력은 공통 틱에서
-            # 처리하여 E·방향키 연타가 유령과 시간을 가속하지 않게 합니다.
+            # 첫 입력만 즉시 처리하고 이후 입력은 공통 틱에 맞춰 연타가 유령·시간을 가속하지 않게 한다.
             if (self.movement_mode == 'grid'
                     and self.core.snapshot()['tick'] == 0 and self.input.pending):
                 action = (4 if self.input.consume_interaction()
@@ -827,7 +815,7 @@ class GameApp:
         if self.scene != 'game' or self.core is None:
             return
 
-        # 메뉴와 일시정지 중에는 흡입 연출도 정지합니다.
+        # 메뉴·일시정지 중에는 흡입 연출도 멈춘다.
         for flight in self.magnet_flights:
             flight['age'] += dt
         self.magnet_flights = [flight for flight in self.magnet_flights
@@ -844,8 +832,7 @@ class GameApp:
             self.core.config.get('tick_seconds', 0.3)
         )
 
-        # 한 틱에는 E·이동·대기 중 하나만 처리합니다. E를 처리해도
-        # 누르고 있는 방향키와 아직 처리하지 않은 짧은 이동 입력은 유지합니다.
+        # 한 틱은 상호작용·이동·대기 중 하나만 처리하며 상호작용 뒤에도 미처리 이동 입력은 보존한다.
         while (
             self.scene == 'game'
             and self.accumulator + 1e-9 >= tick_seconds
@@ -869,8 +856,7 @@ class GameApp:
         while self.scene == 'game' and self.motion_accumulator + 1e-12 >= FRAME_SECONDS:
             self.motion_accumulator = max(0., self.motion_accumulator - FRAME_SECONDS)
             before = self.core.snapshot()
-            # No corner reservation: the latest direction is applied this frame,
-            # even when the body is between tile centers. E takes one frame.
+            # 칸 중간에서도 최신 방향을 즉시 적용하며 상호작용도 한 프레임을 소비한다.
             action = (4 if self.input.consume_interaction()
                       else self.input.consume_movement())
             result = self.core.step(action)
@@ -925,6 +911,7 @@ class GameApp:
             released_variants=self.campaign.released_variants(),
             ending_released_variants=self.ending_released_variants,
             ending_art_only=self.ending_art_only,
+            narration_progress=min(1., self.dialogue_time / .5),
             confirm_kind=self.confirm_kind,confirm_title=title,confirm_text=message,save_error=self.store.error,
             replay=self.replaying_story,settings_return=self.settings_return,home_view=self.home_view,
             total_stars=self.campaign.total_stars(),
@@ -953,8 +940,6 @@ class GameApp:
                 self.core.config.get('tick_seconds', 0.3)
             )
 
-            # 남은 틱을 초로 바꾸고,
-            # 현재 틱 안에서 이미 흐른 시간을 표시에서 제외합니다.
             remaining_seconds = max(
                 0.,
                 snapshot['remaining_ticks'] * tick_seconds
@@ -1013,7 +998,7 @@ class GameApp:
                 self.needs_focus=False
                 self.controls=render_menu(self.canvas,self.assets,screen,self.context(),self.focus,self.mouse)
             self.focus=min(self.focus,max(0,len(self.controls)-1))
-        # Unsaved progress remains visible after choosing to continue the session.
+        # 저장 실패 후 계속하기를 선택해도 현재 세션의 진행은 유지한다.
         if self.store.error and self.scene not in ('save_error','title'):
             panel(self.canvas,(880,6,380,34),fill=(71,42,66),border=(217,151,129),radius=10)
             label='아직 저장되지 않았어요 · 일시정지 후 재시도' if self.scene=='game' else '아직 저장되지 않았어요 · 클릭해서 재시도'
@@ -1045,7 +1030,7 @@ class GameApp:
             dt=clock.tick(60)/1000
             before_events = self.transition_counter
 
-            # 멈췄던 프레임에서는 즉시 입력 실행보다 일시정지가 먼저입니다.
+            # 멈췄던 프레임에서는 입력 실행보다 일시정지를 우선한다.
             if self.scene == 'game' and dt > 1.0:
                 self.transition('pause')
 

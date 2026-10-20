@@ -1,2 +1,2 @@
-# Replay validation hashes the authored files on both Windows and Linux.
+# 운영체제가 달라도 레벨 파일의 기준 재생 해시를 유지한다.
 data/levels/stage_*.json text eol=lf

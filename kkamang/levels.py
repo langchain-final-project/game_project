@@ -1,9 +1,4 @@
-"""Load and validate authored levels without importing the UI or learning stack.
-
-Validation here checks the data contract and static reachability. It deliberately
-does not claim a time-feasible, contact-free solution: the recorded
-route replay suite verifies those properties for the supplied 12 levels.
-"""
+"""12개 레벨을 읽고 스키마·배치·도달 가능성을 검사한다. 제한 시간 내 성공 여부는 경로 재생으로 따로 검증한다."""
 from __future__ import annotations
 
 from collections import deque
@@ -31,12 +26,7 @@ def _integer(value: object) -> bool:
 
 
 def validate_level(config: dict) -> None:
-    """Reject ambiguous, malformed, or unsupported level configurations.
-
-    IDs and slot order are stable because the observation contract
-    relies on them. Modified maps may use fewer patrols or shortcuts; their
-    number is not implicitly inferred from the stage number.
-    """
+    """지원하는 레벨 계약을 검사한다. 관측 슬롯의 식별자·순서는 고정이며 유령·샛문 수는 방 번호로 추측하지 않는다."""
     _require(isinstance(config, dict), "configuration must be a dictionary")
     required = (
         "schema_version", "rules_version", "id", "stage", "name", "width",
@@ -142,8 +132,7 @@ def validate_level(config: dict) -> None:
         _require(isinstance(route, list) and 2 <= len(route) <= 16,
                  f"ghost {ghost['id']} route must contain 2..16 tiles")
         points = [position(point, f"ghost {ghost['id']} route") for point in route]
-        # 직선 왕복을 표현할 수 있도록 중복 좌표 허용
-        # _require(len(set(points)) == len(points), f"ghost {ghost['id']} route repeats a tile")
+        # 직선 왕복 경로를 표현할 수 있도록 좌표 중복을 허용한다.
         _require(not set(points) & gate_positions and exit_position not in points,
                  f"ghost {ghost['id']} route crosses a gate or exit")
         _require(all(abs(a[0] - b[0]) + abs(a[1] - b[1]) == 1
@@ -153,7 +142,6 @@ def validate_level(config: dict) -> None:
                  f"ghost {ghost['id']} initial_index is outside its route")
         _require(_integer(ghost["direction"]) and ghost["direction"] in (-1, 1),
                  f"ghost {ghost['id']} direction must be -1 or 1")
-        # 첫 이동 대기 시간과 이후 이동 간격을 각각 설정할 수 있습니다.
         for key in ("initial_countdown", "ticks_per_move"):
             value = ghost[key]
             _require(
@@ -181,8 +169,6 @@ def validate_level(config: dict) -> None:
     _require(all(point in all_open_reachable for point in item_positions + terminal_positions),
              "an item or terminal is disconnected even with all gates open")
     
-    # ── 추격형 유령 설정 검증 ──
-    # 설정이 없는 스테이지에서는 이 블록을 실행하지 않습니다.
     if "chaser" in config:
         chaser = config["chaser"]
 
@@ -191,7 +177,6 @@ def validate_level(config: dict) -> None:
             "chaser must be an object",
         )
 
-        # 스키마에 정의한 네 항목이 모두 있어야 합니다.
         fields = {
             "id",
             "spawn_position",
@@ -209,7 +194,6 @@ def validate_level(config: dict) -> None:
 
         _require(chaser["id"] == "C", "chaser id must be C")
 
-        # bool, 소수, 0, 음수와 상한을 넘는 값은 허용하지 않습니다.
         for key in ("initial_countdown", "ticks_per_move"):
             value = chaser[key]
             _require(
@@ -217,22 +201,20 @@ def validate_level(config: dict) -> None:
                 f"chaser {key} must be an integer in 1..{MAX_TICKS}",
             )
 
-        # 기존 position()으로 좌표 형식·범위·바닥 여부를 검사합니다.
         spawn = position(chaser["spawn_position"], "chaser spawn")
 
-        # 기존 물건·장치·귀환점, 샛문, 필수 물건과 겹치지 않게 합니다.
         _require(
             spawn not in occupied | gate_positions | {quest_point},
             "chaser spawn overlaps an object, gate, or quest",
         )
 
-        # 샛문이 닫혀 있어도 고양이와 같은 연결 영역이어야 합니다.
+        # 추격형의 출현점은 샛문이 닫혀도 고양이와 같은 연결 영역이어야 한다.
         _require(
             spawn in closed_reachable,
             "chaser spawn must be reachable with shortcuts closed",
         )
 
-    # 자석은 온기 10개와 분리된, 스테이지당 하나의 선택 아이템입니다.
+    # 자석·무적은 온기 10개와 별개이며 각 종류는 스테이지당 최대 하나다.
     powerup_positions = set()
     for name, duration in (("magnet", MAGNET_DURATION_TICKS),
                            ("invincibility", INVINCIBILITY_DURATION_TICKS)):
@@ -262,7 +244,7 @@ def _level_root(root: Path | None) -> Path:
 
 
 def load_level(stage: int | str, root: Path | None = None) -> dict:
-    """Load one stage by integer, '01', or 'stage_01'; paths are not accepted."""
+    """1~12 정수 또는 01·stage_01 형태의 식별자로 읽는다. 파일 경로는 받지 않는다."""
     if _integer(stage):
         number = int(stage)
     elif isinstance(stage, str) and re.fullmatch(r"(?:stage_)?(?:0?[1-9]|1[0-2])", stage):
@@ -281,6 +263,5 @@ def load_level(stage: int | str, root: Path | None = None) -> dict:
 
 
 def load_levels(root: Path | None = None) -> list[dict]:
-    """Load the complete 12-stage campaign in numerical order."""
     folder = _level_root(root)
     return [load_level(stage, folder) for stage in range(1, 13)]

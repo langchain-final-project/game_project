@@ -1,4 +1,4 @@
-"""Explicit development fixtures only. Never used by normal game scoring."""
+"""호감도·엔딩 화면용 개발 미리보기를 구성한다. 정상 플레이의 점수와 저장에는 사용하지 않는다."""
 from . import likes
 
 PREVIEWS = ('overview', 'choice', *likes.ENDING_IDS)

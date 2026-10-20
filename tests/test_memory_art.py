@@ -1,4 +1,4 @@
-"""Picture invariance, opaque locks and the real app's four-boolean contract."""
+"""기억 원화·잠금 마스크·네 조각 공개 상태의 화면 계약을 검증한다."""
 from copy import deepcopy
 import os
 from pathlib import Path
@@ -46,7 +46,7 @@ def test_irregular_labels_cover_every_pixel_once(memory_id):
     assert set(np.unique(labels))=={1,2,3,4}
     counts=[np.count_nonzero(labels==region) for region in (1,2,3,4)]
     assert min(counts)>10000 and len(set(counts))>1
-    # Regions are semantic silhouettes rather than four rectangular quarters.
+
     for region in (1,2,3,4):
         xx,yy=np.nonzero(labels==region)
         assert len(xx)<(xx.max()-xx.min()+1)*(yy.max()-yy.min()+1)
@@ -79,10 +79,7 @@ def test_animation_cannot_change_previous_reveals_or_expose_other_regions(memory
 
 def test_final_storm_reveal_keeps_faces_warmth_and_threshold_together():
     labels=pixels(memories.memory_region_mask(3))[:,:,0]
-    # Three faces, all escaping warmth and the open garden handle wait for 12.
-    # Coordinates follow the character-style raster at canonical 1280×720.
-    # Include the outermost wisps and every large floating circular orb, whose
-    # positions differ from the ordinary golden candle/rim light in the room.
+    # 얼굴·흘러나오는 온기·정원 손잡이는 12조각을 모은 뒤에만 공개한다.
     for point in ((545,430),(678,445),(837,450),(516,337),(825,338),
                   (349,458),(955,487),(1032,515),(75,227),
                   (456,351),(504,307),(568,346),(614,337),(653,317),
@@ -91,15 +88,15 @@ def test_final_storm_reveal_keeps_faces_warmth_and_threshold_together():
         assert labels[point]==4,point
     hidden=draw(3,[True,True,True,False]);fog=draw(3,[False]*4)
     np.testing.assert_array_equal(pixels(hidden)[labels==4],pixels(fog)[labels==4])
-    assert labels[1100,250]==1  # Empty chair's back.
-    assert labels[740,575]==2  # Solid blanket, without the faces.
-    # Three opaque tails and the little front paws precede the upper change.
+    assert labels[1100,250]==1
+    assert labels[740,575]==2
+
     for point in ((360,595),(448,615),(565,610),(650,625),(875,628),(1010,617),
                   (475,499),(565,496),(613,502),(698,515),(774,522)):
         assert labels[point]==2,point
-    assert labels[850,295]==3  # Embers inside the hearth, above the orbs.
-    assert labels[630,266]==3  # Last score on its stand.
-    assert labels[789,31]==3  # Stopped clock.
+    assert labels[850,295]==3
+    assert labels[630,266]==3
+    assert labels[789,31]==3
 
 
 @pytest.mark.parametrize('memory_id,landmarks',(
@@ -192,8 +189,7 @@ def test_real_app_boolean_context_reveals_the_complete_fourth_region(tmp_path):
 
 
 def test_game_art_renders_in_a_fresh_process_without_numpy(tmp_path):
-    # The normal game's requirements contain Pygame only. Use a fresh process
-    # so this file's NumPy-based pixel assertions cannot conceal a dependency.
+    # 픽셀 검사용 NumPy가 게임의 실행 의존성을 숨기지 않도록 새 프로세스에서 검사한다.
     script=textwrap.dedent('''
         import importlib.abc
         import importlib.util

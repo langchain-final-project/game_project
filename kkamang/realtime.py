@@ -1,10 +1,4 @@
-"""Continuous cat movement with the same pickup, contact and scoring rules.
-
-One action lasts 1/60 second. E and WAIT do not translate the cat. World clocks
-advance every 18 actions; changing direction never grants another world tick.
-The integer position is the occupied cell; motion.position is the body center
-in tile-center coordinates. No wall clock or Pygame is used here.
-"""
+"""공통 탐사 규칙에 연속 이동을 연결한다. 행동은 1/60초, 세계 진행은 18행동마다 한 틱이며 방향 전환도 같은 시계를 쓴다."""
 from copy import deepcopy
 import math
 from numbers import Integral, Real
@@ -55,8 +49,7 @@ class RealtimeGameCore(GameCore):
         target[axis] += direction / FRAMES_PER_TICK
         target[axis] = max(0., min(self._state['width' if axis == 0 else 'height'] - 1,
                                   target[axis]))
-        # The short, fixed step cannot tunnel across a tile. Clamp the leading
-        # body edge against any wall/closed gate touched by the candidate box.
+        # 이동 후보의 몸 가장자리를 벽·닫힌 문에 맞춰 제한해 칸을 관통하지 않게 한다.
         lo = [math.floor(v + .5 - PLAYER_RADIUS + 1e-10) for v in target]
         hi = [math.floor(v + .5 + PLAYER_RADIUS - 1e-10) for v in target]
         for y in range(lo[1], hi[1] + 1):
@@ -77,7 +70,7 @@ class RealtimeGameCore(GameCore):
         return self._destination(action) != self._motion_position
 
     def step(self, action):
-        """Apply one 1/60-second command, including a mid-cell direction change."""
+        """칸 중간의 방향 전환을 포함해 1/60초 행동 하나를 적용한다."""
         self._ensure_active()
         if (not isinstance(action, Integral) or isinstance(action, bool)
                 or not 0 <= action <= 5):
@@ -103,7 +96,7 @@ class RealtimeGameCore(GameCore):
         return StepResult(result.snapshot, events, result.terminated, result.outcome)
 
     def advance(self, action, seconds):
-        """Headless fixed-step driver; identical commands are frame-rate invariant."""
+        """누적 시간을 고정 간격으로 처리해 같은 행동열의 결과를 화면 주기와 분리한다."""
         self._ensure_active()
         if (not isinstance(action, Integral) or isinstance(action, bool)
                 or not 0 <= action <= 5):

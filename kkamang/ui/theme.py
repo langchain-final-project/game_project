@@ -1,7 +1,6 @@
-"""Small, cached drawing vocabulary for the mansion's live Pygame UI.
+"""PNG·글꼴 캐시와 글자·패널·버튼·입자 효과의 공통 그리기를 제공한다.
 
-Text is always rendered from live strings. Artwork is decorative and never owns
-game state or collision coordinates.
+게임 상태와 충돌 좌표는 관리하지 않는다.
 """
 from __future__ import annotations
 
@@ -33,7 +32,7 @@ class Assets:
         self._cats = {}
 
     def cat(self, size: tuple, scarf="default") -> pygame.Surface:
-        """Use the same PNG cat as field animation and story portraits."""
+        """탐사와 대화 초상에 같은 까망이 PNG를 사용한다."""
         from .illustration import cat_frame
         source = cat_frame(int(size[0]), scarf=scarf)
         canvas = pygame.Surface(tuple(map(int,size)), pygame.SRCALPHA)
@@ -48,7 +47,7 @@ class Assets:
             path = self.root / name
             try:
                 im = pygame.image.load(str(path))
-                # convert_alpha needs a video mode, but headless test surfaces do not.
+                # 창을 만들지 않은 검증에서도 읽을 수 있도록 영상 모드가 있을 때만 알파를 변환한다.
                 self._originals[name] = im.convert_alpha() if pygame.display.get_surface() else im
             except (FileNotFoundError, pygame.error):
                 im = pygame.Surface((64, 64), pygame.SRCALPHA)
@@ -64,7 +63,7 @@ class Assets:
         return self._scaled[key]
 
     def icon(self, name: str, size: tuple) -> pygame.Surface:
-        """Fit a transparent icon's painted bounds, ignoring export padding."""
+        """내보내기 여백을 제외한 실제 그림의 비율을 맞춘다."""
         key = (name, tuple(map(int, size)))
         if key not in self._icons:
             source = self.image(name)
@@ -88,8 +87,7 @@ class Assets:
             if not filename.exists():
                 filename = self.root / "fonts" / "NotoSansKR.ttf"
             f = pygame.font.Font(str(filename) if filename.exists() else None, key[0])
-            # SDL selects the minimum axis of the source variable font. Static
-            # 400/700 instances avoid a thin, unreadable Korean UI on Windows.
+            # 가변 글꼴의 최소 굵기가 선택되는 문제를 피하려고 기본 400·굵게 700의 정적 글꼴을 쓴다.
             if "Regular" not in filename.name and "Bold" not in filename.name:
                 f.set_bold(bool(bold))
             self._fonts[key] = f
@@ -118,7 +116,6 @@ class Assets:
             self._covers[key] = image
         surface.blit(self._covers[key], (0, 0))
 
-
 def text(surface, assets, content, pos, size=22, color=CREAM, bold=False, anchor="topleft"):
     label = assets.font(size, bold).render(str(content), True, color)
     rect = label.get_rect()
@@ -126,16 +123,14 @@ def text(surface, assets, content, pos, size=22, color=CREAM, bold=False, anchor
     surface.blit(label, rect)
     return rect
 
-
 def fit_text(surface, assets, content, rect, size=22, color=CREAM, bold=False, anchor="center"):
     rect = pygame.Rect(rect)
     while size > 12 and assets.font(size, bold).size(str(content))[0] > rect.width:
         size -= 1
     return text(surface, assets, content, getattr(rect, anchor), size, color, bold, anchor)
 
-
 def wrapped(surface, assets, content, rect, size=20, color=INK, line_gap=5):
-    """Character-aware wrapping works with Korean, Latin and explicit newlines."""
+    """한글·영문을 글자 단위로 줄바꿈하고 명시한 개행도 유지한다."""
     rect = pygame.Rect(rect)
     f = assets.font(size)
     y = rect.y
@@ -158,7 +153,6 @@ def wrapped(surface, assets, content, rect, size=20, color=INK, line_gap=5):
             y += line_height
     return y
 
-
 def panel(surface, rect, fill=PAPER, border=GOLD, radius=16):
     r = pygame.Rect(rect)
     shadow = pygame.Surface((r.width + 8, r.height + 10), pygame.SRCALPHA)
@@ -169,17 +163,14 @@ def panel(surface, rect, fill=PAPER, border=GOLD, radius=16):
         pygame.draw.rect(surface, border, r, 1, border_radius=radius)
         pygame.draw.rect(surface, (*border[:3],), r.inflate(-9, -9), 1, border_radius=max(4, radius - 4))
 
-
 def dark_panel(surface, rect, radius=18):
     panel(surface, rect, fill=(53, 43, 69), border=(168, 145, 112), radius=radius)
-
 
 def rounded_box(surface, rect, fill=PAPER, border=None, radius=10):
     r = pygame.Rect(rect)
     pygame.draw.rect(surface, fill, r, border_radius=radius)
     if border:
         pygame.draw.rect(surface, border, r, 1, border_radius=radius)
-
 
 def button(surface, assets, rect, label, focused=False, disabled=False, primary=False):
     r = pygame.Rect(rect)
@@ -198,15 +189,13 @@ def button(surface, assets, rect, label, focused=False, disabled=False, primary=
     pygame.draw.rect(surface, edge, r.inflate(-8, -8), 1, border_radius=9)
     fit_text(surface, assets, label, r.inflate(-22, -4), 21, fg, bold=primary)
 
-
 def soft_glow(surface, center, radius=24, color=GOLD, strength=50):
-    # Tiny local particle glows, not full-frame filters.
+    # 전체 화면 필터 대신 작은 입자 주변에만 빛을 더한다.
     radius = int(radius)
     s = pygame.Surface((radius * 2 + 2, radius * 2 + 2), pygame.SRCALPHA)
     for i in range(6, 0, -1):
         pygame.draw.circle(s, (*color[:3], max(1, int(strength * (7 - i) / 12))), (radius, radius), max(1, radius * i // 6))
     surface.blit(s, (center[0] - radius, center[1] - radius))
-
 
 def draw_sparkles(surface, elapsed=0.0, rect=None, color=GOLD, count=16):
     r = pygame.Rect(rect or surface.get_rect())

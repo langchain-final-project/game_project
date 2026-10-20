@@ -1,4 +1,4 @@
-"""Campaign correctness, progression invariants and actual save failure recovery."""
+"""캠페인 진행·대표 기록·저장 실패 복구의 일관성을 검증한다."""
 from copy import deepcopy
 import json
 from pathlib import Path
@@ -41,7 +41,7 @@ def test_all_twelve_first_completions_unlock_story_without_cutscene_flags():
         assert c.data['photos'] == list(range(1, stage + 1))
     assert c.optional_badges() == 0
     assert len(c.data['room_states']) == 12
-    assert c.data['intro_seen'] is False  # Scene viewing is not a reward condition.
+    assert c.data['intro_seen'] is False
 
 
 def test_settlement_is_idempotent_even_after_save_reload(tmp_path):
@@ -292,14 +292,14 @@ def test_twelve_story_entries_match_levels_and_real_assets():
         assert story['restoration'] and story['before']
         assert story['teaser'] == ''
         if story['art']:
-            # Match the renderer: bare filenames use art/, paths are relative
-            # to assets/ (including the reorganized background/ directory).
+
+
             image = story['art'] if '/' in story['art'] else 'art/' + story['art']
             assert (project / 'assets' / image).is_file()
         else:
             assert story['emblem']
-    assert len(STAGES) == 12 and PROLOGUE == [] and len(ENDING) == 3
-    assert ('보송', '왔네. 수건은 저기 있어.') in ENDING
+    assert len(STAGES) == 12 and PROLOGUE == [] and len(ENDING) == 1
+    assert ENDING[0][0] == '' and '세 유령 친구' in ENDING[0][1]
 
 
 def test_parseable_but_damaged_records_are_preserved_as_corrupt(tmp_path):
@@ -352,7 +352,7 @@ def test_main_selected_ending_and_explicit_activation_survive_save_roundtrip(tmp
     assert campaign.selected_ending() == likes.select_ending(
         campaign.data['likes'], campaign.data['completed']) == ending_id
     assert campaign.extended_ending_unlocked() == (ending_id == 'happy_all')
-    # Selection and historic flags do not activate a present-day world state.
+
     assert campaign.active_ending() is None and campaign.released_variants() == ()
     assert campaign.data['likes']['seen_endings'] == []
     assert campaign.record_ending(ending_id)

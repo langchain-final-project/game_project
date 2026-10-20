@@ -1,3 +1,4 @@
+"""호감도와 별점에 따른 대표 기록·엔딩 선택을 검증한다."""
 from copy import deepcopy
 import pytest
 
@@ -27,7 +28,7 @@ def test_normalization_and_replacement_not_addition():
     assert comparison['after']['dore'] == pytest.approx(100 / 12)
     likes.choose_memory(state, True)
     assert state['representatives']['1']['run_id'] == 'replay'
-    assert state['best_stars']['1'] == 3  # Lower-scoring representative preserves best stars.
+    assert state['best_stars']['1'] == 3
     assert likes.totals(state) == comparison['after']
     snapshot = deepcopy(state)
     assert not likes.choose_memory(state, True)
@@ -52,10 +53,10 @@ def test_six_ending_branches(ending, components):
 
 
 def test_priority_thresholds_two_high_and_unfinished():
-    state = full_state((42, 10, 5))  # exactly 70 warmth
+    state = full_state((42, 10, 5))
     assert likes.select_ending(state, range(1, 13)) == 'ghost_a'
     assert likes.select_ending(full_state((42, 20, 5)), range(1, 13)) == 'normal'
-    # Zero stars wins over an individual high-affection ending.
+
     assert likes.select_ending(full_state((0, 25, 5)), range(1, 13)) == 'sad'
     assert likes.select_ending(state, range(1, 12)) is None
     likes.offer_memory(state, sample_record(1, (60, 25, 15), 'pending'))

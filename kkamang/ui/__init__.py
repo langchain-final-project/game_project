@@ -1,1 +1,1 @@
-"""Presentation only. Core simulation has no dependency on this package."""
+"""화면 표시 계층이다. 코어 시뮬레이션은 이 패키지에 의존하지 않는다."""

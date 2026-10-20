@@ -1,8 +1,4 @@
-"""Deterministic, rendering-independent game state and six-action transition.
-
-No wall clock, UI, input device, filesystem, campaign save, or ML dependency is
-consulted by a transition. One accepted action always consumes exactly one tick.
-"""
+"""탐사의 수집·충돌·귀환·점수 규칙과 결정적 상태 전이를 구현한다. 화면·저장·강화학습에 의존하지 않는다."""
 from __future__ import annotations
 from collections import deque
 from copy import deepcopy
@@ -37,7 +33,7 @@ class StepResult:
 
 
 class GameCore:
-    """One exploration episode; campaign progression is deliberately separate."""
+    """캠페인 진행과 분리된 한 번의 탐사. 격자 행동 하나는 한 틱을 소비한다."""
 
     def __init__(self, config: dict, mode: str = "basic", seed: int = 0,
                  randomize_phase: bool = False) -> None:
@@ -69,7 +65,7 @@ class GameCore:
 
     @property
     def config(self) -> dict:
-        """Copy-on-read prevents callers from changing the active rules."""
+        """외부에서 진행 중 규칙을 바꾸지 못하도록 복사본을 반환한다."""
         return deepcopy(self._config)
 
     @property
@@ -77,12 +73,7 @@ class GameCore:
         return list(self._actions)
 
     def reset(self, seed: int | None = None, phase_overrides: dict | None = None) -> dict:
-        """Start a fresh episode, optionally choosing explicit patrol phases.
-
-        With randomize_phase=True, a supplied seed reinitializes the local RNG;
-        seed=None continues it. Replay records capture the actual chosen phase,
-        so even unseeded consecutive resets can be reproduced exactly.
-        """
+        """탐사를 초기화한다. 난수 순찰은 seed=None일 때 이어가며 실제 시작 위상을 재생 기록에 남긴다."""
         if seed is not None and (not isinstance(seed, Integral) or isinstance(seed, bool)):
             raise ValueError("seed must be an integer or None")
         overrides = {} if phase_overrides is None else phase_overrides
@@ -154,7 +145,6 @@ class GameCore:
                            "gate": list(shortcut["gate"]), "opened": False}
                           for shortcut in config["shortcuts"]],
         }
-        # 추격형 설정이 없는 스테이지에서는 None입니다.
         self._state["chaser"] = None
         chaser_config = config.get("chaser")
 
@@ -189,7 +179,7 @@ class GameCore:
         return destination, None
 
     def can_move(self, action: int) -> bool:
-        """Query terrain without advancing time; ghosts do not block a tile."""
+        """시간을 진행하지 않고 지형만 검사한다. 유령은 이동 가능한 칸을 막지 않는다."""
         if (not isinstance(action, Integral) or isinstance(action, bool)
                 or not 0 <= action <= 3):
             raise ValueError("movement action must be an integer 0..3")
@@ -200,10 +190,9 @@ class GameCore:
             raise RuntimeError("Episode has ended; call reset() before stepping again")
 
     def _collect_warmth(self, events: list[dict], *, magnetic: bool) -> None:
-        """자석은 1점 온기만 끌어오며, 3점 온기는 직접 밟아야 획득합니다."""
+        """자석은 1점 온기만 끌어오며, 3점 온기는 직접 밟아야 획득한다."""
         state = self._state
         for item in state["items"]:
-            # 1점은 자석 범위(주변 3×3칸), 3점은 현재 칸에서만 수집합니다.
             magnetic_pickup = magnetic and item["value"] == 1
             radius = 1 if magnetic_pickup else 0
             if (item["active"] and all(
@@ -220,7 +209,7 @@ class GameCore:
                 })
 
     def _next_chaser_position(self, origin: list[int]) -> list[int]:
-        """벽과 닫힌 문을 피해 고양이에게 가는 최단 경로의 첫 칸을 찾습니다."""
+        """벽과 닫힌 문을 피해 고양이에게 가는 최단 경로의 첫 칸을 찾는다."""
         state = self._state
         start = tuple(origin)
         target = tuple(state["position"])
@@ -233,7 +222,6 @@ class GameCore:
 
         queue = deque([start])
 
-        # 각 칸에 도달하려면 출발점에서 첫 번째로 어디로 가야 하는지 기록합니다.
         first_steps = {start: start}
 
         while queue:
@@ -244,7 +232,7 @@ class GameCore:
 
             x, y = current
 
-            # 같은 길이의 경로가 여러 개라면 이 순서로 선택합니다.
+            # 최단 경로 길이가 같으면 이 탐색 순서로 선택해 재생을 결정적으로 유지한다.
             neighbors = (
                 (x, y - 1),
                 (x, y + 1),
@@ -272,11 +260,10 @@ class GameCore:
                 )
                 queue.append(point)
 
-        # 갈 수 있는 경로가 없으면 현재 칸에 머뭅니다.
         return list(start)
 
     def _update_chaser(self, events: list[dict]) -> None:
-        """필수 물건 획득 후 추격형을 활성화하고 이동시킵니다."""
+        """필수 물건을 획득하면 추격형을 활성화하고 정해진 주기로 이동시킨다."""
         state = self._state
         chaser = state["chaser"]
 
@@ -292,7 +279,7 @@ class GameCore:
                 "countdown": chaser["countdown"],
             })
 
-            # 등장한 틱에는 대기 시간을 줄이거나 움직이지 않습니다.
+            # 추격형은 등장한 틱에 대기 시간을 줄이거나 이동하지 않는다.
             return
 
         chaser["countdown"] -= 1
@@ -315,7 +302,7 @@ class GameCore:
 
     def _transition(self, action: int, *, previous_position=None,
                     advance_world=True, record_action=True) -> StepResult:
-        """Shared rules for grid turns and continuous movement frames."""
+        """격자 행동과 연속 이동이 공유하는 규칙. 세계 진행 여부와 재생 행동 기록은 호출자가 지정한다."""
         self._ensure_active()
         if not isinstance(action, Integral) or isinstance(action, bool) or not 0 <= action <= 5:
             raise ValueError("action must be an integer 0..5 from Action")
@@ -342,7 +329,6 @@ class GameCore:
                 events.append({"type": "blocked", "from": previous_position,
                                "to": destination, "reason": reason})
             else:
-                # 이동 가능한 칸이면 플레이어 위치를 갱신합니다.
                 state["position"] = destination
                 events.append({
                     "type": "move",
@@ -387,14 +373,13 @@ class GameCore:
         magnetic = magnet is not None and magnet["remaining_ticks"] > 0
         if magnetic or state["position"] != previous_position:
             self._collect_warmth(events, magnetic=magnetic)
-        # 획득한 틱도 포함하여 정확히 13번 수집합니다. 대기·막힌 이동도 1틱입니다.
+        # 자석은 획득 틱을 포함해 13틱 지속하며 대기·막힌 이동도 세계 진행 시 한 틱이다.
         if magnetic and advance_world:
             magnet["remaining_ticks"] -= 1
             if magnet["remaining_ticks"] == 0:
                 events.append({"type": "magnet_end"})
 
-        # Patrols are independent of one another; old positions above are kept
-        # until all new positions exist, so contact is simultaneous and stable.
+        # 유령의 이전 위치를 모두 보관한 뒤 이동 결과와 비교해 동시 충돌을 판정한다.
         for ghost in state["ghosts"] if advance_world else ():
             ghost["countdown"] -= 1
             if ghost["countdown"] == 0:
@@ -411,7 +396,7 @@ class GameCore:
             if final_overlap or swap:
                 contacts.append({"ghost_id": ghost["id"], "kind": "overlap" if final_overlap else "swap"})
         
-        # 추격형도 순찰형과 같은 충돌 기준을 사용합니다.
+        # 추격형도 순찰형과 같은 겹침·자리 교환 충돌 기준을 쓴다.
         if chaser is not None and chaser["active"]:
             final_overlap = state["position"] == chaser["position"]
 
@@ -427,9 +412,9 @@ class GameCore:
                     "kind": "overlap" if final_overlap else "swap",
                 })
 
-                # 이전 틱에는 떨어져 있었다면 새로운 충돌입니다.
+                # 이전 위치가 떨어져 있던 새 접촉에만 추격형의 정지를 적용한다.
                 if previous_chaser != previous_position:
-                    # 다음 3틱은 정지하고, 4번째 틱에 다시 이동합니다.
+                    # 다음 3틱은 정지하고 4번째 틱에 다시 움직인다.
                     chaser["countdown"] = 4
         
         if contacts:
@@ -447,8 +432,7 @@ class GameCore:
         elif advance_world:
             state["protection"] = max(0, previous_protection - 1)
 
-        # The pickup tick and the final tick both protect before decrementing.
-        # Item protection never grants or refreshes post-damage protection.
+        # 아이템 무적은 획득·마지막 틱에도 피해를 막으며 피격 후 보호 시간을 부여하거나 연장하지 않는다.
         if item_invincible and advance_world:
             invincibility["remaining_ticks"] -= 1
             if invincibility["remaining_ticks"] == 0:
@@ -485,7 +469,7 @@ class GameCore:
                           deepcopy(self._state["outcome"]))
 
     def abort(self, reason: str = "user_abort") -> StepResult:
-        """Cancel without advancing time, awarding points, or adding an action."""
+        """시간·점수·행동 기록을 추가하지 않고 탐사를 중단한다."""
         self._ensure_active()
         if not isinstance(reason, str) or not reason:
             raise ValueError("abort reason must be a nonempty string")
@@ -494,7 +478,7 @@ class GameCore:
         return self._result(events)
 
     def replay_record(self) -> dict:
-        """A copy of the minimum provenance needed to reproduce this episode."""
+        """같은 탐사를 재현할 설정·위상·행동 정보의 복사본을 반환한다."""
         return {
             "replay_version": "1.0",
             "rules_version": self._config["rules_version"],

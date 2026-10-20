@@ -1,4 +1,4 @@
-"""Ending eligibility, old saves, and a replayed return through the app."""
+"""엔딩 조건·구형 저장 호환·앱에서의 엔딩 재생과 복귀를 검증한다."""
 from copy import deepcopy
 import json
 import os
@@ -122,15 +122,12 @@ def test_six_main_endings_are_playable_after_the_shared_three_memories(app, endi
     rendered = controls(app)
     assert 'ending_continue' in rendered
     click(app, 'ending_continue')
-    if ending_id == 'sad':
-        assert app.scene == 'home' and app.dialogues == []
-    else:
-        assert app.scene == 'ending' and not app.ending_art_only
-        assert app.dialogues == ENDING_CONTENT[ending_id]['lines']
-        while app.scene == 'ending':
-            app.dialogue_time = 99.
-            app.next_dialogue()
-        assert app.scene == 'home'
+    assert app.scene == 'ending' and not app.ending_art_only
+    assert app.dialogues == ENDING_CONTENT[ending_id]['lines']
+    assert len(app.dialogues) == 1 and app.dialogues[0][0] == ''
+    app.dialogue_time = 99.
+    click(app, 'ending_continue')
+    assert app.scene == 'home'
     assert gameplay_progress(app) == before
     assert pygame.image.tobytes(memory_original(3), 'RGB') == original
     assert SaveStore(app.store.path).load().active_ending() == ending_id

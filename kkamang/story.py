@@ -1,8 +1,4 @@
-"""Three silent, cumulative memories followed by the six affection endings.
-
-Picture regions follow completed rooms. Narrative text is confined to the
-six ending epilogues; stage labels below provide only functional game information.
-"""
+"""완료한 방에 대응하는 기억 그림 영역과 표시 정보를 구성하고 여섯 엔딩 내레이션을 연결한다."""
 from .levels import load_levels
 
 
@@ -16,7 +12,7 @@ MEMORIES = [
 
 
 def memory_for_stage(stage: int) -> tuple[int, int]:
-    """Return the memory number and zero-based region for a room."""
+    """방에 대응하는 기억 번호와 0부터 시작하는 영역 번호를 반환한다."""
     if type(stage) is not int or not 1 <= stage <= 12:
         raise ValueError('stage must be an integer in 1..12')
     return (stage - 1) // 4 + 1, (stage - 1) % 4
@@ -36,8 +32,7 @@ for _level in load_levels():
         'art': '', 'emblem': _quest['kind'], 'act': _memory_id,
     })
 
-# Compatibility names share main's dialogue source; the controller selects all
-# six entries from ENDING_CONTENT rather than treating these as two branches.
+# 호환 이름도 공통 내레이션을 참조하며 실제 분기는 ENDING_CONTENT의 여섯 엔딩을 사용한다.
 from .ending_content import ENDING_CONTENT
 ENDING = ENDING_CONTENT['normal']['lines']
 EXTENDED_ENDING = ENDING_CONTENT['happy_all']['lines']

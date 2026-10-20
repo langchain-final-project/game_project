@@ -1,24 +1,25 @@
-"""Artwork and epilogue dialogue from kkamang_endings_6; no branch rule changes."""
+"""여섯 엔딩의 PNG 경로, 한 문장 내레이션, 해방된 고양이 표시 순서를 정의한다."""
 ENDING_CONTENT = {
     'happy_all': {'title': '아무도 남겨두지 않은 아침', 'subtitle': '베스트',
-                  'lines': [('보송', '꼬리 좀…… 내 코에 닿아.'), ('도레', '내 거 아닌데.'), ('이파리', '쉿. 까망이 잔다.')]},
-    'sad': {'title': '돌아와도, 아무도', 'subtitle': '새드', 'lines': []},
+                  'lines': [('', '저주에서 풀려나 다시 고양이가 된 세 친구와 함께, 까망이는 저택에서 오래오래 행복하게 살았답니다.')]},
+    'sad': {'title': '돌아와도, 아무도', 'subtitle': '새드',
+            'lines': [('', '까망이가 돌아온 저택에는, 친구들의 작은 흔적만 조용히 남아 있었답니다.')]},
     'ghost_a': {'title': '너에게 남긴 온도', 'subtitle': '보송 · 온기',
-                'lines': [('보송', '이제는 내가 데워 줄 수 있네.'), ('도레', '불은 좀 줄일까?'), ('보송', '응. 오늘은 괜찮아.')]},
+                'lines': [('', '까망이는 고양이로 돌아온 보송이와 벽난로의 온기를 나누며, 저택에서 오래오래 행복하게 살았답니다.')]},
     'ghost_b': {'title': '늦지 않은 약속', 'subtitle': '도레 · 속도',
-                'lines': [('도레', '기다려. 이번엔 나도 갈 수 있어.'), ('도레', '이번엔 안 늦었지?')]},
+                'lines': [('', '까망이는 고양이로 돌아온 도레와 저택을 떠나, 나란히 달리며 세상 곳곳으로 즐거운 여행을 이어 갔답니다.')]},
     'ghost_c': {'title': '함께 살아갈 계절', 'subtitle': '이파리 · 생명',
-                'lines': [('이파리', '살아 있네.'), ('보송', '내년에도 꽃이 필까?'), ('이파리', '그때도 같이 보자.')]},
+                'lines': [('', '까망이는 고양이로 돌아온 이파리와 마을에서 가장 아름다운 정원을 가꾸며, 꽃향기 가득한 여유로운 나날을 보냈답니다.')]},
     'normal': {'title': '네 자리는 여기', 'subtitle': '노멀',
-               'lines': [('보송', '왔네. 수건은 저기 있어.'), ('이파리', '네 자리도 그대로야.'), ('도레', '그럼, 오늘은 작게 연주할게.')]},
+               'lines': [('', '저주는 아직 풀리지 않았지만, 까망이는 세 유령 친구와 함께 저택에서 따뜻한 나날을 보냈답니다.')]},
 }
-# Production notes and silent actions are not narrated by the dialogue UI.
+# 제작 메모와 무언 동작은 내레이션으로 표시하지 않는다.
 for _ident, _ending in ENDING_CONTENT.items():
     _ending['art'] = f'ending_{_ident}.png'
 
 
 def released_variants(ending_id):
-    """Map ending IDs to resident art order: Bosong 0, Ipari 1, Dore 2."""
+    """엔딩을 쉼터 그림 순서로 변환한다. 보송 0, 이파리 1, 도레 2."""
     return {
         'happy_all': (0, 1, 2),
         'ghost_a': (0,),

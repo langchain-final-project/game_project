@@ -1,4 +1,4 @@
-"""Silent memory reveals and six affection endings over the current realtime controller."""
+"""현재 자유 이동 앱에서 기억 공개와 호감도 엔딩 흐름을 검증한다."""
 from copy import deepcopy
 import os
 from unittest.mock import patch
@@ -136,7 +136,7 @@ def test_album_memory_selection_is_separate_from_legacy_photo_selection(app):
     assert app.stage == 11
 
 
-def test_normal_ending_uses_main_art_and_three_lines_without_altering_records(app):
+def test_normal_ending_uses_png_and_one_narration_without_altering_records(app):
     complete_all(app.campaign)
     app.campaign.data['likes']['seen_endings'] = ['normal', 'ghost_a']
     original_likes = deepcopy(app.campaign.data['likes'])
@@ -148,7 +148,8 @@ def test_normal_ending_uses_main_art_and_three_lines_without_altering_records(ap
     assert app.scene == 'ending' and app.ending_art_only
     assert app.dialogues == ENDING_CONTENT['normal']['lines']
     app.next_dialogue()
-    assert not app.ending_art_only and len(app.dialogues) == 3
+    assert not app.ending_art_only and len(app.dialogues) == 1
+    assert app.dialogues[0][0] == ''
     app.finish_story()
     assert app.scene == 'home' and app.campaign.active_ending() == 'normal'
     assert app.campaign.data['likes'] == original_likes
@@ -277,10 +278,11 @@ def test_real_menu_controls_follow_silent_resolution_then_main_art_and_afterword
     click('story_skip')
     assert app.story_kind == 'liberation' and app.context()['dialogue'] is None
     click('story_skip')
-    assert app.scene == 'ending' and app.ending_art_only and len(app.dialogues) == 3
+    assert app.scene == 'ending' and app.ending_art_only and len(app.dialogues) == 1
     click('ending_continue')
     assert not app.ending_art_only
-    click('story_skip')
+    app.dialogue_time = 99.
+    click('ending_continue')
     app.draw()
     assert app.scene == 'home' and app.context()['released']
     assert {'memory:1', 'memory:2', 'memory:3'} <= {c['id'] for c in app.controls}

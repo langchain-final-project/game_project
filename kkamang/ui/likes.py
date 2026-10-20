@@ -1,4 +1,4 @@
-"""Read-only affection cards and representative-memory comparison."""
+"""호감도 카드와 대표 기억 선택 전후의 비교 화면을 표시한다."""
 import pygame
 
 from ..likes import CHARACTERS, ROOM_COUNT, HIGH_AFFECTION, contribution
@@ -12,14 +12,12 @@ COLORS = {'bosong': GOLD, 'dore': LAVENDER, 'ipari': SAGE}
 def number(value):
     return '평가 대기' if value is None else f'{value:.1f}'
 
-
 def _bar(surface, rect, value, color):
     pygame.draw.rect(surface, (219, 207, 193), rect, border_radius=9)
     if value is not None and value > 0:
         fill = pygame.Rect(rect)
         fill.w = max(1, round(fill.w * min(100, value) / 100))
         pygame.draw.rect(surface, color, fill, border_radius=9)
-
 
 def draw_likes(surface, assets, ctx, ui):
     state = ctx['campaign'].data['likes']
@@ -30,7 +28,7 @@ def draw_likes(surface, assets, ctx, ui):
         r = pygame.Rect(40 + i * 410, 132, 380, 420)
         panel(surface, r, fill=PAPER, border=COLORS[ident], radius=22)
         text(surface, assets, name, (r.centerx, 154), 28, INK, True, 'midtop')
-        ghost_size = 145 if ident == 'ipari' else 125  # B 유령(이파리)만 10픽셀 확대합니다.
+        ghost_size = 145 if ident == 'ipari' else 125
         ghost(surface, (r.centerx, 340), ghost_size, ctx.get('elapsed', 0),
               resident=True, variant=VARIANTS[ident])
         text(surface, assets, description, (r.centerx, 362), 17, INK, anchor='midtop')
@@ -53,15 +51,13 @@ def draw_likes(surface, assets, ctx, ui):
                '대표 기억 평가 필요' if complete and unscored else '현재 기억의 결말 보기',
                disabled=not complete or bool(unscored))
 
-
 def draw_choice(surface, assets, ctx, ui):
     compare = ctx.get('memory_comparison')
     if compare is None:
         text(surface, assets, '선택할 기억이 없어요.', (640, 330), 25, CREAM, anchor='center')
         ui.control('home', (465, 612, 350, 50), '쉼터로', primary=True)
         return
-    # Keep both comparison cards as one visual block so their contents move
-    # together without changing the room left for the explanation and choices.
+    # 비교 카드 두 장을 함께 이동해 아래 설명과 선택 영역을 확보한다.
     card_top = 150
     for i, (label, record) in enumerate((('기존 기억', compare['old']), ('이번 기억', compare['new']))):
         r = pygame.Rect(40 + i * 620, card_top, 580, 345)
@@ -82,13 +78,7 @@ def draw_choice(surface, assets, ctx, ui):
             text(surface, assets, name, (r.x + 28, y), 19, INK, True)
             _bar(surface, pygame.Rect(r.x + 108, y + 6, 310, 14), values[ident], COLORS[ident])
             text(surface, assets, number(values[ident]), (r.right - 26, y), 18, INK, anchor='topright')
-    # text(surface, assets, '이번 기억을 선택하면 전체 호감도가 이렇게 바뀌어요.', (40, 497), 20, CREAM, True)
-    # for i, (ident, name, *_) in enumerate(CHARACTERS):
-    #     before, after = compare['before'][ident], compare['after'][ident]
-    #     label = f'{name}  {number(before)} → {number(after)}'
-    #     if before is not None and after is not None:
-    #         label += f'  ({after - before:+.1f})'
-    #     text(surface, assets, label, (40 + i * 410, 537), 20, CREAM)
+
     text(surface, assets, '세 친구의 기억을 함께 교체해요. 최고 별점과 수집장 해금은 유지돼요.', (40, 570), 17, CREAM)
     ui.control('memory_keep', (40, 619, 580, 45), '기존 기억 유지', primary=True)
     ui.control('memory_replace', (660, 619, 580, 45), '이번 기억으로 교체')

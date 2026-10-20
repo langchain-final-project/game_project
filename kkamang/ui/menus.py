@@ -1,7 +1,6 @@
-"""Live, data-driven menu screens. Rendering has no gameplay side effects.
+"""현재 진행 상태로 메뉴·대화·엔딩 화면과 조작 영역을 구성한다.
 
-Every interactive area is returned to the app as a control. Artwork is decorative;
-all progress, scores, labels and prompts are drawn from the current context.
+그리기는 진행을 바꾸지 않으며 조작 영역은 앱이 처리하도록 반환한다.
 """
 from __future__ import annotations
 
@@ -23,6 +22,15 @@ from .collection import render_collection, draw_paw
 
 W, H = 1280, 720
 _COVER_CACHE: dict = {}
+ENDING_ART_RECT = (32, 64, 1216, 506)
+ENDING_PANEL_RECT = (32, 586, 1216, 102)
+ENDING_TEXT_RECT = (56, 600, 944, 76)
+# 원본 파일은 보존하고 화면에 표시할 때만 내보내기 가장자리 흔적을 제외한다.
+ENDING_SOURCE_MARGINS = {
+    'ending_happy_all.png': (0, 0, 0, 9),
+    'ending_ghost_a.png': (4, 0, 4, 0),
+    'ending_normal.png': (2, 2, 0, 0),
+}
 
 
 def _overlay(surface, rect, color=(25, 19, 37), alpha=175, radius=0):
@@ -33,7 +41,6 @@ def _overlay(surface, rect, color=(25, 19, 37), alpha=175, radius=0):
     else:
         layer.fill((*color[:3], alpha))
     surface.blit(layer, r)
-
 
 def _art(surface, assets, name, rect):
     r = pygame.Rect(rect)
@@ -53,11 +60,68 @@ def _art(surface, assets, name, rect):
         _COVER_CACHE[key] = image
     surface.blit(_COVER_CACHE[key], r)
 
+def _ending_source(assets, name):
+    """필수 엔딩 PNG를 읽고 누락 시 도형으로 대체하지 않는다."""
+    key = ('ending_source', id(assets), name)
+    if key not in _COVER_CACHE:
+        path = assets.root / 'art' / name
+        if not path.is_file():
+            raise FileNotFoundError(f'필수 엔딩 일러스트가 없습니다: {path}')
+        source = pygame.image.load(str(path))
+        if pygame.display.get_surface():
+            source = source.convert_alpha()
+        left, top, right, bottom = ENDING_SOURCE_MARGINS.get(name, (0, 0, 0, 0))
+        bounds = source.get_rect().inflate(-(left + right), -(top + bottom))
+        bounds.topleft = (left, top)
+        if bounds.width <= 0 or bounds.height <= 0:
+            raise ValueError(f'Invalid ending illustration bounds: {name}')
+        _COVER_CACHE[key] = source.subsurface(bounds).copy()
+    return _COVER_CACHE[key]
+
+def _ending_art_rect(source_size):
+    """가로가 긴 엔딩 원화 전체를 자르거나 늘리지 않고 프레임에 맞춘다."""
+    bounds = pygame.Rect(ENDING_ART_RECT)
+    width, height = source_size
+    scale = min(bounds.w / width, bounds.h / height)
+    result = pygame.Rect(0, 0, max(1, round(width * scale)),
+                         max(1, round(height * scale)))
+    result.center = bounds.center
+    return result
+
+def _ending_picture(surface, assets, name):
+    source = _ending_source(assets, name)
+    rect = _ending_art_rect(source.get_size())
+    key = ('ending_picture', id(assets), name, rect.size)
+    if key not in _COVER_CACHE:
+        _COVER_CACHE[key] = pygame.transform.smoothscale(source, rect.size)
+    surface.blit(_COVER_CACHE[key], rect)
+    return rect
+
+def _prologue_picture(surface, assets):
+    """프롤로그에 입장 PNG를 표시하며 다른 연출 장면은 별도로 유지한다."""
+    name = 'prologue.png'
+    key = ('prologue', id(assets), surface.get_size())
+    if key not in _COVER_CACHE:
+        path = assets.root / 'art' / name
+        if not path.is_file():
+            raise FileNotFoundError(f'필수 프롤로그 일러스트가 없습니다: {path}')
+        source = pygame.image.load(str(path))
+        if pygame.display.get_surface():
+            source = source.convert_alpha()
+        width, height = surface.get_size()
+        scale = min(width / source.get_width(), height / source.get_height())
+        image = pygame.transform.smoothscale(source, (
+            max(1, round(source.get_width() * scale)),
+            max(1, round(source.get_height() * scale)),
+        ))
+        _COVER_CACHE[key] = image
+    image = _COVER_CACHE[key]
+    surface.fill(NIGHT)
+    surface.blit(image, image.get_rect(center=surface.get_rect().center))
 
 def _icon(surface, assets, name, rect):
     r = pygame.Rect(rect)
     surface.blit(assets.icon('icons/' + name + '.png', r.size), r)
-
 
 def _fit_text(surface, assets, value, rect, size=22, color=INK, bold=False, anchor='midleft'):
     r = pygame.Rect(rect)
@@ -67,11 +131,9 @@ def _fit_text(surface, assets, value, rect, size=22, color=INK, bold=False, anch
     return text(surface, assets, value, getattr(r, anchor), size=size,
                 color=color, bold=bold, anchor=anchor)
 
-
 def _data(ctx):
     camp = ctx.get('campaign')
     return getattr(camp, 'data', camp if isinstance(camp, dict) else {}) or {}
-
 
 def _stories(ctx):
     entries = ctx.get('stories')
@@ -83,7 +145,6 @@ def _stories(ctx):
     except ImportError:
         return []
 
-
 def _story(ctx, number=None):
     n = int(number or ctx.get('stage', 1))
     if number is None and ctx.get('story'):
@@ -94,38 +155,32 @@ def _story(ctx, number=None):
                  'photo': '', 'before': '아이템 + 온기 4점 이상',
                  'lines': [], 'restoration': '', 'teaser': ''})
 
-
 def _story_ghost_id(ctx):
-    """Show a ghost only when that ghost is the current speaker."""
+    """현재 대사의 화자에 해당하는 유령만 표시한다."""
     ghosts = {'보송': 'A', '이파리': 'B', '도레': 'C'}
     dialogue = ctx.get('dialogue')
     speaker = (dialogue.get('speaker', '') if isinstance(dialogue, dict)
                else dialogue[0] if dialogue else '')
     return ghosts.get(speaker)
 
-
 def _level(ctx, number=None):
     n = int(number or ctx.get('stage', 1))
     return next((l for l in ctx.get('levels', []) if int(l.get('stage', 0)) == n), {})
-
 
 def _regions(ctx, memory_id):
     completed = set(_data(ctx).get('completed', []))
     return [stage in completed for stage in range((memory_id-1)*4+1, memory_id*4+1)]
 
-
 def _memory_label(memory_id, regions):
     return f'기억 {memory_id} · {sum(regions)} / 4'
 
-
 def _memory_art(surface, memory_id, regions, rect, **kwargs):
-    """Fit the whole fixed picture inside the UI without cropping or stretching."""
+    """고정된 기억 원화 전체를 자르거나 늘리지 않고 영역 안에 맞춘다."""
     bounds = pygame.Rect(rect)
     scale = min(bounds.w / 1280, bounds.h / 720)
     picture = pygame.Rect(0, 0, max(1, round(1280*scale)), max(1, round(720*scale)))
     picture.center = bounds.center
     draw_memory(surface, memory_id, regions, picture, **kwargs)
-
 
 def _home_art(completed):
     count = len(completed)
@@ -136,7 +191,6 @@ def _home_art(completed):
     if count >= 4:
         return 'memory_scene.png'
     return 'shelter_before.png'
-
 
 def _background(surface, assets, name='title_background.png', shade=0, ctx=None, actors=True):
     ctx = ctx or {}
@@ -149,7 +203,6 @@ def _background(surface, assets, name='title_background.png', shade=0, ctx=None,
     if shade:
         _overlay(surface, (0, 0, W, H), alpha=min(shade,140))
 
-
 def _header(surface, assets, title, subtitle='', right=''):
     _overlay(surface, (0, 0, W, 105), alpha=196)
     text(surface, assets, title, (38, 20), size=32, bold=True)
@@ -159,36 +212,29 @@ def _header(surface, assets, title, subtitle='', right=''):
         panel(surface, (1016, 27, 226, 44), fill=NIGHT, border=GOLD, radius=22)
         text(surface, assets, right, (1129, 49), size=18, anchor='center')
 
-
 def _footer(surface, assets, note='방향키 선택 · Enter 확인 · Esc 뒤로'):
     _overlay(surface, (0, 676, W, 44), alpha=195)
     text(surface, assets, note, (34, 689), size=15, color=(227, 215, 199))
     text(surface, assets, '까망이와 잠 못 드는 저택', (1246, 689), size=14,
          color=(205, 186, 166), anchor='topright')
 
-
 def _chip(surface, assets, label, rect, fill=NIGHT, color=CREAM, size=17):
     panel(surface, rect, fill=fill, border=GOLD, radius=18)
     _fit_text(surface, assets, label, pygame.Rect(rect).inflate(-16, -4),
               size=size, color=color, anchor='center')
 
-
 def _lanterns(surface, assets, completed, rect):
-    """스테이지 클리어 여부에 따라 켜진 랜턴과 꺼진 랜턴을 표시합니다."""
     r = pygame.Rect(rect)
 
-    # PNG 테두리는 크기별로 한 번만 준비해서 재사용합니다.
     frame_key = ('lantern_frame', id(assets), r.size)
 
     if frame_key not in _COVER_CACHE:
         source = assets.image('art/map/lantern_frame.png')
 
-        # PNG 바깥의 투명 여백만 제외합니다.
-        # 테두리 안쪽의 투명 영역은 그대로 유지됩니다.
+        # PNG 바깥의 투명 여백만 잘라내고 테두리 안쪽의 투명 영역은 유지한다.
         bounds = source.get_bounding_rect(min_alpha=10)
         frame = source.subsurface(bounds)
 
-        # 도트 느낌을 유지하면서 기존 테두리 크기에 맞춥니다.
         _COVER_CACHE[frame_key] = pygame.transform.scale(
             frame,
             r.size,
@@ -196,13 +242,10 @@ def _lanterns(surface, assets, completed, rect):
 
     surface.blit(_COVER_CACHE[frame_key], r.topleft)
 
-    # 랜턴 이미지 영역의 기존 너비는 유지합니다.
     lantern_width = int(r.w / 12 - 12)
 
-    # 랜턴 중심 사이의 거리
     cell = 38
 
-    # 랜턴 12개를 테두리 안에서 가운데 정렬합니다.
     total_width = cell * 11 + lantern_width
     start_x = r.centerx - total_width / 2
 
@@ -218,19 +261,14 @@ def _lanterns(surface, assets, completed, rect):
         )
 
         if is_completed:
-            # 클리어한 스테이지: map.png의 켜진 랜턴을 사용합니다.
             image = map_image('lantern', lantern_rect.size)
         else:
-            # 미클리어 스테이지: 별도로 추가한 꺼진 랜턴을 사용합니다.
-            # icon()은 투명 여백을 제외하고 이미지 비율을 유지합니다.
             image = assets.icon(
                 'art/map/lantern_off.png',
                 lantern_rect.size,
             )
-        # 랜턴 이미지 화면에 표시
+
         surface.blit(image, lantern_rect.topleft)
-
-
 
 def _home_keepsakes(surface, assets, ctx, data):
     r = pygame.Rect(988, 409, 250, 134)
@@ -242,7 +280,6 @@ def _home_keepsakes(surface, assets, ctx, data):
         _memory_art(surface, memory_id, regions, (x, 453, 66, 48))
         text(surface, assets, f'{sum(regions)}/4', (x+33, 515), size=14,
              color=CREAM, anchor='center')
-
 
 class _UI:
     def __init__(self, surface, assets, focus, mouse):
@@ -259,14 +296,12 @@ class _UI:
             pygame.draw.rect(self.s, (238, 218, 255), r.inflate(6, 6), width=3, border_radius=12)
         return focused
 
-
 def _stars(count) -> str:
     count = max(0, min(3, int(count)))
     return '★' * count + '☆' * (3 - count)
 
-
 def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
-    """Draw one logical 1280×720 screen; return all focusable controls."""
+    """논리 해상도 1280×720으로 화면을 그리고 조작 가능한 영역을 반환한다."""
     ui = _UI(surface, assets, focus, mouse)
     data = _data(ctx)
     completed = set(int(x) for x in data.get('completed', []))
@@ -281,11 +316,11 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
 
     if screen == 'title':
         _background(surface, assets,ctx=ctx,actors=False)
-        # 시작 화면도 앉아 있는 까망이 PNG를 사용하고 발 위치를 유지합니다.
+        # 시작 화면도 앉은 까망이 PNG의 발 위치를 기준으로 배치한다.
         title_cat = assets.icon('art/character/kkamang_wait.png', (280, 315))
         surface.blit(title_cat, title_cat.get_rect(midbottom=(877, 595)))
         ghost(surface,(1110,515),125,time=elapsed,resident=True)
-        # The art was composed with quiet space at left for the live title.
+        # 제목은 원화가 비워 둔 왼쪽 공간에 표시한다.
         _overlay(surface, (0, 0, 660, H), alpha=115)
         text(surface, assets, 'KKAMANG MANOR', (68, 110), size=19,
              color=(224, 204, 177))
@@ -455,7 +490,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         text(surface,assets,'귀환해서 확정한 온기',(78,253),size=20,color=(134,109,102))
         text(surface,assets,str(outcome.get('banked',0)),(80,291),size=72,color=(174,116,43),bold=True)
         text(surface,assets,'점',(183,334),size=26,color=INK)
-        
+
         tick_seconds = float(level.get("tick_seconds", 0.3))
 
         used_seconds = ctx.get("display_elapsed_seconds")
@@ -498,7 +533,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
                  '용기를 모두 잃었어요. 보송과 쉼터에서 쉬어 가요.' if outcome.get('reason')=='courage' else
                  '종이 울려 차가운 안개가 찼어요. 다음엔 조금 일찍 돌아와요.')
             wrapped(surface,assets,msg,pygame.Rect(79,422,644,116),size=21,color=INK,line_gap=10)
-        # 탐사 결과 화면의 까망이는 앉아 있는 PNG를 사용합니다.
+
         char = assets.icon('art/character/kkamang_wait.png', (300, 350))
         surface.blit(char,(863,169+int(math.sin(elapsed*2)*4)))
         if success and practice:
@@ -531,38 +566,46 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
 
     elif screen == 'ending':
         content = ctx.get('ending_content') or {}
-        ending = ctx.get('ending_id')
         art_only = bool(ctx.get('ending_art_only'))
         lines = content.get('lines') or []
-        if not art_only and ending in ('normal','happy_all'):
-            draw_cinematic(surface, 'true_end' if ending=='happy_all' else 'basic_end',
-                           float(ctx.get('scene_elapsed', elapsed)), completed=completed,
-                           cosmetics=data.get('cosmetics'), released=ending=='happy_all',
-                           released_variants=(0,1,2) if ending=='happy_all' else ())
-        else:
-            _background(surface,assets,ctx=ctx,actors=False)
-            _art(surface,assets,content.get('art'),(0,0,W,H))
-        _header(surface,assets,content.get('title','기억의 결말'),
-                content.get('subtitle',''),'엔딩' if art_only else '후일담')
-        if art_only or not lines:
-            ui.control('ending_continue',(1000,610,240,50),
-                       '후일담 보기' if lines else '쉼터로 돌아가기',primary=True)
-            if lines:
-                ui.control('story_skip',(40,610,200,50),'쉼터로 돌아가기')
-            _footer(surface,assets,'Enter / Space 선택 · Esc 쉼터로')
-            return ui.controls
-        # Spoken words appear only after the selected ending's silent artwork.
-        panel(surface,(38,583,1204,84),fill=PAPER,border=GOLD,radius=18)
-        speaker,line=ctx.get('dialogue') or ('','')
-        text(surface,assets,speaker,(64,592),size=18,color=(145,99,104),bold=True)
-        wrapped(surface,assets,line,pygame.Rect(64,622,933,34),size=23,color=INK,line_gap=5)
-        index=int(ctx.get('dialogue_index',0))+1
-        total=max(1,int(ctx.get('total_dialogue',3)))
-        text(surface,assets,f'{min(index,total)} / {total}',(1011,594),size=16,
-             color=(138,119,113),anchor='topright')
-        ui.control('ending_continue',(1032,600,184,49),'다음' if index<total else '쉼터로',primary=True)
-        ui.control('story_skip',(1041,123,199,38),'넘기기')
-        _footer(surface,assets,'Enter / Space 다음 · Esc 넘기기')
+        # 그림 감상과 후일담은 같은 PNG를 유지하고 안내 문구만 전환한다.
+        surface.fill(NIGHT)
+        text(surface, assets, content.get('title', '기억의 결말'),
+             (34, 16), size=28, bold=True)
+        _chip(surface, assets, content.get('subtitle', '엔딩'),
+              (1052, 14, 196, 36), size=16)
+        panel(surface, pygame.Rect(ENDING_ART_RECT).inflate(8, 8),
+              fill=(35, 28, 48), border=GOLD, radius=12)
+        _ending_picture(surface, assets, content['art'])
+        panel(surface, ENDING_PANEL_RECT, fill=PAPER, border=GOLD, radius=16)
+        if art_only:
+            text(surface, assets, '그림을 감상한 뒤, 후일담을 확인하세요.',
+                 (56, 623), size=22, color=(117, 99, 105))
+        elif lines:
+            progress = max(0., min(1., float(ctx.get('narration_progress', 1.))))
+            color = tuple(round(base + (end - base) * progress)
+                          for base, end in zip(PAPER, INK))
+            sentence = lines[0][1]
+            caption = pygame.Rect(ENDING_TEXT_RECT)
+            font = assets.font(24)
+            parts = sentence.split(', ', 1)
+            if (font.size(sentence)[0] > caption.w and len(parts) == 2
+                    and font.size(parts[0] + ',')[0] <= caption.w
+                    and font.size(parts[1])[0] <= caption.w):
+                # 첫 줄을 억지로 채우지 않고 쉼표에서 자연스럽게 문장을 나눈다.
+                sentence = parts[0] + ',\n' + parts[1]
+            rows = 1 if font.size(sentence)[0] <= caption.w and '\n' not in sentence else 2
+            height = rows * font.get_height() + (rows - 1) * 4
+            caption.y += (caption.h - height) // 2
+            caption.h = height
+            wrapped(surface, assets, sentence, caption,
+                    size=24, color=color, line_gap=4)
+        ui.control('ending_continue', (1048, 615, 176, 44),
+                   '후일담 보기' if art_only and lines else '쉼터로', primary=True)
+        text(surface, assets, 'Enter / Space 선택 · Esc 쉼터로',
+             (34, 700), size=12, color=(227, 215, 199))
+        text(surface, assets, '까망이와 잠 못 드는 저택',
+             (1246, 700), size=12, color=(205, 186, 166), anchor='topright')
 
     elif screen == 'story':
         kind=ctx.get('cinematic_kind') or ctx.get('story_kind') or 'memory'
@@ -584,6 +627,9 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
                 ui.control('story_finish_home',(1034,636,204,40),'쉼터로',primary=True)
             else:
                 ui.control('story_next',(1034,636,204,40),'계속',primary=True)
+        elif kind == 'prologue':
+            _prologue_picture(surface, assets)
+            ui.control('story_next',(1034,619,204,45),'계속',primary=True)
         else:
             draw_cinematic(surface,kind,scene_time,completed=completed,
                            cosmetics=data.get('cosmetics'),released=ctx.get('released',False),
@@ -666,7 +712,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
     elif screen == 'tutorial':
         _background(surface,assets,'shelter_before.png',160,ctx=ctx)
         _header(surface,assets,'까망이의 첫 탐사','천천히 읽고 출발해도 괜찮아요. 지금은 시간이 흐르지 않아요.')
-        # file은 개별 PNG, map은 맵 PNG의 그림, ghost는 유령 PNG의 한 프레임입니다.
+        # file은 개별 PNG, map은 맵 시트 영역, ghost는 유령 시트의 한 자세다.
         cards = [
             (
                 '01', '조작키',
@@ -713,7 +759,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
             r = pygame.Rect(39 + (i % 3) * 407, 126 + (i // 3) * 231, 389, 213)
             panel(surface, r, fill=PAPER, border=GOLD, radius=17)
 
-            # 여러 PNG를 쓰는 카드는 같은 영역에 나란히 표시합니다.
+            # 여러 PNG를 쓰는 카드는 같은 영역에 나란히 배치한다.
             icon_gap = 4
             icon_width = (88 - icon_gap * (len(icons) - 1)) // len(icons)
             for j, (kind, name) in enumerate(icons):
@@ -765,7 +811,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         ui.control('home',(465,565,350,58),'쉼터로',primary=True)
         _footer(surface,assets)
 
-    # In-page toast never intercepts controls or changes state.
+    # 알림은 조작을 가로채거나 진행 상태를 바꾸지 않는다.
     if ctx.get('toast') and screen not in ('save_error','confirm'):
         _chip(surface,assets,str(ctx['toast']),(340,110,600,40),fill=NIGHT,color=CREAM,size=17)
     if ctx.get('collection_notice') and screen in ('home','album'):

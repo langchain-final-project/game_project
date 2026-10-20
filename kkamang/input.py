@@ -1,4 +1,4 @@
-"""Convert human input into the same six actions used by the headless core."""
+"""키 입력을 여섯 행동으로 변환한다. 짧은 방향 입력과 상호작용을 보존해 논리 진행 주기에 맞춰 소비한다."""
 import pygame
 
 KEY_ACTION = {pygame.K_UP: 0, pygame.K_w: 0, pygame.K_DOWN: 1, pygame.K_s: 1,
@@ -21,17 +21,17 @@ class InputAdapter:
         if event.type == pygame.KEYUP:
             self.held.pop(event.key, None)
             return
-        if event.key in self.held:  # OS key repeat must not repeat interactions.
+        if event.key in self.held:  # 운영체제 키 반복으로 상호작용을 재실행하지 않는다.
             return
         self.serial += 1
-        # Event delivery order is reliable even when timestamps tie or are absent.
+        # 시간 정보가 같거나 없어도 이벤트 도착 순서를 유지한다.
         value = (self.serial, 0, KEY_ACTION[event.key])
         self.held[event.key] = value
-        # Retain short taps until the next logic tick; held directions continue.
+        # 짧은 입력은 다음 논리 틱까지 보관하고 누른 방향은 계속 유지한다.
         self.pending.append(value)
 
     def consume_interaction(self) -> bool:
-        """새로 누른 E만 가져오고, 이동 입력은 남겨둡니다."""
+        """새로 누른 E만 가져오고 이동 입력은 남겨둔다."""
         pressed = any(
             value[2] == 4
             for value in self.pending
@@ -46,7 +46,7 @@ class InputAdapter:
         return pressed
 
     def consume_movement(self, can_move=None) -> int:
-        """E와 별도로 이동·대기 행동을 가져옵니다."""
+        """상호작용과 별도로 이동·대기 행동을 가져온다."""
         candidates = [
             value
             for value in self.held.values()
@@ -59,7 +59,7 @@ class InputAdapter:
             if value[2] != 4
         )
 
-        # 아직 처리하지 않은 E는 이동 입력을 꺼내도 유지합니다.
+        # 이동 입력을 꺼내도 아직 처리하지 않은 상호작용은 남겨둔다.
         self.pending = [
             value
             for value in self.pending
@@ -75,9 +75,7 @@ class InputAdapter:
             self.current_direction = requested
             return requested
 
-        # A held turn remains requested until an opening. Keep moving straight
-        # only while that direction is still held and traversable. A released
-        # short tap is consumed once above, so it cannot trigger a late turn.
+        # 누른 회전은 길이 열릴 때까지 요청하되 손을 뗀 짧은 입력은 한 번만 소비해 늦은 회전을 막는다.
         current = self.current_direction
         if (current is not None
                 and any(value[2] == current for value in self.held.values())
@@ -89,11 +87,10 @@ class InputAdapter:
         pending = self.pending
         self.pending = []
 
-        # 새로 누른 E는 나중에 들어온 방향키보다 먼저 처리합니다.
+        # 새 상호작용은 뒤에 들어온 방향 입력보다 먼저 처리한다.
         if any(value[2] == 4 for value in pending):
             return 4
 
-        # E를 누르지 않았다면 기존처럼 이동·대기를 선택합니다.
         candidates = [
             value
             for value in self.held.values()

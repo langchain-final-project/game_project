@@ -1,4 +1,4 @@
-"""Run the desktop game. RL imports can use kkamang.env without this entrypoint."""
+"""데스크톱 게임 진입점. 실행 옵션, 임시 미리보기 저장, GameApp 시작을 담당한다."""
 import argparse
 import os
 from pathlib import Path

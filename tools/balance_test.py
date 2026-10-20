@@ -1,4 +1,4 @@
-"""Run an isolated human playtest and summarize retained replay outcomes."""
+"""분리된 사람 플레이 세션을 실행하고 보존된 재생 기록의 결과를 집계한다."""
 from __future__ import annotations
 
 import argparse
@@ -16,7 +16,7 @@ sys.path.insert(0, str(ROOT))
 
 
 def summarize(folder: Path) -> tuple[Path, Path]:
-    """Read completed human replay files; never modify saves or source replays."""
+    """완료된 사람 플레이 기록만 읽고 원본 저장과 재생 파일은 변경하지 않는다."""
     rows, skipped = [], []
     for path in sorted((folder / 'replays').glob('*.json')):
         try:
@@ -99,7 +99,7 @@ def main():
         print(f'Test session: {folder}', flush=True)
         app = GameApp(save_path=folder / 'save.json', headless=args.headless,
                       no_audio=args.headless, seed=args.seed)
-        # Synthetic unlocks only in this isolated session, never the user's save.
+        # 테스트 세션만 전체 방을 열며 사용자 저장에는 적용하지 않는다.
         app.campaign.data['completed'] = list(range(1, 13))
         app.campaign.data['photos'] = list(range(1, 13))
         app.campaign.data['intro_seen'] = True

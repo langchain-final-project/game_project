@@ -1,13 +1,6 @@
-"""Faithful deployment conversion of the two user-supplied MP3 files.
+"""사용자 제공 MP3 두 곡을 게임용 22050Hz 스테레오 PCM16 WAV로 변환한다.
 
-No EQ, notes, gain changes, normalization, fades, trimming, or loop crossfade.
-FFmpeg honors the MP3 decoder's gapless skip/discard metadata and then only
-resamples to the existing game's 22050-Hz stereo PCM16 WAV format.
-
-The supplied MP3s contain their own source/credit comments; those are preserved
-in metadata JSON and copied to the WAV where supported. This converter does NOT
-claim the recordings or compositions are entirely original procedural work.
-"""
+음정·음량·길이를 편집하지 않고 FFmpeg의 무음 구간 메타데이터와 출처 정보를 보존한다."""
 from __future__ import annotations
 
 import argparse
@@ -26,8 +19,6 @@ FILES=[
     ('fireside_rain_complete_90s_discord.mp3','bgm_lobby.wav',90.),
     ('collision_cat_long_600ms_project.mp3','sfx_ghost_contact.wav',.6),
 ]
-
-
 def run(args):return subprocess.run(args,check=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 
 
@@ -96,8 +87,7 @@ def process(source_dir,outdir):
             second=Path(temp)/output_name;convert(source,second)
             repeated=hashlib.sha256(second.read_bytes()).hexdigest()==hashlib.sha256(target.read_bytes()).hexdigest()
         target_stats=metrics(x,rate)
-        # No file change is made on the basis of this flag. It only identifies
-        # an objectively large waveform discontinuity for review if necessary.
+        # 파형 불연속을 검토 대상으로 표시할 뿐 이 판정으로 파일을 수정하지 않는다.
         seam_risk=(target_stats['loop_boundary_delta_dbfs']>-50 and target_stats['loop_boundary_vs_adjacent_delta_99pct']>2)
         records.append({'source_name':input_name,'output_name':output_name,
                         'source_path':str(source),'output_path':str(target),

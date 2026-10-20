@@ -1,4 +1,4 @@
-"""Rule-boundary tests independent of presentation and learned policies."""
+"""화면과 학습 정책에 독립적인 게임 규칙의 경계 조건을 검증한다."""
 from __future__ import annotations
 
 from copy import deepcopy
@@ -10,7 +10,7 @@ from kkamang.levels import load_level, load_levels, validate_level
 
 
 def fixture(*, ghosts=0, budget=80):
-    """Small synthetic variants retain the authored schema and 14-point item set."""
+    """테스트용 맵도 실제 레벨 구조와 총 온기 14점을 유지한다."""
     config = load_level(1)
     config['time_budget_ticks'] = budget
     config['star_fast_ticks'] = max(0, budget - 1)
@@ -35,7 +35,7 @@ class CoreContractTests(unittest.TestCase):
         for stage in (1, 5):
             game = GameCore(load_level(stage))
             state = game._state
-            positions = [list(state['position']), [0, 1]]  # start floor and outer wall
+            positions = [list(state['position']), [0, 1]]
             if state['shortcuts']:
                 gate = state['shortcuts'][0]['gate']
                 positions.extend([[gate[0] - 1, gate[1]],
@@ -170,8 +170,8 @@ class CoreContractTests(unittest.TestCase):
 
     def test_contact_preserves_carried_value(self):
         config = fixture(ghosts=1)
-        # First touch happens on the value-1 item's cell. Pickup during protection
-        # is legal; no score penalty is added by either contact.
+
+
         game = GameCore(config)
         game.step(Action.RIGHT)
         result = game.step(Action.INTERACT)
@@ -226,9 +226,7 @@ class CoreContractTests(unittest.TestCase):
         self.assertEqual(result.outcome['reason'], 'courage')
 
     def test_defensive_zero_courage_precedes_return_request(self):
-        # Deliberate isolated terminal-priority fixture, NOT an authored/reachable
-        # map state: validated patrols never visit the exit. It exercises the
-        # documented defensive branch without weakening the level validator.
+        # 검증된 실제 맵에서는 출구에 순찰 유령이 오지 않으므로 종료 우선순위만 분리해 검증한다.
         game = GameCore(load_level(1))
         game._state['courage'] = 0
         game._state['carried'] = 4
@@ -287,7 +285,7 @@ class CoreContractTests(unittest.TestCase):
         config['shortcuts'][0]['terminal']=[5,2]
         game=GameCore(config)
         initial = game.snapshot()
-        # Terminal A=(5,2); approach through top left room.
+
         for action in (3, 3, 3, 3, 1):
             game.step(action)
         self.assertEqual(game.snapshot()['position'], [5, 2])

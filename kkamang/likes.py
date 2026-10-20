@@ -1,13 +1,9 @@
-"""Campaign-only affection. Never changes GameCore, stars or cosmetic unlocks.
-
-Scores are supplied by the scoring owner; None means unavailable, never zero.
-The only mutable source of affection is one representative run per room.
-"""
+"""방별 대표 기록으로 호감도와 엔딩을 계산한다. 미평가 점수는 None으로 구분하고 탐사 규칙은 변경하지 않는다."""
 from copy import deepcopy
 import math
 
 ROOM_COUNT = 12
-HIGH_AFFECTION = 70.0  # Temporary team policy; change here after playtesting.
+HIGH_AFFECTION = 70.0
 CHARACTERS = (
     ('bosong', '보송', 'warmth', 60, '함께 나눌 온기를 좋아해요.'),
     ('dore', '도레', 'speed', 25, '다시 만나는 시간을 기다려요.'),
@@ -48,7 +44,7 @@ def validate_scores(value):
 
 
 def from_game_score(score):
-    """Adapt scoring.py's courage field without recalculating any points."""
+    """점수를 다시 계산하지 않고 용기 항목 이름을 호감도 계약에 맞춘다."""
     if score is None:
         return None
     return validate_scores({'version': 'score_v1', 'warmth': score['warmth'],
@@ -57,7 +53,7 @@ def from_game_score(score):
 
 
 def legacy_record(stage, score):
-    """Older main saves have scores, but no raw run details; do not invent them."""
+    """이전 저장의 점수를 옮기되 당시 기록하지 않은 탐사 세부 정보는 만들지 않는다."""
     return validate_record({'stage': stage, 'run_id': f'legacy-{stage}',
                             'mode': 'legacy', 'config_hash': 'legacy', 'rules_version': 'legacy',
                             'banked': None, 'ticks_used': None, 'initial_courage': None,
@@ -136,7 +132,7 @@ def normalize_state(value):
 
 
 def offer_memory(state, record):
-    """First run registers automatically; replays wait for explicit selection."""
+    """첫 성공은 대표 기록으로 등록하고 재도전 기록은 명시적인 교체 선택을 기다린다."""
     record = validate_record(record)
     key = str(record['stage'])
     old = state['representatives'].get(key)
@@ -173,7 +169,7 @@ def contribution(record):
 
 
 def totals(state):
-    """Unplayed rooms contribute zero; unscored memories make the total unknown."""
+    """미완료 방은 0으로 계산하되 미평가 기록이 있으면 전체 호감도를 미정으로 둔다."""
     values = [contribution(r) for r in state['representatives'].values()]
     return {
         ident: (None if any(v[ident] is None for v in values)

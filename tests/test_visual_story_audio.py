@@ -1,4 +1,4 @@
-"""Real SDL dummy-mixer checks for layered music, cues, muting and shutdown."""
+"""가상 음향 장치에서 배경음·효과음·음소거·종료를 검증한다."""
 from array import array
 import math
 import os
@@ -102,7 +102,7 @@ def test_recovery_sounds_are_gated_by_release_even_when_all_rooms_are_complete(e
     engine.configure(SETTINGS, completed=range(1, 13), released=True)
     assert engine.story_active['dawn'] and not engine.story_active['rain']
     assert engine.story_channels['dawn'].get_sound() is engine.story_sounds['dawn']
-    # Volume-only changes preserve the already released world state.
+
     engine.configure({'music': .25, 'sfx': .7})
     assert engine.story_state == (True, True, True)
     assert engine.story_active['dawn']
@@ -114,8 +114,7 @@ def test_volume_zero_mutes_both_music_and_cues_without_losing_progress(engine):
     assert all(channel.get_volume() == 0 for channel in engine.story_channels.values())
     engine.play('memory_complete')
     assert engine.sounds['memory_complete'].get_volume() == 0
-    # Let SDL mix several buffers: an asynchronous channel fade used to undo
-    # the mute after configure() had returned, even without another cue.
+    # 여러 믹서 버퍼 뒤에도 음소거가 비동기 페이드에 의해 풀리지 않는지 확인한다.
     pygame.time.wait(100)
     assert all(channel.get_volume() == 0 for channel in engine.story_channels.values())
     engine.configure(SETTINGS)
@@ -134,7 +133,7 @@ def test_saturated_sfx_and_automatic_play_cannot_replace_reserved_story_layers(e
     engine.configure(SETTINGS, completed=range(1, 13), released=True)
     expected = {name: channel.get_sound() for name, channel in engine.story_channels.items()}
     cue = engine.sounds['memory_complete']
-    # Persistent blockers make channel pressure independent of CI wall time.
+
     for index in range(engine.RESERVED_CHANNELS, pygame.mixer.get_num_channels()):
         pygame.mixer.Channel(index).play(cue, loops=-1)
     engine.play('memory_complete')
@@ -169,8 +168,8 @@ def test_generated_dawn_loop_is_faded_and_contains_a_quiet_low_body_sound(engine
     assert samples[:channels] == array('h', [0]*channels)
     assert max(abs(value) for value in samples[-channels:]) < 32
     assert 0 < max(abs(value) for value in samples) < .15*32767
-    # The bird phrase is silent here. This span now carries the restored cats'
-    # low purr; it would be all zero in the original birds-only dawn layer.
+
+
     body = samples[int(.65*rate)*channels:int(.95*rate)*channels:channels]
     rms = math.sqrt(sum(value*value for value in body)/len(body))
     assert 50 < rms < 700

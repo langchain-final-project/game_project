@@ -1,8 +1,4 @@
-"""Headless Gymnasium adapter; gameplay and learning use the same GameCore.
-
-No Pygame import, campaign save or cosmetic reward is used here. The versioned
-observation layout includes timed item states and excludes visual effects.
-"""
+"""게임 코어를 Gymnasium 환경으로 연결한다. 관측·보상·종료를 제공하며 캠페인 저장과 화면 효과는 제외한다."""
 from __future__ import annotations
 
 from copy import deepcopy
@@ -36,12 +32,7 @@ def _position(value: Any, name: str) -> tuple[int, int]:
 
 
 def encode_observation(snapshot: dict) -> np.ndarray:
-    """Encode the documented, fixed-slot 620-float fully observed state.
-
-    Invalid semantic values fail visibly rather than being clipped into a valid
-    Box. Stable IDs prevent collecting an item from shifting later item slots.
-    Returned arrays are new and never alias internal game state.
-    """
+    """고정 식별자 슬롯의 620차원 완전 관측을 새 배열로 만든다. 잘못된 값은 보정하지 않고 거부한다."""
     s = snapshot
     if s['width'] != 16 or s['height'] != 9:
         raise ValueError(f'{OBSERVATION_VERSION} requires a 16 × 9 map')
@@ -103,7 +94,6 @@ def encode_observation(snapshot: dict) -> np.ndarray:
             obs[base + 1 + 3*j:base + 4 + 3*j] = (gx / 15, gy / 8, 1)
         if _position(ghost['position'], 'ghost position') != tuple(route[index]):
             raise ValueError('ghost position and route_index disagree')
-        # obs[base + 49:base + 53] = (length / 16, index / 15, int(ghost['direction'] == 1), countdown / 2)
         obs[base + 49:base + 53] = (
             length / 16,
             index / 15,
@@ -179,7 +169,7 @@ def encode_observation(snapshot: dict) -> np.ndarray:
 
 
 def encode_realtime_observation(snapshot: dict) -> np.ndarray:
-    """Add the true center and world-clock phase to the legacy cell features."""
+    """격자 관측에 실제 몸 중심과 세계 시계 위상을 추가한다."""
     motion = snapshot['motion']
     position = motion['position']
     if not isinstance(position, (list, tuple)) or len(position) != 2:
@@ -203,12 +193,9 @@ def encode_realtime_observation(snapshot: dict) -> np.ndarray:
 
 
 class MansionEnv(gym.Env):
-    """Six-action, fixed-budget exploration task (without human progression).
+    """여섯 행동의 격자 탐사 환경. 게임 시간 소진은 종료, max_episode_steps는 실험용 중단이다.
 
-    `max_episode_steps` is an optional *experiment* cutoff; the game's own time
-    budget is a terminal failure and is included in the observation.
-    Reward: terminal ``2 * COMPLETE + banked / 14``; optionally subtract
-    ``safety_coefficient`` for every actual damage event (default zero).
+    종료 보상은 2 × 완료 여부 + 반납 온기 / 14이며, safety_coefficient는 실제 피해마다 차감한다.
     """
 
     metadata = {'render_modes': ['ansi']}
@@ -240,7 +227,7 @@ class MansionEnv(gym.Env):
         self.observation_space = spaces.Box(0.0, 1.0, (self.observation_size,), np.float32)
         self.core = self.core_class(deepcopy(config) if config is not None else load_level(stage),
                              mode=mode, seed=0, randomize_phase=randomize_phase)
-        self.encode(self.core.snapshot())  # Fail incompatible config at construction.
+        self.encode(self.core.snapshot())  # 관측 계약과 맞지 않는 설정은 환경 생성 시 거부한다.
         self._finished = True
         self._steps = 0
 
@@ -317,11 +304,7 @@ class MansionEnv(gym.Env):
 
 
 class RealtimeMansionEnv(MansionEnv):
-    """The desktop game's free movement: six actions, each lasting 1/60 second.
-
-    Existing grid planners/models use MansionEnv; they cannot be used as a
-    correctness or difficulty evaluation of this continuous controller.
-    """
+    """데스크톱과 같은 1/60초 연속 이동 환경. 격자용 모델·경로 결과를 이 제어 방식의 난이도 검증으로 대체하지 않는다."""
     core_class = RealtimeGameCore
     observation_size = REALTIME_OBSERVATION_SIZE
     observation_contract = REALTIME_OBSERVATION_VERSION

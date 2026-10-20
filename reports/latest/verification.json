@@ -1,0 +1,2759 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-10-20T04:58:17.332829+00:00",
+  "repository": {
+    "branch": "feature/final-changes",
+    "base_commit": "c2345cfcd97977e5d2742c776d00a1c4d0452a1a",
+    "state": "uncommitted working tree"
+  },
+  "scope": "Final developer cleanup after the agreed PNG integration: comments/docstrings, consolidated documentation, unused files and generated artifacts. Gameplay statements, player-facing strings, level data and active media were preserved.",
+  "environment": {
+    "os": "Windows-10-10.0.19045-SP0",
+    "python": "3.12.7",
+    "packages": {
+      "pygame-ce": "2.5.8",
+      "pytest": "9.1.1",
+      "numpy": "2.3.5",
+      "gymnasium": "1.4.0",
+      "jsonschema": "4.25.1"
+    }
+  },
+  "pytest": {
+    "command": "python -m pytest -q -p no:cacheprovider --basetemp <temporary directory> --junitxml <temporary report>",
+    "exit_code": 0,
+    "passed": 664,
+    "subtests_passed": 137,
+    "junit_test_records": 801,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "duration_seconds": 36.24,
+    "coverage_scope": "Core, realtime movement, Gymnasium API, persistence, campaign, story, six ending first views/replays/save-load, PNG layout and lobby branches; see tests/ for assertions."
+  },
+  "level_schema": {
+    "command": "python tools/check_level_schema.py",
+    "exit_code": 0,
+    "passed": 12,
+    "total": 12,
+    "schema_sha256": "16db843f7a846faf89e3b009100113df86f7cb9631d3a0b32879e461c6e5cd0e"
+  },
+  "reference_replay": {
+    "command": "python tools/replay_validation.py --output <temporary report>",
+    "exit_code": 0,
+    "scope": "Executed current GameCore against recorded v0.2 witness action sequences; not independent correctness proof.",
+    "limitations": [
+      "No PPO or other learning was performed.",
+      "No claim about human difficulty, real-time input, UI or Windows execution.",
+      "All tested phase combinations use the authored routes and directions."
+    ],
+    "reference_fixture_sha256": "dc72d8fd7e30d714e09b0afa6ed117efc7525e764a7bf0ed07b4b6d2db0cc6d8",
+    "original_results_sha256": null,
+    "implementation_sha256": {
+      "core.py": "9ddc7c5da34bcba3b6dc65425e989a383ad6832d9c1451f9f7f867552425b985",
+      "levels.py": "a45314c04f21a390912e20e6004fbcc31d86dd7d9eb7f8f08eb144e618661539"
+    },
+    "representative_only": false,
+    "route_count": 36,
+    "passed": 36,
+    "phase_configurations": 12,
+    "representative_trace_routes": 36,
+    "representative_trace_states": 1600,
+    "level_hashes": [
+      {
+        "stage_id": "stage_01",
+        "expected_sha256": "0cb17d48bd67ee22ee40275cbc3e89e848c17acef5fb9274680de3810717be47",
+        "actual_sha256": "0cb17d48bd67ee22ee40275cbc3e89e848c17acef5fb9274680de3810717be47",
+        "passed": true
+      },
+      {
+        "stage_id": "stage_02",
+        "expected_sha256": "d9700d0c6472f58920d5aea38d8aabe67c5b66cff27e6fdbac285995b60ccc03",
+        "actual_sha256": "d9700d0c6472f58920d5aea38d8aabe67c5b66cff27e6fdbac285995b60ccc03",
+        "passed": true
+      },
+      {
+        "stage_id": "stage_03",
+        "expected_sha256": "ed4aded3b03bda166015cd389010ccf7ade56f3f8b15bc2084c1ba1ee207acfc",
+        "actual_sha256": "ed4aded3b03bda166015cd389010ccf7ade56f3f8b15bc2084c1ba1ee207acfc",
+        "passed": true
+      },
+      {
+        "stage_id": "stage_04",
+        "expected_sha256": "fa96c2e038bc99496305b1eb9731ceb04e3072ee0fb6d44d0bff79b0355326fb",
+        "actual_sha256": "fa96c2e038bc99496305b1eb9731ceb04e3072ee0fb6d44d0bff79b0355326fb",
+        "passed": true
+      },
+      {
+        "stage_id": "stage_05",
+        "expected_sha256": "6eb2eebbd3609df47e9f4dd4960a71b25eff8b31facf17e02dd8355cb307b794",
+        "actual_sha256": "6eb2eebbd3609df47e9f4dd4960a71b25eff8b31facf17e02dd8355cb307b794",
+        "passed": true
+      },
+      {
+        "stage_id": "stage_06",
+        "expected_sha256": "fdba9c7eb0ff453c2fffa09b843b2545cd6cf046b1f7b13432240cb7e14fae2b",
+        "actual_sha256": "fdba9c7eb0ff453c2fffa09b843b2545cd6cf046b1f7b13432240cb7e14fae2b",
+        "passed": true
+      },
+      {
+        "stage_id": "stage_07",
+        "expected_sha256": "bcf1446a02f355fda24c8c4023f736b573dd31b235a1e20034d9e5d8eddb4108",
+        "actual_sha256": "bcf1446a02f355fda24c8c4023f736b573dd31b235a1e20034d9e5d8eddb4108",
+        "passed": true
+      },
+      {
+        "stage_id": "stage_08",
+        "expected_sha256": "c5df9d587ab1499f9cec2081ddeef5118e7be21011295623ff42731ffa1d5549",
+        "actual_sha256": "c5df9d587ab1499f9cec2081ddeef5118e7be21011295623ff42731ffa1d5549",
+        "passed": true
+      },
+      {
+        "stage_id": "stage_09",
+        "expected_sha256": "cef2ff8ff699483858f62bf1a911eaa63c8547d323ad33580fbe47f23d3ed598",
+        "actual_sha256": "cef2ff8ff699483858f62bf1a911eaa63c8547d323ad33580fbe47f23d3ed598",
+        "passed": true
+      },
+      {
+        "stage_id": "stage_10",
+        "expected_sha256": "48b01e16d5efbfd6ec562d1107a623c30452d2f3ca499f5a8bd84661bb0964f2",
+        "actual_sha256": "48b01e16d5efbfd6ec562d1107a623c30452d2f3ca499f5a8bd84661bb0964f2",
+        "passed": true
+      },
+      {
+        "stage_id": "stage_11",
+        "expected_sha256": "101d35f10b1e616c60ff242924cab80ad11c83545ea566dd8c650e4cfba70d9d",
+        "actual_sha256": "101d35f10b1e616c60ff242924cab80ad11c83545ea566dd8c650e4cfba70d9d",
+        "passed": true
+      },
+      {
+        "stage_id": "stage_12",
+        "expected_sha256": "1b7be6a0f714c4e88a48da5a2f38a31f3f78f705e08e1f4ff7a6eae34e130297",
+        "actual_sha256": "1b7be6a0f714c4e88a48da5a2f38a31f3f78f705e08e1f4ff7a6eae34e130297",
+        "passed": true
+      }
+    ],
+    "by_stage": {
+      "stage_01": {
+        "routes": 3,
+        "passed": 3,
+        "trace_steps": 73
+      },
+      "stage_02": {
+        "routes": 3,
+        "passed": 3,
+        "trace_steps": 65
+      },
+      "stage_03": {
+        "routes": 3,
+        "passed": 3,
+        "trace_steps": 159
+      },
+      "stage_04": {
+        "routes": 3,
+        "passed": 3,
+        "trace_steps": 168
+      },
+      "stage_05": {
+        "routes": 3,
+        "passed": 3,
+        "trace_steps": 127
+      },
+      "stage_06": {
+        "routes": 3,
+        "passed": 3,
+        "trace_steps": 128
+      },
+      "stage_07": {
+        "routes": 3,
+        "passed": 3,
+        "trace_steps": 125
+      },
+      "stage_08": {
+        "routes": 3,
+        "passed": 3,
+        "trace_steps": 135
+      },
+      "stage_09": {
+        "routes": 3,
+        "passed": 3,
+        "trace_steps": 187
+      },
+      "stage_10": {
+        "routes": 3,
+        "passed": 3,
+        "trace_steps": 150
+      },
+      "stage_11": {
+        "routes": 3,
+        "passed": 3,
+        "trace_steps": 143
+      },
+      "stage_12": {
+        "routes": 3,
+        "passed": 3,
+        "trace_steps": 140
+      }
+    },
+    "failures": [],
+    "elapsed_seconds": 0.181,
+    "all_passed": true
+  },
+  "headless_smoke": {
+    "command": "python main.py --headless --no-audio --frames 5 --dev-stage 7",
+    "exit_code": 0,
+    "audio": "disabled",
+    "save": "isolated developer preview"
+  },
+  "comment_cleanup": {
+    "python_files_retained": 65,
+    "files_compared_during_edits": 66,
+    "independent_snapshot_comparisons": 29,
+    "edit_time_agent_comparisons": 37,
+    "edit_time_comparisons_retained_after_cleanup": 36,
+    "independent_method": "Compare parsed AST after removing docstrings; comments are excluded by Python AST parsing. All independently checked runtime/UI ASTs match pre-cleanup snapshots.",
+    "edit_time_evidence_limit": "The tools/tests agent asserted equality while editing all 37 files. Their original source snapshots were not retained, so this group is not labelled an independent recheck. One obsolete audio generator was later removed.",
+    "independent_results": [
+      {
+        "path": "main.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "321519b62e9cb29810065811bf617a86e0efce4d1c48498bbee0507ff65ae149",
+        "after_ast_sha256": "321519b62e9cb29810065811bf617a86e0efce4d1c48498bbee0507ff65ae149",
+        "current_source_sha256": "0e99eace21264defa4ff0d2a05754a948d23782dd739f42375bb923b506dac77",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/__init__.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "f6c335e5606788e1a6789344ab413e9bdfe767af8872d89d64d34166b682336b",
+        "after_ast_sha256": "f6c335e5606788e1a6789344ab413e9bdfe767af8872d89d64d34166b682336b",
+        "current_source_sha256": "b85be6622a0d93d5c1d9de4f0867c40299d2cd2c60804225c661a0dff146c5d3",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/app.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "92859b6caabc173e6ca6d3de13b353103f8506243a0d4a47dc1a1aa048e36aff",
+        "after_ast_sha256": "92859b6caabc173e6ca6d3de13b353103f8506243a0d4a47dc1a1aa048e36aff",
+        "current_source_sha256": "0c48d8b6315335996d869d6682b10899b3c154613af63fd6aac6856c7e31c639",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/audio.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "b76f83787ee48415acda2aa6faba5f53f2704a1c39ce4f66d954059344293644",
+        "after_ast_sha256": "b76f83787ee48415acda2aa6faba5f53f2704a1c39ce4f66d954059344293644",
+        "current_source_sha256": "14c2ba82060ed421b21be588eed721a8a2a21ce08b63dbcb4d47bc1809b37448",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/campaign.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "29a9e70f268bac424dd88c87f43ec35c6eddea14ddf6ef9dac7c514f7151573d",
+        "after_ast_sha256": "29a9e70f268bac424dd88c87f43ec35c6eddea14ddf6ef9dac7c514f7151573d",
+        "current_source_sha256": "ac610024db349ad03e2c7e24e6c4a52a7b7a29f8f35ce9bd96d377ceef96c6a0",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/collection.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "b2e2ed6ff4bb320071ecdaa56de869350ac7b109a0b4c3dd9a5e1b59c285145a",
+        "after_ast_sha256": "b2e2ed6ff4bb320071ecdaa56de869350ac7b109a0b4c3dd9a5e1b59c285145a",
+        "current_source_sha256": "2a5f9745aee51967171be7591f987e7994e9f36ae507316eba69b9f455f3eadc",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/core.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "3792a8c44e7422c60856703ac2453c68e7ca6ec3cad235d740dbafa19750a09b",
+        "after_ast_sha256": "3792a8c44e7422c60856703ac2453c68e7ca6ec3cad235d740dbafa19750a09b",
+        "current_source_sha256": "9ddc7c5da34bcba3b6dc65425e989a383ad6832d9c1451f9f7f867552425b985",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/ending_content.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "d54d83cc396df6916059f01650dca93e38e66eb454c0098547687fc088bcf491",
+        "after_ast_sha256": "d54d83cc396df6916059f01650dca93e38e66eb454c0098547687fc088bcf491",
+        "current_source_sha256": "060680b4d469cd53b8b75f8be8ad7fbbab2b16a515fa660e86c697ac50944bc9",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/env.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "3579b2c332414a97533894e2b4d349865cb52304ff30d27264c64f6c8256a551",
+        "after_ast_sha256": "3579b2c332414a97533894e2b4d349865cb52304ff30d27264c64f6c8256a551",
+        "current_source_sha256": "de42ba0980cea84b60f0e05d4391107090f6732bc006fe90efa472c5ded6b93b",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/input.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "9924f57e7dfa4d54bb6ba6f6039736b57960e83e3590e894341fefbc821e12e3",
+        "after_ast_sha256": "9924f57e7dfa4d54bb6ba6f6039736b57960e83e3590e894341fefbc821e12e3",
+        "current_source_sha256": "c784bebcf0b622845020c4b1ff8155f99637c960c758e3f82b4ed949eee0fc50",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/levels.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "9519cca8ec6a089bac8a38c46bb347219f760a0b8cbf29148a012e90506688a1",
+        "after_ast_sha256": "9519cca8ec6a089bac8a38c46bb347219f760a0b8cbf29148a012e90506688a1",
+        "current_source_sha256": "a45314c04f21a390912e20e6004fbcc31d86dd7d9eb7f8f08eb144e618661539",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/likes.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "1b7fc128b1df82c0863ee0d191897718841625d5e844cf761ea6ccaf51198434",
+        "after_ast_sha256": "1b7fc128b1df82c0863ee0d191897718841625d5e844cf761ea6ccaf51198434",
+        "current_source_sha256": "a8c128e0a2447284ec55460267271162cd0a3710481a108065b314da3806631d",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/likes_preview.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "e5dd1da375317d6ebcedfc9bacda4df36448039569dfe87914dffe738b8f130a",
+        "after_ast_sha256": "e5dd1da375317d6ebcedfc9bacda4df36448039569dfe87914dffe738b8f130a",
+        "current_source_sha256": "6dca10a91a2a03bfe48109ede18f65d704396d19e418ef9b604818b10786624f",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/paths.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "ec3f359408d71177ff80023402a9a38eb09fffa44356c5136e875d9c3b441e28",
+        "after_ast_sha256": "ec3f359408d71177ff80023402a9a38eb09fffa44356c5136e875d9c3b441e28",
+        "current_source_sha256": "cc83fb8e1ed8523b775749b3bab7fcff4d23220595b2886db94b79b8db5c337b",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/realtime.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "df1e56087e21e8265650859c68700b6f75931e5e9d3504c18fe23e88c109a688",
+        "after_ast_sha256": "df1e56087e21e8265650859c68700b6f75931e5e9d3504c18fe23e88c109a688",
+        "current_source_sha256": "3ae6ce6acadf5a164bccefdae540d922de69b3359963fc61e2ac876b5a602aee",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/scoring.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "a8e5382e5784500108805d763ccedd726c889696c11da4a43f6ab5ecef22f510",
+        "after_ast_sha256": "a8e5382e5784500108805d763ccedd726c889696c11da4a43f6ab5ecef22f510",
+        "current_source_sha256": "27b498927c12f44f6e8b459f22c9aef9c28f1353ab1eb77a466d3deabbaeddd1",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/story.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "536b2f8f126f70c491e52d5cdde4cb4518eece958d2e6f9cc476e3403d658945",
+        "after_ast_sha256": "536b2f8f126f70c491e52d5cdde4cb4518eece958d2e6f9cc476e3403d658945",
+        "current_source_sha256": "8885484c20d03b880f5230b6fc09f1c2ac699adbc88374c7de166c090b7629e0",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/ui/cat_sprites.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "71bc6b265920baf9b2cd59e695b4b21b60753fb186708f2597dce5f0e5109db3",
+        "after_ast_sha256": "71bc6b265920baf9b2cd59e695b4b21b60753fb186708f2597dce5f0e5109db3",
+        "current_source_sha256": "e9d720f45ddbbb78739c3efb025f5fc3c0660851e29acc00df39f7f2027c50a9",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/ui/collection.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "8d52f292862daf3eed4c543b9c9dddbdc47a9da29c84fa79f47482f495ec418b",
+        "after_ast_sha256": "8d52f292862daf3eed4c543b9c9dddbdc47a9da29c84fa79f47482f495ec418b",
+        "current_source_sha256": "3870b28ccda34d0cdd007a232a01624ed17f5fd9519e435e123957d3cf0dd238",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/ui/field.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "3ee631cf992098e4ef95b4b1951668c9ba670a0b6b21f0dad86eb2acb0af89c9",
+        "after_ast_sha256": "3ee631cf992098e4ef95b4b1951668c9ba670a0b6b21f0dad86eb2acb0af89c9",
+        "current_source_sha256": "c5d4056cd8e0cb39347e6fc92839b5da89966e7850c99739439791000c08d149",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/ui/ghost_sprites.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "8a3bff4405819775fe3eb87114db5b03d00d04c7a0cb04b57c6138afc458edf9",
+        "after_ast_sha256": "8a3bff4405819775fe3eb87114db5b03d00d04c7a0cb04b57c6138afc458edf9",
+        "current_source_sha256": "ac8ee3da3dff285e7a2ea47becce12f4cd01959a775c72e4b70bffe7c9ff1f36",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/ui/illustration.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "da33d904a2c249c9c439405f6cdab8ea9a90b5babd8fe9462d7997e11fdb1ae8",
+        "after_ast_sha256": "da33d904a2c249c9c439405f6cdab8ea9a90b5babd8fe9462d7997e11fdb1ae8",
+        "current_source_sha256": "ef1989a6c4540d063add55eb9c05048708c66c0512aee96951c8fa7679097dba",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/ui/likes.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "9c22ad055d2cf2bc149f5885e25416f542746c25bed96f853f3e8a6a9964aa6f",
+        "after_ast_sha256": "9c22ad055d2cf2bc149f5885e25416f542746c25bed96f853f3e8a6a9964aa6f",
+        "current_source_sha256": "c935d8e13de4e736aac9fb6bcff6f45f759b62545827c6e184ae2b4d3fde3025",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/ui/lobby.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "91390e133697a5b6c4238d8c3bd61c4af1da78b06deacfe7b85e5d712204f2db",
+        "after_ast_sha256": "91390e133697a5b6c4238d8c3bd61c4af1da78b06deacfe7b85e5d712204f2db",
+        "current_source_sha256": "fe03a8c8be38c7b1aa4c02b65914f0303ee63285b22e294012ea9e5c80226193",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/ui/map_sprites.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "9316a57dda557c5d06a3b3ae38f24a236331594681cba53e23e1cc5911393e7c",
+        "after_ast_sha256": "9316a57dda557c5d06a3b3ae38f24a236331594681cba53e23e1cc5911393e7c",
+        "current_source_sha256": "55ad2de31a18d1d946998d4410d4bd61924556c5d91fdcc48c1ea2d62138022a",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/ui/memories.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "f25cefd749408bf11626520d956861b975aab90841b4bca820f2bec415ffe95c",
+        "after_ast_sha256": "f25cefd749408bf11626520d956861b975aab90841b4bca820f2bec415ffe95c",
+        "current_source_sha256": "1a9e699300003d5e2a9d4f06abb02d9a8a8b17a407e6876edfa6b30288ce9728",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/ui/menus.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "bf4d87e3a46de325c82e09e12dc929afdfeb2558d7673d2ecb8e547fc3576ef1",
+        "after_ast_sha256": "bf4d87e3a46de325c82e09e12dc929afdfeb2558d7673d2ecb8e547fc3576ef1",
+        "current_source_sha256": "96e9a4c97875f94a72a1173e3645d98fb75b1388011178b01c337b2d8645473d",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/ui/theme.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "b977122424749d8c7091b2b4e6eb0df971b5ab80bdc7aefd2ff210ae6866fb3a",
+        "after_ast_sha256": "b977122424749d8c7091b2b4e6eb0df971b5ab80bdc7aefd2ff210ae6866fb3a",
+        "current_source_sha256": "30e66780fba96818c28d3842a1e02d0d4ca54a72be494b6cbb7d75562b055acc",
+        "compile_passed": true
+      },
+      {
+        "path": "kkamang/ui/__init__.py",
+        "exists": true,
+        "docstring_excluded_ast_identical": true,
+        "before_ast_sha256": "3543b4693a36a1098850b8bc928887694ed59a6deb7d3dfd0339de01f55a77b6",
+        "after_ast_sha256": "3543b4693a36a1098850b8bc928887694ed59a6deb7d3dfd0339de01f55a77b6",
+        "current_source_sha256": "fcd85523dabf394167d522eedec2ced20622b3f247579862d5dc61d85320b65b",
+        "compile_passed": true
+      }
+    ],
+    "edit_time_results": [
+      {
+        "path": "tests/test_app.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "1de3d218bb8d5ed8fcacc3a25932ad316cdc363dd0f58f46b25ca9b11175b24c",
+        "current_ast_sha256": "4760878e0ff3ca0d0f249ecf46da1981fd08413a6856e76c37389833d849fb22",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_balance_report.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "6a25ecc2684e6d32df9cebcee2ba0ff105ab9cf8a53f83f3876e250be7807bf7",
+        "current_ast_sha256": "7aa618738fb6082f71c7a3c4f0ce1069f636830076400cda4ad5d1cb8d4f37c3",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_campaign.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "3d9346f5886c2128e8feafaede9567b594ae79b3b41caa5b96d639359e635597",
+        "current_ast_sha256": "536e7bb93c098e6a831167cadc8effdfd3d3fad0bef77ad700b6bdfc7f82de31",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_cat_sprites.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "cfb8eb28305e2dff729504df9a8f14764267d739b2ad1dd95dc751dc19a8d910",
+        "current_ast_sha256": "29737e5ff2fba73a1315909404afdd6182d26aaaef22ae3ffc1a91f17a24d308",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_collection.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "ce55dd7c21bb03245c4941f48f0699652df6d0dabe6bb6017a982dcc5973d47a",
+        "current_ast_sha256": "0b9b0321ff6ded90e24bcd44a1fcaf23b9ff4b84e8f86d2c6cf997419687e244",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_contextual_audio.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "7d659383830d9b4264dab316f86c8f59ab1d6996a9b5424b475b99316e5e8f66",
+        "current_ast_sha256": "07cfaf02dd4fd8a903d999d364ab8bb1669ec495691dfe1320948505e3d34f73",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_core.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "fe8e0733fd815210b04711fb89d95885a8c2471846cbcdce8e2d1a71d4170958",
+        "current_ast_sha256": "ba662e6fe3de6492162aed2bd6aadda8a8ea302d46f8a6ef93cad8866ecce0ac",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_env.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "eef9bdf818f0306c7de39d3a04a9b0b161e0c9058902aab74aea14906ca581ca",
+        "current_ast_sha256": "b9aaa3514cb1165d790ee2415d6b2264571a71a6408c552308a14239bd5d10b4",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_final_png_endings.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "8823036be01ad5bf01dceb2789e280ae6d9d8d85aaee14336d4be97f9c9d7d72",
+        "current_ast_sha256": "b38060ff5c2a857f4c151992e6801af48502d3df7ff25479b088959fbacee957",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_ghost_sprites.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "d3a39c1a9ff26ecd0dba43edc7d41320fddf27d37e10d7a2a1700e9c4f151938",
+        "current_ast_sha256": "fc254f7f768905a8686bb347ed72aad83ecd145ac93d2b352bb9b6cd26a07182",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_input.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "9c83a3a47d899cd30dd8ee90d80bc7a03aa7aa7b190f1ddc74a0acb200587b45",
+        "current_ast_sha256": "cef0a9eb39d438763fe21b18470bcafa3734313b88f5022b964ba308bf2242a6",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_likes.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "b2f6fdfaa1aa5658e152e21ebd92b4b6f1fbc8ece7ec868b23b6b55f5cfaad7c",
+        "current_ast_sha256": "c95c41b8f6104390c4a64d3c79b4c19007c1b6d555ac30b24bf9d595e96842b8",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_likes_app.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "4c587747291cb1108260c8b4ebe51c30a90a39f9789d5582bf76e9cf0a14a43d",
+        "current_ast_sha256": "24f8d6bb3d1d92ae941d94021e197ca6acb66ed4a6b66ff02baffab51a52f3aa",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_lobby.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "0fb1337f56795fa91ec83af6c1e1873a5b246360451e046e8b89311b03a11c38",
+        "current_ast_sha256": "3b67669dd476ae7e0720fae167db32735d847936067fabc34b341a60d4b222aa",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_memory_art.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "cc8f1f2b079c56d150a48a1628acdf8888b05d89dcd83cb197df326da6a5044b",
+        "current_ast_sha256": "eee686a42e4ca981494cb0d08834c8c63bdd7345e1f65b24bf8a04e25ba90343",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_realtime.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "76e7497b5311605c187a953331c5877ea5b39b1e1f4d73bb3d36b641829989f9",
+        "current_ast_sha256": "f9fbec6351812bac1d65c9b6f4cf152073868d9bdf5ef0d61af2f83ba80dd9b9",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_six_ending_visuals.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "973658f309c4e49d5a7f628ee0e3e76b75f2a19e66af49e32eafdd2c7bcbc301",
+        "current_ast_sha256": "2008c071e79363a622dd4742e20ea7b89c79291d7a75b2b570aaffe07ecd269b",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_story_cinematic_fixtures.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "6a815dec4b58606d34dec9a1a77a095e6c60948d6bb6e5d38233bc5b8828437e",
+        "current_ast_sha256": "c09482327eeb21875eec3c03b72fcb9479757d11b4cf9210de3d5c2e7b87fdf1",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_story_endings.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "62d239a6816a3215d678a05dd103954af02bc9800ab59a2466a8ad9539b4dd7e",
+        "current_ast_sha256": "1e924db57cf82364ff2c9be5a7ee8f9d850f5cbcf0613697a12d72e6d9b0da19",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_story_rebase.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "232aba2c89dcc0edbeb6b37dca955e6348e45ce60378e2143b6435de79447b98",
+        "current_ast_sha256": "6f4c4f5e907437141e970ff2e5f10bf9097eb854be9e7dfd44a4d78f8e724191",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_upgrade.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "1cbfb2c4a6e470e809facdbc28967ac43e9933d574966c3abbf5e890ae8a825f",
+        "current_ast_sha256": "d97efb08fc313ec94e20cc8de254e3196e0315a59e905a06ba78a5e2e72c3f59",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_visual_story_app.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "38eab990ed7fd916c329d8de2d5e4869944d8f8562d564483081d8360ec962b1",
+        "current_ast_sha256": "ea880c6f870d906b83853bf5bea4dfc7430e86cccdaa24631e7bc606f61f977c",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_visual_story_audio.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "fee537ab55a2f048ba6b7b2abaff25ffacae3d00ef2ef774fcfd9fedd0788812",
+        "current_ast_sha256": "cf51f4dff3785d333c84c5c5a53f55a3d3bf434983a0d542136429c54b18735c",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tests/test_visual_story_campaign.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "2e4334e754e901fdf0c2dd90cea287e98b729e48f25084ff3588cba4b9b73fb1",
+        "current_ast_sha256": "57700118ca785d5a15dc23f456241360241c778a83f448a3382a3fb46980bddb",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tools/audio/convert_user_media.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "ecc3c89a3c8cd3143174b52504f983d57a249f9e9c8f2b2cb7ef1c95fe2f37ea",
+        "current_ast_sha256": "2408fec3350e82585048c33a9ec0ad7dcd0688c8fe19cad152ee1a133a27cbbc",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tools/audio/generate_map_bgm_v7.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "a90d4f29b5e89987f3581f6178ee1a41cf4241e5f3972f93a1a282dfd68ca180",
+        "current_ast_sha256": "e52f9ef160c49ba5466fe3351392f865b360b654b50212761fdc551de481224c",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tools/audio/generate_pickups_v3.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "e07e2b57ef8fa8b7e11fbcc6ba353da75970fcc595404e517e9dc1f5bdce2a2e",
+        "current_ast_sha256": "5a9c5dab65dbc75664e9ef7dd1353a04791dd9128254525338e14c48cbe8e869",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tools/audio/generate_sfx.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "b1bb22a90e487726b755209f61cc626e018d0df0b8e27cf1ecd77120e1557631",
+        "current_ast_sha256": "5811b93acbf6d9a297b2e53ae82afc367d2fdda1628cc577f5f264aec1c70b85",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tools/audio/generate_shortcut_v5.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "5bac76cfbc3beacad2357f9c48d58b9fa416a96b802c8d43516b8d09276bce43",
+        "current_ast_sha256": "69f2c07f9fd361e30007d63468625ad68df33ad5cd12cc734dfa66b97ba636e9",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tools/audio/generate_timed_v4.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "2cf6f42ef5e688d2ecf3c70d5cff311bf2f47cdb269a2ab156d1e606b3f0ca51",
+        "current_ast_sha256": "510421ea08fee49f23d3f1e38773f3a901ea833035dc0ab32ee234651b6cb867",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tools/audio/restore_piano_samples.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "d22dd5432a9675edc797b183e34cea6844449096cf03e5c7dc4c598c9e0b0a25",
+        "current_ast_sha256": "3907dbe4e7298ffd9a07a4fa85c4c890497127804b4907194a3d13cd904601aa",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tools/balance_test.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "c1b3410b5ddad3643b278fa8c15322dee69d208764cce34651e3e9dc638c1eb2",
+        "current_ast_sha256": "daef4334d9222fd1d4ee4dee65f6184fdc325f01f436b1bf86e5dc72c35f1ddb",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tools/check_level_schema.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "3ba7c07fe283bab6db853c134d1f57fe6cce7555427976d112ccd88498aa9c47",
+        "current_ast_sha256": "e3736719938c8128b5f7295cf1d04664ef83f4ca80f9ff06b93307680a98cc9a",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tools/evaluate.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "8186c2d18faf23eb71e039f612d88187efa51860f77aab47aed6de5bbaa47f9e",
+        "current_ast_sha256": "ec7b52876c6760c75f18b6b6eafdf46c2da59aa0dabe28e1a07ac6676d4aa773",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tools/make_audio.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "4da84ecef5f893c1cb7a4489037ae27e121c27dcfc726cb40470089278b440ba",
+        "current_ast_sha256": "8c8d7ffb03bd819504ae88fef7cdf2bddfbaf297d18e13675185a65c13b692d7",
+        "compile_passed": true,
+        "pre_deletion_evidence_path": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\kkamang_make_audio_deletion_evidence.json",
+        "pre_deletion_source_sha256": "4da84ecef5f893c1cb7a4489037ae27e121c27dcfc726cb40470089278b440ba",
+        "pre_deletion_ast_sha256": "8c8d7ffb03bd819504ae88fef7cdf2bddfbaf297d18e13675185a65c13b692d7",
+        "retained_after_cleanup": false
+      },
+      {
+        "path": "tools/plan_routes.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "2a7a35ebe28782c5941d1a81d56102f470974ff5307cef006b00971e5a09b17f",
+        "current_ast_sha256": "1aee94587e31d95f392f2d250c060a0a0d7e8b199ef41c72991e26b886c19319",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      },
+      {
+        "path": "tools/replay_validation.py",
+        "independently_rechecked_against_baseline": false,
+        "baseline_source_preserved": false,
+        "agent_reported_docstring_excluded_ast_identical_at_write": true,
+        "exists": true,
+        "current_source_sha256": "4788c6b0a5a29a066f0cfa9f19bd925c9f95121b71d4bbbc709ed42339bf6439",
+        "current_ast_sha256": "b69f6a742da4adea9b75e27806b1a59865c5dfd22969778a20e5a733f2130f72",
+        "compile_passed": true,
+        "retained_after_cleanup": true
+      }
+    ],
+    "english_explanatory_comments": [],
+    "missing_korean_module_summaries": [],
+    "all_retained_python_compiles": true,
+    "english_explanatory_docstrings": []
+  },
+  "visual_comparison": {
+    "method": "RGB pixel hashes compared with captures from immediately before comment cleanup; memory originals and masks were also regenerated with preserved pre-cleanup UI source.",
+    "cinematic_frames": [
+      {
+        "kind": "garden",
+        "seconds": 0.0,
+        "variants": [],
+        "sha256": "e91409f519ef6dc937d5c758bf5497e766b2d8216e661fce64a3350b038e2260",
+        "current_sha256": "e91409f519ef6dc937d5c758bf5497e766b2d8216e661fce64a3350b038e2260",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 2.19,
+        "variants": [],
+        "sha256": "f599a24178ba23a055ccaea1deb4462de9137d9586b922abc13b0cce22a7206d",
+        "current_sha256": "f599a24178ba23a055ccaea1deb4462de9137d9586b922abc13b0cce22a7206d",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 2.2,
+        "variants": [],
+        "sha256": "62b865d260831148e031955143307e0f9cf2e7912de1a5f86efc16be2d2f3f59",
+        "current_sha256": "62b865d260831148e031955143307e0f9cf2e7912de1a5f86efc16be2d2f3f59",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 3.3,
+        "variants": [],
+        "sha256": "adcba10b213c9376f18e2fe041b863ca439282b5f47173dbba2f19f5f654a283",
+        "current_sha256": "adcba10b213c9376f18e2fe041b863ca439282b5f47173dbba2f19f5f654a283",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 4.0,
+        "variants": [],
+        "sha256": "ded9e26f421251c8c9bfcf3f9c2c9f741e655eeb6e6a9cc190384a059b8e7036",
+        "current_sha256": "ded9e26f421251c8c9bfcf3f9c2c9f741e655eeb6e6a9cc190384a059b8e7036",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 0.0,
+        "variants": [],
+        "sha256": "eb5df82d96d4c5f58d7a99358790fd75add75248140f4d9cc50951916253c51c",
+        "current_sha256": "eb5df82d96d4c5f58d7a99358790fd75add75248140f4d9cc50951916253c51c",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 2.19,
+        "variants": [],
+        "sha256": "5484e03870c0a73a1ffc0ca89a3cc8deaaa9b90b607e7441134aef5041066c3b",
+        "current_sha256": "5484e03870c0a73a1ffc0ca89a3cc8deaaa9b90b607e7441134aef5041066c3b",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 2.2,
+        "variants": [],
+        "sha256": "1ff86b3024974a53da73cec9f8613af33af0183863c369025900f6272beca7e7",
+        "current_sha256": "1ff86b3024974a53da73cec9f8613af33af0183863c369025900f6272beca7e7",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 3.3,
+        "variants": [],
+        "sha256": "4db8bb2b95f362ec43e4ac49cb74aaafef767e6ce450187ae1fc5a060770c828",
+        "current_sha256": "4db8bb2b95f362ec43e4ac49cb74aaafef767e6ce450187ae1fc5a060770c828",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 4.0,
+        "variants": [],
+        "sha256": "5d53d88d1c9f5243873ed9fe3ba74e779b6ca13ac59e28b057d10c23da00319d",
+        "current_sha256": "5d53d88d1c9f5243873ed9fe3ba74e779b6ca13ac59e28b057d10c23da00319d",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 0.0,
+        "variants": [
+          0
+        ],
+        "sha256": "5ef2430557f20fe37b58ff1499f5d1bd889302d1ec1a8655455e035c65608b29",
+        "current_sha256": "5ef2430557f20fe37b58ff1499f5d1bd889302d1ec1a8655455e035c65608b29",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 2.19,
+        "variants": [
+          0
+        ],
+        "sha256": "c9b809a1df24a0d3b106b91e247092d21a152c41916a648ea85f15804a23fd63",
+        "current_sha256": "c9b809a1df24a0d3b106b91e247092d21a152c41916a648ea85f15804a23fd63",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 2.2,
+        "variants": [
+          0
+        ],
+        "sha256": "d1d5d0913da84f67bdbc77d37a0faa3ee3d6466788ee371330421f4698075d1f",
+        "current_sha256": "d1d5d0913da84f67bdbc77d37a0faa3ee3d6466788ee371330421f4698075d1f",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 3.3,
+        "variants": [
+          0
+        ],
+        "sha256": "9bda5c96172ef14035f2fe8b0e3d21b9d797db3f50e4dbec8b5758ed9b569dcd",
+        "current_sha256": "9bda5c96172ef14035f2fe8b0e3d21b9d797db3f50e4dbec8b5758ed9b569dcd",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 4.0,
+        "variants": [
+          0
+        ],
+        "sha256": "3222c66cdd4a8317d0ffce7025b4b229e934a8e176c77a72b113f716d04aa1d9",
+        "current_sha256": "3222c66cdd4a8317d0ffce7025b4b229e934a8e176c77a72b113f716d04aa1d9",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 0.0,
+        "variants": [
+          0
+        ],
+        "sha256": "5425230bf3f89eaec8cdeef873a6b4f3c0d12264b14dc966a02d05ca36b9eb94",
+        "current_sha256": "5425230bf3f89eaec8cdeef873a6b4f3c0d12264b14dc966a02d05ca36b9eb94",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 2.19,
+        "variants": [
+          0
+        ],
+        "sha256": "218bccb08c0446450df65b1b9de0bf1954b013696a51e953327c39d28ab2b983",
+        "current_sha256": "218bccb08c0446450df65b1b9de0bf1954b013696a51e953327c39d28ab2b983",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 2.2,
+        "variants": [
+          0
+        ],
+        "sha256": "e8cdea9640ac9a3f0f921351de7092144f0609337d2ef98832458fd9a139122c",
+        "current_sha256": "e8cdea9640ac9a3f0f921351de7092144f0609337d2ef98832458fd9a139122c",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 3.3,
+        "variants": [
+          0
+        ],
+        "sha256": "b0d073d4cf16c878fc2226881b88abd93ce653e4c09126d5ddb8e05923c6fa5e",
+        "current_sha256": "b0d073d4cf16c878fc2226881b88abd93ce653e4c09126d5ddb8e05923c6fa5e",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 4.0,
+        "variants": [
+          0
+        ],
+        "sha256": "3f6d8f66b64c5cce2991f402cc3df39f0b02ae53abe16a54c6aea440abf4f55d",
+        "current_sha256": "3f6d8f66b64c5cce2991f402cc3df39f0b02ae53abe16a54c6aea440abf4f55d",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 0.0,
+        "variants": [
+          1
+        ],
+        "sha256": "5975cba4a34ea0693d90cf84fd484c09cfcf02eec04813ff77dd50e16a2d2d67",
+        "current_sha256": "5975cba4a34ea0693d90cf84fd484c09cfcf02eec04813ff77dd50e16a2d2d67",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 2.19,
+        "variants": [
+          1
+        ],
+        "sha256": "11215c51fb6c7127c70a55b46dbf9f8952d40dba6be81a692d602857f96515cb",
+        "current_sha256": "11215c51fb6c7127c70a55b46dbf9f8952d40dba6be81a692d602857f96515cb",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 2.2,
+        "variants": [
+          1
+        ],
+        "sha256": "623e840ce76ce8d5873ff3c7d7ddf34a4adcdffb6f10220b5cc9ad864f30ff7b",
+        "current_sha256": "623e840ce76ce8d5873ff3c7d7ddf34a4adcdffb6f10220b5cc9ad864f30ff7b",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 3.3,
+        "variants": [
+          1
+        ],
+        "sha256": "6cb644b75da3b70b7e80c7c84b00e247c8e5c8ab67192c2824f4cb7e5b69ee05",
+        "current_sha256": "6cb644b75da3b70b7e80c7c84b00e247c8e5c8ab67192c2824f4cb7e5b69ee05",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 4.0,
+        "variants": [
+          1
+        ],
+        "sha256": "2d8afec7d6d05bb1fcb414094d6520031269898e4dbe3393624e243451f6b37c",
+        "current_sha256": "2d8afec7d6d05bb1fcb414094d6520031269898e4dbe3393624e243451f6b37c",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 0.0,
+        "variants": [
+          1
+        ],
+        "sha256": "751e4d79c7babfd4489c44ec3617d3f98d59fb43d802f4dcf8b7df36959d8026",
+        "current_sha256": "751e4d79c7babfd4489c44ec3617d3f98d59fb43d802f4dcf8b7df36959d8026",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 2.19,
+        "variants": [
+          1
+        ],
+        "sha256": "ce6173157144c178bc3015251c4f83fc66e8bacb3093d96cd619ba453c2e47da",
+        "current_sha256": "ce6173157144c178bc3015251c4f83fc66e8bacb3093d96cd619ba453c2e47da",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 2.2,
+        "variants": [
+          1
+        ],
+        "sha256": "a14d20a48f5c0a32dc1104da2d3b033331a1930fdd0e88bd4050d91ef7f4008d",
+        "current_sha256": "a14d20a48f5c0a32dc1104da2d3b033331a1930fdd0e88bd4050d91ef7f4008d",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 3.3,
+        "variants": [
+          1
+        ],
+        "sha256": "f0334772e7cc788625f54d727d9f51b5615b8d67b3c2e71b0fbe08e4d47999de",
+        "current_sha256": "f0334772e7cc788625f54d727d9f51b5615b8d67b3c2e71b0fbe08e4d47999de",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 4.0,
+        "variants": [
+          1
+        ],
+        "sha256": "6678d4af7a60d87319dd0959719d8d1ded630a4bfddfc069f987f24b3faa8f37",
+        "current_sha256": "6678d4af7a60d87319dd0959719d8d1ded630a4bfddfc069f987f24b3faa8f37",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 0.0,
+        "variants": [
+          2
+        ],
+        "sha256": "f47ea2c39d0607f3a8898cf798319bddb1b7575681bc78e68171606dcd07a7cf",
+        "current_sha256": "f47ea2c39d0607f3a8898cf798319bddb1b7575681bc78e68171606dcd07a7cf",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 2.19,
+        "variants": [
+          2
+        ],
+        "sha256": "a36500f293279e9a6d1ab838e830a67ab2f56dc468f530d7426a1efc0dbb5c4f",
+        "current_sha256": "a36500f293279e9a6d1ab838e830a67ab2f56dc468f530d7426a1efc0dbb5c4f",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 2.2,
+        "variants": [
+          2
+        ],
+        "sha256": "e00d717e1e8088b6acf62c677634e1dc43f6b01c15b26d17bf7d3c2d294d118d",
+        "current_sha256": "e00d717e1e8088b6acf62c677634e1dc43f6b01c15b26d17bf7d3c2d294d118d",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 3.3,
+        "variants": [
+          2
+        ],
+        "sha256": "fb52530c513c4a06f5ed016bd4235d897da76039a03d8400c841965c40b89b60",
+        "current_sha256": "fb52530c513c4a06f5ed016bd4235d897da76039a03d8400c841965c40b89b60",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 4.0,
+        "variants": [
+          2
+        ],
+        "sha256": "572f27af9c0c12004f08f02b04de1c1197f3d5bd9bbc28e25d55719704ac7433",
+        "current_sha256": "572f27af9c0c12004f08f02b04de1c1197f3d5bd9bbc28e25d55719704ac7433",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 0.0,
+        "variants": [
+          2
+        ],
+        "sha256": "d7157a90af77e5f9773d1a2d3d1347ab712d1b33e7cefc54736532f887811dd9",
+        "current_sha256": "d7157a90af77e5f9773d1a2d3d1347ab712d1b33e7cefc54736532f887811dd9",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 2.19,
+        "variants": [
+          2
+        ],
+        "sha256": "c894e1daa0b03524f7e399a4330be9258b5500f66a9d3e6489fe255341e2cd33",
+        "current_sha256": "c894e1daa0b03524f7e399a4330be9258b5500f66a9d3e6489fe255341e2cd33",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 2.2,
+        "variants": [
+          2
+        ],
+        "sha256": "3df6d31df4db8307e1b045e57de7b7fe5f022a71060b4839988aae16394d3eb9",
+        "current_sha256": "3df6d31df4db8307e1b045e57de7b7fe5f022a71060b4839988aae16394d3eb9",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 3.3,
+        "variants": [
+          2
+        ],
+        "sha256": "a904ddfed95fefaaf80e2427ec6ae7729c5fd30dd5a558df2ef056d9f525a0d1",
+        "current_sha256": "a904ddfed95fefaaf80e2427ec6ae7729c5fd30dd5a558df2ef056d9f525a0d1",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 4.0,
+        "variants": [
+          2
+        ],
+        "sha256": "5cc952a8b7f4979a0120b02df3d7393542598e2a78ae0e8733d5d06c193cd760",
+        "current_sha256": "5cc952a8b7f4979a0120b02df3d7393542598e2a78ae0e8733d5d06c193cd760",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 0.0,
+        "variants": [
+          0,
+          1,
+          2
+        ],
+        "sha256": "7087946be164d4eff70f84351f338fb55ed31baf585f019dd9dfcd895f5f3895",
+        "current_sha256": "7087946be164d4eff70f84351f338fb55ed31baf585f019dd9dfcd895f5f3895",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 2.19,
+        "variants": [
+          0,
+          1,
+          2
+        ],
+        "sha256": "67e60678586e7e7645964837e4af2fcc03822592ec98090177d1e08352e4a47d",
+        "current_sha256": "67e60678586e7e7645964837e4af2fcc03822592ec98090177d1e08352e4a47d",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 2.2,
+        "variants": [
+          0,
+          1,
+          2
+        ],
+        "sha256": "1330f14824ffbafd5f1cdfa8b860ec1cc80649baa29439fbcd4f16b7663c4ab9",
+        "current_sha256": "1330f14824ffbafd5f1cdfa8b860ec1cc80649baa29439fbcd4f16b7663c4ab9",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 3.3,
+        "variants": [
+          0,
+          1,
+          2
+        ],
+        "sha256": "232ee132b9e25d1b8592c0c8edaa03f81176682372789d946ad6b359149d1866",
+        "current_sha256": "232ee132b9e25d1b8592c0c8edaa03f81176682372789d946ad6b359149d1866",
+        "match": true
+      },
+      {
+        "kind": "garden",
+        "seconds": 4.0,
+        "variants": [
+          0,
+          1,
+          2
+        ],
+        "sha256": "92da98e317b722539942af8722b9771d687b5d88aad77ce5e53dee0f8d2a2102",
+        "current_sha256": "92da98e317b722539942af8722b9771d687b5d88aad77ce5e53dee0f8d2a2102",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 0.0,
+        "variants": [
+          0,
+          1,
+          2
+        ],
+        "sha256": "3f69f326b69744ab22b2122436bbb35a083bad7eeb337dc97b947a9f080e8d6a",
+        "current_sha256": "3f69f326b69744ab22b2122436bbb35a083bad7eeb337dc97b947a9f080e8d6a",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 2.19,
+        "variants": [
+          0,
+          1,
+          2
+        ],
+        "sha256": "1c911457aec9ec6f807955916ac21ed136d98816f5ce864f3d4922fbdf800815",
+        "current_sha256": "1c911457aec9ec6f807955916ac21ed136d98816f5ce864f3d4922fbdf800815",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 2.2,
+        "variants": [
+          0,
+          1,
+          2
+        ],
+        "sha256": "8520d032f659cb30e786b84245ac86c35b719cd5fb0ef66148d00615daec6a5e",
+        "current_sha256": "8520d032f659cb30e786b84245ac86c35b719cd5fb0ef66148d00615daec6a5e",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 3.3,
+        "variants": [
+          0,
+          1,
+          2
+        ],
+        "sha256": "6a1badb89a6d0effbd558da5c407954950097276677fa4cfcd68967d60c97868",
+        "current_sha256": "6a1badb89a6d0effbd558da5c407954950097276677fa4cfcd68967d60c97868",
+        "match": true
+      },
+      {
+        "kind": "liberation",
+        "seconds": 4.0,
+        "variants": [
+          0,
+          1,
+          2
+        ],
+        "sha256": "3415daf1b7a84f499f8073034d24dc3923be819d19f7dfa138b3d45c01fda07e",
+        "current_sha256": "3415daf1b7a84f499f8073034d24dc3923be819d19f7dfa138b3d45c01fda07e",
+        "match": true
+      }
+    ],
+    "memory_originals_and_masks": [
+      {
+        "memory_id": 1,
+        "kind": "original",
+        "baseline_sha256": "6eee87e23db0d8941224ce8b61ba53334e55788b1a924c13c4f020d2fb7bf76a",
+        "current_sha256": "6eee87e23db0d8941224ce8b61ba53334e55788b1a924c13c4f020d2fb7bf76a",
+        "match": true
+      },
+      {
+        "memory_id": 1,
+        "kind": "mask",
+        "baseline_sha256": "69ab06bdc499a075b4457a94fdf57ffe29575c4e6374d363df9dfc9fac27a6e1",
+        "current_sha256": "69ab06bdc499a075b4457a94fdf57ffe29575c4e6374d363df9dfc9fac27a6e1",
+        "match": true
+      },
+      {
+        "memory_id": 2,
+        "kind": "original",
+        "baseline_sha256": "02a3303abe7b65d6abce75bc5075fe3e52ef52ca8f055582151197fed2f8e7a2",
+        "current_sha256": "02a3303abe7b65d6abce75bc5075fe3e52ef52ca8f055582151197fed2f8e7a2",
+        "match": true
+      },
+      {
+        "memory_id": 2,
+        "kind": "mask",
+        "baseline_sha256": "1850e1ac4b3706941d82775d35bc0e6693e836b37b3d9fd19929fd83ceb72be5",
+        "current_sha256": "1850e1ac4b3706941d82775d35bc0e6693e836b37b3d9fd19929fd83ceb72be5",
+        "match": true
+      },
+      {
+        "memory_id": 3,
+        "kind": "original",
+        "baseline_sha256": "7b1c5bd608a0a61c4c596e1be6f48b85a70f7260819527870c6743b8fdc2dbe9",
+        "current_sha256": "7b1c5bd608a0a61c4c596e1be6f48b85a70f7260819527870c6743b8fdc2dbe9",
+        "match": true
+      },
+      {
+        "memory_id": 3,
+        "kind": "mask",
+        "baseline_sha256": "0d22cf5b4e4daa32e4c7f78f13494595ef5d9a6e75a07f77f396a96afc5571fd",
+        "current_sha256": "0d22cf5b4e4daa32e4c7f78f13494595ef5d9a6e75a07f77f396a96afc5571fd",
+        "match": true
+      }
+    ],
+    "png_assets": [
+      {
+        "path": "assets/art/ending_happy_all.png",
+        "baseline_sha256": "d78de91abcba0212342679e8140556eb51492681c7a6ba36f07b1be190bab7f1",
+        "current_sha256": "d78de91abcba0212342679e8140556eb51492681c7a6ba36f07b1be190bab7f1",
+        "match": true
+      },
+      {
+        "path": "assets/art/ending_ghost_a.png",
+        "baseline_sha256": "4ef64e208d35aeb956449bdd4547a8207686b9eb65a956f132bd9bb3896c742a",
+        "current_sha256": "4ef64e208d35aeb956449bdd4547a8207686b9eb65a956f132bd9bb3896c742a",
+        "match": true
+      },
+      {
+        "path": "assets/art/ending_ghost_b.png",
+        "baseline_sha256": "9ddc0be71c241428ec8bc2ccbebbb4f8b8680c14785ff2ccd3883716cbdd0180",
+        "current_sha256": "9ddc0be71c241428ec8bc2ccbebbb4f8b8680c14785ff2ccd3883716cbdd0180",
+        "match": true
+      },
+      {
+        "path": "assets/art/ending_ghost_c.png",
+        "baseline_sha256": "7d55cf572ee8c58a45e89af1e6f4198dbceef75a211fff46afdc28744024489e",
+        "current_sha256": "7d55cf572ee8c58a45e89af1e6f4198dbceef75a211fff46afdc28744024489e",
+        "match": true
+      },
+      {
+        "path": "assets/art/ending_normal.png",
+        "baseline_sha256": "d8cbb03009f57e6db22d24fe7d11c062984016ac31d88a3b4eaefe8558b10e98",
+        "current_sha256": "d8cbb03009f57e6db22d24fe7d11c062984016ac31d88a3b4eaefe8558b10e98",
+        "match": true
+      },
+      {
+        "path": "assets/art/ending_sad.png",
+        "baseline_sha256": "63865aa5f163ea7fe1ed9629a69adf1676f58ffbad32039190c60de537d875b3",
+        "current_sha256": "63865aa5f163ea7fe1ed9629a69adf1676f58ffbad32039190c60de537d875b3",
+        "match": true
+      },
+      {
+        "path": "assets/art/prologue.png",
+        "baseline_sha256": "29b4b82f92bb4f3a8e61c6581a03113ed0f61f5c7869f74af98bef716c09875a",
+        "current_sha256": "29b4b82f92bb4f3a8e61c6581a03113ed0f61f5c7869f74af98bef716c09875a",
+        "match": true
+      },
+      {
+        "path": "assets/art/character/resident_bosong.png",
+        "baseline_sha256": "84e92a8fe07e4f8801b0c5bd131a5677dff4ee045d12c92cc5e5dce1319dc7e6",
+        "current_sha256": "84e92a8fe07e4f8801b0c5bd131a5677dff4ee045d12c92cc5e5dce1319dc7e6",
+        "match": true
+      },
+      {
+        "path": "assets/art/character/resident_ipari.png",
+        "baseline_sha256": "9fe017c1b0d143bcdc7dd0467740f266f81d8d1c198b96befcbcc962589bd506",
+        "current_sha256": "9fe017c1b0d143bcdc7dd0467740f266f81d8d1c198b96befcbcc962589bd506",
+        "match": true
+      },
+      {
+        "path": "assets/art/character/resident_dore.png",
+        "baseline_sha256": "f8acac3aa33f71425669af49cc9de1b6c2af78d438fd6e8198380bd4535fb4b8",
+        "current_sha256": "f8acac3aa33f71425669af49cc9de1b6c2af78d438fd6e8198380bd4535fb4b8",
+        "match": true
+      }
+    ],
+    "endings": {
+      "happy_all": {
+        "source_size": [
+          1983,
+          784
+        ],
+        "picture_rect": [
+          32,
+          77,
+          1216,
+          481
+        ],
+        "narration": "저주에서 풀려나 다시 고양이가 된 세 친구와 함께, 까망이는 저택에서 오래오래 행복하게 살았답니다.",
+        "metadata_match": true
+      },
+      "sad": {
+        "source_size": [
+          2007,
+          783
+        ],
+        "picture_rect": [
+          32,
+          80,
+          1216,
+          474
+        ],
+        "narration": "까망이가 돌아온 저택에는, 친구들의 작은 흔적만 조용히 남아 있었답니다.",
+        "metadata_match": true
+      },
+      "ghost_a": {
+        "source_size": [
+          2013,
+          778
+        ],
+        "picture_rect": [
+          32,
+          82,
+          1216,
+          470
+        ],
+        "narration": "까망이는 고양이로 돌아온 보송이와 벽난로의 온기를 나누며, 저택에서 오래오래 행복하게 살았답니다.",
+        "metadata_match": true
+      },
+      "ghost_b": {
+        "source_size": [
+          1972,
+          798
+        ],
+        "picture_rect": [
+          32,
+          71,
+          1216,
+          492
+        ],
+        "narration": "까망이는 고양이로 돌아온 도레와 저택을 떠나, 나란히 달리며 세상 곳곳으로 즐거운 여행을 이어 갔답니다.",
+        "metadata_match": true
+      },
+      "ghost_c": {
+        "source_size": [
+          1944,
+          809
+        ],
+        "picture_rect": [
+          32,
+          64,
+          1216,
+          506
+        ],
+        "narration": "까망이는 고양이로 돌아온 이파리와 마을에서 가장 아름다운 정원을 가꾸며, 꽃향기 가득한 여유로운 나날을 보냈답니다.",
+        "metadata_match": true
+      },
+      "normal": {
+        "source_size": [
+          2005,
+          782
+        ],
+        "picture_rect": [
+          32,
+          80,
+          1216,
+          474
+        ],
+        "narration": "저주는 아직 풀리지 않았지만, 까망이는 세 유령 친구와 함께 저택에서 따뜻한 나날을 보냈답니다.",
+        "metadata_match": true
+      }
+    },
+    "screenshots": [
+      {
+        "name": "ending_board.png",
+        "baseline_sha256": "096a99b5e60403421a3a1603d5cc1cff191e64ac31f7208d165fe565605b502a",
+        "current_sha256": "096a99b5e60403421a3a1603d5cc1cff191e64ac31f7208d165fe565605b502a",
+        "match": true
+      },
+      {
+        "name": "gameplay_01.png",
+        "baseline_sha256": "2b9832ed9eadf096a5a2e50b93c47735dcbf5be7a6a0e2f1fbca28a234169887",
+        "current_sha256": "2b9832ed9eadf096a5a2e50b93c47735dcbf5be7a6a0e2f1fbca28a234169887",
+        "match": true
+      },
+      {
+        "name": "gameplay_07.png",
+        "baseline_sha256": "2a885278022928fb67147523fced3261fefcb94812530fe21f4837e6dfd92cb0",
+        "current_sha256": "2a885278022928fb67147523fced3261fefcb94812530fe21f4837e6dfd92cb0",
+        "match": true
+      },
+      {
+        "name": "gameplay_12.png",
+        "baseline_sha256": "014e6f9489e2dc815ac66043eb4d634fa399f4ee65ee7c6e3b7d05044e73d8f9",
+        "current_sha256": "014e6f9489e2dc815ac66043eb4d634fa399f4ee65ee7c6e3b7d05044e73d8f9",
+        "match": true
+      },
+      {
+        "name": "ghost_a_art.png",
+        "baseline_sha256": "d0bb119570f34810fd8f497535e3d7ce486618070e36a96a659b4b2d00fa8d40",
+        "current_sha256": "d0bb119570f34810fd8f497535e3d7ce486618070e36a96a659b4b2d00fa8d40",
+        "match": true
+      },
+      {
+        "name": "ghost_a_lobby.png",
+        "baseline_sha256": "24913c8b0cb28e6558f0bf3acf9226fbd29b4b8382d4d53231e620d765737e6c",
+        "current_sha256": "24913c8b0cb28e6558f0bf3acf9226fbd29b4b8382d4d53231e620d765737e6c",
+        "match": true
+      },
+      {
+        "name": "ghost_a_narration.png",
+        "baseline_sha256": "5bde5437bafe20a4022ee8ac3e3adf2d3b487a601d8bb037493dabc99a1e9acf",
+        "current_sha256": "5bde5437bafe20a4022ee8ac3e3adf2d3b487a601d8bb037493dabc99a1e9acf",
+        "match": true
+      },
+      {
+        "name": "ghost_b_art.png",
+        "baseline_sha256": "a8ca8299970705168a568bf811cfa3b0011437e1aa0f6c4bdea758cf26c55eae",
+        "current_sha256": "a8ca8299970705168a568bf811cfa3b0011437e1aa0f6c4bdea758cf26c55eae",
+        "match": true
+      },
+      {
+        "name": "ghost_b_lobby.png",
+        "baseline_sha256": "ffcaad567822175a95b85fc29bd16a5fc59378849e097864e1b2a7c7d8effa50",
+        "current_sha256": "ffcaad567822175a95b85fc29bd16a5fc59378849e097864e1b2a7c7d8effa50",
+        "match": true
+      },
+      {
+        "name": "ghost_b_narration.png",
+        "baseline_sha256": "c96704716048b3893249d5e58d72086177ad231fa8c45bb9f8c83c91c3bb1138",
+        "current_sha256": "c96704716048b3893249d5e58d72086177ad231fa8c45bb9f8c83c91c3bb1138",
+        "match": true
+      },
+      {
+        "name": "ghost_c_art.png",
+        "baseline_sha256": "d3ea9829a2eb9989292027dcb3c662c679eb28e114f8b758387b8d0e6006fe67",
+        "current_sha256": "d3ea9829a2eb9989292027dcb3c662c679eb28e114f8b758387b8d0e6006fe67",
+        "match": true
+      },
+      {
+        "name": "ghost_c_lobby.png",
+        "baseline_sha256": "3bcd7706facab8a365b91986faf2fccc8070104c3fe56ce9cd91717de4ebdb53",
+        "current_sha256": "3bcd7706facab8a365b91986faf2fccc8070104c3fe56ce9cd91717de4ebdb53",
+        "match": true
+      },
+      {
+        "name": "ghost_c_narration.png",
+        "baseline_sha256": "f871644634343e054c0ce4c16bb72e7bc0c5c4ebe3e591817ccf524ee423c912",
+        "current_sha256": "f871644634343e054c0ce4c16bb72e7bc0c5c4ebe3e591817ccf524ee423c912",
+        "match": true
+      },
+      {
+        "name": "happy_all_art.png",
+        "baseline_sha256": "369d77f3776b5959a3f405afb70aa328578dee3e5c9fd8ecfa4d5057282bd442",
+        "current_sha256": "369d77f3776b5959a3f405afb70aa328578dee3e5c9fd8ecfa4d5057282bd442",
+        "match": true
+      },
+      {
+        "name": "happy_all_lobby.png",
+        "baseline_sha256": "299d223cd515059302e1f0ad07c6b4557b05f62afc9d6cef9b0332e7177b1330",
+        "current_sha256": "299d223cd515059302e1f0ad07c6b4557b05f62afc9d6cef9b0332e7177b1330",
+        "match": true
+      },
+      {
+        "name": "happy_all_narration.png",
+        "baseline_sha256": "75c513c61d2c0d7a3693f00326c8050991a437d8ed54f6d80088ebbfecfac0d2",
+        "current_sha256": "75c513c61d2c0d7a3693f00326c8050991a437d8ed54f6d80088ebbfecfac0d2",
+        "match": true
+      },
+      {
+        "name": "lobby_board.png",
+        "baseline_sha256": "3311827a37db6c63f970978b1e1fc56786cd4f720baec2210ef49b9b10c7964e",
+        "current_sha256": "3311827a37db6c63f970978b1e1fc56786cd4f720baec2210ef49b9b10c7964e",
+        "match": true
+      },
+      {
+        "name": "normal_art.png",
+        "baseline_sha256": "8f7f452f510658ef9d41e17344bff22c0c31978febb5c188640823d5b31678cb",
+        "current_sha256": "8f7f452f510658ef9d41e17344bff22c0c31978febb5c188640823d5b31678cb",
+        "match": true
+      },
+      {
+        "name": "normal_lobby.png",
+        "baseline_sha256": "bad9b32604f13f659fb081c4beb8372a94f08abcf8341ca1a0f7b46acc0de99b",
+        "current_sha256": "bad9b32604f13f659fb081c4beb8372a94f08abcf8341ca1a0f7b46acc0de99b",
+        "match": true
+      },
+      {
+        "name": "normal_narration.png",
+        "baseline_sha256": "8fbe80bdff610ca3c937ea199b9a69c28cbdbd7d78ac61eee1c28f58730c5310",
+        "current_sha256": "8fbe80bdff610ca3c937ea199b9a69c28cbdbd7d78ac61eee1c28f58730c5310",
+        "match": true
+      },
+      {
+        "name": "prologue.png",
+        "baseline_sha256": "f1cf7df012feac8f70b80667470f33363f03b0b38cf50075df9abc7351e889a8",
+        "current_sha256": "f1cf7df012feac8f70b80667470f33363f03b0b38cf50075df9abc7351e889a8",
+        "match": true
+      },
+      {
+        "name": "sad_art.png",
+        "baseline_sha256": "585725adbbda944fa0cdf0071ffbf6c423e26e27797948093082a45025af086d",
+        "current_sha256": "585725adbbda944fa0cdf0071ffbf6c423e26e27797948093082a45025af086d",
+        "match": true
+      },
+      {
+        "name": "sad_lobby.png",
+        "baseline_sha256": "f9ac5e2ca836f8515c7db37886164846321454ffec1a5efd62d4196876899f48",
+        "current_sha256": "f9ac5e2ca836f8515c7db37886164846321454ffec1a5efd62d4196876899f48",
+        "match": true
+      },
+      {
+        "name": "sad_narration.png",
+        "baseline_sha256": "c68643da058f59f1ac926245145ac13081450fca4191aaa81f8e9234ec74fee9",
+        "current_sha256": "c68643da058f59f1ac926245145ac13081450fca4191aaa81f8e9234ec74fee9",
+        "match": true
+      },
+      {
+        "name": "title.png",
+        "baseline_sha256": "ce7ee885eb692b494cdf8dd0aa8d2cec9db72ba5f8c0293d903a89d30258c62d",
+        "current_sha256": "ce7ee885eb692b494cdf8dd0aa8d2cec9db72ba5f8c0293d903a89d30258c62d",
+        "match": true
+      }
+    ],
+    "summary": {
+      "preserved_cinematic_frames": 50,
+      "memory_originals_and_masks": 6,
+      "provided_png_assets": 10,
+      "ending_metadata": 6,
+      "compared_screenshots": 25,
+      "all_match": true
+    },
+    "retained_captures": [
+      "reports/latest/ending_board.png",
+      "reports/latest/lobby_board.png",
+      "reports/latest/prologue.png"
+    ]
+  },
+  "data_and_active_asset_preservation": {
+    "baseline": "Working tree immediately before developer file cleanup, after PNG integration",
+    "retained_compared_files": 167,
+    "changed_files": [],
+    "retained": [
+      {
+        "path": "data/levels/index.json",
+        "sha256": "2daca1ba29b5b299df09de03f6626dd1bea074e3742efad9f6b473dfc5044ebb",
+        "match": true
+      },
+      {
+        "path": "data/levels/level.schema.json",
+        "sha256": "16db843f7a846faf89e3b009100113df86f7cb9631d3a0b32879e461c6e5cd0e",
+        "match": true
+      },
+      {
+        "path": "data/levels/observation_contract.json",
+        "sha256": "07620eb63fe54964049991658eb7ad58dd61a703e541c5e8ef474cd8d9f72f77",
+        "match": true
+      },
+      {
+        "path": "data/levels/realtime_observation_contract.json",
+        "sha256": "9983ca40f4c25f579843bfbc845c6c25901893c15d1cfcdacb88aaaa4cda0c2f",
+        "match": true
+      },
+      {
+        "path": "data/levels/stage_01.json",
+        "sha256": "0cb17d48bd67ee22ee40275cbc3e89e848c17acef5fb9274680de3810717be47",
+        "match": true
+      },
+      {
+        "path": "data/levels/stage_02.json",
+        "sha256": "d9700d0c6472f58920d5aea38d8aabe67c5b66cff27e6fdbac285995b60ccc03",
+        "match": true
+      },
+      {
+        "path": "data/levels/stage_03.json",
+        "sha256": "ed4aded3b03bda166015cd389010ccf7ade56f3f8b15bc2084c1ba1ee207acfc",
+        "match": true
+      },
+      {
+        "path": "data/levels/stage_04.json",
+        "sha256": "fa96c2e038bc99496305b1eb9731ceb04e3072ee0fb6d44d0bff79b0355326fb",
+        "match": true
+      },
+      {
+        "path": "data/levels/stage_05.json",
+        "sha256": "6eb2eebbd3609df47e9f4dd4960a71b25eff8b31facf17e02dd8355cb307b794",
+        "match": true
+      },
+      {
+        "path": "data/levels/stage_06.json",
+        "sha256": "fdba9c7eb0ff453c2fffa09b843b2545cd6cf046b1f7b13432240cb7e14fae2b",
+        "match": true
+      },
+      {
+        "path": "data/levels/stage_07.json",
+        "sha256": "bcf1446a02f355fda24c8c4023f736b573dd31b235a1e20034d9e5d8eddb4108",
+        "match": true
+      },
+      {
+        "path": "data/levels/stage_08.json",
+        "sha256": "c5df9d587ab1499f9cec2081ddeef5118e7be21011295623ff42731ffa1d5549",
+        "match": true
+      },
+      {
+        "path": "data/levels/stage_09.json",
+        "sha256": "cef2ff8ff699483858f62bf1a911eaa63c8547d323ad33580fbe47f23d3ed598",
+        "match": true
+      },
+      {
+        "path": "data/levels/stage_10.json",
+        "sha256": "48b01e16d5efbfd6ec562d1107a623c30452d2f3ca499f5a8bd84661bb0964f2",
+        "match": true
+      },
+      {
+        "path": "data/levels/stage_11.json",
+        "sha256": "101d35f10b1e616c60ff242924cab80ad11c83545ea566dd8c650e4cfba70d9d",
+        "match": true
+      },
+      {
+        "path": "data/levels/stage_12.json",
+        "sha256": "1b7be6a0f714c4e88a48da5a2f38a31f3f78f705e08e1f4ff7a6eae34e130297",
+        "match": true
+      },
+      {
+        "path": "assets/art/control.png",
+        "sha256": "a980cd7d40ff173e9755ec1cb1c6b49cde95b6e77bdb7f3385db8c3cf888cc7e",
+        "match": true
+      },
+      {
+        "path": "assets/art/ending_ghost_a.png",
+        "sha256": "4ef64e208d35aeb956449bdd4547a8207686b9eb65a956f132bd9bb3896c742a",
+        "match": true
+      },
+      {
+        "path": "assets/art/ending_ghost_b.png",
+        "sha256": "9ddc0be71c241428ec8bc2ccbebbb4f8b8680c14785ff2ccd3883716cbdd0180",
+        "match": true
+      },
+      {
+        "path": "assets/art/ending_ghost_c.png",
+        "sha256": "7d55cf572ee8c58a45e89af1e6f4198dbceef75a211fff46afdc28744024489e",
+        "match": true
+      },
+      {
+        "path": "assets/art/ending_happy_all.png",
+        "sha256": "d78de91abcba0212342679e8140556eb51492681c7a6ba36f07b1be190bab7f1",
+        "match": true
+      },
+      {
+        "path": "assets/art/ending_normal.png",
+        "sha256": "d8cbb03009f57e6db22d24fe7d11c062984016ac31d88a3b4eaefe8558b10e98",
+        "match": true
+      },
+      {
+        "path": "assets/art/ending_sad.png",
+        "sha256": "63865aa5f163ea7fe1ed9629a69adf1676f58ffbad32039190c60de537d875b3",
+        "match": true
+      },
+      {
+        "path": "assets/art/Essential_item.png",
+        "sha256": "7ebc5a20265e3ec8b28a40e926f3fcbe00dbb2bc3a4379ada01c3a2b8f13fbec",
+        "match": true
+      },
+      {
+        "path": "assets/art/prologue.png",
+        "sha256": "29b4b82f92bb4f3a8e61c6581a03113ed0f61f5c7869f74af98bef716c09875a",
+        "match": true
+      },
+      {
+        "path": "assets/fonts/NanumMyeongjo-Bold.ttf",
+        "sha256": "bc9ed8e60d93fe6db054b8fb988481b625f2eef8cb2317ad0e9834681b8fe3f3",
+        "match": true
+      },
+      {
+        "path": "assets/fonts/NanumMyeongjo-Regular.ttf",
+        "sha256": "7ed9e8653a8ed04285d51dc343ffea6eb3d9c73afc27383ea8929ee4ffd03205",
+        "match": true
+      },
+      {
+        "path": "assets/fonts/NotoSansKR-Bold.ttf",
+        "sha256": "0049d657bc4fba0690575078f27990eee5529645d294f1e7450c6ab23bdec3ab",
+        "match": true
+      },
+      {
+        "path": "assets/fonts/NotoSansKR-Regular.ttf",
+        "sha256": "dd6d1e051ac43e9d80531bcf1e968fe4d8f3770973de42ad4c10e4482f3d6047",
+        "match": true
+      },
+      {
+        "path": "assets/fonts/NotoSansKR.ttf",
+        "sha256": "194018e6b2b293a7964f037b25c0249ce1418bc9ab3c971060a03aa57861e252",
+        "match": true
+      },
+      {
+        "path": "assets/fonts/OFL-NanumMyeongjo.txt",
+        "sha256": "1a3a78b851797e00737be35d0332e2731731e6e080b3b9069e49aeabbbb2b79b",
+        "match": true
+      },
+      {
+        "path": "assets/fonts/OFL.txt",
+        "sha256": "e35ffdebb2225b49814c31889cbb3ce69cb3509e6a9f431edaba5e1a6de8cd15",
+        "match": true
+      },
+      {
+        "path": "assets/icons/badge_complete.png",
+        "sha256": "d524d534c9b1bc1cdf524313e043f02f6d8152c3dd6f8862cd1a6dd2b6ea9b57",
+        "match": true
+      },
+      {
+        "path": "assets/icons/badge_locked.png",
+        "sha256": "ad091485eb8392a5299ac47ed54552c039613a210a245877daf8c5bbf24d2719",
+        "match": true
+      },
+      {
+        "path": "assets/icons/badge_unhurt.png",
+        "sha256": "13c7d4009e437c84e5dfac7ad6bc3402938cb8d8f7b31e006e9d116145228764",
+        "match": true
+      },
+      {
+        "path": "assets/icons/badge_warmth.png",
+        "sha256": "eb88d94053f59b46479418ac37999191c6ca02bb012b7902f0b91b55a05889e5",
+        "match": true
+      },
+      {
+        "path": "assets/icons/bell.png",
+        "sha256": "7ddf54197f1ab730b997ef90e8857a3a772f024dae47c45c1a7bcaa9a06a6326",
+        "match": true
+      },
+      {
+        "path": "assets/icons/bell_warning.png",
+        "sha256": "6b276a6031903c94188dfeecccffe4aa9aa4928f326da93e3b20a88afeb92a4c",
+        "match": true
+      },
+      {
+        "path": "assets/icons/button_default.png",
+        "sha256": "7c33a45d65731a9c19018daa6d500c8f3860e5bc1c99f21978319fe9d3c0c71e",
+        "match": true
+      },
+      {
+        "path": "assets/icons/button_disabled.png",
+        "sha256": "39aaf5bddcf23903437b78544ca630ea95cab10b76293530deba2aa15002733f",
+        "match": true
+      },
+      {
+        "path": "assets/icons/button_focus.png",
+        "sha256": "6404ea99338054d82e05b7dcc309bb37fe39ade7de5e3f01838ab0615bb59582",
+        "match": true
+      },
+      {
+        "path": "assets/icons/button_pressed.png",
+        "sha256": "2958d1cc83d19e1b9684ca2aed01b6ede01d953630d54089fbd2b974c6e67ad0",
+        "match": true
+      },
+      {
+        "path": "assets/icons/echo_body.png",
+        "sha256": "282edd460bbcb5da4184e61ebf51365660ecf572ab95ef2c38b37df053c1acf6",
+        "match": true
+      },
+      {
+        "path": "assets/icons/gate_a_closed.png",
+        "sha256": "f630594e2869232f8529ea65a348339c4316d9d8afbfa09334ff7535fcc852d3",
+        "match": true
+      },
+      {
+        "path": "assets/icons/gate_a_open.png",
+        "sha256": "4cba3751b76017cf9f209f0fc6a6acbc4d642395b0873a9602f51ca8c8206b23",
+        "match": true
+      },
+      {
+        "path": "assets/icons/gate_b_closed.png",
+        "sha256": "40cbba1f2880ecd2649d594f5950e1409a262491189b6e2fedcb51e9f5ae7f04",
+        "match": true
+      },
+      {
+        "path": "assets/icons/gate_b_open.png",
+        "sha256": "e24e01a7822b1a0a7bebc07de30380cd7fdd2cdc60b86aad38967e01831679fa",
+        "match": true
+      },
+      {
+        "path": "assets/icons/heart_empty.png",
+        "sha256": "7dd84adf622dd3a9504103bb98c0f06bcb0a1e856d8645915229fe50d315560d",
+        "match": true
+      },
+      {
+        "path": "assets/icons/heart_full.png",
+        "sha256": "932d2b33326b6db7187ec09bf2fdd1b477f28ae06467edecf164047854ca7165",
+        "match": true
+      },
+      {
+        "path": "assets/icons/lantern_off.png",
+        "sha256": "9cd3f38c9e020edba7abf590e8fd68b972e5d40e82e9a28aca382c99cc7985f1",
+        "match": true
+      },
+      {
+        "path": "assets/icons/lantern_on.png",
+        "sha256": "bd819f4b14c2c951319b0a1f6a0c285d385882140a1412297f8d6d3f5d7ece2b",
+        "match": true
+      },
+      {
+        "path": "assets/icons/paw_cursor.png",
+        "sha256": "390475a11dd321908cb6bfe0d11eca69f1a2cb191145c76e9c432017d3a93f0b",
+        "match": true
+      },
+      {
+        "path": "assets/icons/return_portal.png",
+        "sha256": "c4b22d0a3da1c68b96ce0443ffcd37991b0c6b2d0059b5435c5152771abed35f",
+        "match": true
+      },
+      {
+        "path": "assets/icons/terminal_a.png",
+        "sha256": "f464641cc07e3a348286dc3b3cfc7bbe8f27470342621a06e952d1c3a5548dd7",
+        "match": true
+      },
+      {
+        "path": "assets/icons/terminal_b.png",
+        "sha256": "c3de4767bb5515177cb2e62f0d17f5d1fc5f72f65adf717816ad23624b04162e",
+        "match": true
+      },
+      {
+        "path": "assets/icons/warmth_1.png",
+        "sha256": "2e23011b32236e4c0766ba16870ee155f3bff638cc1fdbfe16a850a0b51a523d",
+        "match": true
+      },
+      {
+        "path": "assets/icons/warmth_3.png",
+        "sha256": "fefcbffbdbc2c1fabcdf049aa3cb537758588f9a57eda4af2affe638fa4e2fe9",
+        "match": true
+      },
+      {
+        "path": "assets/sound/amb_fireplace.wav",
+        "sha256": "4a1635f607456aea590a3896932e0d04abb26fddb73f4c19a497e096fe41d400",
+        "match": true
+      },
+      {
+        "path": "assets/sound/amb_manor_air.wav",
+        "sha256": "b4a01e6d605398914d6474af1afaa68748aaf0c0b422974adbc347d90587aa68",
+        "match": true
+      },
+      {
+        "path": "assets/sound/amb_rain.wav",
+        "sha256": "71f51215f05f1e205a1aadbd41b049a1b35c61404c6dc38c8ae00c526e142022",
+        "match": true
+      },
+      {
+        "path": "assets/sound/amb_stage01.wav",
+        "sha256": "8838e4a85d7bceb82f88c6f91843ae7c652a438e5fd2e0597640f875325c475d",
+        "match": true
+      },
+      {
+        "path": "assets/sound/amb_stage02.wav",
+        "sha256": "e983f506fa87d6fd3b1781ed2b5919fe4e2dccecb695ab9bc664319c130d98ab",
+        "match": true
+      },
+      {
+        "path": "assets/sound/amb_stage03.wav",
+        "sha256": "2d75e0c39e29207ea9980d073d0b74d041a30c48563428418ba799751c8d0874",
+        "match": true
+      },
+      {
+        "path": "assets/sound/amb_stage04.wav",
+        "sha256": "37ffe3cfd558fe2968b3ed66b2322a6622fdbea983e7b6ffedd3d0d9425ca93d",
+        "match": true
+      },
+      {
+        "path": "assets/sound/amb_stage05.wav",
+        "sha256": "735618530857fd818c00d1b9b23a0c004b0d507174fd319528724bdd31c99115",
+        "match": true
+      },
+      {
+        "path": "assets/sound/amb_stage06.wav",
+        "sha256": "6d69768bd548a72f5ab62189e928adbacf179889a043236c1220d613f24dffd3",
+        "match": true
+      },
+      {
+        "path": "assets/sound/amb_stage07.wav",
+        "sha256": "40e02be793890066674f42866acd596d20dc4a339964b3dd4d77e17676740a23",
+        "match": true
+      },
+      {
+        "path": "assets/sound/amb_stage08.wav",
+        "sha256": "eb6c6622b21fd7e613c9337ef5421e3c9deea3257169fe71830e8c1541e9d78c",
+        "match": true
+      },
+      {
+        "path": "assets/sound/amb_stage09.wav",
+        "sha256": "f114c281eea6a9615300db5376621b4c0d94d4201d3ba1dc0ddc61fb7855a428",
+        "match": true
+      },
+      {
+        "path": "assets/sound/amb_stage10.wav",
+        "sha256": "6a22df34c870dd56f0a880bd45c0dbff0dbb38ceb5f60147474ab31df7de71f5",
+        "match": true
+      },
+      {
+        "path": "assets/sound/amb_stage11.wav",
+        "sha256": "ffeb948dce931fb328be8728c62c57880a410778fe27446bbf472e66f116e608",
+        "match": true
+      },
+      {
+        "path": "assets/sound/amb_stage12.wav",
+        "sha256": "2754f10283a15807f41792eb6193ef3948b9d55a14912026698d3a9b3596a6d8",
+        "match": true
+      },
+      {
+        "path": "assets/sound/bgm_act1.wav",
+        "sha256": "df08696df6c8a9fe705eff8bebe96c9284d86703ab9cb7533d5fe78b8eac5497",
+        "match": true
+      },
+      {
+        "path": "assets/sound/bgm_act2.wav",
+        "sha256": "add75f811c2a3d7e9c080370be1367cc50948f8b247d1baaa9418c45a4e9402e",
+        "match": true
+      },
+      {
+        "path": "assets/sound/bgm_act3.wav",
+        "sha256": "d7af9956026f1b0de71de4a9875f3f92b577ebb3d7dfac45bb1faf554ae36142",
+        "match": true
+      },
+      {
+        "path": "assets/sound/bgm_ending.wav",
+        "sha256": "10edc3d4e3e4526ca1cd8de3e4df1691e176df3be2ad7a51674469fa55319e87",
+        "match": true
+      },
+      {
+        "path": "assets/sound/bgm_lobby.wav",
+        "sha256": "544f15eecfdd04bd808d21198c278a79596611435617d2ac6efd56489ccb15a5",
+        "match": true
+      },
+      {
+        "path": "assets/sound/bgm_stage12.wav",
+        "sha256": "1bcd19fa5f2148102872d1bdfb4e5b55a3a5c09a88fb8384c548d2fba2a79d30",
+        "match": true
+      },
+      {
+        "path": "assets/sound/collect.wav",
+        "sha256": "1e478f67d0d441ace7900b318f4d798b77feba56144fbcc322b662c73c3f49f0",
+        "match": true
+      },
+      {
+        "path": "assets/sound/damage.wav",
+        "sha256": "88f78c91f7394e83d8d9f9f987e05e853280052d4510965770fe0b50473388cf",
+        "match": true
+      },
+      {
+        "path": "assets/sound/fail.wav",
+        "sha256": "cd08c76c777879f4fdbdd3d78b3908be4483b1b09d32a99724861ff0b009cf1e",
+        "match": true
+      },
+      {
+        "path": "assets/sound/manor.wav",
+        "sha256": "7d89b0c4f530baeb981333d390ae208e63f4deb62b78d4be81f351b17d1f242b",
+        "match": true
+      },
+      {
+        "path": "assets/sound/open.wav",
+        "sha256": "dc382015d2150fb9cfcf349ac1c357fd6a1a31c16455cec69ccf91f6b430cac5",
+        "match": true
+      },
+      {
+        "path": "assets/sound/return.wav",
+        "sha256": "f87fe7feab0605e9d6116d3d59bca95e6f51c2dce024ace4fa86e43a99acedc2",
+        "match": true
+      },
+      {
+        "path": "assets/sound/select.wav",
+        "sha256": "4c8fc135746218dffcc7fdc42ef263c712fcfd94488b99552079c3ffed621108",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_badge_collect.wav",
+        "sha256": "70bc4a0fa010b4e45b6c1c257df3f023bc3cf0f6851b0cafc0b10d1b43b654f1",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_badge_heal.wav",
+        "sha256": "1a70b1471a211fdd510197c691090c906579b38050e5b1b87e2f16f66c3d7566",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_badge_shield.wav",
+        "sha256": "c737cf68ae2e62f15cebe7c027956cac2499e33d5f038182955d350a8a6d1d2a",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_badge_speed.wav",
+        "sha256": "f191d5dc06174aa3a142b716f116caa278e22e151482c6d50c090682af2b4f09",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_cat_step_01.wav",
+        "sha256": "67f075bd677983b1d58db9c68c9a67881615c3f656734cd1c4f583aeb9a18223",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_cat_step_02.wav",
+        "sha256": "5c57caa89a8aa86c032be787bcda90c03b137e93adc91cc13a6bf96988d706f2",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_cat_step_03.wav",
+        "sha256": "36ceadae7e4ebc4d60815aced90f7b5330028e67ab0d314d70388c8d97e55c5d",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_door_open.wav",
+        "sha256": "b2066877b2a61f31ab5c0ea2c1a544100c808023358b4d358a9f11addc5416c5",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_fail.wav",
+        "sha256": "6444947e1bcb74c0eb21d5ec806deece9a1f383499bb4af4c6b9aa4dd12b0f5c",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_ghost_contact.wav",
+        "sha256": "1eb978f54ee804a4d7c72654f05cb232280e58ef9b5a10ee5d25137575280daa",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_magnet_absorb_01.wav",
+        "sha256": "70828f601877d46ed9e9b20b88598ef927d007cfd7c790999760363151c5cefe",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_magnet_absorb_02.wav",
+        "sha256": "263ffe97bb8641113b129f50c91d0f76a1ea6ccf12480f5479034e3256e5e1ca",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_magnet_absorb_03.wav",
+        "sha256": "976b8e1ba1453c81f69ec9af9c5d5903a9c92494b5ba0c3ad86a876053fbe4cf",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_magnet_activate.wav",
+        "sha256": "2b44a1286af2fde8ce1cceb5bc4992f0e6c28956e5e78e5cd55bb03d74b807f2",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_magnet_end.wav",
+        "sha256": "00ba7d83792bf271af8a5aceabdf4fc1003da1acf7e825e3631deb329a037c89",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_magnet_loop.wav",
+        "sha256": "82207edd419033c9f63e7906a534ac5b13e50af94e97e514e2c85a6ff9a45e76",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_magnet_start.wav",
+        "sha256": "b1312a89f2b4e3b647d59b279477412681a471b9a3cd9f53c9a55c0ad7b1a9c1",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_memory_ceramic.wav",
+        "sha256": "1823fd2a5ac48c860b98849cd324de15bd8ad31dce397e4c35f95001f8aca488",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_memory_common.wav",
+        "sha256": "db6e2012ab467e7c55dc4c0652b3d2f446dd28b78a7f3ecdb3c9f590ce4de81c",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_memory_fabric.wav",
+        "sha256": "96b07d12cdf0365cb6c938cb3cc1f6d62d0012431c9519ade4274111c35c628c",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_memory_leaf.wav",
+        "sha256": "70d7d095e0908ee3e8297190f9175037bde4732136a74274be088b85397744f4",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_memory_metal.wav",
+        "sha256": "6a41daaf132b9b96a4d9a0b5a9225e9aaee32e619903ad44fd14838cedebb8fd",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_memory_music.wav",
+        "sha256": "91ed6d17a0f49e8d8d1c5104ab9816d0b3acb708cee63ba3800a5bf70310e0fa",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_memory_paper.wav",
+        "sha256": "9b22c5f6135258bf39f5a5c60d756609ce8f5991a983bb01564a5641fb5eeb20",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_memory_wood.wav",
+        "sha256": "573b70dc86ab778bd55e87c1f2692fb0c65f31f19ff56984e682e5ec10a56552",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_return.wav",
+        "sha256": "8f8a2b92262c8c3a39efff4d6563a159f0929abe959e02308c08c87d373050e4",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_shield_end.wav",
+        "sha256": "26d3422e0e6a8836ad7d57aa8ebe99af3b81f32a5247cc12054a964b790316be",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_shield_loop.wav",
+        "sha256": "6480476565df372bc7ceef0384a0ce7dc423e2d498e2b42bf67a78dda4cbf495",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_shield_start.wav",
+        "sha256": "882229317b51a24d81977bf3dc17e3eeed67cef338172a2244d31c7e788a11dd",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_ui_select.wav",
+        "sha256": "ac349c07cf372725e9abff5241570845c5b4e4b566ea55f1b539b58d6abfe10d",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_warmth_large.wav",
+        "sha256": "3bf55af72d179d4faacd804f0ae47d73c964914628775f797df351b758928e6e",
+        "match": true
+      },
+      {
+        "path": "assets/sound/sfx_warmth_small.wav",
+        "sha256": "e3ff056c19059bb8c2e4e5e4c78f940fad62378b49b8898f734aa534a75e3e64",
+        "match": true
+      },
+      {
+        "path": "assets/art/character/a.png",
+        "sha256": "b98aadb065faf04b570b7c4e9961fbf53bd2a103b8d1b9bb8a852ad8bde0c292",
+        "match": true
+      },
+      {
+        "path": "assets/art/character/b.png",
+        "sha256": "2dcd056c481be2a2648ffb9336d2a98ad89c3168067977708243071cbf3dafd4",
+        "match": true
+      },
+      {
+        "path": "assets/art/character/c.png",
+        "sha256": "073a38e785086272682c120d625fe9cd1a67e4bc6768ec0b8ac1e63c7d0d3a26",
+        "match": true
+      },
+      {
+        "path": "assets/art/character/kkamang.png",
+        "sha256": "c3e671bdcb60b7ad0e90a8b5ba781046944a8032586d936ddb6527de1489d525",
+        "match": true
+      },
+      {
+        "path": "assets/art/character/kkamang_wait.png",
+        "sha256": "e2a564c1ab915924c0a9db5c9fedb570be1659d3212a60126c62efb78caca45c",
+        "match": true
+      },
+      {
+        "path": "assets/art/character/resident_bosong.png",
+        "sha256": "84e92a8fe07e4f8801b0c5bd131a5677dff4ee045d12c92cc5e5dce1319dc7e6",
+        "match": true
+      },
+      {
+        "path": "assets/art/character/resident_dore.png",
+        "sha256": "f8acac3aa33f71425669af49cc9de1b6c2af78d438fd6e8198380bd4535fb4b8",
+        "match": true
+      },
+      {
+        "path": "assets/art/character/resident_ipari.png",
+        "sha256": "9fe017c1b0d143bcdc7dd0467740f266f81d8d1c198b96befcbcc962589bd506",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/01_raincoat_black.png",
+        "sha256": "2544df97266e884a0549bed7b97ac3e55ce4f9b029e34399cf5fff4bf15f7459",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/02_halloween_black.png",
+        "sha256": "b8464ce05594ca460f9e7d59e9f3df3ba78e114c1e35df91db23528a466ee116",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/03_christmas_black.png",
+        "sha256": "2550cb31e68193cb936aa6dbaef03580491e49d721eb9203b160b4d974d2776c",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/04_royal_black.png",
+        "sha256": "1a184bf0d7f14a1cd4cc45d6b2a7066a4e2655234aa172bda0cfdabb75bdb4a0",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/05_rudolph_white.png",
+        "sha256": "d15a070f2f24e6977589327cad1b0007f6ff8162ea64b4c8f4c10e88d3ce627b",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/06_sailor_white.png",
+        "sha256": "1d3e87231cc24ec5d4a081b155aa35ca5837bbe5b3f49512315f2b9fc01b7671",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/07_siamese_librarian.png",
+        "sha256": "19c8876331f3fa3d82ef6724e04bac8bf02ef3ee49b4da5a4d2a3fd950203fd7",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/08_silver_post.png",
+        "sha256": "a3ec63d5e8bc5d24619eed82b339725ed7c3df603f301dadad06ef6073912a35",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/09_calico_gardener.png",
+        "sha256": "64d90a3f189fa352df9e0165c13047c0cc161679da52fc7a3a40721c6df4861c",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/10_tortie_herbalist.png",
+        "sha256": "4f78b74c00db8b4ffe881e80fba023641169468e30b8c65d2d78399d2827065d",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/11_cream_artist.png",
+        "sha256": "b88cb6ff62d9b52e8784b1d211a93f46473acdbf3c0362b6d195c8799d8c049e",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/12_dilute_tailor.png",
+        "sha256": "da68468a8146958e6ffb35aef7872bbf626bd39a8bf0699b760207e8675e87cc",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/13_tuxedo_butler.png",
+        "sha256": "16dd4130a0e5f51c3b389194a6e2c13c50d1d4caec7605e880c09a43e24a6220",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/14_ragdoll_pajama.png",
+        "sha256": "ba7af4ff558ae90a208492436820ea92dfb660fa27188a41d9b9d9c35b73764c",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/15_mint_spa.png",
+        "sha256": "463ad317139d06bcb29e0aaf417fc90b3d42d0b9eca346a44960115597bd3e27",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/16_violet_firefly.png",
+        "sha256": "b8fa234025c5a5017cf0afffd577de2a2742dd798db512cc1f78147cd43a8afb",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/17_bengal_explorer.png",
+        "sha256": "4acd83a4baf65f3c5c18a55d7288f6635ad8dad5e76c1484d7e3bf9d4cb2ecc8",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/18_smoke_clockmaker.png",
+        "sha256": "9f1d7504621650b2ee9e11f0503a1ddc5fbdb16cc5a3f6a6c7b3241607b14170",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/19_silver_musician.png",
+        "sha256": "a8cd0e906a817a2a94670cc95852675b9ac0ca280075678726794b552462e5ad",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/20_cinnamon_fisher.png",
+        "sha256": "c3f9011a0ce0ee46d8e165474db15e03e571af738d2b33fa466d1aec126f0fb5",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/21_chinchilla_skater.png",
+        "sha256": "d87cfd3768c3ae0de9658972a800faae979e6a0493c13e8a4a3ea3e0d7a9ab51",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/22_bluepoint_astronomer.png",
+        "sha256": "496cd273ab999b7ef37d988f94254266ee03bbc2361c11c47c2f72499caae32a",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/23_peach_ballroom.png",
+        "sha256": "500874b2b1bd0a6783b2f16e9c5910b1ee5c21f9ab4e5481cc71e0167780490b",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/24_midnight_climber.png",
+        "sha256": "edd174929eb5da72696d7d4227957da6844d2de7e91447390b09c97e601a0fde",
+        "match": true
+      },
+      {
+        "path": "assets/art/collection/catalog.json",
+        "sha256": "bdb0503972a916ba733ef4e57da88d0f3be5c0ab1c465676188dec35157589ff",
+        "match": true
+      },
+      {
+        "path": "assets/art/lobby/after.png",
+        "sha256": "b6a393075753bcf301713856357715f980c7c6430177a183bbd0e769514fe4ed",
+        "match": true
+      },
+      {
+        "path": "assets/art/lobby/before.png",
+        "sha256": "c78a4350133d1248d874c80b452549c4f102000ee78e75f0371cb4db623e7eaf",
+        "match": true
+      },
+      {
+        "path": "assets/art/lobby/character.png",
+        "sha256": "e291b1af42a8347c6ba4d35eb62b12d33af66da95680e92aa093eee71f0f0699",
+        "match": true
+      },
+      {
+        "path": "assets/art/lobby/item.png",
+        "sha256": "20c3db5bca897e099323555da73a171359958ffc3bd149b83a1be7bd04507f09",
+        "match": true
+      },
+      {
+        "path": "assets/art/map/lantern_frame.png",
+        "sha256": "cee3281ca65dea146a812ea8b53baf74b0f25c4d90677363b5ae33931d430ffc",
+        "match": true
+      },
+      {
+        "path": "assets/art/map/lantern_off.png",
+        "sha256": "48e79e9920b2161f2bb532afcfc46f1ccc754e210664961fbe47897faa8325fe",
+        "match": true
+      },
+      {
+        "path": "assets/art/map/map.png",
+        "sha256": "dd152cff724d4f33d4b98a65037cfcdf01f330eaa88fc003a14d35e544a8a7a8",
+        "match": true
+      },
+      {
+        "path": "assets/art/map/wall_flowers.png",
+        "sha256": "ce4f84a7b7f0338db605fbd1306c1bfab130bc2cb1f34cbd27f7c67233f59e3a",
+        "match": true
+      },
+      {
+        "path": "assets/art/map/wall_vine.png",
+        "sha256": "c98d623cc3e156ab87e4c2629704a75a0e675c9ec2bd780690fba74dd5d92425",
+        "match": true
+      },
+      {
+        "path": "assets/art/map/warmth.png",
+        "sha256": "2d2cd79baef66ad38e3692a9ac9524e83589ffa3d0e19e4537efdf23376f2577",
+        "match": true
+      },
+      {
+        "path": "assets/art/memories/memory_01.png",
+        "sha256": "2e77cd2a023db2d5ccd4f0b0d9fe5bb9cd57b1af10008d27a1a152824beff4ed",
+        "match": true
+      },
+      {
+        "path": "assets/art/memories/memory_02.png",
+        "sha256": "e3b39e441c65d1354caa7a6a3f20fbf772e96b27f8e8b32510189b7bc34fb7a4",
+        "match": true
+      },
+      {
+        "path": "assets/art/memories/memory_03.png",
+        "sha256": "31144839f5405bf5503568429f1c7cd12664eaddb27c2d909683d8f3cb35ed66",
+        "match": true
+      },
+      {
+        "path": "assets/icons/items/invincibility_item.png",
+        "sha256": "bf18e2319c466e7e645dc744da230bf327f14e3c49a1da0558909fa6990a07a4",
+        "match": true
+      },
+      {
+        "path": "assets/icons/items/magnet_item.png",
+        "sha256": "80499ac0d4b8f48b8c248a6e3dee4a66b1b6475d01fb3888a0968f74bbecf2d9",
+        "match": true
+      },
+      {
+        "path": "validation/reference_routes.json",
+        "sha256": "dc72d8fd7e30d714e09b0afa6ed117efc7525e764a7bf0ed07b4b6d2db0cc6d8",
+        "match": true
+      },
+      {
+        "path": "validation/safe_routes.json",
+        "sha256": "cd7b3a7358cc22815f5cc26c67f889bdb68ab0c8918d85ae461ccf6f492acf1a",
+        "match": true
+      }
+    ],
+    "removed_or_relocated_obsolete_files": [
+      "assets/art/before/ending_scene.png",
+      "assets/art/before/memory_scene.png",
+      "assets/art/before/shelter_after.png",
+      "assets/art/before/shelter_before.png",
+      "assets/art/before/stone_floor_tile.png",
+      "assets/art/before/tea_memory.png",
+      "assets/art/before/title_background.png",
+      "assets/art/memories/generation_prompts-anatomy-v3.json",
+      "assets/art/memories/generation_prompts-style-v2.json",
+      "assets/art/memories/generation_prompts.json",
+      "assets/art/memories/README.md"
+    ],
+    "level_and_reference_hashes_preserved": true,
+    "level_metadata_decision": "Keep original level bytes and config hashes; validation/upgrade_report.json now redirects to README and this report."
+  },
+  "cleanup_inventory": {
+    "removed_source_locations": [
+      {
+        "path": "docs",
+        "files": 26,
+        "bytes": 830804
+      },
+      {
+        "path": "CONTRACT.md",
+        "files": 1,
+        "bytes": 5745
+      },
+      {
+        "path": "assets\\art\\before",
+        "files": 7,
+        "bytes": 18222221
+      },
+      {
+        "path": "assets\\art\\memories\\README.md",
+        "files": 1,
+        "bytes": 2396
+      },
+      {
+        "path": "assets\\art\\memories\\generation_prompts.json",
+        "files": 1,
+        "bytes": 13610
+      },
+      {
+        "path": "assets\\art\\memories\\generation_prompts-style-v2.json",
+        "files": 1,
+        "bytes": 11658
+      },
+      {
+        "path": "assets\\art\\memories\\generation_prompts-anatomy-v3.json",
+        "files": 1,
+        "bytes": 5975
+      },
+      {
+        "path": "tools\\capture_review.py",
+        "files": 1,
+        "bytes": 3895
+      },
+      {
+        "path": "tools\\verify_final_art.py",
+        "files": 1,
+        "bytes": 7227
+      },
+      {
+        "path": "tools\\make_audio.py",
+        "files": 1,
+        "bytes": 1733
+      },
+      {
+        "path": "requirements-review.txt",
+        "files": 1,
+        "bytes": 37
+      },
+      {
+        "path": "evidence",
+        "files": 52,
+        "bytes": 5979849
+      },
+      {
+        "path": "historical_v01",
+        "files": 20,
+        "bytes": 5920903
+      },
+      {
+        "path": "reports\\local",
+        "files": 364,
+        "bytes": 30391958
+      },
+      {
+        "path": "reports\\evaluation",
+        "files": 2,
+        "bytes": 49752
+      },
+      {
+        "path": "reports\\evaluation_v02",
+        "files": 2,
+        "bytes": 49150
+      },
+      {
+        "path": "reports\\review_2026-10-19",
+        "files": 30,
+        "bytes": 6382637
+      },
+      {
+        "path": "validation\\change_manifest.json",
+        "files": 1,
+        "bytes": 35806
+      },
+      {
+        "path": "validation\\render_timings.json",
+        "files": 1,
+        "bytes": 230
+      },
+      {
+        "path": "validation\\tests_v02.txt",
+        "files": 1,
+        "bytes": 221
+      },
+      {
+        "path": "validation\\tests_v02.xml",
+        "files": 1,
+        "bytes": 15374
+      },
+      {
+        "path": "validation\\runtime_replay_results.json",
+        "files": 1,
+        "bytes": 5165
+      },
+      {
+        "path": "validation\\schema_results.json",
+        "files": 1,
+        "bytes": 904
+      }
+    ],
+    "files_at_removed_locations": 518,
+    "bytes_at_removed_locations": 67937250,
+    "note": "Counts include original provenance/license locations copied to assets/ and reports regenerated before removal; cache cleanup is excluded. See current README for retained structure.",
+    "authored_markdown_documents": [
+      "README.md"
+    ]
+  },
+  "review": {
+    "confirmed_gameplay_contradictions_found": [],
+    "documentation_corrections": [
+      "Magnet collects only value-1 warmth, not value-3 warmth.",
+      "Level coordinates, time budgets and authored route ticks were reconciled with current data.",
+      "balance_test.py collects human realtime play sessions; evaluate.py and reference routes use grid control.",
+      "Gymnasium external limit argument is max_episode_steps.",
+      "The no-damage badge storage key is quiet."
+    ],
+    "git_diff_check_exit_code": 0,
+    "broken_readme_links": [],
+    "provenance_and_license_files_present": true
+  },
+  "not_performed": [
+    "Training PPO, DQN or another RL policy",
+    "Realtime learned-policy performance, generalization or human difficulty evaluation",
+    "Remote CI execution",
+    "Windows executable packaging or packaged-device launch",
+    "Full human playthrough or human audio listening"
+  ]
+}

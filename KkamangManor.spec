@@ -1,4 +1,4 @@
-# Build on the target operating system. Windows produces KkamangManor.exe.
+# 배포 대상 운영체제에서 빌드하며 Windows에서는 실행 파일을 만든다.
 from pathlib import Path
 base = Path(SPECPATH)
 a = Analysis([str(base / 'main.py')], pathex=[str(base)],

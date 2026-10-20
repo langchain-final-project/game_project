@@ -1,4 +1,4 @@
-"""Present-day fixtures must preserve the frozen past and the playable lobby."""
+"""현재 시점 연출이 과거 기억과 플레이용 쉼터를 바꾸지 않는지 검증한다."""
 from copy import deepcopy
 import os
 from unittest.mock import patch
@@ -19,7 +19,6 @@ def render(kind, elapsed, **kwargs):
 
 
 def clock_face(kind, elapsed, **kwargs):
-    # The inner dial excludes the time-dependent room light and other actors.
     return pygame.image.tobytes(render(kind,elapsed,**kwargs).subsurface((350,125,35,35)),'RGB')
 
 
@@ -44,8 +43,6 @@ def test_true_ending_clock_ticks_without_changing_the_hour_and_minute():
 
 @pytest.mark.parametrize('variants',((),(0,),(1,),(2,)))
 def test_partial_liberation_keeps_night_and_the_clock_stopped(variants):
-    # Completing the picture alone must not turn an individual ending into
-    # the best ending's dawn or restart its frozen clock.
     assert clock_face('liberation',0.,released_variants=variants)==clock_face(
         'liberation',8.7,released_variants=variants)
 
@@ -57,8 +54,7 @@ def test_explicit_best_liberation_keeps_the_existing_dawn_timing():
 
 
 def test_true_ending_has_four_sleepers_without_the_awake_only_png_atlas():
-    # The main PNG atlas has no sleeping frame. Only this cinematic must use
-    # the established native closed-eye rig, leaving the playable atlas intact.
+    # 플레이용 PNG에는 수면 프레임이 없어 이 연출만 기존 눈감기 형태를 사용한다.
     with patch.object(illustration,'sprite_frame',side_effect=AssertionError('awake PNG')):
         with patch.object(memories,'_sleeping',wraps=memories._sleeping) as asleep:
             render('true_end',4.)

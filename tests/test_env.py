@@ -1,4 +1,4 @@
-"""Adapter boundary tests: public observations, episode endings and reward safety."""
+"""강화학습 환경의 관측·종료 조건·보상 계약을 검증한다."""
 from copy import deepcopy
 import subprocess
 import sys
@@ -107,10 +107,10 @@ class EnvironmentTests(unittest.TestCase):
         np.testing.assert_array_equal(obs[:144].reshape(9, 16),
                                       [[c == '#' for c in row] for row in snapshot['grid']])
         self.assertEqual(obs[288 + snapshot['exit'][1]*16 + snapshot['exit'][0]], 1)
-        self.assertEqual(obs[481], 1)  # Ghost A presence.
-        self.assertEqual(obs[534], 1)  # Ghost B presence.
-        self.assertEqual(obs[587], 1)  # Shortcut A presence.
-        self.assertEqual(obs[593], 1)  # Shortcut B presence.
+        self.assertEqual(obs[481], 1)
+        self.assertEqual(obs[534], 1)
+        self.assertEqual(obs[587], 1)
+        self.assertEqual(obs[593], 1)
         original = obs.copy()
         changed = deepcopy(snapshot)
         changed['items'][0]['active'] = False
@@ -170,7 +170,7 @@ class EnvironmentTests(unittest.TestCase):
         _, reward, _, _, info = env.step(3)
         self.assertEqual(info['snapshot']['courage'], 2)
         self.assertAlmostEqual(reward, -0.1)
-        # Following the ghost into its next cell makes contact while protected.
+
         _, reward, _, _, info = env.step(3)
         self.assertEqual(info['snapshot']['courage'], 2)
         self.assertEqual(reward, 0)

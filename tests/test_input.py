@@ -1,4 +1,4 @@
-"""Human input arbitration; these tests need no display or audio device."""
+"""화면·음향 장치 없이 방향키와 상호작용 입력의 우선순위를 검증한다."""
 import pygame
 import pytest
 
@@ -40,7 +40,7 @@ def test_interaction_is_a_new_press_not_a_held_action():
     adapter.handle(keydown(pygame.K_e))
     assert adapter.consume() == 4
     assert adapter.consume() == 5
-    adapter.handle(keydown(pygame.K_e))  # An OS repeat is still the same press.
+    adapter.handle(keydown(pygame.K_e))
     assert adapter.consume() == 5
     adapter.handle(keyup(pygame.K_e))
     adapter.handle(keydown(pygame.K_e))
@@ -168,7 +168,7 @@ def test_held_turn_waits_for_opening_while_current_direction_is_held():
     assert adapter.consume_movement(lambda action: action == 0) == 0
     assert adapter.consume_movement(lambda action: action == 0) == 0
     assert adapter.consume_movement(lambda action: True) == 3
-    # Once turned, a blocked right does not fall back to the older up key.
+
     assert adapter.consume_movement(lambda action: action == 0) == 3
 
 

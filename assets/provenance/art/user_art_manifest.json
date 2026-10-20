@@ -1,0 +1,57 @@
+{
+  "provided_date": "2026-10-20",
+  "provenance": "User-provided PNG attachments; creation tool, artist, and separate license not established by this integration.",
+  "file_policy": "Deployed files preserve the original PNG bytes. Edge trimming and alpha-bound alignment apply only during rendering.",
+  "files": [
+    {
+      "source_filename": "best.png",
+      "path": "assets/art/ending_happy_all.png",
+      "sha256": "d78de91abcba0212342679e8140556eb51492681c7a6ba36f07b1be190bab7f1"
+    },
+    {
+      "source_filename": "ghost1.png",
+      "path": "assets/art/ending_ghost_a.png",
+      "sha256": "4ef64e208d35aeb956449bdd4547a8207686b9eb65a956f132bd9bb3896c742a"
+    },
+    {
+      "source_filename": "ghost3.png",
+      "path": "assets/art/ending_ghost_b.png",
+      "sha256": "9ddc0be71c241428ec8bc2ccbebbb4f8b8680c14785ff2ccd3883716cbdd0180"
+    },
+    {
+      "source_filename": "ghost2.png",
+      "path": "assets/art/ending_ghost_c.png",
+      "sha256": "7d55cf572ee8c58a45e89af1e6f4198dbceef75a211fff46afdc28744024489e"
+    },
+    {
+      "source_filename": "normal.png",
+      "path": "assets/art/ending_normal.png",
+      "sha256": "d8cbb03009f57e6db22d24fe7d11c062984016ac31d88a3b4eaefe8558b10e98"
+    },
+    {
+      "source_filename": "sad.png",
+      "path": "assets/art/ending_sad.png",
+      "sha256": "63865aa5f163ea7fe1ed9629a69adf1676f58ffbad32039190c60de537d875b3"
+    },
+    {
+      "source_filename": "coming in.png",
+      "path": "assets/art/prologue.png",
+      "sha256": "29b4b82f92bb4f3a8e61c6581a03113ed0f61f5c7869f74af98bef716c09875a"
+    },
+    {
+      "source_filename": "보송이고양이.png",
+      "path": "assets/art/character/resident_bosong.png",
+      "sha256": "84e92a8fe07e4f8801b0c5bd131a5677dff4ee045d12c92cc5e5dce1319dc7e6"
+    },
+    {
+      "source_filename": "이파리고양이.png",
+      "path": "assets/art/character/resident_ipari.png",
+      "sha256": "9fe017c1b0d143bcdc7dd0467740f266f81d8d1c198b96befcbcc962589bd506"
+    },
+    {
+      "source_filename": "도레고양이.png",
+      "path": "assets/art/character/resident_dore.png",
+      "sha256": "f8acac3aa33f71425669af49cc9de1b6c2af78d438fd6e8198380bd4535fb4b8"
+    }
+  ]
+}
