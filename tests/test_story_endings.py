@@ -97,13 +97,9 @@ def gameplay_progress(app):
 
 
 def finish_resolution(app):
-    assert app.scene == 'story' and app.story_kind == 'garden'
+    assert app.scene == 'story' and app.story_kind == 'ending_intro'
     assert app.dialogues == []
-    app.advance(3.2)
-    if app.ending_released_variants:
-        assert app.scene == 'story' and app.story_kind == 'liberation'
-        assert app.context()['ending_released_variants'] == app.ending_released_variants
-        app.advance(4.)
+    app.finish_story()
     assert app.scene == 'ending' and app.ending_art_only
 
 
@@ -163,7 +159,7 @@ def test_replacing_pending_representative_refreshes_the_result_ending_action(app
         likes.offer_memory(state, sample_record(stage, (30, 17, 10) if stage == 1 else (42, 17, 10)))
     app.campaign.data['completed'] = list(range(1, 13))
     app.campaign.data['likes'] = state
-    assert app.campaign.selected_ending() == 'normal'
+    assert app.campaign.selected_ending() == 'sad'
     likes.offer_memory(state, sample_record(1, (60, 10, 5), 'replacement'))
     app.last_outcome = {'status': 'COMPLETE', 'banked': 14, 'carried': 14, 'ticks_used': 30}
     app.last_reward = {'first_complete': False, 'new_ending': False}

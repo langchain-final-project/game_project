@@ -13,7 +13,7 @@ from .levels import load_levels
 from .campaign import Campaign, SaveStore
 from .story import STAGES, PROLOGUE, ENDING, EXTENDED_ENDING, MEMORIES, memory_for_stage
 from . import likes, collection
-from .ending_content import ENDING_CONTENT, released_variants as ending_releases
+from .ending_content import ENDING_CONTENT
 from .input import InputAdapter
 from .audio import AudioEngine
 from .ui.theme import Assets, text, panel, CREAM, INK, NIGHT
@@ -24,7 +24,7 @@ from .ui.collection import move_focus as collection_focus
 
 SIZE = (1280, 720)
 MEMORY_REVEAL_SECONDS = 2.
-CINEMATIC_DURATIONS = {'prologue': 3.6, 'garden': 3.2, 'liberation': 4.}
+CINEMATIC_DURATIONS = {'prologue': 3.6}
 
 class GameApp:
     def __init__(self, save_path=None, headless=False, no_audio=False, size=SIZE, seed=0,
@@ -38,13 +38,12 @@ class GameApp:
         self.ending_id = None
         self.ending_art_only = False
         self.ending_replay = False
-        self.ending_released_variants = ()
         self.accumulator = 0.
         self.ghost_elapsed = 0.3
         pygame.display.init()
         pygame.font.init()
         self.window = pygame.display.set_mode(size, pygame.RESIZABLE | (pygame.HIDDEN if headless else 0))
-        pygame.display.set_caption('까망이와 잠 못 드는 저택')
+        pygame.display.set_caption('까망이와 유령 저택')
         self.canvas = pygame.Surface(SIZE)
         self.assets = Assets()
         try:
@@ -219,19 +218,14 @@ class GameApp:
             self.persist('home')
         elif self.story_kind == 'ending':
             self.persist('home')
-        elif self.story_kind == 'garden':
-            if self.ending_released_variants:
-                self._start_cinematic('liberation')
-            else:
-                self._start_afterword()
-        elif self.story_kind == 'liberation':
-            self._start_afterword(save=True)
+        elif self.story_kind == 'ending_intro':
+            self._start_afterword()
         elif self.story_return == 'ending':
             self.start_ending()
         else:
             self.transition(self.story_return)
 
-    def _start_afterword(self, save=False):
+    def _start_afterword(self):
         # 엔딩 이력과 PNG·내레이션을 분리하고 다시 보기는 활성화된 쉼터 상태를 바꾸지 않는다.
         self.dialogues = list(ENDING_CONTENT[self.ending_id]['lines'])
         self.dialogue_index = 0
@@ -254,11 +248,10 @@ class GameApp:
         self.ending_variant = 'extended' if selected == 'happy_all' else 'basic'
         self.ending_replay = bool(replay)
         self.replaying_story = bool(replay)
-        self.ending_released_variants = ending_releases(selected)
         if replay:
             self._start_afterword()
         else:
-            self._start_cinematic('garden')
+            self._start_cinematic('ending_intro')
 
     def next_dialogue(self):
         if self.scene == 'ending':
@@ -887,7 +880,7 @@ class GameApp:
         title,message=confirm_messages.get(self.confirm_kind,('확인','계속할까요?'))
         regions = list(self.campaign.memory_regions(self.memory_selected))
         showing_memory = self.scene == 'story' and self.story_kind == 'memory'
-        silent = self.scene == 'story' and self.story_kind in ('prologue', 'memory', 'garden', 'liberation')
+        silent = self.scene == 'story' and self.story_kind in ('prologue', 'memory', 'ending_intro')
         active_ending = self.campaign.active_ending()
         released = active_ending == 'happy_all'
         duration = CINEMATIC_DURATIONS.get(self.story_kind, MEMORY_REVEAL_SECONDS)
@@ -909,7 +902,6 @@ class GameApp:
             released=released,active_ending=active_ending,
             selected_ending=self.campaign.selected_ending(),
             released_variants=self.campaign.released_variants(),
-            ending_released_variants=self.ending_released_variants,
             ending_art_only=self.ending_art_only,
             narration_progress=min(1., self.dialogue_time / .5),
             confirm_kind=self.confirm_kind,confirm_title=title,confirm_text=message,save_error=self.store.error,

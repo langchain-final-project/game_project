@@ -17,7 +17,7 @@ from .lobby import (
 from .likes import draw_likes, draw_choice
 from .map_sprites import map_image
 from .ghost_sprites import ghost_frame
-from .memories import draw_memory, draw_cinematic
+from .memories import draw_memory
 from .collection import render_collection, draw_paw
 
 W, H = 1280, 720
@@ -98,13 +98,17 @@ def _ending_picture(surface, assets, name):
     return rect
 
 def _prologue_picture(surface, assets):
-    """프롤로그에 입장 PNG를 표시하며 다른 연출 장면은 별도로 유지한다."""
-    name = 'prologue.png'
-    key = ('prologue', id(assets), surface.get_size())
+    """프롤로그에 입장 PNG를 표시한다."""
+    _story_picture(surface, assets, 'prologue.png')
+
+
+def _story_picture(surface, assets, name):
+    """필수 장면 PNG 전체를 비율대로 표시하며 누락 시 도형으로 대체하지 않는다."""
+    key = ('story_picture', id(assets), name, surface.get_size())
     if key not in _COVER_CACHE:
         path = assets.root / 'art' / name
         if not path.is_file():
-            raise FileNotFoundError(f'필수 프롤로그 일러스트가 없습니다: {path}')
+            raise FileNotFoundError(f'필수 장면 일러스트가 없습니다: {path}')
         source = pygame.image.load(str(path))
         if pygame.display.get_surface():
             source = source.convert_alpha()
@@ -118,6 +122,14 @@ def _prologue_picture(surface, assets):
     image = _COVER_CACHE[key]
     surface.fill(NIGHT)
     surface.blit(image, image.get_rect(center=surface.get_rect().center))
+
+
+def _ending_intro_picture(surface, assets, name, elapsed):
+    """낮·밤 진입 원화만 표시하고 짧은 페이드인 뒤에도 사용자 입력을 기다린다."""
+    _story_picture(surface, assets, name)
+    alpha = round(255 * (1 - max(0., min(1., elapsed / .45))))
+    if alpha:
+        _overlay(surface, surface.get_rect(), color=NIGHT, alpha=alpha)
 
 def _icon(surface, assets, name, rect):
     r = pygame.Rect(rect)
@@ -215,7 +227,7 @@ def _header(surface, assets, title, subtitle='', right=''):
 def _footer(surface, assets, note='방향키 선택 · Enter 확인 · Esc 뒤로'):
     _overlay(surface, (0, 676, W, 44), alpha=195)
     text(surface, assets, note, (34, 689), size=15, color=(227, 215, 199))
-    text(surface, assets, '까망이와 잠 못 드는 저택', (1246, 689), size=14,
+    text(surface, assets, '까망이와 유령 저택', (1246, 689), size=14,
          color=(205, 186, 166), anchor='topright')
 
 def _chip(surface, assets, label, rect, fill=NIGHT, color=CREAM, size=17):
@@ -321,11 +333,11 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         surface.blit(title_cat, title_cat.get_rect(midbottom=(877, 595)))
         ghost(surface,(1110,515),125,time=elapsed,resident=True)
         # 제목은 원화가 비워 둔 왼쪽 공간에 표시한다.
-        _overlay(surface, (0, 0, 660, H), alpha=115)
-        text(surface, assets, 'KKAMANG MANOR', (68, 110), size=19,
+        _overlay(surface, (0, 0, 480, H), alpha=115)
+        text(surface, assets, 'KKAMANG GHOST MANOR', (68, 110), size=19,
              color=(224, 204, 177))
         surface.blit(assets.title_font(54).render('까망이와',True,CREAM),(64,154))
-        surface.blit(assets.title_font(51).render('잠 못 드는 저택',True,CREAM),(64,224))
+        surface.blit(assets.title_font(51).render('유령 저택',True,CREAM),(64,224))
         pygame.draw.line(surface, GOLD, (70, 312), (410, 312), 2)
         wrapped(surface, assets, '아이템 1개 + 온기 4점 이상\n귀환점에서 E',
                 pygame.Rect(70, 337, 470, 90), size=20, color=CREAM, line_gap=9)
@@ -604,7 +616,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
                    '후일담 보기' if art_only and lines else '쉼터로', primary=True)
         text(surface, assets, 'Enter / Space 선택 · Esc 쉼터로',
              (34, 700), size=12, color=(227, 215, 199))
-        text(surface, assets, '까망이와 잠 못 드는 저택',
+        text(surface, assets, '까망이와 유령 저택',
              (1246, 700), size=12, color=(205, 186, 166), anchor='topright')
 
     elif screen == 'story':
@@ -630,12 +642,11 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         elif kind == 'prologue':
             _prologue_picture(surface, assets)
             ui.control('story_next',(1034,619,204,45),'계속',primary=True)
-        else:
-            draw_cinematic(surface,kind,scene_time,completed=completed,
-                           cosmetics=data.get('cosmetics'),released=ctx.get('released',False),
-                           released_variants=ctx.get('ending_released_variants')
-                           if kind=='liberation' else ctx.get('released_variants'))
+        elif kind == 'ending_intro':
+            _ending_intro_picture(surface, assets, ctx['ending_content']['intro_art'], scene_time)
             ui.control('story_next',(1034,619,204,45),'계속',primary=True)
+        else:
+            raise ValueError(f'Unknown story kind: {kind}')
         ui.control('story_skip',(1041,20,199,38),'넘기기')
 
     elif screen == 'album':

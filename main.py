@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 
 def main():
-    parser=argparse.ArgumentParser(description='까망이와 잠 못 드는 저택')
+    parser=argparse.ArgumentParser(description='까망이와 유령 저택')
     parser.add_argument('--save-path',type=Path,help='별도 세이브 경로 (검증/시연용)')
     parser.add_argument('--headless',action='store_true',help='창 없는 렌더 검사')
     parser.add_argument('--no-audio',action='store_true')

@@ -7,7 +7,7 @@ if errorlevel 1 goto fail
 if errorlevel 1 goto fail
 .venv\Scripts\python.exe -m PyInstaller --noconfirm KkamangManor.spec
 if errorlevel 1 goto fail
-echo dist 폴더의 전체 게임 폴더를 ZIP으로 배포하세요.
+echo dist\KkamangGhostManor 폴더 전체를 ZIP으로 배포하세요.
 pause
 exit /b 0
 :fail

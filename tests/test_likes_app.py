@@ -39,8 +39,8 @@ def show_ending_art(app):
     for _ in range(3):
         if app.scene == 'ending':
             break
-        assert app.scene == 'story' and app.story_kind in ('garden', 'liberation')
-        app.advance(CINEMATIC_DURATIONS[app.story_kind])
+        assert app.scene == 'story' and app.story_kind == 'ending_intro'
+        app.finish_story()
     assert app.scene == 'ending' and app.ending_art_only
 
 
@@ -205,7 +205,7 @@ def test_ending_waits_for_choice_and_preserves_seen_history(app):
     assert app.campaign.data['likes']['seen_endings'] == []
     app.dispatch('memory_keep')
     app.dispatch('show_ending')
-    assert app.scene == 'story' and app.story_kind == 'garden'
+    assert app.scene == 'story' and app.story_kind == 'ending_intro'
     show_ending_art(app)
     assert app.ending_id == 'normal'
     assert app.campaign.active_ending() == 'normal'
@@ -243,7 +243,7 @@ def test_six_ending_art_epilogue_keyboard_and_save_preservation(app, ending):
     representatives = deepcopy(app.campaign.data['likes']['representatives'])
     stars = deepcopy(app.campaign.data['likes']['best_stars'])
     assert app.ending_id == ending
-    assert app.scene == 'story' and app.story_kind == 'garden'
+    assert app.scene == 'story' and app.story_kind == 'ending_intro'
     assert app.context()['dialogue'] is None
     show_ending_art(app)
     assert app.dialogues == ENDING_CONTENT[ending]['lines']
@@ -258,7 +258,7 @@ def test_six_ending_art_epilogue_keyboard_and_save_preservation(app, ending):
     assert not app.ending_art_only and app.dialogue_index == 0
     assert app.dialogue_time == 0
     assert len(app.dialogues) == 1 and app.dialogues[0][0] == ''
-    with patch('kkamang.ui.menus.draw_cinematic') as cinematic, \
+    with patch('kkamang.ui.menus._ending_intro_picture') as cinematic, \
          patch('kkamang.ui.menus._ending_picture') as art:
         app.draw()
     cinematic.assert_not_called()

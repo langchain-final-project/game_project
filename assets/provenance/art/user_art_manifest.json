@@ -52,6 +52,16 @@
       "source_filename": "도레고양이.png",
       "path": "assets/art/character/resident_dore.png",
       "sha256": "f8acac3aa33f71425669af49cc9de1b6c2af78d438fd6e8198380bd4535fb4b8"
+    },
+    {
+      "source_filename": "daybackground.png",
+      "path": "assets/art/ending_intro_day.png",
+      "sha256": "46bfe7f1533fadbed30514e5db67a51dadcd2847489a19b6844c69fef6d21218"
+    },
+    {
+      "source_filename": "nightbackground.png",
+      "path": "assets/art/ending_intro_night.png",
+      "sha256": "27bdd697391811297899b5d3155fe7c4fa728dd5f58ccf43fea616fc98921150"
     }
   ]
 }

@@ -57,10 +57,21 @@ def test_priority_thresholds_two_high_and_unfinished():
     assert likes.select_ending(state, range(1, 13)) == 'ghost_a'
     assert likes.select_ending(full_state((42, 20, 5)), range(1, 13)) == 'normal'
 
-    assert likes.select_ending(full_state((0, 25, 5)), range(1, 13)) == 'sad'
+    assert likes.select_ending(full_state((0, 25, 5)), range(1, 13)) == 'ghost_b'
     assert likes.select_ending(state, range(1, 12)) is None
     likes.offer_memory(state, sample_record(1, (60, 25, 15), 'pending'))
     assert likes.select_ending(state, range(1, 13)) is None
+
+
+@pytest.mark.parametrize('components,ending', [
+    ((41, 17, 10), 'sad'),
+    ((42, 17, 10), 'ghost_a'),
+    ((40, 0, 6), 'sad'),
+])
+def test_high_affection_boundary_and_sad_ignores_past_stars(components, ending):
+    state = full_state(components)
+    state['best_stars'] = {str(stage): 3 for stage in range(1, 13)}
+    assert likes.select_ending(state, range(1, 13)) == ending
 
 
 def test_missing_scores_are_unknown_not_sad_or_zero():

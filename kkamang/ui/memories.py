@@ -1,4 +1,4 @@
-"""기억 원화 3장의 분할 공개와 정원·해방·시계·새벽 연출을 그린다.
+"""기억 원화 3장의 분할 공개와 온기 복원 효과를 그린다.
 
 현재 엔딩 상태를 과거 기억 원화에 섞지 않으며 진행 상태는 앱이 관리한다.
 """
@@ -6,13 +6,11 @@ from functools import lru_cache
 import math
 import pygame
 
-from .illustration import (cat, _resident_cat_frame, resident_cat, ghost, prop, glow,
-                           shelter, _released_residents, INK, CREAM, GOLD)
+from .illustration import prop, GOLD
 from ..paths import ASSET_DIR
 
 SIZE = (1280, 720)
 FOG = (67, 62, 78)
-RESIDENT_COLORS = ((245,239,226), (195,155,111), (161,153,184))
 MEMORY_ART_DIR = ASSET_DIR / 'art' / 'memories'
 
 
@@ -22,12 +20,6 @@ def _memory_id(value):
         raise ValueError('memory_id must be 1, 2 or 3')
     return value
 
-def _blanket(s,rect):
-    r=pygame.Rect(rect);d=pygame.draw
-    d.rect(s,(89,75,100),r.move(3,5),border_radius=24)
-    d.rect(s,(195,172,203),r,border_radius=24)
-    for x in range(r.x+15,r.right-10,18):d.line(s,(246,231,213),(x,r.y+6),(x,r.bottom-6),3)
-    d.line(s,CREAM,(r.x+8,r.bottom-16),(r.right-8,r.bottom-16),4)
 
 @lru_cache(maxsize=3)
 def _original(memory_id):
@@ -213,142 +205,3 @@ def draw_memory(surface,memory_id,regions,rect,*,previous_regions=None,
         scene=pygame.transform.smoothscale(_fog(),target.size)
         scene.blit(clipped,(0,0))
     surface.blit(scene,target)
-
-def _ease(value):
-    t=max(0.,min(1.,value));return t*t*(3-2*t)
-
-def _sleeping(s,center,variant=None,scarf='default',time=0.):
-    x,y=center;d=pygame.draw
-    color=(53,48,66) if variant is None else RESIDENT_COLORS[variant]
-    breath=math.sin(time*1.4+(variant or 0))*.7
-    d.ellipse(s,INK,(x-76,y-36-breath,145,65))
-    d.ellipse(s,color,(x-72,y-34-breath,137,58))
-    source=pygame.Surface((160,180),pygame.SRCALPHA)
-    if variant is None:
-        # 호환 담요 장면만 도형으로 잠든 자세를 만든다. 실제 엔딩 화면은 PNG를 사용한다.
-        source.blit(_resident_cat_frame(160,mood='sleep',scarf=scarf),(0,0))
-        d.polygon(source,(190,74,54),[(47,108),(110,108),(98,120),(56,117)])
-        d.polygon(source,(190,74,54),[(98,114),(112,116),(120,139),(102,133)])
-        d.line(source,(239,135,96),(56,111),(98,113),2)
-    else:resident_cat(source,(80,180),160,0.,variant)
-    head=pygame.transform.smoothscale(source.subsurface((14,8,132,112)),(83,70))
-    s.blit(head,(x-89,y-61))
-    d.arc(s,INK,(x+12,y-15,54,42),-.8,2.3,13)
-    d.arc(s,color,(x+12,y-15,54,42),-.8,2.3,8)
-
-def _cinematic_fixtures(surface,elapsed,*,door_open=False,dawn=False):
-    """일반 쉼터와 분리된 현재 시점의 문·벽난로·시계를 그린다."""
-    d=pygame.draw
-
-    d.rect(surface,(78,61,71),(24,94,178,464),border_radius=62)
-    d.rect(surface,(172,126,94),(31,101,164,450),border_radius=56)
-    d.rect(surface,(57,70,83) if not dawn else (187,210,187),
-           (43,113,140,427),border_radius=49)
-    if door_open:
-        d.rect(surface,(112,146,112) if dawn else (81,111,102),(44,451,138,89))
-        d.polygon(surface,(137,97,79),[(179,116),(224,147),(224,507),(179,539)])
-        d.line(surface,(196,151,107),(188,138),(188,517),3)
-        d.circle(surface,GOLD,(211,350),5)
-    else:
-        d.rect(surface,(128,91,77),(47,117,132,420),border_radius=44)
-        d.rect(surface,(162,117,89),(59,137,107,238),3,border_radius=37)
-        d.rect(surface,(162,117,89),(59,393,107,127),3,border_radius=13)
-        d.circle(surface,GOLD,(157,353),7)
-    d.rect(surface,(198,157,113),(27,539,174,15),border_radius=4)
-
-    d.rect(surface,(130,105,105),(269,202,196,215),border_radius=13)
-    for y in range(216,408,38):
-        d.line(surface,(161,129,115),(275,y),(459,y),2)
-    d.rect(surface,(193,147,111),(256,190,222,20),border_radius=5)
-    d.rect(surface,(202,158,119),(256,403,222,24),border_radius=5)
-    d.rect(surface,(49,39,49),(293,239,148,164),border_radius=62)
-    d.line(surface,(112,74,66),(313,388),(418,377),12)
-    d.line(surface,(142,89,68),(319,376),(413,390),9)
-    d.polygon(surface,(219,129,74),[(310,385),(326,314),(349,350),(368,297),(422,385)])
-    d.polygon(surface,(250,199,111),[(332,385),(346,345),(364,370),(376,331),(402,385)])
-    glow(surface,(367,350),100)
-
-    # 이 연출 전용 시계는 일반 결말에서 멈춰 있고 전체 해방 후 새벽에만 움직인다.
-    center=(367,142)
-    d.circle(surface,(83,62,69),center,35)
-    d.circle(surface,(176,133,99),center,31)
-    d.circle(surface,(235,217,181),center,26)
-    for index in range(12):
-        angle=math.tau*index/12-math.pi/2
-        start=(round(center[0]+22*math.cos(angle)),round(center[1]+22*math.sin(angle)))
-        end=(round(center[0]+24*math.cos(angle)),round(center[1]+24*math.sin(angle)))
-        d.line(surface,INK,start,end,2)
-    d.line(surface,INK,center,(354,133),3)
-    d.line(surface,INK,center,(378,127),3)
-    seconds=math.floor(max(0.,elapsed)) if dawn else 0
-    angle=math.tau*seconds/60-math.pi/2
-    tip=(round(center[0]+22*math.cos(angle)),round(center[1]+22*math.sin(angle)))
-    d.line(surface,(166,91,85),center,tip,2)
-    d.circle(surface,INK,center,3)
-
-def draw_cinematic(surface,kind,elapsed,*,completed=(),cosmetics=None,released=False,
-                   released_variants=None):
-    """현재 시점의 무언 연출만 그리며 과거 기억 원화는 바꾸지 않는다."""
-    allowed=('prologue','garden','liberation','basic_end','true_end')
-    if kind not in allowed:raise ValueError('unknown cinematic kind')
-    cosmetics=cosmetics or {};t=max(0.,float(elapsed));s=pygame.Surface(SIZE)
-    all_done=range(1,13) if kind!='prologue' else ()
-    # 명시한 변형 집합이 정확한 해방 대상이다. 미지정일 때만 예전 전체 해방 호출을 호환한다.
-    legacy_release=released or kind in ('liberation','true_end')
-    living=_released_residents(legacy_release,released_variants,before=kind=='prologue')
-    all_living=len(living)==3
-    dawn=all_living and (kind!='liberation' or t>=2.2)
-    shelter(s,all_done,cosmetics,time=t,before=kind=='prologue',show_actors=False,released=dawn,story_time=t)
-    clock_time=max(0.,t-2.2) if kind=='liberation' else t
-    _cinematic_fixtures(s,clock_time,door_open=kind!='prologue',dawn=dawn)
-    d=pygame.draw;scarf=cosmetics.get('scarf','default')
-    if kind=='prologue':
-        walk=_ease(t/2.3);retreat=_ease((t-1.1)/1.8)
-        cat(s,(80+164*walk,557),127,time=t,mood='surprised',scarf=scarf,walking=walk<1.,walk_progress=walk*2.)
-        prop(s,'towel',(332,461,98,73))
-        ghost(s,(429+89*retreat,455),104,t,True,0)
-        glow(s,(333,514),35+round(30*walk))
-    elif kind=='garden':
-        d.polygon(s,(145,164,132),[(0,554),(184,554),(420,720),(0,720)])
-        step=_ease(t/2.2)
-        cat(s,(297-128*step,544+24*step),130,time=t,scarf=scarf,walking=step<1.,walk_progress=step*2.)
-        for variant,(x,y) in enumerate(((384,453),(476,510),(578,459))):
-            pos=(x+_ease(t/2.)*(variant-1)*26,y)
-            if variant in living:resident_cat(s,pos,96,t,variant)
-            else:ghost(s,pos,96,t,True,variant)
-    elif kind=='liberation':
-        p=_ease((t-.5)/2.2)
-        cat(s,(615,550),137,time=t,mood='happy',scarf=scarf)
-        for variant,(x,y) in enumerate(((468,476),(801,523),(943,469))):
-            if variant not in living:
-                ghost(s,(x,y-8),106,t,True,variant)
-                continue
-            if p<1.:
-                body=pygame.Surface(SIZE,pygame.SRCALPHA)
-                ghost(body,(x,y-8),106,t,True,variant);body.set_alpha(round(255*(1-p)));s.blit(body,(0,0))
-            if p>0.:
-                body=pygame.Surface(SIZE,pygame.SRCALPHA)
-                resident_cat(body,(x,y),106,t,variant);body.set_alpha(round(255*p));s.blit(body,(0,0))
-            for k in range(7):
-                a=(k/7.+t*.22)%1.;xx=367+(x-367)*a;yy=350+(y-350)*a-math.sin(a*math.pi)*38
-                if p<1.:d.circle(s,GOLD,(round(xx),round(yy)),3)
-    elif kind=='basic_end':
-        arrival=_ease(t/2.)
-        cat(s,(225+380*arrival,546),133,time=t,mood='happy',scarf=scarf,walking=arrival<1.,walk_progress=arrival*3.)
-        prop(s,'towel',(406,454,96,70))
-        for variant,pos in enumerate(((461,451),(785,511),(956,461))):
-            if variant in living:resident_cat(s,pos,101,t,variant)
-            else:ghost(s,pos,101,t,True,variant)
-        prop(s,'plant',(799,429,68,82));prop(s,'music',(943,467,67,62))
-    else:
-        _blanket(s,(300,424,705,184))
-
-        for variant,pos in ((0,(445,493)),(2,(773,493))):
-            if variant in living:_sleeping(s,pos,variant,time=t)
-            else:ghost(s,pos,101,t,True,variant)
-        _sleeping(s,(593,550),None,scarf,t)
-        if 1 in living:_sleeping(s,(889,553),1,time=t)
-        else:ghost(s,(889,553),101,t,True,1)
-        if 2 in living:d.arc(s,(161,153,184),(483,428,293,90),0,math.pi,11)
-    if surface.get_size()!=SIZE:s=pygame.transform.smoothscale(s,surface.get_size())
-    surface.blit(s,(0,0))

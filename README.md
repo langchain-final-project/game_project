@@ -1,4 +1,6 @@
-# 까망이와 잠 못 드는 저택
+# 까망이와 유령 저택
+
+**KKAMANG GHOST MANOR**
 
 고양이 까망이가 열두 방에서 온기와 물건을 모아 친구들의 기억을 되찾는 Pygame 게임입니다. 이 README가 현재 개발 문서의 단일 기준입니다. 게임 버전은 `0.2.0`, 규칙은 `cat_mansion_0_2`, 저장 형식은 버전 5입니다. 정확한 맵·시간·배치는 `data/levels/stage_*.json`, 판정은 `kkamang/core.py`와 `realtime.py`를 따릅니다.
 
@@ -51,7 +53,7 @@ GAME_PROJECT_TEAM/
 │  ├─ story.py                   기억 공개와 현재 이야기 상태
 │  ├─ likes.py                   대표 기억·호감도·엔딩 선택
 │  ├─ likes_preview.py           개발용 호감도·엔딩 미리보기
-│  ├─ ending_content.py          여섯 PNG·내레이션·해방 대상
+│  ├─ ending_content.py          엔딩·낮밤 진입 PNG·내레이션·해방 대상
 │  ├─ collection.py              수집품과 해금 판정
 │  ├─ audio.py                   장면별 BGM·효과음·음량
 │  ├─ input.py                   키 상태와 입력 처리
@@ -62,7 +64,7 @@ GAME_PROJECT_TEAM/
 │     ├─ menus.py                제목·결과·설정·엔딩·후일담
 │     ├─ field.py                탐사 화면과 상태 안내
 │     ├─ lobby.py                쉼터의 물건·주민 PNG·깊이 정렬
-│     ├─ memories.py             기억 원화·가림막·정원·해방 연출
+│     ├─ memories.py             기억 원화·가림막·온기 복원 효과
 │     ├─ illustration.py         PNG 캐릭터와 공용 코드 연출
 │     ├─ cat_sprites.py           까망이 PNG 프레임·발 기준 정렬
 │     ├─ ghost_sprites.py         유령 PNG 방향·정렬
@@ -163,13 +165,15 @@ GAME_PROJECT_TEAM/
 | 우선순위 | 조건 | 엔딩 ID / 친구 |
 |---|---|---|
 | 1 | 세 친구 모두 호감도 70 이상 | `happy_all` / 모두 해방 |
-| 2 | 방별 최고 별 합계 0 | `sad` / 친구 없음 |
+| 2 | 호감도 70 이상인 친구가 없음 | `sad` / 친구 없음 |
 | 3 | 높은 호감도 정확히 1명 | `ghost_a` 보송 / `ghost_b` 도레 / `ghost_c` 이파리 |
-| 4 | 나머지: 높은 호감도 0명 또는 2명 | `normal` / 세 유령 |
+| 4 | 호감도 70 이상인 친구가 정확히 2명 | `normal` / 세 유령 |
+
+엔딩 종류는 친구별 호감도로 결정하며 최고 별의 합계는 새드 판정에 사용하지 않습니다. 호감도가 정확히 70이면 높은 호감도에 포함합니다. 이미 감상한 엔딩·현재 쉼터 상태는 저장된 값을 유지하고, 다음 엔딩 판정부터 이 조건을 적용합니다.
 
 탐사 유령 A=보송·B=이파리·C=도레, 주민 값 0=보송·1=이파리·2=도레입니다. 엔딩의 `ghost_b`=도레·`ghost_c`=이파리와 의미가 다르므로 연결을 바꾸지 않습니다.
 
-첫 감상은 정원 진입 → 대상 친구 해방(있을 때) → 엔딩 PNG 감상 → 같은 그림에 한 문장 내레이션 → 쉼터입니다. **정원 진입·해방 과정의 시계 재개·새벽 변화는 합의한 기존 코드 연출을 유지합니다.** 명시적 다시 보기는 PNG부터 열리며 현재 세계를 바꾸지 않습니다. `likes.seen_endings`는 감상 이력, `narrative.active_ending`은 현재 세계 상태입니다. 저장 후 불러오기와 재탐험·앨범은 현재 해방 상태를 보존합니다. 옛 `basic_seen`, `true_seen`, `liberation_seen`는 호환 필드이며 새 엔딩을 자동 생성하는 근거로 쓰지 않습니다.
+첫 감상은 낮·밤 진입 PNG → 엔딩 PNG 감상 → 같은 그림에 한 문장 내레이션 → 쉼터입니다. 베스트·노멀은 `ending_intro_day.png`, 새드·보송·도레·이파리는 `ending_intro_night.png`를 사용합니다. 진입은 캐릭터 없이 원화 전체를 비율대로 표시하며 0.45초 페이드인 후에도 입력을 기다립니다. ‘계속’·Enter·Space 또는 ‘넘기기’·Esc로 엔딩 그림으로 넘어갑니다. 기존 정원·변신·시계 재개·새벽 변화 코드 장면은 사용하지 않습니다. 명시적 다시 보기는 엔딩 PNG부터 열리며 현재 세계를 바꾸지 않습니다. `likes.seen_endings`는 감상 이력, `narrative.active_ending`은 현재 세계 상태입니다. 저장 후 불러오기와 재탐험·앨범은 현재 해방 상태를 보존합니다. 옛 `basic_seen`, `true_seen`, `liberation_seen`는 호환 필드이며 새 엔딩을 자동 생성하는 근거로 쓰지 않습니다.
 
 쉼터의 까망이와 친구들은 PNG입니다. 베스트는 세 고양이, 개별 엔딩은 해당 고양이와 나머지 두 유령 PNG, 노멀은 세 유령 PNG, 새드는 친구를 숨깁니다. 진행 중에는 기존 완료 기록에 따라 주민·회수 물건이 추가됩니다.
 
@@ -228,32 +232,32 @@ python main.py --headless --no-audio --frames 5 --dev-stage 7
 python tools/evaluate.py --episodes 10 --output reports/local/evaluation
 ```
 
-최신 실제 검증 결과는 아래 한 묶음만 보존합니다. 세부 증거와 환경·명령·범위는 [통합 검증 JSON](reports/latest/verification.json), 화면은 [여섯 엔딩](reports/latest/ending_board.png), [여섯 쉼터](reports/latest/lobby_board.png), [프롤로그](reports/latest/prologue.png)에 있습니다.
+최신 실제 검증 결과는 아래 한 묶음만 보존합니다. 세부 증거와 환경·명령·범위는 [통합 검증 JSON](reports/latest/verification.json), 화면은 [낮·밤 진입](reports/latest/intro_board.png), [여섯 엔딩](reports/latest/ending_board.png), [여섯 쉼터](reports/latest/lobby_board.png), [프롤로그](reports/latest/prologue.png)에 있습니다.
 
 2026-10-20 Windows·Python 3.12 로컬 검증 결과입니다.
 
 | 검사 | 실제 결과 |
 |---|---|
-| 전체 pytest | 664개 통과 + 하위 검사 137개 통과, 실패·건너뜀 0, 36.24초 |
+| 전체 pytest | 674개 통과 + 하위 검사 137개 통과, 실패·건너뜀 0, 36.19초 |
 | 레벨 스키마 | 12/12 통과 |
 | 격자 기준 경로 재생 | 36/36 성공, 12개 위상 설정, 레벨 해시 12/12 일치 |
-| 헤드리스 실행 | 7번 방 5프레임 정상 종료 |
-| 정리 전후 화면 비교 | 엔딩·쉼터·탐사 등 25개 캡처의 RGB 픽셀 동일 |
-| 유지 연출·기억 | 정원·해방 50프레임 및 기억 원화·가림막 6개 동일 |
-| 제공 PNG·레벨·음원 | 제공 PNG 10개 원본 일치, 보존 자산·레벨·기준 데이터 변경 0 |
-| 주석 정리의 실행 구조 | 총 66개에서 문서 문자열을 제외한 AST 동일 확인. 런타임·UI 29개는 원본 스냅샷으로 독립 재검사, 도구·테스트 37개는 편집 시 비교. 일회성 도구 1개 삭제 후 65개 보존 |
+| 헤드리스 실행 | 베스트 엔딩 미리보기 5프레임 정상 종료 |
+| 진입·엔딩·쉼터 | 여섯 분기의 화면 18장 캡처, 배경 선택·버튼 배치·주민 PNG 확인 |
+| 기억 보존 | 기억 원화 3장과 가림막 3개의 이전 RGB 해시 일치 |
+| 제공 PNG·레벨·음원 | 제공 PNG 12개 원본 일치, 기존 보존 자산·레벨·기준 데이터 변경 0 |
+| 제목·배포명 | 한글·영문 제목 배치 확인, 창 제목·CLI 설명 일치, 배포명 `KkamangGhostManor`, 기존 저장 폴더 보존 |
 
-여섯 엔딩의 첫 감상·다시 보기·저장 후 불러오기, 내레이션 배치·쉼터 PNG 분기·유지할 연출은 관련 회귀 테스트와 화면 비교 범위에 포함됩니다. 이번 개발 정리는 주석·문서·비사용 파일에 한정했으며 게임 규칙·기능·플레이어 문구를 추가 변경하지 않았습니다. 레벨의 옛 보고서 안내 필드도 설정 해시 보존을 위해 그대로 두고 `validation/upgrade_report.json`에서 최신 결과로 연결합니다.
+여섯 엔딩의 첫 감상·다시 보기·저장 후 불러오기, 내레이션 배치·쉼터 PNG 분기는 관련 회귀 테스트에 포함됩니다. 낮·밤 진입 선택, 입력 대기·계속·넘기기·페이드인, PNG 누락·손상 시 명시적 오류와 대체 그림 미사용을 확인합니다. 새드 조건의 정확히 70인 경계, 과거 최고 별 기록과 무관한 판정, 대표 기억 교체에 따른 엔딩 전환도 검증합니다. 레벨의 옛 보고서 안내 필드는 설정 해시 보존을 위해 그대로 두고 `validation/upgrade_report.json`에서 최신 결과로 연결합니다.
 
 Windows/Linux CI 설정은 보존했으며 이 로컬 검사로 원격 CI 실행까지 완료했다고 표시하지 않습니다. 실제 Windows 배포 실행 파일 생성·실기기 조작·사람의 전체 플레이·오디오 청음은 별도 확인 범위입니다.
 
 ## Windows 배포
 
-Windows에서 `BUILD_WINDOWS.bat`를 실행합니다. `requirements-build.txt`와 `KkamangManor.spec`를 사용해 `dist/KkamangManor/` 폴더를 만듭니다. **폴더 전체**를 전달해야 합니다. spec은 `assets/`와 `data/`를 포함하고 개발·학습 의존성을 게임에 포함하지 않습니다. 배포 전 실제 PC에서 실행·한글·저장·입력·오디오를 확인해야 합니다.
+Windows에서 `BUILD_WINDOWS.bat`를 실행합니다. `requirements-build.txt`와 `KkamangManor.spec`를 사용해 `dist/KkamangGhostManor/KkamangGhostManor.exe`를 만듭니다. **`dist/KkamangGhostManor/` 폴더 전체**를 전달해야 합니다. spec은 `assets/`와 `data/`를 포함하고 개발·학습 의존성을 게임에 포함하지 않습니다. 빌드 설정 파일명과 기존 사용자 저장 폴더 `KkamangManor`는 호환성을 위해 유지합니다. 배포 전 실제 PC에서 실행·한글·저장·입력·오디오를 확인해야 합니다.
 
 ## 자산 출처와 재제작 자료
 
-2026-10-20 제공받은 PNG 10개의 원본 SHA-256과 배포 경로는 `assets/provenance/art/user_art_manifest.json`에 있습니다. 작가·제작 도구·별도 라이선스를 임의로 부여하지 않습니다. `best`→베스트, `ghost1`→보송, `ghost3`→도레, `ghost2`→이파리, `normal`→노멀, `sad`→새드, `coming in`→프롤로그이며 고양이 세 장은 쉼터 주민입니다. 파일은 원본 바이트를 보존합니다.
+2026-10-20 제공받은 PNG 12개의 원본 SHA-256과 배포 경로는 `assets/provenance/art/user_art_manifest.json`에 있습니다. 작가·제작 도구·별도 라이선스를 임의로 부여하지 않습니다. `best`→베스트, `ghost1`→보송, `ghost3`→도레, `ghost2`→이파리, `normal`→노멀, `sad`→새드, `coming in`→프롤로그이며 고양이 세 장은 쉼터 주민입니다. `daybackground`·`nightbackground`는 낮·밤 엔딩 진입입니다. 파일은 원본 바이트를 보존합니다.
 
 기억 세 장은 내장 `image_gen`으로 제작한 고정 원화이며 까망이가 등장하지 않는 과거입니다. 현재 귀·꼬리 수정 기록은 `assets/provenance/art/memory_generation.json`에 보존합니다. 원화는 1672×941이고 게임은 Pygame으로 표시합니다. 얼굴·발·소품 배치가 바뀌면 공개 가림막도 함께 검토해야 합니다.
 

@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "created_at_utc": "2026-10-20T04:58:17.332829+00:00",
+  "created_at_utc": "2026-10-20T06:04:22.382074+00:00",
   "repository": {
     "branch": "feature/final-changes",
-    "base_commit": "c2345cfcd97977e5d2742c776d00a1c4d0452a1a",
+    "base_commit": "36b93a82b0208bf9fdc799d9a0681afa0b0440ae",
     "state": "uncommitted working tree"
   },
-  "scope": "Final developer cleanup after the agreed PNG integration: comments/docstrings, consolidated documentation, unused files and generated artifacts. Gameplay statements, player-facing strings, level data and active media were preserved.",
+  "scope": "Latest validation of the KKAMANG GHOST MANOR display/distribution rename, PNG ending intro flow, and preceding sad-ending condition update. Existing save location and gameplay rules remain compatible.",
   "environment": {
     "os": "Windows-10-10.0.19045-SP0",
     "python": "3.12.7",
@@ -21,25 +21,20 @@
   "pytest": {
     "command": "python -m pytest -q -p no:cacheprovider --basetemp <temporary directory> --junitxml <temporary report>",
     "exit_code": 0,
-    "passed": 664,
+    "passed": 674,
     "subtests_passed": 137,
-    "junit_test_records": 801,
+    "junit_test_records": 811,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
-    "duration_seconds": 36.24,
-    "coverage_scope": "Core, realtime movement, Gymnasium API, persistence, campaign, story, six ending first views/replays/save-load, PNG layout and lobby branches; see tests/ for assertions."
+    "duration_seconds": 36.181
   },
   "level_schema": {
-    "command": "python tools/check_level_schema.py",
-    "exit_code": 0,
     "passed": 12,
     "total": 12,
     "schema_sha256": "16db843f7a846faf89e3b009100113df86f7cb9631d3a0b32879e461c6e5cd0e"
   },
   "reference_replay": {
-    "command": "python tools/replay_validation.py --output <temporary report>",
-    "exit_code": 0,
     "scope": "Executed current GameCore against recorded v0.2 witness action sequences; not independent correctness proof.",
     "limitations": [
       "No PPO or other learning was performed.",
@@ -195,1564 +190,244 @@
       }
     },
     "failures": [],
-    "elapsed_seconds": 0.181,
+    "elapsed_seconds": 0.174,
     "all_passed": true
   },
   "headless_smoke": {
-    "command": "python main.py --headless --no-audio --frames 5 --dev-stage 7",
+    "command": "python main.py --headless --no-audio --frames 5 --dev-likes happy_all",
     "exit_code": 0,
-    "audio": "disabled",
     "save": "isolated developer preview"
   },
-  "comment_cleanup": {
-    "python_files_retained": 65,
-    "files_compared_during_edits": 66,
-    "independent_snapshot_comparisons": 29,
-    "edit_time_agent_comparisons": 37,
-    "edit_time_comparisons_retained_after_cleanup": 36,
-    "independent_method": "Compare parsed AST after removing docstrings; comments are excluded by Python AST parsing. All independently checked runtime/UI ASTs match pre-cleanup snapshots.",
-    "edit_time_evidence_limit": "The tools/tests agent asserted equality while editing all 37 files. Their original source snapshots were not retained, so this group is not labelled an independent recheck. One obsolete audio generator was later removed.",
-    "independent_results": [
-      {
-        "path": "main.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "321519b62e9cb29810065811bf617a86e0efce4d1c48498bbee0507ff65ae149",
-        "after_ast_sha256": "321519b62e9cb29810065811bf617a86e0efce4d1c48498bbee0507ff65ae149",
-        "current_source_sha256": "0e99eace21264defa4ff0d2a05754a948d23782dd739f42375bb923b506dac77",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/__init__.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "f6c335e5606788e1a6789344ab413e9bdfe767af8872d89d64d34166b682336b",
-        "after_ast_sha256": "f6c335e5606788e1a6789344ab413e9bdfe767af8872d89d64d34166b682336b",
-        "current_source_sha256": "b85be6622a0d93d5c1d9de4f0867c40299d2cd2c60804225c661a0dff146c5d3",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/app.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "92859b6caabc173e6ca6d3de13b353103f8506243a0d4a47dc1a1aa048e36aff",
-        "after_ast_sha256": "92859b6caabc173e6ca6d3de13b353103f8506243a0d4a47dc1a1aa048e36aff",
-        "current_source_sha256": "0c48d8b6315335996d869d6682b10899b3c154613af63fd6aac6856c7e31c639",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/audio.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "b76f83787ee48415acda2aa6faba5f53f2704a1c39ce4f66d954059344293644",
-        "after_ast_sha256": "b76f83787ee48415acda2aa6faba5f53f2704a1c39ce4f66d954059344293644",
-        "current_source_sha256": "14c2ba82060ed421b21be588eed721a8a2a21ce08b63dbcb4d47bc1809b37448",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/campaign.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "29a9e70f268bac424dd88c87f43ec35c6eddea14ddf6ef9dac7c514f7151573d",
-        "after_ast_sha256": "29a9e70f268bac424dd88c87f43ec35c6eddea14ddf6ef9dac7c514f7151573d",
-        "current_source_sha256": "ac610024db349ad03e2c7e24e6c4a52a7b7a29f8f35ce9bd96d377ceef96c6a0",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/collection.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "b2e2ed6ff4bb320071ecdaa56de869350ac7b109a0b4c3dd9a5e1b59c285145a",
-        "after_ast_sha256": "b2e2ed6ff4bb320071ecdaa56de869350ac7b109a0b4c3dd9a5e1b59c285145a",
-        "current_source_sha256": "2a5f9745aee51967171be7591f987e7994e9f36ae507316eba69b9f455f3eadc",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/core.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "3792a8c44e7422c60856703ac2453c68e7ca6ec3cad235d740dbafa19750a09b",
-        "after_ast_sha256": "3792a8c44e7422c60856703ac2453c68e7ca6ec3cad235d740dbafa19750a09b",
-        "current_source_sha256": "9ddc7c5da34bcba3b6dc65425e989a383ad6832d9c1451f9f7f867552425b985",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/ending_content.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "d54d83cc396df6916059f01650dca93e38e66eb454c0098547687fc088bcf491",
-        "after_ast_sha256": "d54d83cc396df6916059f01650dca93e38e66eb454c0098547687fc088bcf491",
-        "current_source_sha256": "060680b4d469cd53b8b75f8be8ad7fbbab2b16a515fa660e86c697ac50944bc9",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/env.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "3579b2c332414a97533894e2b4d349865cb52304ff30d27264c64f6c8256a551",
-        "after_ast_sha256": "3579b2c332414a97533894e2b4d349865cb52304ff30d27264c64f6c8256a551",
-        "current_source_sha256": "de42ba0980cea84b60f0e05d4391107090f6732bc006fe90efa472c5ded6b93b",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/input.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "9924f57e7dfa4d54bb6ba6f6039736b57960e83e3590e894341fefbc821e12e3",
-        "after_ast_sha256": "9924f57e7dfa4d54bb6ba6f6039736b57960e83e3590e894341fefbc821e12e3",
-        "current_source_sha256": "c784bebcf0b622845020c4b1ff8155f99637c960c758e3f82b4ed949eee0fc50",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/levels.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "9519cca8ec6a089bac8a38c46bb347219f760a0b8cbf29148a012e90506688a1",
-        "after_ast_sha256": "9519cca8ec6a089bac8a38c46bb347219f760a0b8cbf29148a012e90506688a1",
-        "current_source_sha256": "a45314c04f21a390912e20e6004fbcc31d86dd7d9eb7f8f08eb144e618661539",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/likes.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "1b7fc128b1df82c0863ee0d191897718841625d5e844cf761ea6ccaf51198434",
-        "after_ast_sha256": "1b7fc128b1df82c0863ee0d191897718841625d5e844cf761ea6ccaf51198434",
-        "current_source_sha256": "a8c128e0a2447284ec55460267271162cd0a3710481a108065b314da3806631d",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/likes_preview.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "e5dd1da375317d6ebcedfc9bacda4df36448039569dfe87914dffe738b8f130a",
-        "after_ast_sha256": "e5dd1da375317d6ebcedfc9bacda4df36448039569dfe87914dffe738b8f130a",
-        "current_source_sha256": "6dca10a91a2a03bfe48109ede18f65d704396d19e418ef9b604818b10786624f",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/paths.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "ec3f359408d71177ff80023402a9a38eb09fffa44356c5136e875d9c3b441e28",
-        "after_ast_sha256": "ec3f359408d71177ff80023402a9a38eb09fffa44356c5136e875d9c3b441e28",
-        "current_source_sha256": "cc83fb8e1ed8523b775749b3bab7fcff4d23220595b2886db94b79b8db5c337b",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/realtime.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "df1e56087e21e8265650859c68700b6f75931e5e9d3504c18fe23e88c109a688",
-        "after_ast_sha256": "df1e56087e21e8265650859c68700b6f75931e5e9d3504c18fe23e88c109a688",
-        "current_source_sha256": "3ae6ce6acadf5a164bccefdae540d922de69b3359963fc61e2ac876b5a602aee",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/scoring.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "a8e5382e5784500108805d763ccedd726c889696c11da4a43f6ab5ecef22f510",
-        "after_ast_sha256": "a8e5382e5784500108805d763ccedd726c889696c11da4a43f6ab5ecef22f510",
-        "current_source_sha256": "27b498927c12f44f6e8b459f22c9aef9c28f1353ab1eb77a466d3deabbaeddd1",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/story.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "536b2f8f126f70c491e52d5cdde4cb4518eece958d2e6f9cc476e3403d658945",
-        "after_ast_sha256": "536b2f8f126f70c491e52d5cdde4cb4518eece958d2e6f9cc476e3403d658945",
-        "current_source_sha256": "8885484c20d03b880f5230b6fc09f1c2ac699adbc88374c7de166c090b7629e0",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/ui/cat_sprites.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "71bc6b265920baf9b2cd59e695b4b21b60753fb186708f2597dce5f0e5109db3",
-        "after_ast_sha256": "71bc6b265920baf9b2cd59e695b4b21b60753fb186708f2597dce5f0e5109db3",
-        "current_source_sha256": "e9d720f45ddbbb78739c3efb025f5fc3c0660851e29acc00df39f7f2027c50a9",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/ui/collection.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "8d52f292862daf3eed4c543b9c9dddbdc47a9da29c84fa79f47482f495ec418b",
-        "after_ast_sha256": "8d52f292862daf3eed4c543b9c9dddbdc47a9da29c84fa79f47482f495ec418b",
-        "current_source_sha256": "3870b28ccda34d0cdd007a232a01624ed17f5fd9519e435e123957d3cf0dd238",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/ui/field.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "3ee631cf992098e4ef95b4b1951668c9ba670a0b6b21f0dad86eb2acb0af89c9",
-        "after_ast_sha256": "3ee631cf992098e4ef95b4b1951668c9ba670a0b6b21f0dad86eb2acb0af89c9",
-        "current_source_sha256": "c5d4056cd8e0cb39347e6fc92839b5da89966e7850c99739439791000c08d149",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/ui/ghost_sprites.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "8a3bff4405819775fe3eb87114db5b03d00d04c7a0cb04b57c6138afc458edf9",
-        "after_ast_sha256": "8a3bff4405819775fe3eb87114db5b03d00d04c7a0cb04b57c6138afc458edf9",
-        "current_source_sha256": "ac8ee3da3dff285e7a2ea47becce12f4cd01959a775c72e4b70bffe7c9ff1f36",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/ui/illustration.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "da33d904a2c249c9c439405f6cdab8ea9a90b5babd8fe9462d7997e11fdb1ae8",
-        "after_ast_sha256": "da33d904a2c249c9c439405f6cdab8ea9a90b5babd8fe9462d7997e11fdb1ae8",
-        "current_source_sha256": "ef1989a6c4540d063add55eb9c05048708c66c0512aee96951c8fa7679097dba",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/ui/likes.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "9c22ad055d2cf2bc149f5885e25416f542746c25bed96f853f3e8a6a9964aa6f",
-        "after_ast_sha256": "9c22ad055d2cf2bc149f5885e25416f542746c25bed96f853f3e8a6a9964aa6f",
-        "current_source_sha256": "c935d8e13de4e736aac9fb6bcff6f45f759b62545827c6e184ae2b4d3fde3025",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/ui/lobby.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "91390e133697a5b6c4238d8c3bd61c4af1da78b06deacfe7b85e5d712204f2db",
-        "after_ast_sha256": "91390e133697a5b6c4238d8c3bd61c4af1da78b06deacfe7b85e5d712204f2db",
-        "current_source_sha256": "fe03a8c8be38c7b1aa4c02b65914f0303ee63285b22e294012ea9e5c80226193",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/ui/map_sprites.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "9316a57dda557c5d06a3b3ae38f24a236331594681cba53e23e1cc5911393e7c",
-        "after_ast_sha256": "9316a57dda557c5d06a3b3ae38f24a236331594681cba53e23e1cc5911393e7c",
-        "current_source_sha256": "55ad2de31a18d1d946998d4410d4bd61924556c5d91fdcc48c1ea2d62138022a",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/ui/memories.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "f25cefd749408bf11626520d956861b975aab90841b4bca820f2bec415ffe95c",
-        "after_ast_sha256": "f25cefd749408bf11626520d956861b975aab90841b4bca820f2bec415ffe95c",
-        "current_source_sha256": "1a9e699300003d5e2a9d4f06abb02d9a8a8b17a407e6876edfa6b30288ce9728",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/ui/menus.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "bf4d87e3a46de325c82e09e12dc929afdfeb2558d7673d2ecb8e547fc3576ef1",
-        "after_ast_sha256": "bf4d87e3a46de325c82e09e12dc929afdfeb2558d7673d2ecb8e547fc3576ef1",
-        "current_source_sha256": "96e9a4c97875f94a72a1173e3645d98fb75b1388011178b01c337b2d8645473d",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/ui/theme.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "b977122424749d8c7091b2b4e6eb0df971b5ab80bdc7aefd2ff210ae6866fb3a",
-        "after_ast_sha256": "b977122424749d8c7091b2b4e6eb0df971b5ab80bdc7aefd2ff210ae6866fb3a",
-        "current_source_sha256": "30e66780fba96818c28d3842a1e02d0d4ca54a72be494b6cbb7d75562b055acc",
-        "compile_passed": true
-      },
-      {
-        "path": "kkamang/ui/__init__.py",
-        "exists": true,
-        "docstring_excluded_ast_identical": true,
-        "before_ast_sha256": "3543b4693a36a1098850b8bc928887694ed59a6deb7d3dfd0339de01f55a77b6",
-        "after_ast_sha256": "3543b4693a36a1098850b8bc928887694ed59a6deb7d3dfd0339de01f55a77b6",
-        "current_source_sha256": "fcd85523dabf394167d522eedec2ced20622b3f247579862d5dc61d85320b65b",
-        "compile_passed": true
-      }
+  "ending_intro": {
+    "backgrounds": {
+      "happy_all": "ending_intro_day.png",
+      "sad": "ending_intro_night.png",
+      "ghost_a": "ending_intro_night.png",
+      "ghost_b": "ending_intro_night.png",
+      "ghost_c": "ending_intro_night.png",
+      "normal": "ending_intro_day.png"
+    },
+    "fade_in_seconds": 0.45,
+    "automatic_advance": false,
+    "continue_inputs": [
+      "Continue button",
+      "Skip button",
+      "Enter",
+      "Space",
+      "Escape"
     ],
-    "edit_time_results": [
-      {
-        "path": "tests/test_app.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "1de3d218bb8d5ed8fcacc3a25932ad316cdc363dd0f58f46b25ca9b11175b24c",
-        "current_ast_sha256": "4760878e0ff3ca0d0f249ecf46da1981fd08413a6856e76c37389833d849fb22",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_balance_report.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "6a25ecc2684e6d32df9cebcee2ba0ff105ab9cf8a53f83f3876e250be7807bf7",
-        "current_ast_sha256": "7aa618738fb6082f71c7a3c4f0ce1069f636830076400cda4ad5d1cb8d4f37c3",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_campaign.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "3d9346f5886c2128e8feafaede9567b594ae79b3b41caa5b96d639359e635597",
-        "current_ast_sha256": "536e7bb93c098e6a831167cadc8effdfd3d3fad0bef77ad700b6bdfc7f82de31",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_cat_sprites.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "cfb8eb28305e2dff729504df9a8f14764267d739b2ad1dd95dc751dc19a8d910",
-        "current_ast_sha256": "29737e5ff2fba73a1315909404afdd6182d26aaaef22ae3ffc1a91f17a24d308",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_collection.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "ce55dd7c21bb03245c4941f48f0699652df6d0dabe6bb6017a982dcc5973d47a",
-        "current_ast_sha256": "0b9b0321ff6ded90e24bcd44a1fcaf23b9ff4b84e8f86d2c6cf997419687e244",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_contextual_audio.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "7d659383830d9b4264dab316f86c8f59ab1d6996a9b5424b475b99316e5e8f66",
-        "current_ast_sha256": "07cfaf02dd4fd8a903d999d364ab8bb1669ec495691dfe1320948505e3d34f73",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_core.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "fe8e0733fd815210b04711fb89d95885a8c2471846cbcdce8e2d1a71d4170958",
-        "current_ast_sha256": "ba662e6fe3de6492162aed2bd6aadda8a8ea302d46f8a6ef93cad8866ecce0ac",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_env.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "eef9bdf818f0306c7de39d3a04a9b0b161e0c9058902aab74aea14906ca581ca",
-        "current_ast_sha256": "b9aaa3514cb1165d790ee2415d6b2264571a71a6408c552308a14239bd5d10b4",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_final_png_endings.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "8823036be01ad5bf01dceb2789e280ae6d9d8d85aaee14336d4be97f9c9d7d72",
-        "current_ast_sha256": "b38060ff5c2a857f4c151992e6801af48502d3df7ff25479b088959fbacee957",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_ghost_sprites.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "d3a39c1a9ff26ecd0dba43edc7d41320fddf27d37e10d7a2a1700e9c4f151938",
-        "current_ast_sha256": "fc254f7f768905a8686bb347ed72aad83ecd145ac93d2b352bb9b6cd26a07182",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_input.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "9c83a3a47d899cd30dd8ee90d80bc7a03aa7aa7b190f1ddc74a0acb200587b45",
-        "current_ast_sha256": "cef0a9eb39d438763fe21b18470bcafa3734313b88f5022b964ba308bf2242a6",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_likes.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "b2f6fdfaa1aa5658e152e21ebd92b4b6f1fbc8ece7ec868b23b6b55f5cfaad7c",
-        "current_ast_sha256": "c95c41b8f6104390c4a64d3c79b4c19007c1b6d555ac30b24bf9d595e96842b8",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_likes_app.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "4c587747291cb1108260c8b4ebe51c30a90a39f9789d5582bf76e9cf0a14a43d",
-        "current_ast_sha256": "24f8d6bb3d1d92ae941d94021e197ca6acb66ed4a6b66ff02baffab51a52f3aa",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_lobby.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "0fb1337f56795fa91ec83af6c1e1873a5b246360451e046e8b89311b03a11c38",
-        "current_ast_sha256": "3b67669dd476ae7e0720fae167db32735d847936067fabc34b341a60d4b222aa",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_memory_art.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "cc8f1f2b079c56d150a48a1628acdf8888b05d89dcd83cb197df326da6a5044b",
-        "current_ast_sha256": "eee686a42e4ca981494cb0d08834c8c63bdd7345e1f65b24bf8a04e25ba90343",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_realtime.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "76e7497b5311605c187a953331c5877ea5b39b1e1f4d73bb3d36b641829989f9",
-        "current_ast_sha256": "f9fbec6351812bac1d65c9b6f4cf152073868d9bdf5ef0d61af2f83ba80dd9b9",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_six_ending_visuals.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "973658f309c4e49d5a7f628ee0e3e76b75f2a19e66af49e32eafdd2c7bcbc301",
-        "current_ast_sha256": "2008c071e79363a622dd4742e20ea7b89c79291d7a75b2b570aaffe07ecd269b",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_story_cinematic_fixtures.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "6a815dec4b58606d34dec9a1a77a095e6c60948d6bb6e5d38233bc5b8828437e",
-        "current_ast_sha256": "c09482327eeb21875eec3c03b72fcb9479757d11b4cf9210de3d5c2e7b87fdf1",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_story_endings.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "62d239a6816a3215d678a05dd103954af02bc9800ab59a2466a8ad9539b4dd7e",
-        "current_ast_sha256": "1e924db57cf82364ff2c9be5a7ee8f9d850f5cbcf0613697a12d72e6d9b0da19",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_story_rebase.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "232aba2c89dcc0edbeb6b37dca955e6348e45ce60378e2143b6435de79447b98",
-        "current_ast_sha256": "6f4c4f5e907437141e970ff2e5f10bf9097eb854be9e7dfd44a4d78f8e724191",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_upgrade.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "1cbfb2c4a6e470e809facdbc28967ac43e9933d574966c3abbf5e890ae8a825f",
-        "current_ast_sha256": "d97efb08fc313ec94e20cc8de254e3196e0315a59e905a06ba78a5e2e72c3f59",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_visual_story_app.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "38eab990ed7fd916c329d8de2d5e4869944d8f8562d564483081d8360ec962b1",
-        "current_ast_sha256": "ea880c6f870d906b83853bf5bea4dfc7430e86cccdaa24631e7bc606f61f977c",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_visual_story_audio.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "fee537ab55a2f048ba6b7b2abaff25ffacae3d00ef2ef774fcfd9fedd0788812",
-        "current_ast_sha256": "cf51f4dff3785d333c84c5c5a53f55a3d3bf434983a0d542136429c54b18735c",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tests/test_visual_story_campaign.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "2e4334e754e901fdf0c2dd90cea287e98b729e48f25084ff3588cba4b9b73fb1",
-        "current_ast_sha256": "57700118ca785d5a15dc23f456241360241c778a83f448a3382a3fb46980bddb",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tools/audio/convert_user_media.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "ecc3c89a3c8cd3143174b52504f983d57a249f9e9c8f2b2cb7ef1c95fe2f37ea",
-        "current_ast_sha256": "2408fec3350e82585048c33a9ec0ad7dcd0688c8fe19cad152ee1a133a27cbbc",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tools/audio/generate_map_bgm_v7.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "a90d4f29b5e89987f3581f6178ee1a41cf4241e5f3972f93a1a282dfd68ca180",
-        "current_ast_sha256": "e52f9ef160c49ba5466fe3351392f865b360b654b50212761fdc551de481224c",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tools/audio/generate_pickups_v3.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "e07e2b57ef8fa8b7e11fbcc6ba353da75970fcc595404e517e9dc1f5bdce2a2e",
-        "current_ast_sha256": "5a9c5dab65dbc75664e9ef7dd1353a04791dd9128254525338e14c48cbe8e869",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tools/audio/generate_sfx.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "b1bb22a90e487726b755209f61cc626e018d0df0b8e27cf1ecd77120e1557631",
-        "current_ast_sha256": "5811b93acbf6d9a297b2e53ae82afc367d2fdda1628cc577f5f264aec1c70b85",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tools/audio/generate_shortcut_v5.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "5bac76cfbc3beacad2357f9c48d58b9fa416a96b802c8d43516b8d09276bce43",
-        "current_ast_sha256": "69f2c07f9fd361e30007d63468625ad68df33ad5cd12cc734dfa66b97ba636e9",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tools/audio/generate_timed_v4.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "2cf6f42ef5e688d2ecf3c70d5cff311bf2f47cdb269a2ab156d1e606b3f0ca51",
-        "current_ast_sha256": "510421ea08fee49f23d3f1e38773f3a901ea833035dc0ab32ee234651b6cb867",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tools/audio/restore_piano_samples.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "d22dd5432a9675edc797b183e34cea6844449096cf03e5c7dc4c598c9e0b0a25",
-        "current_ast_sha256": "3907dbe4e7298ffd9a07a4fa85c4c890497127804b4907194a3d13cd904601aa",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tools/balance_test.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "c1b3410b5ddad3643b278fa8c15322dee69d208764cce34651e3e9dc638c1eb2",
-        "current_ast_sha256": "daef4334d9222fd1d4ee4dee65f6184fdc325f01f436b1bf86e5dc72c35f1ddb",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tools/check_level_schema.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "3ba7c07fe283bab6db853c134d1f57fe6cce7555427976d112ccd88498aa9c47",
-        "current_ast_sha256": "e3736719938c8128b5f7295cf1d04664ef83f4ca80f9ff06b93307680a98cc9a",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tools/evaluate.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "8186c2d18faf23eb71e039f612d88187efa51860f77aab47aed6de5bbaa47f9e",
-        "current_ast_sha256": "ec7b52876c6760c75f18b6b6eafdf46c2da59aa0dabe28e1a07ac6676d4aa773",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tools/make_audio.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "4da84ecef5f893c1cb7a4489037ae27e121c27dcfc726cb40470089278b440ba",
-        "current_ast_sha256": "8c8d7ffb03bd819504ae88fef7cdf2bddfbaf297d18e13675185a65c13b692d7",
-        "compile_passed": true,
-        "pre_deletion_evidence_path": "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\kkamang_make_audio_deletion_evidence.json",
-        "pre_deletion_source_sha256": "4da84ecef5f893c1cb7a4489037ae27e121c27dcfc726cb40470089278b440ba",
-        "pre_deletion_ast_sha256": "8c8d7ffb03bd819504ae88fef7cdf2bddfbaf297d18e13675185a65c13b692d7",
-        "retained_after_cleanup": false
-      },
-      {
-        "path": "tools/plan_routes.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "2a7a35ebe28782c5941d1a81d56102f470974ff5307cef006b00971e5a09b17f",
-        "current_ast_sha256": "1aee94587e31d95f392f2d250c060a0a0d7e8b199ef41c72991e26b886c19319",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      },
-      {
-        "path": "tools/replay_validation.py",
-        "independently_rechecked_against_baseline": false,
-        "baseline_source_preserved": false,
-        "agent_reported_docstring_excluded_ast_identical_at_write": true,
-        "exists": true,
-        "current_source_sha256": "4788c6b0a5a29a066f0cfa9f19bd925c9f95121b71d4bbbc709ed42339bf6439",
-        "current_ast_sha256": "b69f6a742da4adea9b75e27806b1a59865c5dfd22969778a20e5a733f2130f72",
-        "compile_passed": true,
-        "retained_after_cleanup": true
-      }
+    "actors_drawn": false,
+    "legacy_procedural_cinematic_renderer_removed": true,
+    "first_view_sequence": [
+      "day/night PNG intro",
+      "ending PNG",
+      "same PNG with narration",
+      "lobby"
     ],
-    "english_explanatory_comments": [],
-    "missing_korean_module_summaries": [],
-    "all_retained_python_compiles": true,
-    "english_explanatory_docstrings": []
+    "replay_sequence": [
+      "ending PNG",
+      "same PNG with narration",
+      "existing active lobby"
+    ],
+    "existing_save_format_changed": false,
+    "tested_missing_corrupt_assets_fail_without_fallback": true
   },
-  "visual_comparison": {
-    "method": "RGB pixel hashes compared with captures from immediately before comment cleanup; memory originals and masks were also regenerated with preserved pre-cleanup UI source.",
-    "cinematic_frames": [
-      {
-        "kind": "garden",
-        "seconds": 0.0,
-        "variants": [],
-        "sha256": "e91409f519ef6dc937d5c758bf5497e766b2d8216e661fce64a3350b038e2260",
-        "current_sha256": "e91409f519ef6dc937d5c758bf5497e766b2d8216e661fce64a3350b038e2260",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 2.19,
-        "variants": [],
-        "sha256": "f599a24178ba23a055ccaea1deb4462de9137d9586b922abc13b0cce22a7206d",
-        "current_sha256": "f599a24178ba23a055ccaea1deb4462de9137d9586b922abc13b0cce22a7206d",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 2.2,
-        "variants": [],
-        "sha256": "62b865d260831148e031955143307e0f9cf2e7912de1a5f86efc16be2d2f3f59",
-        "current_sha256": "62b865d260831148e031955143307e0f9cf2e7912de1a5f86efc16be2d2f3f59",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 3.3,
-        "variants": [],
-        "sha256": "adcba10b213c9376f18e2fe041b863ca439282b5f47173dbba2f19f5f654a283",
-        "current_sha256": "adcba10b213c9376f18e2fe041b863ca439282b5f47173dbba2f19f5f654a283",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 4.0,
-        "variants": [],
-        "sha256": "ded9e26f421251c8c9bfcf3f9c2c9f741e655eeb6e6a9cc190384a059b8e7036",
-        "current_sha256": "ded9e26f421251c8c9bfcf3f9c2c9f741e655eeb6e6a9cc190384a059b8e7036",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 0.0,
-        "variants": [],
-        "sha256": "eb5df82d96d4c5f58d7a99358790fd75add75248140f4d9cc50951916253c51c",
-        "current_sha256": "eb5df82d96d4c5f58d7a99358790fd75add75248140f4d9cc50951916253c51c",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 2.19,
-        "variants": [],
-        "sha256": "5484e03870c0a73a1ffc0ca89a3cc8deaaa9b90b607e7441134aef5041066c3b",
-        "current_sha256": "5484e03870c0a73a1ffc0ca89a3cc8deaaa9b90b607e7441134aef5041066c3b",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 2.2,
-        "variants": [],
-        "sha256": "1ff86b3024974a53da73cec9f8613af33af0183863c369025900f6272beca7e7",
-        "current_sha256": "1ff86b3024974a53da73cec9f8613af33af0183863c369025900f6272beca7e7",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 3.3,
-        "variants": [],
-        "sha256": "4db8bb2b95f362ec43e4ac49cb74aaafef767e6ce450187ae1fc5a060770c828",
-        "current_sha256": "4db8bb2b95f362ec43e4ac49cb74aaafef767e6ce450187ae1fc5a060770c828",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 4.0,
-        "variants": [],
-        "sha256": "5d53d88d1c9f5243873ed9fe3ba74e779b6ca13ac59e28b057d10c23da00319d",
-        "current_sha256": "5d53d88d1c9f5243873ed9fe3ba74e779b6ca13ac59e28b057d10c23da00319d",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 0.0,
-        "variants": [
-          0
-        ],
-        "sha256": "5ef2430557f20fe37b58ff1499f5d1bd889302d1ec1a8655455e035c65608b29",
-        "current_sha256": "5ef2430557f20fe37b58ff1499f5d1bd889302d1ec1a8655455e035c65608b29",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 2.19,
-        "variants": [
-          0
-        ],
-        "sha256": "c9b809a1df24a0d3b106b91e247092d21a152c41916a648ea85f15804a23fd63",
-        "current_sha256": "c9b809a1df24a0d3b106b91e247092d21a152c41916a648ea85f15804a23fd63",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 2.2,
-        "variants": [
-          0
-        ],
-        "sha256": "d1d5d0913da84f67bdbc77d37a0faa3ee3d6466788ee371330421f4698075d1f",
-        "current_sha256": "d1d5d0913da84f67bdbc77d37a0faa3ee3d6466788ee371330421f4698075d1f",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 3.3,
-        "variants": [
-          0
-        ],
-        "sha256": "9bda5c96172ef14035f2fe8b0e3d21b9d797db3f50e4dbec8b5758ed9b569dcd",
-        "current_sha256": "9bda5c96172ef14035f2fe8b0e3d21b9d797db3f50e4dbec8b5758ed9b569dcd",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 4.0,
-        "variants": [
-          0
-        ],
-        "sha256": "3222c66cdd4a8317d0ffce7025b4b229e934a8e176c77a72b113f716d04aa1d9",
-        "current_sha256": "3222c66cdd4a8317d0ffce7025b4b229e934a8e176c77a72b113f716d04aa1d9",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 0.0,
-        "variants": [
-          0
-        ],
-        "sha256": "5425230bf3f89eaec8cdeef873a6b4f3c0d12264b14dc966a02d05ca36b9eb94",
-        "current_sha256": "5425230bf3f89eaec8cdeef873a6b4f3c0d12264b14dc966a02d05ca36b9eb94",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 2.19,
-        "variants": [
-          0
-        ],
-        "sha256": "218bccb08c0446450df65b1b9de0bf1954b013696a51e953327c39d28ab2b983",
-        "current_sha256": "218bccb08c0446450df65b1b9de0bf1954b013696a51e953327c39d28ab2b983",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 2.2,
-        "variants": [
-          0
-        ],
-        "sha256": "e8cdea9640ac9a3f0f921351de7092144f0609337d2ef98832458fd9a139122c",
-        "current_sha256": "e8cdea9640ac9a3f0f921351de7092144f0609337d2ef98832458fd9a139122c",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 3.3,
-        "variants": [
-          0
-        ],
-        "sha256": "b0d073d4cf16c878fc2226881b88abd93ce653e4c09126d5ddb8e05923c6fa5e",
-        "current_sha256": "b0d073d4cf16c878fc2226881b88abd93ce653e4c09126d5ddb8e05923c6fa5e",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 4.0,
-        "variants": [
-          0
-        ],
-        "sha256": "3f6d8f66b64c5cce2991f402cc3df39f0b02ae53abe16a54c6aea440abf4f55d",
-        "current_sha256": "3f6d8f66b64c5cce2991f402cc3df39f0b02ae53abe16a54c6aea440abf4f55d",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 0.0,
-        "variants": [
-          1
-        ],
-        "sha256": "5975cba4a34ea0693d90cf84fd484c09cfcf02eec04813ff77dd50e16a2d2d67",
-        "current_sha256": "5975cba4a34ea0693d90cf84fd484c09cfcf02eec04813ff77dd50e16a2d2d67",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 2.19,
-        "variants": [
-          1
-        ],
-        "sha256": "11215c51fb6c7127c70a55b46dbf9f8952d40dba6be81a692d602857f96515cb",
-        "current_sha256": "11215c51fb6c7127c70a55b46dbf9f8952d40dba6be81a692d602857f96515cb",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 2.2,
-        "variants": [
-          1
-        ],
-        "sha256": "623e840ce76ce8d5873ff3c7d7ddf34a4adcdffb6f10220b5cc9ad864f30ff7b",
-        "current_sha256": "623e840ce76ce8d5873ff3c7d7ddf34a4adcdffb6f10220b5cc9ad864f30ff7b",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 3.3,
-        "variants": [
-          1
-        ],
-        "sha256": "6cb644b75da3b70b7e80c7c84b00e247c8e5c8ab67192c2824f4cb7e5b69ee05",
-        "current_sha256": "6cb644b75da3b70b7e80c7c84b00e247c8e5c8ab67192c2824f4cb7e5b69ee05",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 4.0,
-        "variants": [
-          1
-        ],
-        "sha256": "2d8afec7d6d05bb1fcb414094d6520031269898e4dbe3393624e243451f6b37c",
-        "current_sha256": "2d8afec7d6d05bb1fcb414094d6520031269898e4dbe3393624e243451f6b37c",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 0.0,
-        "variants": [
-          1
-        ],
-        "sha256": "751e4d79c7babfd4489c44ec3617d3f98d59fb43d802f4dcf8b7df36959d8026",
-        "current_sha256": "751e4d79c7babfd4489c44ec3617d3f98d59fb43d802f4dcf8b7df36959d8026",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 2.19,
-        "variants": [
-          1
-        ],
-        "sha256": "ce6173157144c178bc3015251c4f83fc66e8bacb3093d96cd619ba453c2e47da",
-        "current_sha256": "ce6173157144c178bc3015251c4f83fc66e8bacb3093d96cd619ba453c2e47da",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 2.2,
-        "variants": [
-          1
-        ],
-        "sha256": "a14d20a48f5c0a32dc1104da2d3b033331a1930fdd0e88bd4050d91ef7f4008d",
-        "current_sha256": "a14d20a48f5c0a32dc1104da2d3b033331a1930fdd0e88bd4050d91ef7f4008d",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 3.3,
-        "variants": [
-          1
-        ],
-        "sha256": "f0334772e7cc788625f54d727d9f51b5615b8d67b3c2e71b0fbe08e4d47999de",
-        "current_sha256": "f0334772e7cc788625f54d727d9f51b5615b8d67b3c2e71b0fbe08e4d47999de",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 4.0,
-        "variants": [
-          1
-        ],
-        "sha256": "6678d4af7a60d87319dd0959719d8d1ded630a4bfddfc069f987f24b3faa8f37",
-        "current_sha256": "6678d4af7a60d87319dd0959719d8d1ded630a4bfddfc069f987f24b3faa8f37",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 0.0,
-        "variants": [
-          2
-        ],
-        "sha256": "f47ea2c39d0607f3a8898cf798319bddb1b7575681bc78e68171606dcd07a7cf",
-        "current_sha256": "f47ea2c39d0607f3a8898cf798319bddb1b7575681bc78e68171606dcd07a7cf",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 2.19,
-        "variants": [
-          2
-        ],
-        "sha256": "a36500f293279e9a6d1ab838e830a67ab2f56dc468f530d7426a1efc0dbb5c4f",
-        "current_sha256": "a36500f293279e9a6d1ab838e830a67ab2f56dc468f530d7426a1efc0dbb5c4f",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 2.2,
-        "variants": [
-          2
-        ],
-        "sha256": "e00d717e1e8088b6acf62c677634e1dc43f6b01c15b26d17bf7d3c2d294d118d",
-        "current_sha256": "e00d717e1e8088b6acf62c677634e1dc43f6b01c15b26d17bf7d3c2d294d118d",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 3.3,
-        "variants": [
-          2
-        ],
-        "sha256": "fb52530c513c4a06f5ed016bd4235d897da76039a03d8400c841965c40b89b60",
-        "current_sha256": "fb52530c513c4a06f5ed016bd4235d897da76039a03d8400c841965c40b89b60",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 4.0,
-        "variants": [
-          2
-        ],
-        "sha256": "572f27af9c0c12004f08f02b04de1c1197f3d5bd9bbc28e25d55719704ac7433",
-        "current_sha256": "572f27af9c0c12004f08f02b04de1c1197f3d5bd9bbc28e25d55719704ac7433",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 0.0,
-        "variants": [
-          2
-        ],
-        "sha256": "d7157a90af77e5f9773d1a2d3d1347ab712d1b33e7cefc54736532f887811dd9",
-        "current_sha256": "d7157a90af77e5f9773d1a2d3d1347ab712d1b33e7cefc54736532f887811dd9",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 2.19,
-        "variants": [
-          2
-        ],
-        "sha256": "c894e1daa0b03524f7e399a4330be9258b5500f66a9d3e6489fe255341e2cd33",
-        "current_sha256": "c894e1daa0b03524f7e399a4330be9258b5500f66a9d3e6489fe255341e2cd33",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 2.2,
-        "variants": [
-          2
-        ],
-        "sha256": "3df6d31df4db8307e1b045e57de7b7fe5f022a71060b4839988aae16394d3eb9",
-        "current_sha256": "3df6d31df4db8307e1b045e57de7b7fe5f022a71060b4839988aae16394d3eb9",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 3.3,
-        "variants": [
-          2
-        ],
-        "sha256": "a904ddfed95fefaaf80e2427ec6ae7729c5fd30dd5a558df2ef056d9f525a0d1",
-        "current_sha256": "a904ddfed95fefaaf80e2427ec6ae7729c5fd30dd5a558df2ef056d9f525a0d1",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 4.0,
-        "variants": [
-          2
-        ],
-        "sha256": "5cc952a8b7f4979a0120b02df3d7393542598e2a78ae0e8733d5d06c193cd760",
-        "current_sha256": "5cc952a8b7f4979a0120b02df3d7393542598e2a78ae0e8733d5d06c193cd760",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 0.0,
-        "variants": [
-          0,
-          1,
-          2
-        ],
-        "sha256": "7087946be164d4eff70f84351f338fb55ed31baf585f019dd9dfcd895f5f3895",
-        "current_sha256": "7087946be164d4eff70f84351f338fb55ed31baf585f019dd9dfcd895f5f3895",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 2.19,
-        "variants": [
-          0,
-          1,
-          2
-        ],
-        "sha256": "67e60678586e7e7645964837e4af2fcc03822592ec98090177d1e08352e4a47d",
-        "current_sha256": "67e60678586e7e7645964837e4af2fcc03822592ec98090177d1e08352e4a47d",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 2.2,
-        "variants": [
-          0,
-          1,
-          2
-        ],
-        "sha256": "1330f14824ffbafd5f1cdfa8b860ec1cc80649baa29439fbcd4f16b7663c4ab9",
-        "current_sha256": "1330f14824ffbafd5f1cdfa8b860ec1cc80649baa29439fbcd4f16b7663c4ab9",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 3.3,
-        "variants": [
-          0,
-          1,
-          2
-        ],
-        "sha256": "232ee132b9e25d1b8592c0c8edaa03f81176682372789d946ad6b359149d1866",
-        "current_sha256": "232ee132b9e25d1b8592c0c8edaa03f81176682372789d946ad6b359149d1866",
-        "match": true
-      },
-      {
-        "kind": "garden",
-        "seconds": 4.0,
-        "variants": [
-          0,
-          1,
-          2
-        ],
-        "sha256": "92da98e317b722539942af8722b9771d687b5d88aad77ce5e53dee0f8d2a2102",
-        "current_sha256": "92da98e317b722539942af8722b9771d687b5d88aad77ce5e53dee0f8d2a2102",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 0.0,
-        "variants": [
-          0,
-          1,
-          2
-        ],
-        "sha256": "3f69f326b69744ab22b2122436bbb35a083bad7eeb337dc97b947a9f080e8d6a",
-        "current_sha256": "3f69f326b69744ab22b2122436bbb35a083bad7eeb337dc97b947a9f080e8d6a",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 2.19,
-        "variants": [
-          0,
-          1,
-          2
-        ],
-        "sha256": "1c911457aec9ec6f807955916ac21ed136d98816f5ce864f3d4922fbdf800815",
-        "current_sha256": "1c911457aec9ec6f807955916ac21ed136d98816f5ce864f3d4922fbdf800815",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 2.2,
-        "variants": [
-          0,
-          1,
-          2
-        ],
-        "sha256": "8520d032f659cb30e786b84245ac86c35b719cd5fb0ef66148d00615daec6a5e",
-        "current_sha256": "8520d032f659cb30e786b84245ac86c35b719cd5fb0ef66148d00615daec6a5e",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 3.3,
-        "variants": [
-          0,
-          1,
-          2
-        ],
-        "sha256": "6a1badb89a6d0effbd558da5c407954950097276677fa4cfcd68967d60c97868",
-        "current_sha256": "6a1badb89a6d0effbd558da5c407954950097276677fa4cfcd68967d60c97868",
-        "match": true
-      },
-      {
-        "kind": "liberation",
-        "seconds": 4.0,
-        "variants": [
-          0,
-          1,
-          2
-        ],
-        "sha256": "3415daf1b7a84f499f8073034d24dc3923be819d19f7dfa138b3d45c01fda07e",
-        "current_sha256": "3415daf1b7a84f499f8073034d24dc3923be819d19f7dfa138b3d45c01fda07e",
-        "match": true
-      }
+  "ending_rule": {
+    "threshold": 70,
+    "high_affection_friend_count": {
+      "0": "sad",
+      "1": "individual friend ending",
+      "2": "normal",
+      "3": "happy_all"
+    },
+    "best_star_sum_used_for_selection": false,
+    "existing_active_ending_migrated": false,
+    "verified_regressions": [
+      "below 70 vs exactly 70",
+      "sad despite past best stars",
+      "individual ending despite zero stars",
+      "all six preview branches",
+      "representative replacement refreshes selected ending",
+      "ending first view, replay and save/load"
     ],
-    "memory_originals_and_masks": [
-      {
-        "memory_id": 1,
-        "kind": "original",
-        "baseline_sha256": "6eee87e23db0d8941224ce8b61ba53334e55788b1a924c13c4f020d2fb7bf76a",
-        "current_sha256": "6eee87e23db0d8941224ce8b61ba53334e55788b1a924c13c4f020d2fb7bf76a",
-        "match": true
-      },
-      {
-        "memory_id": 1,
-        "kind": "mask",
-        "baseline_sha256": "69ab06bdc499a075b4457a94fdf57ffe29575c4e6374d363df9dfc9fac27a6e1",
-        "current_sha256": "69ab06bdc499a075b4457a94fdf57ffe29575c4e6374d363df9dfc9fac27a6e1",
-        "match": true
-      },
-      {
-        "memory_id": 2,
-        "kind": "original",
-        "baseline_sha256": "02a3303abe7b65d6abce75bc5075fe3e52ef52ca8f055582151197fed2f8e7a2",
-        "current_sha256": "02a3303abe7b65d6abce75bc5075fe3e52ef52ca8f055582151197fed2f8e7a2",
-        "match": true
-      },
-      {
-        "memory_id": 2,
-        "kind": "mask",
-        "baseline_sha256": "1850e1ac4b3706941d82775d35bc0e6693e836b37b3d9fd19929fd83ceb72be5",
-        "current_sha256": "1850e1ac4b3706941d82775d35bc0e6693e836b37b3d9fd19929fd83ceb72be5",
-        "match": true
-      },
-      {
-        "memory_id": 3,
-        "kind": "original",
-        "baseline_sha256": "7b1c5bd608a0a61c4c596e1be6f48b85a70f7260819527870c6743b8fdc2dbe9",
-        "current_sha256": "7b1c5bd608a0a61c4c596e1be6f48b85a70f7260819527870c6743b8fdc2dbe9",
-        "match": true
-      },
-      {
-        "memory_id": 3,
-        "kind": "mask",
-        "baseline_sha256": "0d22cf5b4e4daa32e4c7f78f13494595ef5d9a6e75a07f77f396a96afc5571fd",
-        "current_sha256": "0d22cf5b4e4daa32e4c7f78f13494595ef5d9a6e75a07f77f396a96afc5571fd",
-        "match": true
-      }
-    ],
-    "png_assets": [
-      {
-        "path": "assets/art/ending_happy_all.png",
-        "baseline_sha256": "d78de91abcba0212342679e8140556eb51492681c7a6ba36f07b1be190bab7f1",
-        "current_sha256": "d78de91abcba0212342679e8140556eb51492681c7a6ba36f07b1be190bab7f1",
-        "match": true
-      },
-      {
-        "path": "assets/art/ending_ghost_a.png",
-        "baseline_sha256": "4ef64e208d35aeb956449bdd4547a8207686b9eb65a956f132bd9bb3896c742a",
-        "current_sha256": "4ef64e208d35aeb956449bdd4547a8207686b9eb65a956f132bd9bb3896c742a",
-        "match": true
-      },
-      {
-        "path": "assets/art/ending_ghost_b.png",
-        "baseline_sha256": "9ddc0be71c241428ec8bc2ccbebbb4f8b8680c14785ff2ccd3883716cbdd0180",
-        "current_sha256": "9ddc0be71c241428ec8bc2ccbebbb4f8b8680c14785ff2ccd3883716cbdd0180",
-        "match": true
-      },
-      {
-        "path": "assets/art/ending_ghost_c.png",
-        "baseline_sha256": "7d55cf572ee8c58a45e89af1e6f4198dbceef75a211fff46afdc28744024489e",
-        "current_sha256": "7d55cf572ee8c58a45e89af1e6f4198dbceef75a211fff46afdc28744024489e",
-        "match": true
-      },
-      {
-        "path": "assets/art/ending_normal.png",
-        "baseline_sha256": "d8cbb03009f57e6db22d24fe7d11c062984016ac31d88a3b4eaefe8558b10e98",
-        "current_sha256": "d8cbb03009f57e6db22d24fe7d11c062984016ac31d88a3b4eaefe8558b10e98",
-        "match": true
-      },
-      {
-        "path": "assets/art/ending_sad.png",
-        "baseline_sha256": "63865aa5f163ea7fe1ed9629a69adf1676f58ffbad32039190c60de537d875b3",
-        "current_sha256": "63865aa5f163ea7fe1ed9629a69adf1676f58ffbad32039190c60de537d875b3",
-        "match": true
-      },
-      {
-        "path": "assets/art/prologue.png",
-        "baseline_sha256": "29b4b82f92bb4f3a8e61c6581a03113ed0f61f5c7869f74af98bef716c09875a",
-        "current_sha256": "29b4b82f92bb4f3a8e61c6581a03113ed0f61f5c7869f74af98bef716c09875a",
-        "match": true
-      },
-      {
-        "path": "assets/art/character/resident_bosong.png",
-        "baseline_sha256": "84e92a8fe07e4f8801b0c5bd131a5677dff4ee045d12c92cc5e5dce1319dc7e6",
-        "current_sha256": "84e92a8fe07e4f8801b0c5bd131a5677dff4ee045d12c92cc5e5dce1319dc7e6",
-        "match": true
-      },
-      {
-        "path": "assets/art/character/resident_ipari.png",
-        "baseline_sha256": "9fe017c1b0d143bcdc7dd0467740f266f81d8d1c198b96befcbcc962589bd506",
-        "current_sha256": "9fe017c1b0d143bcdc7dd0467740f266f81d8d1c198b96befcbcc962589bd506",
-        "match": true
-      },
-      {
-        "path": "assets/art/character/resident_dore.png",
-        "baseline_sha256": "f8acac3aa33f71425669af49cc9de1b6c2af78d438fd6e8198380bd4535fb4b8",
-        "current_sha256": "f8acac3aa33f71425669af49cc9de1b6c2af78d438fd6e8198380bd4535fb4b8",
-        "match": true
-      }
-    ],
+    "current_source_sha256": {
+      "kkamang/likes.py": "98a62a0318b4cac49512a314716edddb3dab8c77f3f45aaa4dfdf4596b7a832d",
+      "kkamang/likes_preview.py": "60c260691f1b2aa49df532dd1fa49afdc49aa5e10fb5bc2d8804c27a3529d070",
+      "tests/test_likes.py": "8680ac0f1558d30030907d73a3cb3f31b26f35fa01ce0b4bf836c5d355592e86",
+      "tests/test_story_endings.py": "ac81c536c05987781bc78d92b763c065955d63065a1f4da92986c79fa4caa67d"
+    }
+  },
+  "visual_review": {
     "endings": {
       "happy_all": {
-        "source_size": [
-          1983,
-          784
+        "intro": "ending_intro_day.png",
+        "ending": "ending_happy_all.png",
+        "active_ending": "happy_all",
+        "released_variants": [
+          0,
+          1,
+          2
         ],
-        "picture_rect": [
-          32,
-          77,
-          1216,
-          481
-        ],
-        "narration": "저주에서 풀려나 다시 고양이가 된 세 친구와 함께, 까망이는 저택에서 오래오래 행복하게 살았답니다.",
-        "metadata_match": true
+        "pipeline_passed": true
       },
       "sad": {
-        "source_size": [
-          2007,
-          783
-        ],
-        "picture_rect": [
-          32,
-          80,
-          1216,
-          474
-        ],
-        "narration": "까망이가 돌아온 저택에는, 친구들의 작은 흔적만 조용히 남아 있었답니다.",
-        "metadata_match": true
+        "intro": "ending_intro_night.png",
+        "ending": "ending_sad.png",
+        "active_ending": "sad",
+        "released_variants": [],
+        "pipeline_passed": true
       },
       "ghost_a": {
-        "source_size": [
-          2013,
-          778
+        "intro": "ending_intro_night.png",
+        "ending": "ending_ghost_a.png",
+        "active_ending": "ghost_a",
+        "released_variants": [
+          0
         ],
-        "picture_rect": [
-          32,
-          82,
-          1216,
-          470
-        ],
-        "narration": "까망이는 고양이로 돌아온 보송이와 벽난로의 온기를 나누며, 저택에서 오래오래 행복하게 살았답니다.",
-        "metadata_match": true
+        "pipeline_passed": true
       },
       "ghost_b": {
-        "source_size": [
-          1972,
-          798
+        "intro": "ending_intro_night.png",
+        "ending": "ending_ghost_b.png",
+        "active_ending": "ghost_b",
+        "released_variants": [
+          2
         ],
-        "picture_rect": [
-          32,
-          71,
-          1216,
-          492
-        ],
-        "narration": "까망이는 고양이로 돌아온 도레와 저택을 떠나, 나란히 달리며 세상 곳곳으로 즐거운 여행을 이어 갔답니다.",
-        "metadata_match": true
+        "pipeline_passed": true
       },
       "ghost_c": {
-        "source_size": [
-          1944,
-          809
+        "intro": "ending_intro_night.png",
+        "ending": "ending_ghost_c.png",
+        "active_ending": "ghost_c",
+        "released_variants": [
+          1
         ],
-        "picture_rect": [
-          32,
-          64,
-          1216,
-          506
-        ],
-        "narration": "까망이는 고양이로 돌아온 이파리와 마을에서 가장 아름다운 정원을 가꾸며, 꽃향기 가득한 여유로운 나날을 보냈답니다.",
-        "metadata_match": true
+        "pipeline_passed": true
       },
       "normal": {
-        "source_size": [
-          2005,
-          782
-        ],
-        "picture_rect": [
-          32,
-          80,
-          1216,
-          474
-        ],
-        "narration": "저주는 아직 풀리지 않았지만, 까망이는 세 유령 친구와 함께 저택에서 따뜻한 나날을 보냈답니다.",
-        "metadata_match": true
+        "intro": "ending_intro_day.png",
+        "ending": "ending_normal.png",
+        "active_ending": "normal",
+        "released_variants": [],
+        "pipeline_passed": true
       }
     },
-    "screenshots": [
-      {
-        "name": "ending_board.png",
-        "baseline_sha256": "096a99b5e60403421a3a1603d5cc1cff191e64ac31f7208d165fe565605b502a",
-        "current_sha256": "096a99b5e60403421a3a1603d5cc1cff191e64ac31f7208d165fe565605b502a",
-        "match": true
-      },
-      {
-        "name": "gameplay_01.png",
-        "baseline_sha256": "2b9832ed9eadf096a5a2e50b93c47735dcbf5be7a6a0e2f1fbca28a234169887",
-        "current_sha256": "2b9832ed9eadf096a5a2e50b93c47735dcbf5be7a6a0e2f1fbca28a234169887",
-        "match": true
-      },
-      {
-        "name": "gameplay_07.png",
-        "baseline_sha256": "2a885278022928fb67147523fced3261fefcb94812530fe21f4837e6dfd92cb0",
-        "current_sha256": "2a885278022928fb67147523fced3261fefcb94812530fe21f4837e6dfd92cb0",
-        "match": true
-      },
-      {
-        "name": "gameplay_12.png",
-        "baseline_sha256": "014e6f9489e2dc815ac66043eb4d634fa399f4ee65ee7c6e3b7d05044e73d8f9",
-        "current_sha256": "014e6f9489e2dc815ac66043eb4d634fa399f4ee65ee7c6e3b7d05044e73d8f9",
-        "match": true
-      },
-      {
-        "name": "ghost_a_art.png",
-        "baseline_sha256": "d0bb119570f34810fd8f497535e3d7ce486618070e36a96a659b4b2d00fa8d40",
-        "current_sha256": "d0bb119570f34810fd8f497535e3d7ce486618070e36a96a659b4b2d00fa8d40",
-        "match": true
-      },
-      {
-        "name": "ghost_a_lobby.png",
-        "baseline_sha256": "24913c8b0cb28e6558f0bf3acf9226fbd29b4b8382d4d53231e620d765737e6c",
-        "current_sha256": "24913c8b0cb28e6558f0bf3acf9226fbd29b4b8382d4d53231e620d765737e6c",
-        "match": true
-      },
-      {
-        "name": "ghost_a_narration.png",
-        "baseline_sha256": "5bde5437bafe20a4022ee8ac3e3adf2d3b487a601d8bb037493dabc99a1e9acf",
-        "current_sha256": "5bde5437bafe20a4022ee8ac3e3adf2d3b487a601d8bb037493dabc99a1e9acf",
-        "match": true
-      },
-      {
-        "name": "ghost_b_art.png",
-        "baseline_sha256": "a8ca8299970705168a568bf811cfa3b0011437e1aa0f6c4bdea758cf26c55eae",
-        "current_sha256": "a8ca8299970705168a568bf811cfa3b0011437e1aa0f6c4bdea758cf26c55eae",
-        "match": true
-      },
-      {
-        "name": "ghost_b_lobby.png",
-        "baseline_sha256": "ffcaad567822175a95b85fc29bd16a5fc59378849e097864e1b2a7c7d8effa50",
-        "current_sha256": "ffcaad567822175a95b85fc29bd16a5fc59378849e097864e1b2a7c7d8effa50",
-        "match": true
-      },
-      {
-        "name": "ghost_b_narration.png",
-        "baseline_sha256": "c96704716048b3893249d5e58d72086177ad231fa8c45bb9f8c83c91c3bb1138",
-        "current_sha256": "c96704716048b3893249d5e58d72086177ad231fa8c45bb9f8c83c91c3bb1138",
-        "match": true
-      },
-      {
-        "name": "ghost_c_art.png",
-        "baseline_sha256": "d3ea9829a2eb9989292027dcb3c662c679eb28e114f8b758387b8d0e6006fe67",
-        "current_sha256": "d3ea9829a2eb9989292027dcb3c662c679eb28e114f8b758387b8d0e6006fe67",
-        "match": true
-      },
-      {
-        "name": "ghost_c_lobby.png",
-        "baseline_sha256": "3bcd7706facab8a365b91986faf2fccc8070104c3fe56ce9cd91717de4ebdb53",
-        "current_sha256": "3bcd7706facab8a365b91986faf2fccc8070104c3fe56ce9cd91717de4ebdb53",
-        "match": true
-      },
-      {
-        "name": "ghost_c_narration.png",
-        "baseline_sha256": "f871644634343e054c0ce4c16bb72e7bc0c5c4ebe3e591817ccf524ee423c912",
-        "current_sha256": "f871644634343e054c0ce4c16bb72e7bc0c5c4ebe3e591817ccf524ee423c912",
-        "match": true
-      },
-      {
-        "name": "happy_all_art.png",
-        "baseline_sha256": "369d77f3776b5959a3f405afb70aa328578dee3e5c9fd8ecfa4d5057282bd442",
-        "current_sha256": "369d77f3776b5959a3f405afb70aa328578dee3e5c9fd8ecfa4d5057282bd442",
-        "match": true
-      },
-      {
-        "name": "happy_all_lobby.png",
-        "baseline_sha256": "299d223cd515059302e1f0ad07c6b4557b05f62afc9d6cef9b0332e7177b1330",
-        "current_sha256": "299d223cd515059302e1f0ad07c6b4557b05f62afc9d6cef9b0332e7177b1330",
-        "match": true
-      },
-      {
-        "name": "happy_all_narration.png",
-        "baseline_sha256": "75c513c61d2c0d7a3693f00326c8050991a437d8ed54f6d80088ebbfecfac0d2",
-        "current_sha256": "75c513c61d2c0d7a3693f00326c8050991a437d8ed54f6d80088ebbfecfac0d2",
-        "match": true
-      },
-      {
-        "name": "lobby_board.png",
-        "baseline_sha256": "3311827a37db6c63f970978b1e1fc56786cd4f720baec2210ef49b9b10c7964e",
-        "current_sha256": "3311827a37db6c63f970978b1e1fc56786cd4f720baec2210ef49b9b10c7964e",
-        "match": true
-      },
-      {
-        "name": "normal_art.png",
-        "baseline_sha256": "8f7f452f510658ef9d41e17344bff22c0c31978febb5c188640823d5b31678cb",
-        "current_sha256": "8f7f452f510658ef9d41e17344bff22c0c31978febb5c188640823d5b31678cb",
-        "match": true
-      },
-      {
-        "name": "normal_lobby.png",
-        "baseline_sha256": "bad9b32604f13f659fb081c4beb8372a94f08abcf8341ca1a0f7b46acc0de99b",
-        "current_sha256": "bad9b32604f13f659fb081c4beb8372a94f08abcf8341ca1a0f7b46acc0de99b",
-        "match": true
-      },
-      {
-        "name": "normal_narration.png",
-        "baseline_sha256": "8fbe80bdff610ca3c937ea199b9a69c28cbdbd7d78ac61eee1c28f58730c5310",
-        "current_sha256": "8fbe80bdff610ca3c937ea199b9a69c28cbdbd7d78ac61eee1c28f58730c5310",
-        "match": true
-      },
-      {
-        "name": "prologue.png",
-        "baseline_sha256": "f1cf7df012feac8f70b80667470f33363f03b0b38cf50075df9abc7351e889a8",
-        "current_sha256": "f1cf7df012feac8f70b80667470f33363f03b0b38cf50075df9abc7351e889a8",
-        "match": true
-      },
-      {
-        "name": "sad_art.png",
-        "baseline_sha256": "585725adbbda944fa0cdf0071ffbf6c423e26e27797948093082a45025af086d",
-        "current_sha256": "585725adbbda944fa0cdf0071ffbf6c423e26e27797948093082a45025af086d",
-        "match": true
-      },
-      {
-        "name": "sad_lobby.png",
-        "baseline_sha256": "f9ac5e2ca836f8515c7db37886164846321454ffec1a5efd62d4196876899f48",
-        "current_sha256": "f9ac5e2ca836f8515c7db37886164846321454ffec1a5efd62d4196876899f48",
-        "match": true
-      },
-      {
-        "name": "sad_narration.png",
-        "baseline_sha256": "c68643da058f59f1ac926245145ac13081450fca4191aaa81f8e9234ec74fee9",
-        "current_sha256": "c68643da058f59f1ac926245145ac13081450fca4191aaa81f8e9234ec74fee9",
-        "match": true
-      },
-      {
-        "name": "title.png",
-        "baseline_sha256": "ce7ee885eb692b494cdf8dd0aa8d2cec9db72ba5f8c0293d903a89d30258c62d",
-        "current_sha256": "ce7ee885eb692b494cdf8dd0aa8d2cec9db72ba5f8c0293d903a89d30258c62d",
-        "match": true
-      }
-    ],
-    "summary": {
-      "preserved_cinematic_frames": 50,
-      "memory_originals_and_masks": 6,
-      "provided_png_assets": 10,
-      "ending_metadata": 6,
-      "compared_screenshots": 25,
-      "all_match": true
-    },
-    "retained_captures": [
+    "screenshots": 18,
+    "boards": [
+      "reports/latest/intro_board.png",
       "reports/latest/ending_board.png",
       "reports/latest/lobby_board.png",
       "reports/latest/prologue.png"
-    ]
+    ],
+    "capture_sha256": {
+      "reports/latest/intro_board.png": "319373c526a6c989c4acfe81d00b90af2c9d907604afc1eee6bd24c24ca4447d",
+      "reports/latest/ending_board.png": "20720d029594ec376d4d396afaf8696cd1bfacc2a2c6051d81735088058d7a50",
+      "reports/latest/lobby_board.png": "3f327be73b2a8203ed0532c8c560c0293f4b788bf314e23eae6fd28e75bb6e65",
+      "reports/latest/prologue.png": "8131215352c3769a48cd535d8bd441854259c91bdc2b663d08967b99e071fcdb"
+    }
+  },
+  "memory_preservation": [
+    {
+      "memory_id": 1,
+      "kind": "original",
+      "sha256": "6eee87e23db0d8941224ce8b61ba53334e55788b1a924c13c4f020d2fb7bf76a",
+      "matches_previous": true
+    },
+    {
+      "memory_id": 1,
+      "kind": "mask",
+      "sha256": "69ab06bdc499a075b4457a94fdf57ffe29575c4e6374d363df9dfc9fac27a6e1",
+      "matches_previous": true
+    },
+    {
+      "memory_id": 2,
+      "kind": "original",
+      "sha256": "02a3303abe7b65d6abce75bc5075fe3e52ef52ca8f055582151197fed2f8e7a2",
+      "matches_previous": true
+    },
+    {
+      "memory_id": 2,
+      "kind": "mask",
+      "sha256": "1850e1ac4b3706941d82775d35bc0e6693e836b37b3d9fd19929fd83ceb72be5",
+      "matches_previous": true
+    },
+    {
+      "memory_id": 3,
+      "kind": "original",
+      "sha256": "7b1c5bd608a0a61c4c596e1be6f48b85a70f7260819527870c6743b8fdc2dbe9",
+      "matches_previous": true
+    },
+    {
+      "memory_id": 3,
+      "kind": "mask",
+      "sha256": "0d22cf5b4e4daa32e4c7f78f13494595ef5d9a6e75a07f77f396a96afc5571fd",
+      "matches_previous": true
+    }
+  ],
+  "provided_pngs": {
+    "files": [
+      {
+        "source_filename": "best.png",
+        "path": "assets/art/ending_happy_all.png",
+        "sha256": "d78de91abcba0212342679e8140556eb51492681c7a6ba36f07b1be190bab7f1"
+      },
+      {
+        "source_filename": "ghost1.png",
+        "path": "assets/art/ending_ghost_a.png",
+        "sha256": "4ef64e208d35aeb956449bdd4547a8207686b9eb65a956f132bd9bb3896c742a"
+      },
+      {
+        "source_filename": "ghost3.png",
+        "path": "assets/art/ending_ghost_b.png",
+        "sha256": "9ddc0be71c241428ec8bc2ccbebbb4f8b8680c14785ff2ccd3883716cbdd0180"
+      },
+      {
+        "source_filename": "ghost2.png",
+        "path": "assets/art/ending_ghost_c.png",
+        "sha256": "7d55cf572ee8c58a45e89af1e6f4198dbceef75a211fff46afdc28744024489e"
+      },
+      {
+        "source_filename": "normal.png",
+        "path": "assets/art/ending_normal.png",
+        "sha256": "d8cbb03009f57e6db22d24fe7d11c062984016ac31d88a3b4eaefe8558b10e98"
+      },
+      {
+        "source_filename": "sad.png",
+        "path": "assets/art/ending_sad.png",
+        "sha256": "63865aa5f163ea7fe1ed9629a69adf1676f58ffbad32039190c60de537d875b3"
+      },
+      {
+        "source_filename": "coming in.png",
+        "path": "assets/art/prologue.png",
+        "sha256": "29b4b82f92bb4f3a8e61c6581a03113ed0f61f5c7869f74af98bef716c09875a"
+      },
+      {
+        "source_filename": "보송이고양이.png",
+        "path": "assets/art/character/resident_bosong.png",
+        "sha256": "84e92a8fe07e4f8801b0c5bd131a5677dff4ee045d12c92cc5e5dce1319dc7e6"
+      },
+      {
+        "source_filename": "이파리고양이.png",
+        "path": "assets/art/character/resident_ipari.png",
+        "sha256": "9fe017c1b0d143bcdc7dd0467740f266f81d8d1c198b96befcbcc962589bd506"
+      },
+      {
+        "source_filename": "도레고양이.png",
+        "path": "assets/art/character/resident_dore.png",
+        "sha256": "f8acac3aa33f71425669af49cc9de1b6c2af78d438fd6e8198380bd4535fb4b8"
+      },
+      {
+        "source_filename": "daybackground.png",
+        "path": "assets/art/ending_intro_day.png",
+        "sha256": "46bfe7f1533fadbed30514e5db67a51dadcd2847489a19b6844c69fef6d21218"
+      },
+      {
+        "source_filename": "nightbackground.png",
+        "path": "assets/art/ending_intro_night.png",
+        "sha256": "27bdd697391811297899b5d3155fe7c4fa728dd5f58ccf43fea616fc98921150"
+      }
+    ],
+    "all_12_original_hashes_match": true
   },
   "data_and_active_asset_preservation": {
     "baseline": "Working tree immediately before developer file cleanup, after PNG integration",
@@ -2611,149 +1286,156 @@
     "level_and_reference_hashes_preserved": true,
     "level_metadata_decision": "Keep original level bytes and config hashes; validation/upgrade_report.json now redirects to README and this report."
   },
-  "cleanup_inventory": {
-    "removed_source_locations": [
-      {
-        "path": "docs",
-        "files": 26,
-        "bytes": 830804
-      },
-      {
-        "path": "CONTRACT.md",
-        "files": 1,
-        "bytes": 5745
-      },
-      {
-        "path": "assets\\art\\before",
-        "files": 7,
-        "bytes": 18222221
-      },
-      {
-        "path": "assets\\art\\memories\\README.md",
-        "files": 1,
-        "bytes": 2396
-      },
-      {
-        "path": "assets\\art\\memories\\generation_prompts.json",
-        "files": 1,
-        "bytes": 13610
-      },
-      {
-        "path": "assets\\art\\memories\\generation_prompts-style-v2.json",
-        "files": 1,
-        "bytes": 11658
-      },
-      {
-        "path": "assets\\art\\memories\\generation_prompts-anatomy-v3.json",
-        "files": 1,
-        "bytes": 5975
-      },
-      {
-        "path": "tools\\capture_review.py",
-        "files": 1,
-        "bytes": 3895
-      },
-      {
-        "path": "tools\\verify_final_art.py",
-        "files": 1,
-        "bytes": 7227
-      },
-      {
-        "path": "tools\\make_audio.py",
-        "files": 1,
-        "bytes": 1733
-      },
-      {
-        "path": "requirements-review.txt",
-        "files": 1,
-        "bytes": 37
-      },
-      {
-        "path": "evidence",
-        "files": 52,
-        "bytes": 5979849
-      },
-      {
-        "path": "historical_v01",
-        "files": 20,
-        "bytes": 5920903
-      },
-      {
-        "path": "reports\\local",
-        "files": 364,
-        "bytes": 30391958
-      },
-      {
-        "path": "reports\\evaluation",
-        "files": 2,
-        "bytes": 49752
-      },
-      {
-        "path": "reports\\evaluation_v02",
-        "files": 2,
-        "bytes": 49150
-      },
-      {
-        "path": "reports\\review_2026-10-19",
-        "files": 30,
-        "bytes": 6382637
-      },
-      {
-        "path": "validation\\change_manifest.json",
-        "files": 1,
-        "bytes": 35806
-      },
-      {
-        "path": "validation\\render_timings.json",
-        "files": 1,
-        "bytes": 230
-      },
-      {
-        "path": "validation\\tests_v02.txt",
-        "files": 1,
-        "bytes": 221
-      },
-      {
-        "path": "validation\\tests_v02.xml",
-        "files": 1,
-        "bytes": 15374
-      },
-      {
-        "path": "validation\\runtime_replay_results.json",
-        "files": 1,
-        "bytes": 5165
-      },
-      {
-        "path": "validation\\schema_results.json",
-        "files": 1,
-        "bytes": 904
-      }
-    ],
-    "files_at_removed_locations": 518,
-    "bytes_at_removed_locations": 67937250,
-    "note": "Counts include original provenance/license locations copied to assets/ and reports regenerated before removal; cache cleanup is excluded. See current README for retained structure.",
-    "authored_markdown_documents": [
-      "README.md"
-    ]
+  "source_checks": {
+    "python_files_compile": 65,
+    "current_source_sha256": {
+      "main.py": "c0c7d676e5e510775fcdcd1deb4d917797b0c5e51c21bb9c323ddb0878946230",
+      "kkamang/app.py": "8e3a6372a80877d4c042b05b247fc09c7a679393bb0d1df58bea1798aca55939",
+      "kkamang/audio.py": "14c2ba82060ed421b21be588eed721a8a2a21ce08b63dbcb4d47bc1809b37448",
+      "kkamang/campaign.py": "ac610024db349ad03e2c7e24e6c4a52a7b7a29f8f35ce9bd96d377ceef96c6a0",
+      "kkamang/collection.py": "2a5f9745aee51967171be7591f987e7994e9f36ae507316eba69b9f455f3eadc",
+      "kkamang/core.py": "9ddc7c5da34bcba3b6dc65425e989a383ad6832d9c1451f9f7f867552425b985",
+      "kkamang/ending_content.py": "0c133f0df86b6099259675f3bffa2841e0053e49900d3d7523df36539dacf9c2",
+      "kkamang/env.py": "de42ba0980cea84b60f0e05d4391107090f6732bc006fe90efa472c5ded6b93b",
+      "kkamang/input.py": "c784bebcf0b622845020c4b1ff8155f99637c960c758e3f82b4ed949eee0fc50",
+      "kkamang/levels.py": "a45314c04f21a390912e20e6004fbcc31d86dd7d9eb7f8f08eb144e618661539",
+      "kkamang/likes.py": "98a62a0318b4cac49512a314716edddb3dab8c77f3f45aaa4dfdf4596b7a832d",
+      "kkamang/likes_preview.py": "60c260691f1b2aa49df532dd1fa49afdc49aa5e10fb5bc2d8804c27a3529d070",
+      "kkamang/paths.py": "cc83fb8e1ed8523b775749b3bab7fcff4d23220595b2886db94b79b8db5c337b",
+      "kkamang/realtime.py": "3ae6ce6acadf5a164bccefdae540d922de69b3359963fc61e2ac876b5a602aee",
+      "kkamang/scoring.py": "27b498927c12f44f6e8b459f22c9aef9c28f1353ab1eb77a466d3deabbaeddd1",
+      "kkamang/story.py": "8885484c20d03b880f5230b6fc09f1c2ac699adbc88374c7de166c090b7629e0",
+      "kkamang/__init__.py": "b85be6622a0d93d5c1d9de4f0867c40299d2cd2c60804225c661a0dff146c5d3",
+      "kkamang/ui/cat_sprites.py": "e9d720f45ddbbb78739c3efb025f5fc3c0660851e29acc00df39f7f2027c50a9",
+      "kkamang/ui/collection.py": "3870b28ccda34d0cdd007a232a01624ed17f5fd9519e435e123957d3cf0dd238",
+      "kkamang/ui/field.py": "c5d4056cd8e0cb39347e6fc92839b5da89966e7850c99739439791000c08d149",
+      "kkamang/ui/ghost_sprites.py": "ac8ee3da3dff285e7a2ea47becce12f4cd01959a775c72e4b70bffe7c9ff1f36",
+      "kkamang/ui/illustration.py": "ef1989a6c4540d063add55eb9c05048708c66c0512aee96951c8fa7679097dba",
+      "kkamang/ui/likes.py": "c935d8e13de4e736aac9fb6bcff6f45f759b62545827c6e184ae2b4d3fde3025",
+      "kkamang/ui/lobby.py": "fe03a8c8be38c7b1aa4c02b65914f0303ee63285b22e294012ea9e5c80226193",
+      "kkamang/ui/map_sprites.py": "55ad2de31a18d1d946998d4410d4bd61924556c5d91fdcc48c1ea2d62138022a",
+      "kkamang/ui/memories.py": "ba71e2cef2946aae65bcc80b03eec9dc94e04807b3ec0548b162b82f173986bb",
+      "kkamang/ui/menus.py": "e09547e3093cfc374d214d87f89416a36a5b6f6a906c06e6f71bc599492fa4c6",
+      "kkamang/ui/theme.py": "30e66780fba96818c28d3842a1e02d0d4ca54a72be494b6cbb7d75562b055acc",
+      "kkamang/ui/__init__.py": "fcd85523dabf394167d522eedec2ced20622b3f247579862d5dc61d85320b65b",
+      "tests/test_app.py": "7ee1840bbd93f3817ac9e6d5b8c04997cf5677d2266e420097204181379a7fc7",
+      "tests/test_balance_report.py": "6a25ecc2684e6d32df9cebcee2ba0ff105ab9cf8a53f83f3876e250be7807bf7",
+      "tests/test_campaign.py": "3d9346f5886c2128e8feafaede9567b594ae79b3b41caa5b96d639359e635597",
+      "tests/test_cat_sprites.py": "cfb8eb28305e2dff729504df9a8f14764267d739b2ad1dd95dc751dc19a8d910",
+      "tests/test_collection.py": "ce55dd7c21bb03245c4941f48f0699652df6d0dabe6bb6017a982dcc5973d47a",
+      "tests/test_contextual_audio.py": "7d659383830d9b4264dab316f86c8f59ab1d6996a9b5424b475b99316e5e8f66",
+      "tests/test_core.py": "fe8e0733fd815210b04711fb89d95885a8c2471846cbcdce8e2d1a71d4170958",
+      "tests/test_env.py": "eef9bdf818f0306c7de39d3a04a9b0b161e0c9058902aab74aea14906ca581ca",
+      "tests/test_final_png_endings.py": "17bad89d3987c29f650737612a52de500cf7e36740b3e923e31efe4cbdaa173c",
+      "tests/test_ghost_sprites.py": "d3a39c1a9ff26ecd0dba43edc7d41320fddf27d37e10d7a2a1700e9c4f151938",
+      "tests/test_input.py": "9c83a3a47d899cd30dd8ee90d80bc7a03aa7aa7b190f1ddc74a0acb200587b45",
+      "tests/test_likes.py": "8680ac0f1558d30030907d73a3cb3f31b26f35fa01ce0b4bf836c5d355592e86",
+      "tests/test_likes_app.py": "8b4643765620fde50d9df436f3a98dc0b532ce5497fef397d33efeab1f908e63",
+      "tests/test_lobby.py": "551e3fda6edef1297c941a29b9633d52e710af392e570f4f76210204aefbd0f3",
+      "tests/test_memory_art.py": "3ab40d6ecb98618e335346cc77e69341c074892d31bf5f9cd165831a04f281ce",
+      "tests/test_realtime.py": "76e7497b5311605c187a953331c5877ea5b39b1e1f4d73bb3d36b641829989f9",
+      "tests/test_six_ending_visuals.py": "a46d64fc3cae9fef1790253bdba94affb91ec1a97bbdc7ccd26b03ff075741a1",
+      "tests/test_story_cinematic_fixtures.py": "71c2124dc6f0529755620f8237c4ac99d07fbd78ff0c003e6a6b5dbbeb2c87d9",
+      "tests/test_story_endings.py": "ac81c536c05987781bc78d92b763c065955d63065a1f4da92986c79fa4caa67d",
+      "tests/test_story_rebase.py": "fb82ecb78ec2049136f3fb89b9fdd746aad336a81d58bbc132efaeb24df23a0b",
+      "tests/test_upgrade.py": "1cbfb2c4a6e470e809facdbc28967ac43e9933d574966c3abbf5e890ae8a825f",
+      "tests/test_visual_story_app.py": "f8fc4af02f163589e996b53fd370d0ab497d8077c55b3563189a79ce111f4e1a",
+      "tests/test_visual_story_audio.py": "fee537ab55a2f048ba6b7b2abaff25ffacae3d00ef2ef774fcfd9fedd0788812",
+      "tests/test_visual_story_campaign.py": "2e4334e754e901fdf0c2dd90cea287e98b729e48f25084ff3588cba4b9b73fb1",
+      "tools/balance_test.py": "c1b3410b5ddad3643b278fa8c15322dee69d208764cce34651e3e9dc638c1eb2",
+      "tools/check_level_schema.py": "3ba7c07fe283bab6db853c134d1f57fe6cce7555427976d112ccd88498aa9c47",
+      "tools/evaluate.py": "8186c2d18faf23eb71e039f612d88187efa51860f77aab47aed6de5bbaa47f9e",
+      "tools/plan_routes.py": "2a7a35ebe28782c5941d1a81d56102f470974ff5307cef006b00971e5a09b17f",
+      "tools/replay_validation.py": "4788c6b0a5a29a066f0cfa9f19bd925c9f95121b71d4bbbc709ed42339bf6439",
+      "tools/audio/convert_user_media.py": "ecc3c89a3c8cd3143174b52504f983d57a249f9e9c8f2b2cb7ef1c95fe2f37ea",
+      "tools/audio/generate_map_bgm_v7.py": "a90d4f29b5e89987f3581f6178ee1a41cf4241e5f3972f93a1a282dfd68ca180",
+      "tools/audio/generate_pickups_v3.py": "e07e2b57ef8fa8b7e11fbcc6ba353da75970fcc595404e517e9dc1f5bdce2a2e",
+      "tools/audio/generate_sfx.py": "b1bb22a90e487726b755209f61cc626e018d0df0b8e27cf1ecd77120e1557631",
+      "tools/audio/generate_shortcut_v5.py": "5bac76cfbc3beacad2357f9c48d58b9fa416a96b802c8d43516b8d09276bce43",
+      "tools/audio/generate_timed_v4.py": "2cf6f42ef5e688d2ecf3c70d5cff311bf2f47cdb269a2ab156d1e606b3f0ca51",
+      "tools/audio/restore_piano_samples.py": "d22dd5432a9675edc797b183e34cea6844449096cf03e5c7dc4c598c9e0b0a25"
+    }
   },
-  "review": {
-    "confirmed_gameplay_contradictions_found": [],
-    "documentation_corrections": [
-      "Magnet collects only value-1 warmth, not value-3 warmth.",
-      "Level coordinates, time budgets and authored route ticks were reconciled with current data.",
-      "balance_test.py collects human realtime play sessions; evaluate.py and reference routes use grid control.",
-      "Gymnasium external limit argument is max_episode_steps.",
-      "The no-damage badge storage key is quiet."
-    ],
-    "git_diff_check_exit_code": 0,
-    "broken_readme_links": [],
-    "provenance_and_license_files_present": true
-  },
+  "validation_scope": [
+    "All six ending intro selections and continue/skip/Enter/Escape transitions",
+    "Input wait and fade completion, full image composition, missing/corrupt PNG behavior",
+    "First view, replay, save/load, active-world preservation and save error retry",
+    "Narration layout and six PNG lobby states",
+    "Previous sad-rule boundaries and best-star independence",
+    "Core, realtime control, Gymnasium, campaign and audio regression tests",
+    "Korean/English title fit, window title, unchanged save directory, compiled PyInstaller spec with renamed EXE/COLLECT outputs; no executable was built."
+  ],
   "not_performed": [
     "Training PPO, DQN or another RL policy",
     "Realtime learned-policy performance, generalization or human difficulty evaluation",
     "Remote CI execution",
     "Windows executable packaging or packaged-device launch",
     "Full human playthrough or human audio listening"
-  ]
+  ],
+  "branding": {
+    "window_title": "까망이와 유령 저택",
+    "english_title": "KKAMANG GHOST MANOR",
+    "english_title_width": 227,
+    "korean_second_line_width": 206,
+    "save_folder_preserved": "KkamangManor",
+    "build_products": [
+      "KkamangGhostManor",
+      "KkamangGhostManor"
+    ],
+    "spec_compiles": true,
+    "endings": {
+      "happy_all": {
+        "intro": "ending_intro_day.png",
+        "ending": "ending_happy_all.png",
+        "active_ending": "happy_all",
+        "released_variants": [
+          0,
+          1,
+          2
+        ],
+        "pipeline_passed": true
+      },
+      "sad": {
+        "intro": "ending_intro_night.png",
+        "ending": "ending_sad.png",
+        "active_ending": "sad",
+        "released_variants": [],
+        "pipeline_passed": true
+      },
+      "ghost_a": {
+        "intro": "ending_intro_night.png",
+        "ending": "ending_ghost_a.png",
+        "active_ending": "ghost_a",
+        "released_variants": [
+          0
+        ],
+        "pipeline_passed": true
+      },
+      "ghost_b": {
+        "intro": "ending_intro_night.png",
+        "ending": "ending_ghost_b.png",
+        "active_ending": "ghost_b",
+        "released_variants": [
+          2
+        ],
+        "pipeline_passed": true
+      },
+      "ghost_c": {
+        "intro": "ending_intro_night.png",
+        "ending": "ending_ghost_c.png",
+        "active_ending": "ghost_c",
+        "released_variants": [
+          1
+        ],
+        "pipeline_passed": true
+      },
+      "normal": {
+        "intro": "ending_intro_day.png",
+        "ending": "ending_normal.png",
+        "active_ending": "normal",
+        "released_variants": [],
+        "pipeline_passed": true
+      }
+    }
+  }
 }
