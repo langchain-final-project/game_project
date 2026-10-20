@@ -1,8 +1,4 @@
-"""Contextual streamed music, authored cues and preserved story-layer fallbacks.
-
-Mixer/device and individual asset failures remain optional presentation errors.
-Sound randomness and timing never change the game core or its replay state.
-"""
+"""장면별 음악, 환경음, 효과음을 재생한다. 음원·장치 오류와 연출용 난수는 게임 상태에 영향을 주지 않는다."""
 from array import array
 from pathlib import Path
 import math
@@ -12,7 +8,6 @@ from .paths import ASSET_DIR
 
 
 def _cold_wind(pygame):
-    """A soft rush and fading tremor for contact with an anxious memory."""
     rate, sample_format, channels = pygame.mixer.get_init()
     if sample_format != -16:
         raise ValueError('Cold wind requires the configured signed 16-bit mixer')
@@ -61,9 +56,7 @@ def _ambience(pygame, dawn=False):
             phase=t%1.1
             value=(math.sin(math.tau*(1700+650*math.sin(t*19))*t)*.018*
                    max(0.,1-phase/.16) if phase<.16 else 0.)
-            # Restored bodies and the current clock are heard only in this
-            # released-state layer. Stagger the soft breaths instead of using
-            # a steady low drone, and leave quiet gaps around each clock tick.
+            # 해방 후 레이어에서만 고양이 숨소리와 시계를 들려주며 시계음 사이에 쉼을 둔다.
             for start,end in ((.54,1.34),(2.03,3.42)):
                 if start<t<end:
                     breath=math.sin(math.pi*(t-start)/(end-start))**2
@@ -74,7 +67,6 @@ def _ambience(pygame, dawn=False):
                 if 0.<=age<.025:
                     value += .021*math.sin(math.tau*1180*age)*math.exp(-age*195)
         else:
-            # Soft distant rain and sparse fireplace crackle, without speech.
             value=rng.uniform(-.014,.014)
             if rng.random()<.0012:
                 value += rng.uniform(-.06,.06)
@@ -167,7 +159,7 @@ class AudioEngine:
             self._channels = [pygame.mixer.Channel(index) for index in range(self.CHANNEL_COUNT)]
         except Exception:
             return
-        # A malformed cue must not disable every other sound or streamed BGM.
+        # 개별 효과 생성 실패가 다른 음원이나 음악 재생을 막지 않게 한다.
         names = {name for chain in self.LEGACY.values() for name in chain}
         names.update({'sfx_warmth_large', 'sfx_memory_common'})
         names.update(self.BADGE_SOUNDS.values())
@@ -188,8 +180,6 @@ class AudioEngine:
         self.available = True
         self._init_story_bank()
         self.set_scene('title')
-        # Legacy callers configure volume before the first update() or draw.
-        # The first title track starts normally; later scene changes still fade.
         self._fade_phase = None
         self._fade_level = 1.
         self._apply_volumes()
@@ -214,13 +204,12 @@ class AudioEngine:
     def memory_material(cls, quest=None, name=''):
         quest = quest or {}
         name = name or quest.get('name', '')
-        # Actual item names take precedence: stage 5's scarf *ring* is metal.
+        # 물건 이름을 우선해 스카프 고리처럼 재질이 다른 대상을 구분한다.
         if any(word in name for word in ('고리', '손잡이', '방울')):
             return 'metal'
         return cls.MATERIALS.get(quest.get('kind'))
 
     def _init_story_bank(self):
-        """Keep the story branch's cue names and four progression layers."""
         definitions = {
             'warmth_small': ('sfx_warmth_small', [(0,659.25,.22)], .3, .14),
             'warmth_large': ('sfx_warmth_large', [(0,659.25,.24),(.08,987.77,.3)], .45, .14),
@@ -278,9 +267,7 @@ class AudioEngine:
                 if active[name]:
                     if (not channel.get_busy()
                             or channel.get_sound() is not self.story_sounds[name]):
-                        # SDL fades keep writing channel volume on the mixer
-                        # thread, overriding later mute/unmute settings. These
-                        # generated loops already have their own soft attack.
+                        # SDL 자체 페이드는 음소거 볼륨을 덮어쓸 수 있어 시작음이 포함된 반복 소리를 바로 재생한다.
                         channel.play(self.story_sounds[name], loops=-1)
                         if self._world_paused:
                             channel.pause()
@@ -299,7 +286,7 @@ class AudioEngine:
             return
         candidates = self._music_candidates(track)
         if not candidates:
-            return  # Keep an already playing track if the requested asset is absent.
+            return  # 요청 음원이 없으면 이미 재생 중인 음악을 유지한다.
         self._desired_track = track
         if candidates[0] == self._current_music_path:
             self.current_track = track
@@ -309,7 +296,7 @@ class AudioEngine:
         if self._current_music_path is None:
             self._start_music(track)
         else:
-            self._fade_phase = 'out'  # Rapid requests replace the pending destination.
+            self._fade_phase = 'out'  # 빠른 장면 전환은 대기 중인 목적 음악을 교체한다.
 
     def _start_music(self, track):
         for path in self._music_candidates(track):
@@ -329,11 +316,7 @@ class AudioEngine:
         self._fade_phase = None
 
     def set_scene(self, scene, stage=None, *, story_kind=None):
-        """Update context once per scene change; overlays preserve their music.
-
-        Pausing ducks the streamed music, freezes world sounds and the signature
-        countdown, and leaves UI cues available. Resuming never reloads a track.
-        """
+        """장면의 음악 문맥을 갱신한다. 일시정지는 환경음·연출 시계를 멈추고 복귀 시 음악을 다시 읽지 않는다."""
         if not self.available:
             return
         try:
@@ -368,7 +351,6 @@ class AudioEngine:
             self._scene_gain = .42
         else:
             self._world_paused = False
-            # Lobby atmosphere follows its menus; world atmosphere belongs to play.
             context = self._ambient_context if self._ambient_context == ('lobby', None) else None
             self._scene_gain = .72 if scene in ('result', 'story') else 1.
         if context != previous_context or (scene != 'game' and not self._world_paused):
@@ -380,7 +362,7 @@ class AudioEngine:
             self._last_damage = -math.inf
             self._last_magnet_absorb = -math.inf
             self._last_step_time = -math.inf
-        # The supplied lobby already contains its fireplace and rain bed.
+        # 쉼터 음악에 벽난로·빗소리가 포함돼 환경음을 중복 재생하지 않는다.
         loops = ('amb_manor_air', 'amb_rain') if context and context[0] == 'stage' else (None, None)
         for index, name in enumerate(loops):
             if self._ambient_names[index] != name:
@@ -413,7 +395,7 @@ class AudioEngine:
                 if name == 'rain' and (
                         self._ambient_context == ('lobby', None) and (self.sound_dir / 'bgm_lobby.wav').is_file()
                         or self._ambient_context and self._ambient_context[0] == 'stage' and 'amb_rain' in self.sounds):
-                    gain = 0.  # Keep logical progression without duplicating the supplied rain.
+                    gain = 0.  # 이야기 진행 상태는 유지하면서 기존 음원과 빗소리가 겹치지 않게 한다.
                 channel.set_volume(self.music_level * self._scene_gain * gain)
             for index, (_, gain) in self._effect_world.items():
                 self._channels[index].set_volume(gain)
@@ -426,7 +408,6 @@ class AudioEngine:
         dt = max(0., float(dt))
         remaining = dt
         try:
-            # At most two phases consume this frame; no wall-clock waits occur.
             for _ in range(2):
                 if self._fade_phase == 'out':
                     take = min(remaining, self._fade_level * self.FADE_SECONDS)
@@ -449,7 +430,6 @@ class AudioEngine:
                 self._world_time += dt
                 for effect, active in list(self._timed_effects.items()):
                     if self._world_time >= active['deadline']:
-                        # Full composites already contain their natural release.
                         self.stop_timed_effect(effect, play_end=False)
                 if self.music_volume > 0.:
                     self._signature_remaining -= dt
@@ -461,11 +441,11 @@ class AudioEngine:
                         self._signature_remaining = self.rng.uniform(8., 25.)
             self._apply_volumes()
         except Exception:
-            # A device disconnect mid-session also must not interrupt gameplay.
+            # 실행 중 장치가 끊겨도 게임 진행은 중단하지 않는다.
             pass
 
     def _play(self, candidates, gain=1., *, world=True, return_handle=False):
-        """Return True on play, or an ownership handle when explicitly requested."""
+        """재생 성공 시 True를, 요청한 경우 채널 번호와 소유권 토큰을 반환한다."""
         if not self.available or self.sfx_volume <= 0. or (world and self._world_paused):
             return
         sound = next((self.sounds[name] for name in candidates if name in self.sounds), None)
@@ -486,15 +466,10 @@ class AudioEngine:
             pass
 
     def play(self, name):
-        """Legacy cue names and canonical sound stems are both supported."""
         self._play(self.LEGACY.get(name, (name,)), world=name not in ('select', 'sfx_ui_select'))
 
     def play_badge(self, effect=None):
-        """Play one composite pickup/achievement cue; this grants no ability.
-
-        Effect cues already contain their pickup sound. Missing/unknown variants
-        fall back to the generic badge cue, then the existing safe-return cue.
-        """
+        """획득음이 포함된 효과를 한 번 재생한다. 게임 능력은 부여하지 않으며 누락 음원은 기본 효과로 대체한다."""
         stem = self.BADGE_SOUNDS.get(effect, 'sfx_badge_collect') if isinstance(effect, str) else 'sfx_badge_collect'
         candidates = (stem, 'sfx_badge_collect', 'sfx_return', 'return')
         if isinstance(effect, str) and effect in self.TIMED_EFFECTS:
@@ -504,7 +479,7 @@ class AudioEngine:
 
     def _start_timed_effect(self, effect, candidates):
         if not self.available or self._world_paused or self.sfx_volume <= 0.:
-            return  # Suppressed retriggers preserve an already running effect.
+            return  # 재생할 수 없는 재요청이 진행 중인 효과를 끊지 않게 한다.
         self.stop_timed_effect(effect, play_end=False)
         handle = self._play(candidates, .95, return_handle=True)
         if handle is not None:
@@ -513,11 +488,7 @@ class AudioEngine:
             }
 
     def stop_timed_effect(self, effect, *, play_end=True):
-        """Cancel presentation early, optionally with one short release cue.
-
-        This does not change a gameplay timer. Channel generations prevent an
-        expired/short fallback from stopping an unrelated sound that reused it.
-        """
+        """연출만 종료한다. 채널 토큰을 확인해 재사용된 다른 소리를 멈추지 않고 게임 타이머도 변경하지 않는다."""
         if not isinstance(effect, str):
             return False
         active = self._timed_effects.pop(effect, None)
@@ -540,7 +511,6 @@ class AudioEngine:
             self.stop_timed_effect(effect, play_end=False)
 
     def play_magnet_absorb(self, value=1):
-        """Coalesce magnetic warmth bursts using the presentation-only clock."""
         if (not self.available or self.scene != 'game' or self._world_paused
                 or self.sfx_volume <= 0.
                 or self._world_time - self._last_magnet_absorb < self.MAGNET_INTERVAL):
@@ -582,7 +552,7 @@ class AudioEngine:
             self._play((stem, alias, 'collect'), .92)
         elif kind == 'quest_collect':
             material = self.memory_material(quest, event.get('name', ''))
-            # Material files already include the shared memory chime: play once.
+            # 재질별 효과음에 공통 기억음이 포함돼 한 번만 재생한다.
             alias = 'quest_cloth' if material in ('fabric', 'leaf') else 'quest_ceramic' if material == 'ceramic' else 'quest_paper'
             self._play((f'sfx_memory_{material}', 'sfx_memory_common', alias, 'collect'))
         elif kind == 'open':

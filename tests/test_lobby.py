@@ -1,4 +1,4 @@
-"""Saved completion IDs control the lobby, independently of retries and draw calls."""
+"""완료 기록에 따른 쉼터 표시와 재시도·그리기의 독립성을 검증한다."""
 from copy import deepcopy
 import json
 import os
@@ -141,7 +141,7 @@ def test_twelve_room_clears_replay_three_silent_pictures_without_dialogue_portra
 
     game = story_game
     game.campaign.data['completed'] = list(range(1, stage + 1))
-    # Historical photo IDs cannot turn the three shared pictures into 12 scenes.
+
     game.campaign.data['photos'] = list(range(1, 13))
     original = deepcopy(game.campaign.data)
     game.start_memory(stage, replay=True)
@@ -163,18 +163,21 @@ def test_twelve_room_clears_replay_three_silent_pictures_without_dialogue_portra
     assert {'story_next', 'story_skip'} <= {control['id'] for control in game.controls}
 
 
-def test_prologue_is_a_silent_cinematic_without_dialogue_png_helpers(story_game):
+def test_prologue_uses_its_png_without_procedural_or_dialogue_portraits(story_game):
     from kkamang.ui import menus
 
     game = story_game
     original = deepcopy(game.campaign.data)
     game.start_prologue()
     with patch.object(menus, 'draw_cinematic', wraps=menus.draw_cinematic) as cinematic, \
+            patch.object(menus, '_prologue_picture', wraps=menus._prologue_picture) as picture, \
             patch.object(menus, 'draw_story_character') as portrait, \
             patch.object(menus, 'draw_story_item') as item:
         game.draw()
-    assert cinematic.called
-    assert all(call.args[1] == 'prologue' for call in cinematic.call_args_list)
+    cinematic.assert_not_called()
+    assert picture.called
+    assert all(call.args[0] is game.canvas and call.args[1] is game.assets
+               for call in picture.call_args_list)
     portrait.assert_not_called()
     item.assert_not_called()
     assert game.dialogues == [] and game.context()['dialogue'] is None

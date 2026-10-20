@@ -1,4 +1,4 @@
-"""Restore the pinned CC0 piano bank declared by the accompanying manifest."""
+"""명세에 고정된 CC0 피아노 샘플을 복원한다."""
 from pathlib import Path, PurePosixPath
 import argparse
 import hashlib

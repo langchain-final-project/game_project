@@ -1,9 +1,4 @@
-"""Original acoustic-model sound design for Kkamang Manor.
-
-No recordings, downloaded samples, external music, or generative service are used.
-Deterministic NumPy/SciPy synthesis. Runtime game needs only the rendered PCM files.
-Run: python generate_sfx.py --output /desired/output
-"""
+"""외부 녹음·샘플 없이 NumPy·SciPy로 공간음과 상호작용 효과음을 합성한다."""
 from __future__ import annotations
 
 import argparse
@@ -28,7 +23,6 @@ def time(duration):
 
 
 def envelope(n, attack=.008, decay=.04, release=.04):
-    """Smooth tactile attack, decay and genuine zero at tail."""
     t = np.arange(n) / SR
     out = (1 - np.exp(-t / max(attack, .0002))) ** 2
     out *= np.exp(-t / max(decay, .001))
@@ -81,7 +75,6 @@ def stereo(x, width=.18, delay=.005):
 
 
 def room(x, wet=.14, tail=.12):
-    """Sparse, diffused early room reflections: not an electronic echo."""
     x = stereo(x)
     out = np.pad(x, ((0, round(tail * SR)), (0, 0)))
     for seconds, gain, pan in [(0.017, .51, .20), (.031, .36, -.21),
@@ -108,7 +101,6 @@ def place(dst, src, sec, gain=1, pan=0, wrap=False):
 
 
 def resonator(freq, duration, kind='felt', strength=1):
-    """A few dispersive modes plus a filtered felt excitation."""
     t = time(duration)
     if kind == 'glass':
         modes = [(1, 1, .25), (2.005, .19, .13), (2.997, .12, .10),
@@ -147,7 +139,7 @@ def soft_scrape(duration, material='wood'):
     motion = np.sin(np.pi * np.clip(t/duration, 0, 1)) ** 1.8
     modulation = .63 + .21*np.sin(2*np.pi*13*t + .8*np.sin(2*np.pi*3.1*t))
     if material == 'wood':
-        # A slipping joint, never a low impact.
+
         f = 165 + 18*np.sin(2*np.pi*1.8*t) + 8*np.sin(2*np.pi*12.1*t)
         phase = 2*np.pi*np.cumsum(f)/SR
         x = .6*x + .20*np.sin(phase) + .04*np.sin(2.97*phase)
@@ -184,7 +176,7 @@ def create(outdir):
     memory = chimes([A4, C5, E5], [0, .18, .36], .96, 'glass', [.6,.65,.7])
     mist = stereo(noise(len(memory), 1400, 3300)) * np.sin(np.linspace(0,np.pi,len(memory)))[:,None]**2 * .008
     memory += mist
-    # Material variants share exactly the same A-C-E memory gesture.
+
     save(outdir, 'sfx_memory_common.wav', memory, -7.3, 'Memory: transparent, slower A4–C5–E5 gesture shared with the lullaby; restrained air and room.')
     for material in ['fabric', 'paper', 'leaf', 'metal', 'music', 'ceramic', 'wood']:
         variant = memory.copy()
@@ -227,8 +219,7 @@ def create(outdir):
     fail=chimes([293.665,261.626],[0,.19],.91,'felt',[.6,.49])
     save(outdir,'sfx_fail.wav',fail,-11.7,'Gentle D4-C4 falling felt-piano sigh; sympathetic rather than threatening.')
 
-    # Common seamless loops: periodic noise and wrapped one-shots are genuinely
-    # continuous through the final->initial sample transition.
+    # 주기 잡음과 경계를 감싼 단발음을 써서 반복 끝과 시작을 연결한다.
     duration=20.; n=round(duration*SR); t=np.arange(n)/SR
     fire=np.zeros((n,2))
     for ch in [0,1]:
@@ -246,7 +237,7 @@ def create(outdir):
         bed*=.12*(.92+.06*np.sin(2*np.pi*t/duration*2+ch*.3)+.025*np.sin(2*np.pi*t/duration*7))
         distant=periodic_noise(n,160,1200)*.025
         rain[:,ch]=bed+distant
-    # Half the hiss is shared across channels, like one distant window.
+
     rain=.65*rain+.35*rain.mean(axis=1,keepdims=True)
     save(outdir,'amb_rain.wav',rain,-15.5,'Seamless 20 s muted rain beyond closed glass; soft 3 kHz low-pass, no close splashes or storm thunder.',True)
     air=np.zeros((n,2))
@@ -254,8 +245,7 @@ def create(outdir):
         air[:,ch]=.16*periodic_noise(n,160,1050)*(1+.16*np.sin(2*np.pi*t/duration*(ch+2)))
     save(outdir,'amb_manor_air.wav',air,-23,'Seamless 20 s unobtrusive interior air and timber space; no obvious pitched drone.',True)
 
-    # Stage-specific rare non-looping signatures. The engine schedules these
-    # independently of gameplay at long irregular intervals.
+
     stages={}
     def canvas(d): return np.zeros((round(d*SR),2))
     s=canvas(2.9)

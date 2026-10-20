@@ -1,4 +1,4 @@
-"""Deterministic score rules for stars and friendship."""
+"""완료한 탐사의 온기·속도·용기 점수를 계산해 별과 호감도에 공통으로 제공한다."""
 from __future__ import annotations
 
 from numbers import Integral
@@ -22,7 +22,7 @@ def _round_ratio(numerator: int, denominator: int) -> int:
 
 
 def score_outcome(level: dict, outcome: dict) -> dict:
-    """Score one completed run; unsuccessful runs receive zero points."""
+    """완료한 탐사만 채점한다. 실패·중단 등 나머지 결과는 0점이다."""
     empty = {'warmth': 0, 'speed': 0, 'courage': 0, 'total': 0,
              'stars': 0, 'next_star_points': STAR_THRESHOLDS[0]}
     if not isinstance(level, dict) or not isinstance(outcome, dict):

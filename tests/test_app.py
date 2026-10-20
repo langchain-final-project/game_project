@@ -1,8 +1,4 @@
-"""Headless SDL integration: real input, screen flow, settlement and persistence.
-
-These checks run the app controller and rendering code. They are not a substitute
-for testing a packaged executable on Windows or for human playtesting.
-"""
+"""앱의 입력·화면 전환·결과 정산·저장 복원을 창 없는 환경에서 검증한다."""
 from __future__ import annotations
 
 from copy import deepcopy
@@ -34,8 +30,7 @@ class AppIntegrationTests(unittest.TestCase):
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory(prefix='kkamang-app-test-')
         self.save_path = Path(self.directory.name) / 'save.json'
-        # Legacy grid-controller regressions remain explicit. The desktop default
-        # and its RL parity are exercised separately in test_realtime.py.
+        # 격자 입력 회귀 검증이며 기본 자유 이동과 학습 환경의 일치는 test_realtime.py에서 검증한다.
         self.app = GameApp(save_path=self.save_path, headless=True, no_audio=True,
                            movement_mode='grid')
 
@@ -76,8 +71,7 @@ class AppIntegrationTests(unittest.TestCase):
 
     def click_result_primary(self):
         self.app.draw()
-        # Result layout places its gold main CTA last. Inspect the actual
-        # renderer output so a mismatched visual label/action cannot be missed.
+        # 실제 렌더러의 버튼을 검사해 표시 문구와 실행 동작이 어긋나지 않는지 확인한다.
         primary = self.app.controls[-1]
         if self.app.last_reward.get('first_complete'):
             self.assertEqual(primary['label'], '기억 공개')
@@ -95,14 +89,7 @@ class AppIntegrationTests(unittest.TestCase):
             self.app.dispatch('tutorial_done')
         self.assert_rendered('game')
 
-    # def apply_action(self, action):
-    #     self.assertEqual(self.app.scene, 'game')
-    #     key = ACTION_KEYS.get(int(action))
-    #     if key is not None:
-    #         self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=key, mod=0))
-    #     self.app.advance(0.3)
-    #     if key is not None:
-    #         self.app.handle_event(pygame.event.Event(pygame.KEYUP, key=key, mod=0))
+
     def apply_action(self, action, *, short_tap=False):
         self.assertEqual(self.app.scene, 'game')
 
@@ -184,7 +171,7 @@ class AppIntegrationTests(unittest.TestCase):
             elapsed,
             self.app.last_outcome['ticks_used'] * self.app.core.config['tick_seconds'],
         )
-        # Settling the same result again remains idempotent at the app boundary.
+
         before = deepcopy(self.app.campaign.data)
         self.app.finish_run(type('Result', (), {'outcome': self.app.last_outcome})())
         self.assertEqual(self.app.campaign.data, before)
@@ -216,14 +203,14 @@ class AppIntegrationTests(unittest.TestCase):
         self.assertEqual(len(self.app.campaign.unlocked_cosmetics('frame')), 3)
         ending_count = len(self.app.dialogues)
         self.assertGreater(ending_count, 0)
-        self.assertEqual(ending_count, 3)
+        self.assertEqual(ending_count, 1)
         self.assertEqual(self.app.ending_id, 'happy_all')
         self.assertTrue(self.app.ending_art_only)
         self.click_control('ending_continue')
         self.assertFalse(self.app.ending_art_only)
         for _ in range(ending_count):
             self.assertEqual(self.app.scene, 'ending')
-            self.app.advance(30)  # Complete the current typewriter line.
+            self.app.advance(30)
             self.click_control('ending_continue')
         self.assert_rendered('home')
         self.app.dispatch('album')
@@ -307,12 +294,8 @@ class AppIntegrationTests(unittest.TestCase):
         self.enter_stage(1)
         for action in ROUTES[('stage_01', 4)]['actions']:
             self.apply_action(action, short_tap=True)
-        # for action in ROUTES[('stage_01', 4)]['actions']:
-        #     key = ACTION_KEYS.get(action)
-        #     if key is not None:
-        #         self.app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=key, mod=0))
-        #         self.app.handle_event(pygame.event.Event(pygame.KEYUP, key=key, mod=0))
-        #     self.app.advance(0.3)
+
+
         self.assertEqual(self.app.last_outcome['status'], 'COMPLETE')
         self.assert_rendered('result')
         self.assertEqual(self.app.controls[self.app.focus]['id'], 'view_memory')

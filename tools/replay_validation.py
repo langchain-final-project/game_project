@@ -1,8 +1,6 @@
-"""Replay v0.2 recorded witness routes through the implemented game core.
+"""기록된 경로를 실제 게임 코어로 재생해 일치 여부를 검증한다.
 
-This verifies conformance. It does not search for new routes, train an agent, or
-establish that human players find the proposed time budgets comfortable.
-"""
+경로 탐색·학습·사람 기준 난이도 평가는 수행하지 않는다."""
 from __future__ import annotations
 
 import argparse
@@ -21,7 +19,7 @@ from kkamang.realtime import RealtimeGameCore, PHYSICS_HZ, REALTIME_OBSERVATION_
 
 
 def replay_game_record(record):
-    """Replay an exported desktop record, including turns between world ticks."""
+    """세계 시간 사이의 방향 전환까지 포함한 데스크톱 재생 기록을 검증한다."""
     config = load_level(record['stage_id'])
     realtime = record.get('control_mode') == 'realtime'
     if realtime:
@@ -47,14 +45,14 @@ def replay_game_record(record):
 
 
 def phase_overrides(config, offsets):
-    """Advance each authored ghost clock, independently of the game clock."""
+    """게임 시계와 독립적으로 순찰 시계를 재생해 기준 위상을 만든다."""
     result = {}
     if len(config['ghosts']) != len(offsets):
         raise AssertionError('Incomplete reference phase offsets')
     for ghost, offset in zip(config['ghosts'], offsets):
         index = ghost['initial_index']
         countdown = ghost['initial_countdown']
-        # Deliberately use clock replay, not the original solver's formula.
+        # 원래 경로 탐색기의 위상 계산식을 재사용하지 않고 시계를 직접 재생한다.
         for _ in range(offset):
             countdown -= 1
             if countdown == 0:
@@ -65,7 +63,6 @@ def phase_overrides(config, offsets):
 
 
 def compare_trace(snapshot, reference):
-    """Compare recorded regression state fields on representative runs."""
     actual = {
         'tick': snapshot['tick'],
         'player': snapshot['position'],

@@ -1,4 +1,4 @@
-"""Check the editor-facing JSON schema; runtime semantic checks live in levels.py."""
+"""레벨 JSON의 구조를 검사하며 게임 규칙 검사는 levels.py가 담당한다."""
 import json
 from pathlib import Path
 import jsonschema

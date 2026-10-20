@@ -1,13 +1,4 @@
-"""Exact-duration shield (3 s) and magnet (4 s) sound design, version 4.
-
-Original synthesis, derived from v3 acoustic identities, never time-stretched.
-NumPy/SciPy only; no samples, external recordings, models, or network access.
-Run: python generate_timed_v4.py [--output rendered]
-
-The composite WAVs and optional start / seamless loop / end stems use the same
-rendered parts. Quiet periodic body fields sit below the defined onset and
-expiry. Every composite ends at the mechanical expiry, not after it.
-"""
+"""보호 3초·자석 4초 효과의 시작·반복·종료 음원을 정해진 길이로 합성한다."""
 from __future__ import annotations
 
 import argparse
@@ -23,8 +14,6 @@ from scipy.io import wavfile
 SR=22050
 SEED=2026101904
 RNG=np.random.default_rng(SEED)
-
-
 def tm(seconds): return np.arange(round(seconds*SR))/SR
 def canvas(seconds): return np.zeros((len(tm(seconds)),2))
 def norm(x): return x/max(float(np.sqrt(np.mean(x*x))),1e-12)
@@ -66,11 +55,7 @@ def periodic_noise(low,high,seconds=1):
     z=(RNG.normal(size=len(f))+1j*RNG.normal(size=len(f)))*weights
     z[0]=0
     return norm(np.fft.irfft(z,n=n))
-
-
 def env(t,attack=.004,decay=.05):return (1-np.exp(-t/attack))**2*np.exp(-t/decay)
-
-
 def level_peak(x,db):return x*10**(db/20)/max(float(np.max(abs(x))),1e-12)
 
 
@@ -99,16 +84,12 @@ def arrival(seconds,freq=440):
 
 
 def loop_body(family):
-    """A genuine 1 s periodic field, exact-cycle modes plus periodic FFT air.
-
-    Modulated partials and shifting noise colour prevent a static pitched hum.
-    The body is deliberately much quieter than onset and ordinary game SFX.
-    """
+    """반복 경계가 이어지도록 정확히 1초 주기의 음색을 합성한다."""
     t=tm(1);p=t
     out=canvas(1)
     if family=='shield':
         for side in [0,1]:
-            # Integer fundamentals make a real continuous 1-second period.
+
             for f,amp,j in [(349,.64,0),(622,.31,1),(1047,.12,2)]:
                 phase=2*np.pi*f*t+.13*np.sin(2*np.pi*t+j*.9+side*.4)
                 breathing=.72+.17*np.sin(2*np.pi*t+j*1.8)+.08*np.sin(4*np.pi*t+j)
@@ -119,8 +100,8 @@ def loop_body(family):
         return level_rms(out,-32.4,-22)
     centers=[690,1110,1820,2600]
     bands=np.array([periodic_noise(c*.70,c*1.28) for c in centers])
-    # A gentle converging field cycles continuously; the strong initial inward
-    # motion remains in the onset, so this body does not compete with pickups.
+
+
     target=1250*np.exp(.31*np.sin(2*np.pi*t+.7))
     weights=np.exp(-.5*((np.log(np.array(centers)[:,None])-np.log(target[None,:]))/.43)**2)
     weights/=np.sqrt(np.sum(weights*weights,axis=0,keepdims=True))
@@ -159,7 +140,7 @@ def start_parts():
 def end_parts():
     shield=canvas(.28)
     t=tm(.22)
-    # Recognizable descending soft shell resonance, not a failure jingle.
+
     f=622.25*(349.23/622.25)**(t/.22)
     phase=2*np.pi*np.cumsum(f)/SR
     glassless=(np.sin(phase)+.16*np.sin(2*phase))*env(t,.009,.052)
@@ -182,7 +163,7 @@ def compose(start,loop,end,duration,body_start,body_stop,end_start):
     repeat=fade(repeat,.11,.14)
     put(full,repeat,body_start)
     put(full,end,end_start)
-    # All expiry sound is inside the timed window; both endpoints are exactly 0.
+    # 종료음도 효과 지속 시간 안에 포함하고 양 끝의 진폭을 0으로 맞춘다.
     return fade(full,.0015,.015)
 
 

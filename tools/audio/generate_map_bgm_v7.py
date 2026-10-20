@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
-"""Five map/ending cues, newly scored for a recorded CC0 acoustic grand piano.
+"""CC0 어쿠스틱 피아노 녹음 샘플로 탐사·엔딩 배경음 다섯 곡을 제작한다.
 
-No lobby, hit/damage, or other SFX are read or written. Requires numpy/scipy and
-the VCSL sample_manifest.json retained with this authoring project. Output game
-files are self-contained WAVs; a sample engine is not needed at game runtime.
-"""
+제작에는 NumPy·SciPy와 샘플 명세가 필요하며, 게임은 출력 WAV만 사용한다."""
 from __future__ import annotations
 import argparse
 from collections import Counter
@@ -41,12 +38,7 @@ def seeded(*parts):
 
 
 class RecordedPiano:
-    """Close-root sample playback with a soft/medium/mf timbre crossfade.
-
-    Original stereo channels are preserved; neither chorusing nor mono folding
-    is used. Key release damps the recorded tail smoothly. No per-key peak/RMS
-    normalization erases the performance dynamics of the recorded instrument.
-    """
+    """원본 스테레오와 건반별 강약을 보존하며 가까운 음의 녹음 샘플을 재생한다."""
     def __init__(self,manifest):
         self.manifest_path=Path(manifest)
         self.manifest=json.loads(self.manifest_path.read_text(encoding="utf-8"))
@@ -54,9 +46,7 @@ class RecordedPiano:
             raise ValueError("Expected the verified CC0-1.0 VCSL piano manifest")
         self.entries=self.manifest["samples"]
         self.used={}
-        # The source's pp/mp/mf recordings have a wide natural level range.
-        # This gentle keyboard-response curve lets accompaniment use the mp
-        # body quietly instead of reducing all inner lines to near-silent pp.
+        # 녹음의 강약 범위를 보존하면서 반주가 지나치게 작아지지 않도록 건반 반응을 조정한다.
         self.layer_centers={1:.18,2:.38,3:.75}
         self.available_layers=sorted(set(e["velocity_layer"] for e in self.entries))
 
@@ -75,7 +65,7 @@ class RecordedPiano:
         if rate!=SR:
             factor=Fraction(SR,rate)
             wave=signal.resample_poly(wave,factor.numerator,factor.denominator,axis=0)
-        # Remove only a constant offset. Retain the real key attack and stereo.
+        # 직류 성분만 제거하고 실제 건반 타격과 스테레오는 보존한다.
         wave-=np.mean(wave,axis=0,keepdims=True)
         return wave.astype(np.float32)
 
@@ -132,7 +122,7 @@ class RecordedPiano:
             provenance.append({"layer":layer,"weight":round(weight,6),**self.used[(midi,layer)]})
         t=np.arange(count)/SR
         damping=np.exp(-(np.maximum(t-hold,0)/release)**1.35)
-        # Avoid a hard sample start or an abrupt last-frame damper cutoff.
+
         damping*=np.minimum(1,t/.002)
         damping*=np.minimum(1,np.maximum(0,(t[-1]-t)/.045))**2
         out*=damping[:,None]*(.48+velocity)
@@ -152,8 +142,6 @@ class Score:
         self.sections=[]
 
     def clock(self,beat):
-        # A written four-bar breath: slightly faster mid-phrase, slower near
-        # the edges. Ending's final two bars broaden, keeping the same total time.
         warped=beat+.115*np.sin(2*np.pi*beat/16)+.025*np.sin(2*np.pi*beat/4)
         if not self.loop:
             warped+=.92*((max(beat-56,0)/8)**2-beat/64)
@@ -162,14 +150,14 @@ class Score:
     def note(self,bar,beat,midi,dur,v,role="melody",art="legato",pedal=.15,pan=None,why=""):
         absolute=bar*4+beat
         when=self.clock(absolute)
-        # Roles have deliberate placement; at most4ms touch variation remains.
+
         when+=self.rng.normal(0,.0035)
         duration=max(.04,self.clock(absolute+dur)-self.clock(absolute))
         velocity=float(np.clip(v*self.rng.uniform(.985,1.015),.12,.82))
         audio,sources=self.piano.note(midi,duration,velocity,art,pedal)
         if pan is None:
             pan={"bass":-.07,"inner_voice":.05,"countermelody":.08,"melody":.02}.get(role,0)
-        # Balance, rather than re-pan or widen the existing stereo recording.
+
         audio=audio*np.array([math.sqrt(1-pan),math.sqrt(1+pan)])
         index=round(when*SR)
         if self.loop:
@@ -195,8 +183,6 @@ class Score:
         self.sections.append({"start_bar":bar+1,"name":name,"rationale":rationale})
 
     def finish(self,output):
-        # Recorded acoustic grand already contains real body and room response.
-        # Add only a small dark room; do not chorus/smear the stereo instrument.
         rng=seeded(self.name,"small_room")
         t=np.arange(round(1.8*SR))/SR
         result=self.audio.astype(np.float64)
@@ -209,7 +195,7 @@ class Score:
                 wet=np.fft.irfft(np.fft.rfft(self.audio[:,ch])*np.fft.rfft(ir,n=self.frames),n=self.frames)
             else:wet=signal.fftconvolve(self.audio[:,ch],ir)[:self.frames]
             result[:,ch]+=wet*.13
-        # Remove subsonic/DC gently; preserve natural grand-piano body.
+
         f=np.fft.rfftfreq(self.frames,1/SR);hp=f*f/(f*f+38**2)
         result=np.fft.irfft(np.fft.rfft(result,axis=0)*hp[:,None],n=self.frames,axis=0)
         if not self.loop:
@@ -218,10 +204,7 @@ class Score:
         rms=float(np.sqrt(np.mean(result*result)))
         gain=10**(self.target/20)/max(rms,1e-12)
         result*=gain
-        # The real grand has rare20–40ms hammer crests much taller than the
-        # preceding synthetic patch. Stereo-linked, smoothly rounded lookahead
-        # control keeps these crests from forcing the whole bed5dB too quiet.
-        # No samples are hard-clipped, and source-note gains are not normalized.
+        # 순간적인 피아노 타격만 부드럽게 제한하며 원본 음별 강약을 정규화하지 않는다.
         transient_gain=np.ones(self.frames)
         mode="wrap" if self.loop else "nearest"
         for _ in range(2):
@@ -234,7 +217,7 @@ class Score:
             if actual<10**((self.target-.12)/20):
                 adjust=min(1.16,10**(self.target/20)/max(actual,1e-12))
                 result*=adjust;gain*=adjust
-        # Final guard uses the same smooth linked envelope, rather than clipping.
+
         peaks=np.max(np.abs(result),axis=1)
         requested=np.minimum(1.,.49/np.maximum(peaks,1e-12))
         smooth=gaussian_filter1d(minimum_filter1d(requested,size=round(.060*SR)|1,mode=mode),sigma=.006*SR,truncate=4,mode=mode)
@@ -261,8 +244,6 @@ class Score:
         return meta
 
 
-# Dotted-quarter / eighth / half-note fingerprint. The four-bar sentence has a
-# question, falling fragment, two-note breath, and suspended closing note.
 QUESTION=[(0,.5,69,1.25,.53),(0,2.,72,.42,.55),(0,2.5,76,1.3,.62),
           (1,.5,74,.45,.51),(1,1.25,72,.85,.49),(1,2.75,71,.85,.45),
           (2,.5,67,.45,.42),(2,1.25,69,1.3,.47),(3,1.0,71,1.5,.40)]
@@ -272,7 +253,6 @@ ANSWER=[(0,.5,72,.85,.54),(0,1.75,71,.42,.48),(0,2.5,69,1.3,.46),
 
 
 def bass_and_inner(s,basses,inners,kind):
-    """Every pitch is written: no greedy nearest-tone algorithm can get stuck."""
     for bar,(bass,inner) in enumerate(zip(basses,inners)):
         pos=bar%4;phrase=bar//4
         if kind=="act1":
@@ -297,7 +277,7 @@ def bass_and_inner(s,basses,inners,kind):
                 s.note(bar,3.0,inner+12,.65,.23,"countermelody","muted",0)
         elif kind=="stage12":
             s.note(bar,.18 if bar else .7,bass,1.3,.34+.012*phrase,"bass","legato",.22)
-            # A stable soft three-part pulse supports the tune; pitches move.
+
             s.note(bar,1.45,inner,.65,.29+.008*phrase,"inner_voice","legato",.18)
             s.note(bar,2.6,inner+7,.55,.27+.008*phrase,"inner_voice","legato",.15)
             if pos in [1,2]:s.note(bar,3.35,inner+12,.4,.25,"countermelody","detached",.08)
@@ -326,8 +306,8 @@ def build_act1(piano):
     s.line([(0,.5,57,1.25,.49),(0,2.,60,.42,.52),(0,2.5,64,1.3,.56),
             (1,.5,62,.65,.46),(1,1.75,60,1.0,.43),(2,.5,59,1.25,.40),
             (3,.65,59,.7,.40)],offset=12,art="soft",pedal=.26)
-    # A real dominant pickup, not an inaudible held tone: B-G#-E-B prepares
-    # the return to A. The last short B has a comparable mp touch to the theme.
+
+
     s.line([(15,1.65,56,.55,.40),(15,2.5,64,.6,.44),(15,3.25,59,1.3,.44)],
            role="loop_turnaround",art="soft",pedal=.20)
     return s
@@ -437,8 +417,7 @@ def main():
     for name,builder in [("act1",build_act1),("act2",build_act2),("act3",build_act3),("stage12",build_stage12),("ending",build_ending)]:
         if args.tracks and name not in args.tracks:continue
         records.append(builder(piano).finish(args.output))
-    # A partial authoring rerender must not silently drop the untouched ending
-    # from the delivered five-track inventory or its recorded-source references.
+    # 일부 곡만 다시 만들더라도 기존 엔딩 곡과 녹음 출처를 전체 목록에서 보존한다.
     by_file={r["file"]:r for r in records}
     mappings={(m,l):{"midi":m,"layer":l,**e} for (m,l),e in piano.used.items()}
     for name in CONFIG:

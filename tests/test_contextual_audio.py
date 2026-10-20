@@ -1,4 +1,4 @@
-"""Contextual mixer transport over the story branch's real event contracts."""
+"""게임 사건에 따른 음향 전환·중복 재생 방지·음량 처리를 검증한다."""
 from copy import deepcopy
 from pathlib import Path
 import os
@@ -245,7 +245,7 @@ def test_actual_power_events_play_once_and_core_end_cancels_without_double_relea
     engine.play_event({'type': 'invincibility_collect', 'duration_ticks': 10})
     engine.update(3.)
     engine.play_event({'type': 'invincibility_end'})
-    assert names(mixer).count('sfx_shield_end') == 1  # Full composite contains release already.
+    assert names(mixer).count('sfx_shield_end') == 1
 
 
 def test_magnetic_bool_coalesces_cluster_without_ordinary_warmth_or_damage_changes(make_engine):

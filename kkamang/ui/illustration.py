@@ -1,4 +1,7 @@
-"""PNG cat animation and decorative illustrations; simulation state is read-only."""
+"""PNG 캐릭터·소품과 정원·해방 장면용 도형·조명을 그린다.
+
+일반 쉼터와 엔딩의 PNG 표시는 각각 lobby와 menus가 담당한다.
+"""
 import math
 from functools import lru_cache
 import pygame
@@ -9,8 +12,7 @@ from .ghost_sprites import ghost_frame, RESIDENT_IDS
 INK=(43,39,57); FUR=(53,48,66); LIGHT=(77,69,88); CREAM=(248,232,202)
 SAGE=(151,181,157); GOLD=(240,194,111); ROSE=(218,151,155)
 
-# Quest art is selected by ID: furniture and quests can share a kind, and the
-# two music quests have different drawings. The towel reuses the blanket art.
+# 가구와 물건의 종류가 겹치므로 필수 물건은 ID로 고른다. 수건은 담요 원화를 재사용한다.
 QUEST_RECTS = {
     'memory_01': (25, 738, 375, 337),
     'memory_02': (30, 60, 385, 310),
@@ -26,8 +28,7 @@ QUEST_RECTS = {
     'memory_12': (850, 705, 190, 365),
 }
 
-# warmth.png에서 가구를 잘라낼 영역입니다.
-# 순서: 왼쪽 위치, 위쪽 위치, 가로 길이, 세로 길이
+# 가구 시트의 잘라낼 영역은 왼쪽·위·너비·높이 순서다.
 FURNITURE_RECTS = {
     'table': (35, 365, 285, 230),
     'plant': (995, 40, 215, 285),
@@ -40,18 +41,16 @@ def _png_file(filename):
     image = pygame.image.load(str(ASSET_DIR / 'art' / filename))
     return image.convert_alpha() if pygame.display.get_surface() else image
 
-
 @lru_cache(maxsize=16)
 def _png_source(filename, crop=None):
     image = _png_file(filename)
     if crop is not None:
         image = image.subsurface(crop)
-    # Ignore almost invisible export noise outside the painted object.
+    # 거의 투명한 외곽 흔적을 제외해 실제 그림의 크기를 맞춘다.
     bounds = image.get_bounding_rect(min_alpha=10)
     if not bounds.width or not bounds.height:
         raise ValueError(f'Empty PNG: {filename}, {crop}')
     return image.subsurface(bounds).copy()
-
 
 @lru_cache(maxsize=256)
 def _png_image(filename, size, crop=None):
@@ -66,24 +65,21 @@ def _png_image(filename, size, crop=None):
     canvas.blit(image, image.get_rect(midbottom=(width // 2, height)))
     return canvas
 
-
 def quest_prop(surface, quest, rect):
-    """Draw a mandatory item without confusing its kind with room decoration."""
+    """방 장식과 혼동하지 않도록 물건 ID에 대응하는 필수 원화를 그린다."""
     rect = pygame.Rect(rect)
     image = _png_image('Essential_item.png', rect.size, QUEST_RECTS[quest['id']])
     surface.blit(image, rect)
 
-
 def cat_frame(size=100, direction='down', phase=0, mood='idle', scarf='default', *, walking=None):
-    # Keep the existing drawing API. Mood/scarf do not select art until those
-    # variants exist; a hurt cat can still walk and retain its separate shield.
+    # 표정·스카프 인자는 호출 호환용이다. 걷기는 별도로 판정해 피격 중에도 유지한다.
     is_walking = mood == 'walk' if walking is None else walking
     index = int(phase * WALK_FRAMES / 8 + 1e-9) % WALK_FRAMES if is_walking else 0
     return sprite_frame(int(size), direction, is_walking, index)
 
 @lru_cache(maxsize=2048)
 def _resident_cat_frame(size=100, direction='down', phase=0, mood='idle', scarf='default', palette=None, *, walking=None, folded_ears=False):
-    # Living residents keep their coats independently of Kkamang's PNG atlas.
+    # 정원·해방 연출용 몸 색은 까망이 PNG 시트와 별개다.
     fur,light,belly,eye_color,rear = palette or (FUR,LIGHT,(88,79,95),GOLD,INK)
     s=pygame.Surface((160,180),pygame.SRCALPHA)
     shadow=pygame.Surface((160,180),pygame.SRCALPHA)
@@ -93,7 +89,7 @@ def _resident_cat_frame(size=100, direction='down', phase=0, mood='idle', scarf=
     bob=abs(walk)*.28
     tail=[(107,128),(133,126),(140,106+math.sin(phase*math.pi/4)*6),(131,90)]
     pygame.draw.lines(s,INK,False,tail,19);pygame.draw.lines(s,light,False,tail,11)
-    # Four independently placed paws: alternating pairs move in opposite phases.
+
     for x,y,shift,col in [(52,133,walk,rear),(98,133,-walk,rear),(61,150,-walk,fur),(94,150,walk,fur)]:
         if mood=='collect' and x==94:y-=24;shift=6
         pygame.draw.ellipse(s,col,(x-10,y+shift,23,20))
@@ -104,7 +100,7 @@ def _resident_cat_frame(size=100, direction='down', phase=0, mood='idle', scarf=
     if direction in ('left','right'):
         offset=-10 if direction=='left' else 10
     else:offset=0
-    # Ears and head, same proportions across portraits and field sprites.
+
     hx=offset; hy=-bob
     if not folded_ears:
         pygame.draw.polygon(s,INK,[(29+hx,63+hy),(28+hx,13+hy),(64+hx,34+hy)])
@@ -114,7 +110,6 @@ def _resident_cat_frame(size=100, direction='down', phase=0, mood='idle', scarf=
     pygame.draw.ellipse(s,INK,(21+hx,29+hy,118,86));pygame.draw.ellipse(s,fur,(25+hx,31+hy,110,79))
     pygame.draw.arc(s,light,(39+hx,35+hy,79,55),.3,2.9,3)
     if folded_ears:
-        # Bosong's two soft ear flaps lie forward over the crown.
         for x in (26,99):
             pygame.draw.ellipse(s,INK,(x+hx,32+hy,36,29))
             pygame.draw.ellipse(s,fur,(x+3+hx,33+hy,30,25))
@@ -148,7 +143,7 @@ def cat(surface, center, size=80, direction='down', time=0., mood='idle', scarf=
         *, walking=None, walk_progress=None):
     is_walking = mood == 'walk' if walking is None else walking
     if is_walking and walk_progress is not None:
-        # Six PNG poses per cycle, still driven by actual travel distance.
+        # 이동 거리를 기준으로 여섯 걷기 자세를 한 주기로 재생한다.
         phase = (int(walk_progress * WALK_FRAMES) % WALK_FRAMES) * 8 / WALK_FRAMES
     else:
         phase=(int(time * 10) % WALK_FRAMES) * 8 / WALK_FRAMES if is_walking else 0
@@ -157,14 +152,14 @@ def cat(surface, center, size=80, direction='down', time=0., mood='idle', scarf=
 
 def ghost(surface, center, size=50, time=0., resident=False, variant=0, *,
           ghost_id=None, direction='down'):
-    # Existing resident variants already follow Bosong/Ipari/Dore order.
+    # 변형 번호는 보송·이파리·도레 순서다.
     ident = ghost_id if ghost_id is not None else RESIDENT_IDS[variant % 3]
     image = ghost_frame(int(size), ident, direction)
     surface.blit(image, image.get_rect(midbottom=(
         round(center[0]), round(center[1] + math.sin(time * 2 + variant) * 3))))
 
 def resident_cat(surface, center, size=80, time=0., variant=0):
-    """The three residents after their protection spell has been released."""
+    """정원·해방 연출에서 고양이로 돌아온 친구를 도형으로 그린다."""
     variant%=3
     palettes=[
         ((245,239,226),(216,207,211),(255,248,233),(119,141,150),(208,199,199)),
@@ -175,21 +170,17 @@ def resident_cat(surface, center, size=80, time=0., variant=0):
     im=_resident_cat_frame(160,'down',int(time*3)%8,'happy',scarf,palettes[variant],folded_ears=variant==0).copy()
     d=pygame.draw
     if variant==0:
-        # Bosong's soft white tufts and peach scarf.
         for points in [[(28,71),(17,76),(27,83)],[(131,71),(143,76),(133,83)],[(65,34),(73,23),(81,33)]]:
             d.polygon(im,palettes[0][0],points)
     elif variant==1:
-        # Ipali keeps a fresh leaf tucked beside one ear.
         d.line(im,(84,120,86),(115,37),(124,15),3)
         d.ellipse(im,SAGE,(120,12,24,12));d.line(im,(99,140,103),(124,20),(139,16),1)
         d.ellipse(im,(110,148,107),(105,19,18,10))
     else:
-        # Dore's forehead stripes and tiny musical charm.
         for x in (67,80,93):d.line(im,(130,121,157),(x,35),(x,47),3)
         d.circle(im,GOLD,(81,125),6);d.line(im,GOLD,(86,125),(86,110),2)
     im=pygame.transform.smoothscale(im,(int(size),int(size*180/160)))
     surface.blit(im,im.get_rect(midbottom=(round(center[0]),round(center[1]))))
-
 
 @lru_cache(maxsize=256)
 def prop_image(kind,size=64,lit=True):
@@ -244,7 +235,7 @@ def prop_image(kind,size=64,lit=True):
         d.rect(s,edge,(10,14,80,73),border_radius=6);d.rect(s,wood,(13,11,74,72),border_radius=5)
         d.rect(s,(116,133,147),(20,18,60,57),border_radius=2)
         d.ellipse(s,(159,173,161),(20,53,60,22))
-        # The same three friends in a picture taken before the storm.
+
         for x,y,col in [(34,46,(245,239,226)),(51,42,(195,155,111)),(66,49,(161,153,184))]:
             d.ellipse(s,col,(x-9,y+6,18,18))
             d.polygon(s,col,[(x-10,y),(x-9,y-12),(x-2,y-5),(x+3,y-5),(x+10,y-12),(x+11,y)])
@@ -336,7 +327,6 @@ def prop_image(kind,size=64,lit=True):
 def prop(surface, kind, rect, lit=True):
     rect = pygame.Rect(rect)
     if kind in FURNITURE_RECTS:
-        # assets/art/map/warmth.png에서 해당 가구만 가져옵니다.
         image = _png_image('map/warmth.png', rect.size, FURNITURE_RECTS[kind])
         surface.blit(image, rect)
         return
@@ -352,13 +342,11 @@ def halo(radius,color=(239,192,110)):
 def glow(surface,pos,radius=75):
     im=halo(radius);surface.blit(im,(int(pos[0]-radius),int(pos[1]-radius)))
 
-# Keep the simplified lobby; live resident actions are presentation-only.
 def _released_residents(released=False,released_variants=None,*,before=False):
-    """Resolve renderer variants (Bosong, Ipari, Dore), without changing inputs."""
+    """보송·이파리·도레 순서의 해방 대상 집합을 입력 변경 없이 반환한다."""
     if before:return frozenset()
     if released_variants is None:return frozenset((0,1,2) if released else ())
     return frozenset(variant for variant in released_variants if variant in (0,1,2))
-
 
 def shelter(surface, completed=(), cosmetics=None,time=0.,before=False,show_actors=True,*,focus_stage=None,released=False,story_time=0.,released_variants=None,show_residents=True):
     cosmetics=cosmetics or {};done=set() if before else set(completed);d=pygame.draw
@@ -385,7 +373,7 @@ def shelter(surface, completed=(), cosmetics=None,time=0.,before=False,show_acto
         d.line(surface,(167,132,111),(x,y),(x,y+7),1);d.ellipse(surface,col,(x-4,y+7,8,12))
         if k+1 in done:glow(surface,(x,y+12),35)
 
-    # The extended ending brings a clear dawn after the night of rain.
+    # 세 친구가 모두 해방된 경우에만 비 오는 밤을 새벽으로 바꾼다.
     d.rect(surface,(165,123,103),(500,62,280,211),border_radius=78)
     d.rect(surface,(181,204,207) if released else (55,67,91),(513,74,254,186),border_radius=68)
     if released:
@@ -421,8 +409,7 @@ def shelter(surface, completed=(), cosmetics=None,time=0.,before=False,show_acto
             positions=((490+30*travel,440),(220,488),(978,473))
         else:
             player=(190,545);positions=((490,440),(220,488),(978,473))
-        # One welcoming towel and the planting action replace a roomful of
-        # chapter-object displays; the simplified PNG lobby stays uncluttered.
+
         towel=(445,484) if 8 in done else (390,462) if 4 in done else (345,442)
         prop(surface,'towel',(*towel,88,62))
         if show_residents and 6 in done:
@@ -431,7 +418,7 @@ def shelter(surface, completed=(), cosmetics=None,time=0.,before=False,show_acto
             for k in range(3):
                 yy=plant[1]+10+(time*18+k*7)%27
                 d.circle(surface,(171,204,212),(round(plant[0]-8-k*3),round(yy)),2)
-        # Keep the seated main PNG while the fourth place moves into the group.
+        # 까망이의 앉은 PNG는 유지하고 모임에 합류하는 위치만 이동한다.
         seated_cat = _png_image('character/kkamang_wait.png', (132, 132))
         surface.blit(seated_cat, seated_cat.get_rect(midbottom=(round(player[0]), round(player[1]))))
         if show_residents:
@@ -444,6 +431,6 @@ def shelter(surface, completed=(), cosmetics=None,time=0.,before=False,show_acto
                 yy=positions[2][1]-73-(time*18+i*22)%75
                 xx=positions[2][0]+22+math.sin(time+i)*17
                 d.circle(surface,GOLD,(int(xx),int(yy)),3);d.line(surface,GOLD,(xx+3,yy),(xx+3,yy-13),2)
-    # Consistent warm light; restoration progressively brightens the scene.
+
     overlay=pygame.Surface((1280,720),pygame.SRCALPHA);overlay.fill((255,221,161,8) if released else (27,29,45,max(0,40-len(done)*3)));surface.blit(overlay,(0,0))
     glow(surface,(615,440),230)

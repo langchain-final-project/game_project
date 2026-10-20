@@ -1,2 +1,2 @@
-"""Kkamang and the Sleepless Manor. The package root never imports pygame."""
+"""게임 패키지 진입점. 루트 패키지를 읽을 때 화면 의존성을 불러오지 않는다."""
 __version__ = "0.2.0"

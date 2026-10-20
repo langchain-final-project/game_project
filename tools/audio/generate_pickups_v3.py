@@ -1,11 +1,4 @@
-"""Kkamang pickups v3 — deliberately distinct acoustic gestures.
-
-Original deterministic NumPy/SciPy synthesis, no external audio or services.
-Run python generate_pickups_v3.py [--output rendered].
-Warmth: dry low pluck. Memory: three high old music-box attacks. Badge: latch
-and two mid pulses. Heal: water. Shield: resonant dome. Speed: two air swishes.
-Magnet: dominant inward formant/pitch sweep and short rounded arrival.
-"""
+"""외부 음원 없이 NumPy·SciPy로 수집·회복·보호·속도·자석 효과음을 합성한다."""
 from __future__ import annotations
 
 import argparse
@@ -23,8 +16,6 @@ SEED=2026101903
 RNG=np.random.default_rng(SEED)
 C4,E4,G4=261.625565,329.627557,391.995436
 C5,E5,A5,C6,E6=523.251131,659.255114,880.,1046.502261,1318.510228
-
-
 def tm(seconds): return np.arange(round(seconds*SR))/SR
 def canvas(seconds): return np.zeros((len(tm(seconds)),2))
 
@@ -52,8 +43,6 @@ def stereo(x,pan=0):
 def put(dst,src,sec=0,gain=1,pan=0):
     i=round(sec*SR);src=stereo(src,pan)*gain;n=min(len(src),len(dst)-i)
     if n>0:dst[i:i+n]+=src[:n]
-
-
 def norm(x): return x/max(float(np.sqrt(np.mean(x*x))),1e-12)
 
 
@@ -66,22 +55,20 @@ def env(t,attack=.005,decay=.065):
 
 
 def pluck(freq,seconds,decay=.055):
-    """Muted wooden/felt string, short but definite 5 ms articulation."""
     t=tm(seconds);x=np.zeros(len(t))
     for ratio,amp,d in [(1,1,1),(2.001,.38,.7),(3.006,.15,.44),(4.01,.05,.28)]:
         x+=amp*np.sin(2*np.pi*freq*ratio*t)*env(t,.0045,decay*d)
-    # Dry body contact is above bass, far quieter than the pitched body.
+
     x+=.035*noise(seconds,630,1900)*env(t,.002,.010)
     return fade(filt(x,high=2400),.0015,.025)
 
 
 def tine(freq,seconds=.32):
-    """Old music-box tine: high clear fundamental, gentle damped overtones."""
     t=tm(seconds)
     x=np.sin(2*np.pi*freq*t)*env(t,.0038,.095)
     x+=.13*np.sin(2*np.pi*freq*2.006*t)*env(t,.0038,.039)
     x+=.019*np.sin(2*np.pi*freq*2.71*t)*env(t,.004,.024)
-    # Very small detuned tine body, not a broad pad beneath every category.
+
     x+=.035*np.sin(2*np.pi*freq*.9991*t)*env(t,.007,.12)
     return fade(filt(x,high=3450),.0015,.05)
 
@@ -102,7 +89,6 @@ def seat_tick(seconds=.050):
 
 
 def material(name):
-    """Distinct short material at a quiet exposed gap between music-box notes."""
     if name in ['fabric','paper','leaf','wood']:
         duration={'fabric':.17,'paper':.15,'leaf':.18,'wood':.11}[name]
         t=tm(duration);p=t/duration
@@ -120,18 +106,13 @@ def material(name):
         x=(np.sin(2*np.pi*913*t)+.24*np.sin(2*np.pi*1529*t))*env(t,.0027,.021)
     else:
         x=pluck(E4,duration,.039)
-        # Actual lower piano double-touch rather than more high-tine sound.
+
         second=pluck(G4,.115,.033);i=round(.055*SR)
         x[i:i+len(second)]+=.57*second[:len(x)-i]
     return fade(x,.0015,.025)
 
 
 def formant_swoop(seconds,descending=True,variant=0):
-    """Audible moving filtered air, including in mono.
-
-    A bank of overlapping band-passed noise moves from 2.5 kHz to 650 Hz;
-    equal-power weights keep the inward sweep audible throughout its course.
-    """
     t=tm(seconds);p=t/seconds
     centers=np.array([640,1040,1690,2650.])*(1+variant*.035)
     white=RNG.normal(size=len(t))
@@ -143,14 +124,13 @@ def formant_swoop(seconds,descending=True,variant=0):
     x=np.sum(bands*weights,axis=0)
     shape=np.sin(np.pi*p)**1.15
     x*=shape
-    # Spatial convergence is supplemental: shifting spectral formants carry mono identity.
+    # 좌우 효과가 사라지는 모노 재생에서도 주파수 이동으로 자석을 구분한다.
     pan=.5*np.sin(np.pi*p+variant*.4)*(1-p)
     out=np.column_stack((x*np.sqrt(1-pan),x*np.sqrt(1+pan)))
     return fade(out,.004,.018)
 
 
 def mix_stems(tonal,noisy,noise_share):
-    """Set actual linear stem energy, not an inaudible decorative noise bed."""
     te=float(np.sum(tonal*tonal));ne=float(np.sum(noisy*noisy))
     noisy=noisy*np.sqrt(max(te,1e-15)/max(ne,1e-15)*noise_share/(1-noise_share))
     return tonal+noisy,noisy
@@ -222,7 +202,7 @@ def build(outdir):
           'Clearly higher old music-box A5–C6–E6 at 0/300/600 ms. Three separate 4 ms tine attacks, decaying resonance, gentle higher partials; no blanket warm chord or continuous pad.','memory')
     for mat in ['fabric','paper','leaf','metal','music','ceramic','wood']:
         x=mem.copy();tex=material(mat)
-        # Set the exposed texture to a definite 7% of the underlying motif energy.
+
         material_layer=canvas(.99);put(material_layer,tex,.115,1,-.12)
         scale=np.sqrt(np.sum(mem*mem)*.075/max(np.sum(material_layer*material_layer),1e-15))
         x+=material_layer*scale
@@ -269,7 +249,7 @@ def build(outdir):
     put(speed_tone,seat_tick(),0,.19)
     for onset,pan,variant in [(.045,-.60,0),(.270,.60,2)]:
         whoosh=formant_swoop(.20,False,variant)
-        # Left-right motion survives as a clearly separated two-swish rhythm in mono.
+
         whoosh*=np.array([np.sqrt(1-pan),np.sqrt(1+pan)])
         put(speed_air,whoosh,onset,.40)
     put(speed_tone,arrival(.080,659.255),.465,.20)
@@ -279,7 +259,7 @@ def build(outdir):
 
     mag_tone=canvas(.60);mag_air=canvas(.60)
     put(mag_air,formant_swoop(.43,True),.015,.55)
-    # One audible falling pitch formant curls into the center; no machine tone.
+
     t=tm(.35);f=1130*(440/1130)**(t/.35)**.75
     spiral=np.sin(2*np.pi*np.cumsum(f)/SR)*np.sin(np.pi*t/.35)**1.4
     put(mag_tone,spiral,.045,.20)
@@ -291,7 +271,7 @@ def build(outdir):
         tonal=canvas(duration);air=canvas(duration)
         put(air,formant_swoop(.137+idx*.003,True,variant),0,.45)
         put(tonal,arrival(.080,freq),duration-.080,.80)
-        # Brief falling tonal center reads as attraction rather than another C-E pickup.
+
         t=tm(.115);f=(910+idx*65)*(510/(910+idx*65))**(t/.115)
         put(tonal,np.sin(2*np.pi*np.cumsum(f)/SR)*np.sin(np.pi*t/.115)**2,.010,.13)
         absorb,abs_noise=mix_stems(tonal,air,.66)
@@ -310,7 +290,7 @@ def build(outdir):
 def spectral_vector(pcm):
     mono=pcm.astype(float).mean(axis=1)/32768
     f,p=signal.welch(mono,SR,nperseg=min(2048,len(mono)))
-    # Fixed perceptual-ish log-frequency bands make duration-independent comparisons.
+
     edges=np.geomspace(150,5000,45)
     v=np.array([p[(f>=a)&(f<b)].sum() for a,b in zip(edges[:-1],edges[1:])])
     return v/max(float(np.linalg.norm(v)),1e-20)

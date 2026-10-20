@@ -1,11 +1,14 @@
-"""Progressive lobby artwork, derived only from completed campaign stages."""
+"""완료한 방의 PNG 소품·캐릭터를 쌓아 쉼터를 구성한다.
+
+엔딩별 고양이 교체·친구 숨김은 저장된 진행을 바꾸지 않는 표시 처리다.
+"""
 from dataclasses import dataclass, replace
 from functools import lru_cache
 
 import pygame
 
 from ..paths import ASSET_DIR
-from .illustration import resident_cat, _released_residents
+from .illustration import _released_residents
 
 
 @dataclass(frozen=True)
@@ -15,9 +18,7 @@ class LobbySprite:
     size: tuple[int, int]
     foot: tuple[int, int]
 
-
-# Positions use the original 1672-by-941 lobby artwork as their coordinate system.
-# Each item includes its painted furniture; the curtain tie excludes the stool.
+# 위치는 원본 쉼터 그림의 1672×941 좌표 기준이며 소품에는 해당 가구도 포함된다.
 ITEMS = {
     1: LobbySprite('수건 선반', (22, 3, 330, 355), (210, 226), (153, 360)),
     2: LobbySprite('안내 지도', (387, 51, 341, 289), (185, 157), (466, 385)),
@@ -37,18 +38,23 @@ GHOSTS = {
     4: LobbySprite('C', (666, 646, 546, 591), (235, 255), (1488, 657)),
     7: LobbySprite('B', (61, 629, 573, 612), (250, 268), (355, 558)),
 }
-# Dialogue shares all lobby items and also shows the final garden door.
+# 대화용 소품에는 쉼터 공용 물건과 마지막 정원문을 포함한다.
 STORY_ITEMS = {
     **ITEMS,
     12: LobbySprite('정원문', (1080, 697, 335, 367), (170, 170), (0, 0)),
 }
 CHARACTERS = {'cat': CAT, 'A': GHOSTS[1], 'B': GHOSTS[7], 'C': GHOSTS[4]}
 RESIDENT_VARIANTS = {'A': 0, 'B': 1, 'C': 2}
+RESIDENT_IMAGES = {
+    0: 'resident_bosong.png',
+    1: 'resident_ipari.png',
+    2: 'resident_dore.png',
+}
 FINAL_STAGES = frozenset(range(1, 13))
 
 
 def lobby_layers(completed, *, show_actors=True):
-    """Return visible sprites in floor-depth order, without changing progress."""
+    """진행 상태를 바꾸지 않고 표시할 PNG를 발의 깊이 순서로 반환한다."""
     done = frozenset(completed)
     layers = [('item.png', sprite) for stage, sprite in ITEMS.items() if stage in done]
     if show_actors:
@@ -57,21 +63,18 @@ def lobby_layers(completed, *, show_actors=True):
                       for stage, sprite in GHOSTS.items() if stage in done)
     return tuple(sorted(layers, key=lambda layer: layer[1].foot[1]))
 
-
 @lru_cache(maxsize=4)
 def _image(filename):
     image = pygame.image.load(str(ASSET_DIR / 'art' / 'lobby' / filename))
-    # Keep opaque room art in RGB. Adding alpha before smoothscale can round
-    # opacity below 255 and mix the final picture with the previous frame.
+    # 불투명 배경은 RGB로 유지해 축소 시 알파 반올림으로 이전 프레임이 비치지 않게 한다.
     if image.get_flags() & pygame.SRCALPHA and pygame.display.get_surface():
         return image.convert_alpha()
     return image
 
-
 @lru_cache(maxsize=48)
 def _sprite(filename, spec):
     image = _image(filename).subsurface(spec.crop).copy()
-    # A few neighbouring sprites extend across sheet cells. Keep only this object.
+    # 시트의 이웃 그림이 영역에 걸치므로 연결된 본체만 분리한다.
     component = pygame.mask.from_surface(image, 10).connected_component()
     if not component.count():
         raise ValueError(f'Empty lobby sprite: {spec.name}')
@@ -84,52 +87,66 @@ def _sprite(filename, spec):
         max(1, round(image.get_height() * scale)),
     ))
 
+@lru_cache(maxsize=3)
+def _resident_image(variant):
+    """고양이 PNG의 투명한 바깥 여백만 제거해 캐시한다."""
+    filename = RESIDENT_IMAGES[variant]
+    image = pygame.image.load(str(ASSET_DIR / 'art' / 'character' / filename))
+    if pygame.display.get_surface():
+        image = image.convert_alpha()
+    bounds = image.get_bounding_rect(min_alpha=10)
+    if not bounds.width or not bounds.height:
+        raise ValueError(f'Empty resident PNG: {filename}')
+    return image.subsurface(bounds).copy()
+
+@lru_cache(maxsize=12)
+def _resident_sprite(variant, size):
+    image = _resident_image(variant)
+    scale = min(size[0] / image.get_width(), size[1] / image.get_height())
+    return pygame.transform.smoothscale(image, (
+        max(1, round(image.get_width() * scale)),
+        max(1, round(image.get_height() * scale)),
+    ))
 
 def _draw_in_rect(surface, filename, spec, rect):
     rect = pygame.Rect(rect)
     image = _sprite(filename, replace(spec, size=rect.size))
     surface.blit(image, image.get_rect(midbottom=rect.midbottom))
 
-
 def draw_story_character(surface, character_id, rect):
-    """Fit a lobby portrait into the dialogue layout, preserving transparency."""
+    """투명도를 보존하며 대화 영역에 쉼터 캐릭터 PNG를 맞춘다."""
     _draw_in_rect(surface, 'character.png', CHARACTERS[character_id], rect)
 
-
 def draw_story_item(surface, stage, rect):
-    """Show that stage's painted item, independently of its emblem kind."""
+    """문양 종류와 관계없이 해당 스테이지의 물건 원화를 표시한다."""
     _draw_in_rect(surface, 'item.png', STORY_ITEMS[stage], rect)
-
 
 @lru_cache(maxsize=32)
 def _scene(completed, size, show_actors, released_variants=(), show_residents=True):
-    # The final picture already contains everyone; never draw duplicates over it.
+    # 완성 원화에 캐릭터가 이미 있으므로 중복해서 그리지 않는다.
     if (FINAL_STAGES.issubset(completed) and show_actors
             and not released_variants and show_residents):
         return pygame.transform.smoothscale(_image('after.png'), size)
     scene = _image('before.png').copy()
     for filename, spec in lobby_layers(completed, show_actors=show_actors):
+        image = None
         if filename == 'character.png' and spec.name in RESIDENT_VARIANTS:
             if not show_residents:
                 continue
             variant = RESIDENT_VARIANTS[spec.name]
             if variant in released_variants:
-                # Keep this actor's original foot and depth amongst the PNG
-                # furniture. Only its released body replaces the ghost sprite.
-                resident_cat(scene, spec.foot, spec.size[0], 0., variant)
-                continue
-        image = _sprite(filename, spec)
+                # 유령을 고양이 PNG로 바꿔도 발 위치와 가구 사이의 앞뒤 순서는 유지한다.
+                image = _resident_sprite(variant, spec.size)
+        if image is None:
+            image = _sprite(filename, spec)
         scene.blit(image, image.get_rect(midbottom=spec.foot))
     return pygame.transform.smoothscale(scene, size)
 
-
 def draw_lobby(surface, completed=(), *, before=False, show_actors=True,
                released_variants=(), show_residents=True):
-    """Paint saved progress, with optional active-ending resident bodies.
+    """저장된 완료 상태와 현재 엔딩으로 쉼터를 그린다.
 
-    The default completed room remains exactly the supplied after picture.
-    Ending variants are composited from the same room, items and character
-    sheet, without changing saved progress or the stage-based arrivals.
+    완성 기본 화면은 제공된 원화를 쓰고 엔딩별 모습만 같은 발 위치에 합성한다.
     """
     done = () if before else tuple(sorted(set(completed)))
     living = tuple(sorted(_released_residents(False, released_variants, before=before)))

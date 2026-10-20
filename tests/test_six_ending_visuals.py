@@ -1,4 +1,4 @@
-"""Rendered actor identities must agree with the six existing ending results."""
+"""여섯 엔딩에 맞는 캐릭터·쉼터 조명·PNG 배치를 검증한다."""
 import os
 from unittest.mock import patch
 
@@ -35,8 +35,7 @@ def test_lobby_restores_only_the_selected_friend_and_keeps_other_ghosts(ending,e
     assert called_variants(alive,4)==expected
     assert called_variants(spectral,5)==tuple(n for n in range(3) if n not in expected)
 
-    # The explicit set wins over the legacy true flag. Only restoring all
-    # three changes the room's light and weather to the existing dawn scene.
+
     illustration.shelter(surface,range(1,13),show_actors=False,
                          released=True,released_variants=expected)
     legacy=canvas()
@@ -109,16 +108,18 @@ def test_explicit_best_ending_has_four_sleepers_and_no_ghosts():
 @pytest.mark.parametrize('ending,expected',ENDINGS)
 def test_png_lobby_six_active_states_replace_only_their_own_resident(ending,expected):
     lobby._scene.cache_clear()
-    with patch.object(lobby,'resident_cat',wraps=lobby.resident_cat) as alive, \
+    with patch.object(lobby,'_resident_sprite',wraps=lobby._resident_sprite) as alive, \
          patch.object(lobby,'_sprite',wraps=lobby._sprite) as sprite, \
-         patch.object(lobby,'_image',wraps=lobby._image) as image:
+         patch.object(lobby,'_image',wraps=lobby._image) as image, \
+         patch.object(illustration,'resident_cat') as code_cat:
         lobby.draw_lobby(canvas(),range(1,13),released_variants=expected,
                          show_residents=ending!='sad')
-    assert called_variants(alive,4)==expected
+    assert called_variants(alive,0)==expected
+    code_cat.assert_not_called()
     ghosts={call.args[1].name for call in sprite.call_args_list
             if call.args[0]=='character.png' and call.args[1].name!='까망이'}
     if ending=='normal':
-        # Main's supplied final art already has all three ghosts and Kkamang.
+
         assert [call.args[0] for call in image.call_args_list]==['after.png']
         assert not sprite.called
     else:
@@ -127,9 +128,8 @@ def test_png_lobby_six_active_states_replace_only_their_own_resident(ending,expe
         assert sum(call.args[1].name=='까망이' for call in sprite.call_args_list)==1
         assert sum(call.args[0]=='item.png' for call in sprite.call_args_list)==11
     for call in alive.call_args_list:
-        spec=lobby.CHARACTERS[('A','B','C')[call.args[4]]]
-        assert call.args[1]==spec.foot
-        assert call.args[2]==spec.size[0]
+        spec=lobby.CHARACTERS[('A','B','C')[call.args[0]]]
+        assert call.args[1]==spec.size
 
 
 def test_png_lobby_default_final_art_and_variation_caches_stay_separate():
@@ -155,23 +155,75 @@ def test_png_lobby_default_final_art_and_variation_caches_stay_separate():
 @pytest.mark.parametrize('completed,expected',(((),()),((1,),(0,)),((4,),(2,)),((7,),(1,))))
 def test_png_lobby_released_bodies_keep_main_arrival_stages(completed,expected):
     lobby._scene.cache_clear()
-    with patch.object(lobby,'resident_cat',wraps=lobby.resident_cat) as alive:
+    with patch.object(lobby,'_resident_sprite',wraps=lobby._resident_sprite) as alive:
         lobby.draw_lobby(canvas(),completed,released_variants=(0,1,2))
-    assert called_variants(alive,4)==expected
+    assert called_variants(alive,0)==expected
 
 
-def test_png_lobby_released_bodies_keep_depth_and_bosongs_folded_ear_rig():
+def test_png_lobby_released_bodies_keep_furniture_depth():
     lobby._scene.cache_clear();depths=[]
-    actual_sprite=lobby._sprite;actual_resident=lobby.resident_cat
+    actual_sprite=lobby._sprite;actual_resident=lobby._resident_sprite
     def sprite(filename,spec):
         depths.append(spec.foot[1])
         return actual_sprite(filename,spec)
-    def resident(surface,foot,size,time,variant):
-        depths.append(foot[1])
-        return actual_resident(surface,foot,size,time,variant)
+    def resident(variant,size):
+        depths.append(lobby.CHARACTERS[('A','B','C')[variant]].foot[1])
+        return actual_resident(variant,size)
     with patch.object(lobby,'_sprite',side_effect=sprite), \
-         patch.object(lobby,'resident_cat',side_effect=resident), \
-         patch.object(illustration,'_resident_cat_frame',wraps=illustration._resident_cat_frame) as rig:
+         patch.object(lobby,'_resident_sprite',side_effect=resident):
         lobby.draw_lobby(canvas(),range(1,13),released_variants=(0,1,2))
     assert depths==sorted(depths)
-    assert [call.kwargs['folded_ears'] for call in rig.call_args_list]==[True,False,False]
+
+
+@pytest.mark.parametrize('variant,filename',[(0,'resident_bosong.png'),
+                                         (1,'resident_ipari.png'),
+                                         (2,'resident_dore.png')])
+def test_resident_png_is_trimmed_scaled_and_cached_without_changing_source(variant,filename):
+    lobby._resident_image.cache_clear();lobby._resident_sprite.cache_clear()
+    path=lobby.ASSET_DIR/'art'/'character'/filename
+    original=pygame.image.load(str(path))
+    bounds=original.get_bounding_rect(min_alpha=10)
+    with patch.object(pygame.image,'load',wraps=pygame.image.load) as load:
+        trimmed=lobby._resident_image(variant)
+        spec=lobby.CHARACTERS[('A','B','C')[variant]]
+        fitted=lobby._resident_sprite(variant,spec.size)
+        assert lobby._resident_sprite(variant,spec.size) is fitted
+    assert [call.args[0] for call in load.call_args_list]==[str(path)]
+    assert trimmed.get_size()==bounds.size
+    assert pygame.image.tobytes(trimmed,'RGBA')==pygame.image.tobytes(
+        original.subsurface(bounds),'RGBA')
+
+    destination=fitted.get_rect(midbottom=spec.foot)
+    assert destination.midbottom==spec.foot
+    assert destination.width<=spec.size[0] and destination.height<=spec.size[1]
+    assert destination.height>=spec.size[1]*.9
+    assert abs(fitted.get_width()/fitted.get_height()-bounds.width/bounds.height)<.01
+
+
+def test_png_lobby_residents_are_blitted_at_their_original_feet():
+    lobby._scene.cache_clear()
+    calls=[]
+    class RecordingScene(pygame.Surface):
+        def copy(self):
+            return self
+        def blit(self,image,destination,*args,**kwargs):
+            calls.append((image,pygame.Rect(destination)))
+            return super().blit(image,destination,*args,**kwargs)
+    scene=RecordingScene((1672,941))
+    resident_images={variant:lobby._resident_sprite(
+        variant,lobby.CHARACTERS[('A','B','C')[variant]].size) for variant in range(3)}
+    with patch.object(lobby,'_image',return_value=scene):
+        lobby._scene(tuple(range(1,13)),memories.SIZE,True,(0,1,2),True)
+    for variant,image in resident_images.items():
+        positions=[rect.midbottom for drawn,rect in calls if drawn is image]
+        assert positions==[lobby.CHARACTERS[('A','B','C')[variant]].foot]
+    lobby._scene.cache_clear()
+
+
+def test_missing_resident_png_raises_instead_of_drawing_a_code_cat():
+    lobby._resident_image.cache_clear();lobby._resident_sprite.cache_clear()
+    with patch.object(pygame.image,'load',side_effect=FileNotFoundError('missing PNG')), \
+         patch.object(illustration,'resident_cat') as code_cat:
+        with pytest.raises(FileNotFoundError,match='missing PNG'):
+            lobby._resident_sprite(0,(208,225))
+    code_cat.assert_not_called()

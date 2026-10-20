@@ -11,19 +11,19 @@ replays/
 reports/local/
 .DS_Store
 Thumbs.db
-.pytest_tmp/
+.pytest_tmp*/
+.audio_work/
 
-# Keep personal archive out of main branch
-historical_v01/
-
-# Runtime evaluation outputs (reproducible artifacts)
+# 재실행으로 생성되는 평가·검증 결과는 최신 통합 보고서와 분리한다.
 reports/evaluation*/
+validation/schema_results.json
+validation/runtime_replay_results.json
 
-# Local editor settings
+# 개인 편집기 설정
 .vscode/
 .idea/
 
-# Test and coverage artifacts
+# 테스트 측정 산출물
 .coverage
 coverage.xml
 htmlcov/

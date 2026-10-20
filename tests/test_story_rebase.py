@@ -1,4 +1,4 @@
-"""Three shared memories lead to the same six endings selected by main."""
+"""세 기억의 진행과 여섯 엔딩 선택이 기존 캠페인 규칙과 맞는지 검증한다."""
 from copy import deepcopy
 import os
 

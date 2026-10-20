@@ -1,4 +1,4 @@
-"""v0.2 mission, replay, observation, save and rendering boundary checks."""
+"""임무·재생 기록·관측·저장·화면 표시의 통합 경계를 검증한다."""
 import json,os
 from pathlib import Path
 from copy import deepcopy
@@ -78,7 +78,7 @@ def test_png_cat_directions_walk_and_fixed_appearance():
     assert len({raw(direction=d) for d in ['up','down','left','right']})==4
     for d in ['up','down','left','right']:
         assert raw(direction=d,mood='walk',phase=2)!=raw(direction=d,mood='walk',phase=6)
-    # The first PNG set has no expressions or scarf colour variants yet.
+
     assert len({raw(mood=m) for m in ['idle','happy','collect','surprised']})==1
     assert raw(scarf='default')==raw(scarf='peach')==raw(scarf='lavender')
 

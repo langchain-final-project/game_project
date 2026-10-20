@@ -1,10 +1,6 @@
-"""Reproducible random-vs-planner smoke evaluation, NOT an RL training result.
+"""같은 맵·시드에서 무작위 정책과 공개 상태 기반 탐욕 경로 정책을 비교한다.
 
-Run: python tools/evaluate.py --episodes 10 --output reports/evaluation
-Both policies use the same stage/episode seed. A timed greedy planner uses only
-the fully visible snapshot: known routes, current phase, map, items and time.
-It is a useful sanity baseline, not an optimal solver or a learned policy.
-"""
+강화학습 훈련 결과나 최적해를 뜻하지 않으며, 환경 연결 확인용 기준 정책이다."""
 from __future__ import annotations
 
 import argparse
@@ -35,7 +31,7 @@ DEFAULT_SEARCH_NODES = 1500
 
 
 def ghost_position(ghost: dict, ticks: int) -> tuple[int, int]:
-    """Predict from visible deterministic route/countdown, never a hidden state."""
+    """공개된 순찰 경로와 남은 이동 시간만으로 위치를 예측한다."""
     moves = 0 if ticks < ghost['countdown'] else 1 + (
         ticks - ghost['countdown']) // ghost['ticks_per_move']
     index = (ghost['route_index'] + moves * ghost['direction']) % len(ghost['route'])
@@ -54,12 +50,9 @@ def safe_transition(snapshot: dict, old: tuple, new: tuple, tick: int) -> bool:
 def safe_path(snapshot: dict, goal: tuple[int, int], *, offset: int = 0,
               start: tuple[int, int] | None = None, horizon: int | None = None,
               interact: bool = True, forbid_rich: bool = False) -> list[int] | None:
-    """BFS over position/known ghost phase, including one safe E at destination.
+    """위치와 공개 순찰 위상의 너비 우선 탐색으로 마지막 상호작용까지 안전한 경로를 구한다.
 
-    Walls and currently closed gates are impassable. The planner conservatively
-    avoids contact even while protected. No assumption of invulnerability is
-    used to claim a safe route. Horizon includes the final interact tick.
-    """
+    닫힌 문과 벽은 통과할 수 없고 보호 중에도 접촉을 피한다. 제한 시간에는 마지막 상호작용 1틱이 포함된다."""
     start = tuple(snapshot['position']) if start is None else start
     goal = tuple(goal)
     horizon = snapshot['remaining_ticks'] - offset if horizon is None else horizon
@@ -122,7 +115,7 @@ def safe_path(snapshot: dict, goal: tuple[int, int], *, offset: int = 0,
 
 
 def collection_positions(snapshot: dict, item: dict) -> list[tuple[int, int]]:
-    """Only one-point heat can be collected from a neighboring tile by a magnet."""
+    """자석의 인접 수집은 1점 온기에만 적용한다."""
     x, y = item['position']
     magnet = snapshot.get('magnet')
     radius = (1 if magnet and magnet['remaining_ticks'] > 0 and item['value'] == 1
@@ -134,7 +127,7 @@ def collection_positions(snapshot: dict, item: dict) -> list[tuple[int, int]]:
 
 
 def acceptable_step(result, *, forbid_rich=False, allow_item_invincibility=False):
-    """Only an active item permits contact; damage protection never does."""
+    """아이템 무적만 접촉을 허용하며 피해 후 보호 시간은 안전 경로 근거로 쓰지 않는다."""
     if any(event['type'] == 'damage' or (
             event['type'] == 'contact' and not (
                 allow_item_invincibility and event.get('item_invincible', False)))
@@ -145,7 +138,7 @@ def acceptable_step(result, *, forbid_rich=False, allow_item_invincibility=False
 
 
 def project_path(core, path, *, forbid_rich=False, allow_item_invincibility=False):
-    """Verify candidates in the actual core, including both automatic items."""
+    """아이템 자동 수집과 만료까지 실제 코어로 후보 경로를 검증한다."""
     test = deepcopy(core)
     result = None
     for index, action in enumerate(path):
@@ -173,14 +166,9 @@ def simulation_key(s):
 def find_path(core, goal, *, interact=True, forbid_rich=False,
               allow_item_invincibility=False, max_nodes=DEFAULT_SEARCH_NODES,
               diagnostics=None):
-    """Verified candidate walks, then bounded A*, on every stage.
+    """후보 경로를 실제로 검증하고 실패하면 노드 수가 제한된 탐색을 수행한다.
 
-    Each branch simulates pickup, expiry, pursuit and contact stuns. A node limit
-    returns None (no witness found), not a proof that a route is impossible.
-    Optional diagnostics distinguish the search limit from an exhausted search
-    and a static distance that exceeds the remaining time. None is not a proof
-    that a different target order could not complete the stage.
-    """
+    탐색 한도에 따른 실패는 불가능성의 증명이 아니며, 다른 목표 순서는 성공할 수 있다."""
     if type(max_nodes) is not int or max_nodes < 1:
         raise ValueError('max_nodes must be a positive integer')
 
@@ -215,7 +203,7 @@ def find_path(core, goal, *, interact=True, forbid_rich=False,
         return finish(None, 'unreachable')
     if distances[tuple(snapshot['position'])] + int(interact) > snapshot['remaining_ticks']:
         return finish(None, 'insufficient_time')
-    # Most legs have a valid shortest walk. Verify it before expanding a tree.
+
     point = tuple(snapshot['position'])
     direct = []
     while point != goal:
@@ -229,8 +217,7 @@ def find_path(core, goal, *, interact=True, forbid_rich=False,
     if direct and project_path(core, direct, forbid_rich=forbid_rich,
                                allow_item_invincibility=allow_item_invincibility) is not None:
         return finish(direct, 'found')
-    # Patrol BFS is only a cheap candidate generator. It cannot authorise a
-    # route: pursuit and both items are always verified with actual transitions.
+    # 순찰 탐색은 후보 생성용이며 추격과 아이템 효과는 실제 코어 전이로 검증한다.
     hint = safe_path(snapshot, goal, interact=interact, forbid_rich=forbid_rich)
     if hint and project_path(core, hint, forbid_rich=forbid_rich,
                              allow_item_invincibility=allow_item_invincibility) is not None:
@@ -262,8 +249,7 @@ def find_path(core, goal, *, interact=True, forbid_rich=False,
             point = (state['position'][0] + dx, state['position'][1] + dy)
             if point not in distances:
                 continue
-            # Geometry and RNG are read-only in step(). These search clones are
-            # never returned or reset; mutable state/actions still get copied.
+            # 탐색 복제는 읽기 전용 맵과 난수를 공유하되 변경 가능한 상태와 행동 기록은 복사한다.
             memo = {id(current._config): current._config,
                     id(current._rng): current._rng,
                     id(current._state['grid']): current._state['grid']}
@@ -286,12 +272,9 @@ def find_path(core, goal, *, interact=True, forbid_rich=False,
 
 
 class TimedGreedyPolicy:
-    """Recover the mandatory object, then collect heat with a safe return reserve.
+    """필수 물건을 먼저 회수하고 안전한 귀환 시간을 확보하며 온기를 수집한다.
 
-    Replan after every collection. Prefer value per travel cost; leave a two-tick
-    slack for the return. Does not search all item orders or choose shortcuts,
-    so its score can legitimately fall below an optimal or trained policy.
-    """
+    모든 수집 순서와 지름길을 탐색하지 않는 기준 정책이다."""
     def __init__(self, core, *, max_search_nodes=DEFAULT_SEARCH_NODES):
         if core is None:
             raise ValueError('TimedGreedyPolicy requires the live GameCore')
@@ -315,7 +298,6 @@ class TimedGreedyPolicy:
         return path
 
     def _fallback(self):
-        # Avoid a blind WAIT when the chaser would hit on this very tick.
         for action in (5, 0, 1, 2, 3):
             if project_path(self.core, [action], allow_item_invincibility=True) is not None:
                 self.fallback_counts['no_verified_plan'] += 1
@@ -324,7 +306,6 @@ class TimedGreedyPolicy:
         return [5]
 
     def _planned_actions(self, snapshot):
-        """Rank real collection gains, leaving a verified route back home."""
         exit_pos = tuple(snapshot['exit'])
         if snapshot['quest']['collected'] and snapshot['carried'] == 14:
             home = self._path(self.core, exit_pos)
@@ -362,8 +343,8 @@ class TimedGreedyPolicy:
                 continue
             if project_path(projected, home, allow_item_invincibility=True) is None:
                 continue
-            # Acquiring the quest and a useful timed effect has value beyond
-            # heat gained on the outward route itself; this remains a heuristic.
+
+
             utility = gain + min(gain, max(0, snapshot['target'] - snapshot['carried']))
             utility += 8 * got_quest + 5 * got_item
             candidates.append((-utility / len(outward), len(outward), point, outward))

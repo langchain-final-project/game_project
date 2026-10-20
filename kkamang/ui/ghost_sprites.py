@@ -1,11 +1,11 @@
-"""Cached directional ghost art, independent of movement and collision rules."""
+"""유령 PNG의 방향별 자세를 읽고 발 기준점과 크기를 고정해 캐시한다."""
 from functools import lru_cache
 import pygame
 
 from ..paths import ASSET_DIR
 
 GHOST_FILES = {'A': 'a.png', 'B': 'b.png', 'C': 'c.png'}
-RESIDENT_IDS = {0: 'A', 1: 'B', 2: 'C'}  # Bosong, Ipari, Dore.
+RESIDENT_IDS = {0: 'A', 1: 'B', 2: 'C'}  # 렌더러의 변형 번호는 보송·이파리·도레 순서다.
 DIRECTION_INDEX = {
     'down': 0, 'down_left': 1, 'left': 2, 'up_left': 3,
     'up': 4, 'up_right': 5, 'right': 6, 'down_right': 7,
@@ -16,14 +16,13 @@ GROUND_ANCHOR = (128, 268)
 
 
 def movement_direction(origin, target, default='down'):
-    """Read cardinal facing from logical endpoints, never interpolated pixels."""
+    """보간한 화면 좌표 대신 논리적 이동 시작점과 끝점으로 방향을 판정한다."""
     dx, dy = target[0] - origin[0], target[1] - origin[1]
     if dx and abs(dx) >= abs(dy):
         return 'right' if dx > 0 else 'left'
     if dy:
         return 'down' if dy > 0 else 'up'
     return default
-
 
 @lru_cache(maxsize=3)
 def _atlas(ghost_id):
@@ -43,16 +42,15 @@ def _atlas(ghost_id):
             if not bounds.width or not bounds.height:
                 raise ValueError(f'Ghost {ghost_id} has an empty pose: {y * 4 + x}')
             frame = cell.subsurface(bounds).copy()
-            # Hats and bouquets must not shift the lower body's center.
+            # 모자와 꽃다발이 중심을 밀지 않도록 몸 아래쪽으로 발 기준점을 잡는다.
             top = frame.get_height() * 2 // 3
             lower = frame.subsurface((0, top, frame.get_width(), frame.get_height() - top))
             pivot = (lower.get_bounding_rect(min_alpha=10).centerx, frame.get_height())
             frames.append((frame, pivot))
     height = max(frame.get_height() for frame, _ in frames)
     half_width = max(max(pivot[0], frame.get_width() - pivot[0]) for frame, pivot in frames)
-    # Keep a single scale per character instead of fitting each pose separately.
+    # 자세별로 따로 맞추지 않고 한 캐릭터에 같은 배율을 적용한다.
     return tuple(frames), min(236 / height, 120 / half_width)
-
 
 @lru_cache(maxsize=24)
 def _normalized_frame(ghost_id, direction):
@@ -67,7 +65,6 @@ def _normalized_frame(ghost_id, direction):
         raise ValueError(f'Ghost frame exceeds its canvas: {ghost_id}, {direction}')
     canvas.blit(image, destination)
     return canvas
-
 
 @lru_cache(maxsize=256)
 def ghost_frame(size=50, ghost_id='A', direction='down'):

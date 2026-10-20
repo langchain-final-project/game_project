@@ -1,4 +1,4 @@
-# 테스트 케이스 호감도 관련 기능
+"""앱에서 대표 기록 교체·호감도 반영·엔딩 연결을 검증한다."""
 from copy import deepcopy
 import json
 import os
@@ -54,7 +54,7 @@ def test_real_completion_provider_choice_escape_and_no_star_loss(app):
     assert app.scene == 'result'
     original = deepcopy(app.campaign.data['likes']['representatives']['1'])
     complete(app)
-    assert len(calls) == 2  # called even though the replay's total is lower
+    assert len(calls) == 2
     assert app.scene == 'memory_choice'
     app.draw()
     assert [c['id'] for c in app.controls] == ['memory_keep', 'memory_replace']
@@ -253,27 +253,19 @@ def test_six_ending_art_epilogue_keyboard_and_save_preservation(app, ending):
         app.draw()
     dialogue_box.assert_not_called()
     continue_button = next(c for c in app.controls if c['id']=='ending_continue')
-    assert continue_button['label'] == ('후일담 보기' if app.dialogues else '쉼터로 돌아가기')
+    assert continue_button['label'] == '후일담 보기'
     app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_RETURN, mod=0))
-    if ending == 'sad':
-        assert app.dialogues == [] and app.scene == 'home'
-    else:
-        assert not app.ending_art_only and app.dialogue_index == 0
-        assert app.dialogue_time == 0
-        with patch('kkamang.ui.menus.draw_cinematic') as cinematic:
-            with patch('kkamang.ui.menus._art') as art:
-                app.draw()
-        if ending in ('normal','happy_all'):
-            assert cinematic.call_args.args[1] == ('true_end' if ending=='happy_all' else 'basic_end')
-            assert cinematic.call_args.kwargs['released_variants'] == ((0,1,2) if ending=='happy_all' else ())
-            art.assert_not_called()
-        else:
-            cinematic.assert_not_called()
-            assert art.call_args.args[2] == ENDING_CONTENT[ending]['art']
-        for _ in ENDING_CONTENT[ending]['lines']:
-            app.dialogue_time = 99
-            app.draw()
-            app.dispatch('ending_continue')
+    assert not app.ending_art_only and app.dialogue_index == 0
+    assert app.dialogue_time == 0
+    assert len(app.dialogues) == 1 and app.dialogues[0][0] == ''
+    with patch('kkamang.ui.menus.draw_cinematic') as cinematic, \
+         patch('kkamang.ui.menus._ending_picture') as art:
+        app.draw()
+    cinematic.assert_not_called()
+    assert art.call_args.args[2] == ENDING_CONTENT[ending]['art']
+    app.dialogue_time = 99
+    app.draw()
+    app.dispatch('ending_continue')
     assert app.scene == 'home'
     assert app.campaign.active_ending() == ending
     assert app.campaign.data['likes']['seen_endings'] == [ending]

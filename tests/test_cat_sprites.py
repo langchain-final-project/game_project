@@ -1,4 +1,4 @@
-"""PNG atlas boundaries, fixed pivots and distance-based cat animation."""
+"""고양이 PNG 애니메이션의 경계·발 기준점·이동 거리를 검증한다."""
 from unittest.mock import patch
 
 import pygame
@@ -18,8 +18,8 @@ def test_six_walk_frames_are_distinct_and_fit_the_same_transparent_canvas(direct
         assert 0 < bounds.width < 256 and 0 < bounds.height < 288
         assert frame.get_at((0, 0)).a == 0
         assert frame.get_at((255, 287)).a == 0
-        # The atlas foot anchors align to a common ground line, independent of
-        # the changing tail width. Resampling may leave one transparent pixel.
+
+
         assert abs(bounds.bottom - cat_sprites.GROUND_ANCHOR[1]) <= 1
 
 

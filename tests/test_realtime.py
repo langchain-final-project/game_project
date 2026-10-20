@@ -1,4 +1,4 @@
-"""Free movement, shared human/RL physics and independent world-clock checks."""
+"""자유 이동·사람과 학습 환경의 물리 일치·세계 시간 처리를 검증한다."""
 from copy import deepcopy
 import json
 import math
@@ -26,7 +26,7 @@ ROUTES = json.loads((ROOT / 'validation/reference_routes.json').read_text(encodi
 
 
 def place(game, position):
-    """Isolated test placement, not a gameplay teleport API."""
+    """테스트용 위치 설정이며 실제 게임의 순간 이동 기능이 아니다."""
     game._motion_position = list(position)
     game._state['position'] = [math.floor(value + .5) for value in position]
 
@@ -312,7 +312,7 @@ def test_fractional_position_and_clock_phase_are_observed_and_old_models_rejecte
     moved, *_ = env.step(Action.RIGHT)
     assert moved[620] > obs[620]
     assert moved[622] == pytest.approx(1 / 18)
-    assert moved[432] == obs[432]  # Still in the same occupied cell.
+    assert moved[432] == obs[432]
     with pytest.raises(ValueError, match='version mismatch'):
         RealtimeMansionEnv(expected_observation_version='vector_v5_invincibility')
     snapshot = env.core.snapshot()
@@ -343,8 +343,6 @@ def test_realtime_record_reproduces_changes_inside_one_world_tick():
 
 
 def test_realtime_completion_still_settles_and_persists_once(app):
-    # Stage 1 has no patrol. Walk the existing geometric route, allowing .3s for
-    # each cardinal segment. E is a one-frame command in the realtime controller.
     from kkamang.campaign import SaveStore
     route = next(route for route in ROUTES
                  if route['level_id'] == 'stage_01' and route['target'] == 4)
@@ -415,8 +413,7 @@ def test_countdown_display_is_smooth_and_read_only_across_pause(tmp_path, moveme
 @pytest.mark.parametrize('route', ROUTES,
                          ids=lambda route: f"{route['level_id']}-target{route['target']}")
 def test_existing_geometric_routes_still_allow_completion_in_realtime(route):
-    # These are completion witnesses only. Continuous contact timing can cause
-    # damage, so the old grid route's no-contact claim is deliberately not reused.
+    # 자유 이동에서는 접촉 시점이 달라질 수 있으므로 격자 경로의 무접촉 보장은 재사용하지 않는다.
     game = RealtimeGameCore(load_level(route['level_id']))
     for action in route['actions']:
         result = game.advance(action, .3)

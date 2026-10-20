@@ -1,4 +1,4 @@
-"""Ghost identity, directional PNG art and presentation-only heading state."""
+"""유령 식별·방향별 PNG·게임 판정과 분리된 시선 처리를 검증한다."""
 from copy import deepcopy
 import math
 import os
@@ -73,7 +73,7 @@ def test_field_keeps_all_three_ids_and_directions_separate_when_draws_are_deferr
     previous = app.core.snapshot()
     previous['ghosts'][0]['position'] = [7, 2]
     previous['ghosts'][1]['position'] = [13, 5]
-    previous['ghosts'].reverse()  # Identity matching must not rely on list order.
+    previous['ghosts'].reverse()
     previous['chaser']['position'] = [12, 2]
     app.previous = previous
     before = app.core.snapshot()

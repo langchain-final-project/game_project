@@ -1,4 +1,4 @@
-"""그림을 크게 감상하는 수집장: 24개 모습, 12개 물건, 즐겨찾기 표지."""
+"""수집장에 24개 모습·12개 물건과 즐겨찾기 표지를 표시한다."""
 import math
 import pygame
 
@@ -16,13 +16,11 @@ def _panel(surface, rect, fill, border=LINE, radius=15):
     pygame.draw.rect(surface, fill, rect, border_radius=radius)
     pygame.draw.rect(surface, border, rect, 1, border_radius=radius)
 
-
 def _lock(surface, center, color=GOLD):
     x, y = center
     pygame.draw.arc(surface, color, (x-6, y-10, 12, 15), 0, math.pi, 2)
     pygame.draw.rect(surface, color, (x-9, y-2, 18, 14), border_radius=3)
     pygame.draw.circle(surface, PLUM, (x, y+4), 2)
-
 
 def draw_paw(surface, rect, color=GOLD):
     r = pygame.Rect(rect)
@@ -30,18 +28,16 @@ def draw_paw(surface, rect, color=GOLD):
     for x, y in ((.09, .30), (.29, .13), (.53, .13), (.73, .30)):
         pygame.draw.ellipse(surface, color, (r.x+r.w*x, r.y+r.h*y, r.w*.19, r.h*.26))
 
-
 def _portrait(surface, assets, entry, rect, unlocked=True):
     r = pygame.Rect(rect)
     source = assets.icon('art/collection/' + entry['file'], r.size)
     if not unlocked:
         source = source.copy()
         source.fill((107, 92, 119, 255), special_flags=pygame.BLEND_RGBA_MULT)
-        # 알파 외곽선만 남겨 원래 의상 색은 공개하지 않는다.
+        # 알파 외곽선만 남겨 아직 잠긴 의상의 원래 색을 숨긴다.
         mask = pygame.mask.from_surface(source, 10)
         source = mask.to_surface(setcolor=(107, 92, 119, 255), unsetcolor=(0, 0, 0, 0))
     surface.blit(source, source.get_rect(center=r.center))
-
 
 def _item(surface, quest, rect, unlocked=True):
     r = pygame.Rect(rect)
@@ -51,13 +47,11 @@ def _item(surface, quest, rect, unlocked=True):
             setcolor=(107, 92, 119, 255), unsetcolor=(0, 0, 0, 0))
     surface.blit(source, r)
 
-
 def _base(surface):
     veil = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
     veil.fill((*PLUM, 235))
     surface.blit(veil, (0, 0))
     pygame.draw.rect(surface, (128, 103, 88), (18, 12, 1244, 696), 1, border_radius=20)
-
 
 def _detail(surface, assets, ctx, ui):
     data = ctx['campaign'].data
@@ -95,7 +89,6 @@ def _detail(surface, assets, ctx, ui):
                 pygame.Rect(625, 340, 550, 120), 23, CREAM, 9)
     ui.control('collection_close', (1000, 601, 205, 48), '수집장으로')
 
-
 def _cover(surface, assets, ctx, ui):
     data = ctx['campaign'].data
     entry = collection.catalog()[data['collection']['favorite']-1]
@@ -115,7 +108,6 @@ def _cover(surface, assets, ctx, ui):
     ui.control('collection_open:items', (911, 453, 275, 54), '소중한 물건')
     text(surface, assets, '다른 그림을 감상하며 표지를 바꿀 수 있어요.', (619, 540), 17, MUTED)
     ui.control('back', (1001, 612, 185, 42), '쉼터로')
-
 
 def render_collection(surface, assets, ctx, ui):
     _base(surface)
@@ -143,7 +135,7 @@ def render_collection(surface, assets, ctx, ui):
     total = 24 if looks else 12
     for index in range(total):
         number = index + 1
-        # 까망이 네 장을 첫 세로줄에 고정하고, 번호도 위에서 아래로 매긴다.
+        # 까망이 네 장은 첫 세로줄에 고정하고 번호도 위에서 아래로 매긴다.
         col, row = (index // 4, index % 4) if looks else (index % 4, index // 4)
         w, h, dx, dy = (190, 128, 202, 136) if looks else (291, 173, 303, 181)
         rect = pygame.Rect(40+col*dx, 121+row*dy, w, h)
@@ -172,7 +164,6 @@ def render_collection(surface, assets, ctx, ui):
     ui.control('back', (40, 675, 139, 29), '쉼터로')
     text(surface, assets, '방향키 선택 · Enter 감상 · Esc 뒤로', (1238, 690), 14,
          MUTED, anchor='midright')
-
 
 def move_focus(controls, focus, key):
     """수집장 카드의 실제 배치에 맞춰 방향키로 이동한다."""

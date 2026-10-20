@@ -1,4 +1,4 @@
-"""Silent picture progression, old saves, and independent warmth recovery."""
+"""기억 공개·구형 저장 호환·누적 온기의 독립적인 복원을 검증한다."""
 from copy import deepcopy
 import json
 
@@ -6,6 +6,7 @@ import pytest
 
 from kkamang.campaign import Campaign, SaveFormatError, SaveStore, SAVE_VERSION
 from kkamang.levels import load_level, load_levels
+from kkamang.ending_content import ENDING_CONTENT
 from kkamang.story import ENDING, EXTENDED_ENDING, MEMORIES, PROLOGUE, STAGES, memory_for_stage
 
 
@@ -142,7 +143,7 @@ def test_warmth_badges_keep_success_threshold_without_selecting_a_best_ending():
         result = settle(campaign, stage, 9 if stage == 5 else 10)
         assert not result['new_ending']
     assert campaign.memory_progress() == [4, 4, 4]
-    # Nine points on repeated successful runs cannot accumulate into ten.
+
     settle(campaign, 5, 9)
     settle(campaign, 5, 9)
     assert not campaign.extended_ending_unlocked()
@@ -208,7 +209,7 @@ def test_silent_stage_contract_and_specified_objects_match_the_three_memories():
         assert name in stage['before'] and '4점' in stage['before']
         memory_id, region = memory_for_stage(level['stage'])
         assert stage['restoration'] == f'기억 {memory_id} · {region + 1}번 영역'
-    assert ENDING == [('보송', '왔네. 수건은 저기 있어.'), ('이파리', '네 자리도 그대로야.'),
-                      ('도레', '그럼, 오늘은 작게 연주할게.')]
-    assert EXTENDED_ENDING == [('보송', '꼬리 좀…… 내 코에 닿아.'), ('도레', '내 거 아닌데.'),
-                               ('이파리', '쉿. 까망이 잔다.')]
+    assert ENDING is ENDING_CONTENT['normal']['lines']
+    assert EXTENDED_ENDING is ENDING_CONTENT['happy_all']['lines']
+    assert len(ENDING) == len(EXTENDED_ENDING) == 1
+    assert ENDING[0][0] == EXTENDED_ENDING[0][0] == ''

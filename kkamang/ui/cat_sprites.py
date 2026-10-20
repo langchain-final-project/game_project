@@ -1,8 +1,6 @@
-"""Read the irregular cat atlas without changing its original PNG.
+"""까망이 PNG 시트의 대기·걷기 자세를 읽고 크기별로 캐시한다.
 
-All frames share a body/ground anchor. Tail bounds must not determine the pivot:
-their width changes throughout the walk cycle. Expressions and scarf variants
-are intentionally absent from this first sprite set.
+모든 자세의 몸 중심과 발 기준점을 고정해 꼬리 모양에 따른 흔들림을 막는다.
 """
 from functools import lru_cache
 import pygame
@@ -15,7 +13,7 @@ CANVAS_SIZE = (256, 288)
 GROUND_ANCHOR = (128, 272)
 WALK_FRAMES = 6
 
-# Source rectangle, then the body's ground anchor in original sheet coordinates.
+# 원본 시트의 잘라낼 사각형과 몸의 발 기준점이다.
 IDLE_FRAMES = {
     'down': ((46, 42, 164, 228), (128, 270)),
     'left': ((458, 51, 231, 213), (568, 264)),
@@ -67,7 +65,6 @@ def _sheet():
         raise ValueError(f'Cat atlas must be {SHEET_SIZE}; update frame rectangles for a new layout')
     return image.convert_alpha() if pygame.display.get_surface() else image
 
-
 @lru_cache(maxsize=28)
 def _normalized_frame(direction, walking, index):
     rect, anchor = WALK_ATLAS[direction][index] if walking else IDLE_FRAMES[direction]
@@ -84,10 +81,9 @@ def _normalized_frame(direction, walking, index):
     canvas.blit(scaled, destination)
     return canvas
 
-
 @lru_cache(maxsize=256)
 def sprite_frame(size, direction='down', walking=False, index=0):
-    """Return a cached fixed-canvas frame; never crop each animation independently."""
+    """자세마다 다시 자르지 않고 발 기준점이 같은 프레임을 반환한다."""
     if direction not in IDLE_FRAMES:
         raise ValueError(f'Unknown cat direction: {direction}')
     index = index % WALK_FRAMES if walking else 0

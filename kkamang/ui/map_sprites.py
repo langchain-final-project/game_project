@@ -1,4 +1,4 @@
-"""Selected map/warmth atlas art, independent of game rules."""
+"""맵·온기 PNG 시트에서 타일·문·물건 표시를 추출하고 크기별로 캐시한다."""
 from functools import lru_cache
 
 import pygame
@@ -14,8 +14,7 @@ WALL_VARIANT_SHEETS = {
     'flowers': 'art/map/wall_flowers.png',
 }
 SHEET_SIZES.update({path: (256, 256) for path in WALL_VARIANT_SHEETS.values()})
-# Furniture crops from warmth.png are handled separately in illustration.py.
-# Base tiles use their opaque interiors, excluding the atlas's outer bevels.
+# 가구는 illustration에서 별도로 자르고 기본 타일은 테두리 장식을 제외한 내부를 쓴다.
 FRAMES = {
     'floor': (39, 80, 240, 240),
     'wall': (310, 80, 240, 240),
@@ -35,7 +34,7 @@ FRAMES = {
     'heart_empty': (583, 1154, 220, 197),
 }
 FRAME_SHEETS = {key: SHEET_PATH for key in FRAMES}
-# Read only the orbs. The existing live +3 label can then hide during suction.
+# 온기 구슬만 추출해 흡수 효과에서는 별도의 +3 글자를 숨길 수 있게 한다.
 WARMTH_FRAMES = {
     'warmth_1': (131, 730, 88, 87),
     'warmth_3': (395, 666, 158, 161),
@@ -51,27 +50,25 @@ def _sheet(path=SHEET_PATH):
         raise ValueError(f'Atlas {path} must be {SHEET_SIZES[path]}; update frame rectangles for a new layout')
     return image.convert_alpha() if pygame.display.get_surface() else image
 
-
 @lru_cache(maxsize=64)
 def wall_variant_image(kind, size, quadrant, mirrored=False):
-    """Use a 2-by-2 tile texture without fading or shrinking its stonework."""
+    """2×2 타일 질감의 돌 크기와 선명도를 유지한다."""
     sheet = _sheet(WALL_VARIANT_SHEETS[kind])
     column, row = quadrant
     frame = sheet.subsurface((column * 128, row * 128, 128, 128))
     image = pygame.transform.scale(frame, size)
     return pygame.transform.flip(image, True, False) if mirrored else image
 
-
 @lru_cache(maxsize=len(FRAMES))
 def _frame(key):
     image = _sheet(FRAME_SHEETS[key]).subsurface(FRAMES[key]).copy()
     if key in ('floor', 'wall'):
-        # Exported interiors have alpha 249..254; base tiles must cover a cell.
+        # 원본 내부의 알파값이 249~254여도 기본 타일은 한 칸을 불투명하게 덮어야 한다.
         image.set_alpha(None)
         opaque = pygame.Surface(image.get_size())
         opaque.blit(image, (0, 0))
         return opaque
-    # Paired doors keep one scale and a shared top-left hinge/frame anchor.
+    # 열린 문과 닫힌 문은 같은 배율과 왼쪽 위 기준점을 사용한다.
     if key.startswith('return_') or key.startswith('gate_'):
         size = (248, 264) if key.startswith('return_') else (240, 252)
         canvas = pygame.Surface(size, pygame.SRCALPHA)
@@ -79,10 +76,9 @@ def _frame(key):
         return canvas
     return image
 
-
 @lru_cache(maxsize=256)
 def map_image(key, size):
-    """Fit pixel art with nearest-neighbor scaling and cache each target size."""
+    """최근접 배율로 픽셀 원화의 비율을 맞추고 크기별로 캐시한다."""
     source = _frame(key)
     width, height = size
     if key in ('floor', 'wall', 'info_divider'):

@@ -1,4 +1,4 @@
-"""Public-state beam planner. Replayable witnesses, not optimality proofs."""
+"""공개 상태 기반 빔 탐색으로 재생 가능한 경로를 만들며 최적성은 보장하지 않는다."""
 from copy import deepcopy
 import hashlib,json,sys
 from pathlib import Path
@@ -119,50 +119,12 @@ def make_lower_bound(game, target, forbid_rich):
 
     return estimate
 
-# def plan(game,target=4,width=18,allow_shortcuts=True,forbid_rich=False):
-#  beam=[(game,[])];best=None
-#  for depth in range(15):
-#   candidates={}
-#   for core,actions in beam:
-#    s=core.snapshot()
-#    if s['quest']['collected'] and s['carried']>=target:
-#     path=safe_path(s,tuple(s['exit']))
-#     if path and (best is None or len(actions)+len(path)<len(best)):
-#      test=deepcopy(core)
-#      for a in path:res=test.step(a)
-#      if res.outcome and res.outcome['status']=='COMPLETE':best=actions+path
-#     continue
-#    goals=[]
-#    if not s['quest']['collected']:goals.append(('q',s['quest']['position']))
-#    if s['carried']<target:goals += [(i['id'],i['position']) for i in s['items'] if i['active'] and not(forbid_rich and i['value']==3)]
-#    if allow_shortcuts:goals += [('s'+g['id'],g['terminal']) for g in s['shortcuts'] if not g['opened']]
-#    for ident,pos in goals:
-#     path=safe_path(s,tuple(pos))
-#     if not path or len(actions)+len(path)>s['initial_ticks']-2:continue
-#     test=deepcopy(core)
-#     for a in path:
-#      res=test.step(a)
-#      if res.terminated:break
-#     if res.terminated:continue
-#     n=res.snapshot;p=n['position'];e=n['exit'];home=abs(p[0]-e[0])+abs(p[1]-e[1])+1
-#     if n['remaining_ticks']<home:continue
-#     if best is not None and len(actions)+len(path)+home>=len(best):continue
-#     key=(tuple(p),tuple(i['active'] for i in n['items']),n['quest']['collected'],tuple(g['opened'] for g in n['shortcuts']),tuple((g['route_index'],g['countdown']) for g in n['ghosts']))
-#     aa=actions+path
-#     if key not in candidates or len(aa)<len(candidates[key][1]):candidates[key]=(test,aa)
-#   def rank(pair):
-#    s=pair[0].snapshot();q=s['quest'];p=s['position']
-#    qdist=0 if q['collected'] else abs(p[0]-q['position'][0])+abs(p[1]-q['position'][1])+1
-#    return (len(pair[1])+qdist+max(0,target-s['carried'])*2,-s['carried'])
-#   beam=sorted(candidates.values(),key=rank)[:width]
-#   if not beam:break
-#  return best
 
 def plan(game, target=4, width=18, allow_shortcuts=True, forbid_rich=False,
          allow_item_invincibility=True):
     if 'motion' in game.snapshot():
         raise ValueError('plan supports grid movement; realtime needs a frame-based policy')
-    
+
     def route_path(core, goal, interact=True):
         # forbid_rich는 3점 온기 칸의 직접 방문을 막고 자석의 1점 수집은 허용합니다.
         return find_path(core, goal, interact=interact, forbid_rich=forbid_rich,
@@ -273,12 +235,7 @@ def plan(game, target=4, width=18, allow_shortcuts=True, forbid_rich=False,
                 if key not in candidates or len(new_actions) < len(candidates[key][1]):
                     candidates[key] = (test, new_actions)
 
-        # def rank(pair):
-        #     s = pair[0].snapshot()
-        #     q = s['quest']
-        #     p = s['position']
-        #     qdist = 0 if q['collected'] else (abs(p[0] - q['position'][0]) + abs(p[1] - q['position'][1]) + 1)
-        #     return (len(pair[1]) + qdist + max(0, target - s['carried']) * 2,-s['carried'],)
+
         def rank(pair):
             s = pair[0].snapshot()
             return (

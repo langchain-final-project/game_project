@@ -1,7 +1,4 @@
-"""Human campaign progression and defensive, atomic JSON saves.
-This module has no Pygame/Gym imports. Episode scores stay in the game core;
-settlement only turns a finished human episode into persistent presentation data.
-"""
+"""사람 플레이의 방·수집·호감도·엔딩 진행을 정산하고 저장 데이터를 검증·복구·원자적으로 기록한다."""
 from __future__ import annotations
 
 from copy import deepcopy
@@ -18,7 +15,7 @@ from .ending_content import released_variants as ending_released_variants
 from .scoring import COURAGE_POINTS, SPEED_POINTS, STAR_THRESHOLDS, WARMTH_POINTS, score_outcome
 
 SAVE_VERSION = 5
-# 이전 저장의 외형 선택은 호환용으로 보존한다. 새 수집장에서는 사용하지 않는다.
+# 이전 저장의 외형 선택은 호환용으로 보존하며 수집장에서는 사용하지 않는다.
 COSMETICS = {
     'scarf': (6, ('default', 'peach', 'lavender')),
     'rug': (12, ('default', 'stars', 'leaves')),
@@ -33,7 +30,7 @@ AFFECTION_PER_STAGE = 100
 
 
 class SaveFormatError(ValueError):
-    """The file is not a supported, structurally valid campaign save."""
+    """지원하지 않거나 구조가 손상된 캠페인 저장 데이터."""
 
 
 class UnsupportedSaveVersion(SaveFormatError):
@@ -80,8 +77,7 @@ def _normalized(data: dict) -> dict:
     version = data.get('save_version', data.get('version', 0))
     if version not in (0, 1, 2, 3, 4, SAVE_VERSION) or isinstance(version, bool):
         raise UnsupportedSaveVersion(f'지원하지 않는 저장 버전({version})이에요. 원본을 보존했어요.')
-    # v0 is the pre-release format. Complete stages and unique badges determine
-    # photos, restored rooms and cosmetics once, without granting new currency.
+    # 이전 저장의 완료·배지로 사진·복원·외형을 복구하되 새 재화는 지급하지 않는다.
     result = _default()
     completed_raw = data.get('completed', data.get('first_complete', []))
     if isinstance(completed_raw, dict):
@@ -98,14 +94,13 @@ def _normalized(data: dict) -> dict:
         if not isinstance(badge, str) or ':' not in badge:
             raise SaveFormatError('배지 이름이 올바르지 않아요.')
         stage_name, kind = badge.rsplit(':', 1)
-        if kind == 'complete':  # Completion is represented by completed, not optional count.
+        if kind == 'complete':  # 완료 여부는 completed로 관리하며 선택 배지 수에 넣지 않는다.
             continue
         if kind not in ('rich', 'quiet'):
             raise SaveFormatError('알 수 없는 배지 종류예요.')
         badges.add(f'stage_{_stage_number(stage_name):02d}:{kind}')
     result['badges'] = sorted(badges)
-    # Existing v0/v1 saves earned cosmetics from badges. Preserve that access
-    # without inventing score records for rooms that predate this feature.
+    # 이전 배지로 얻은 외형은 보존하되 존재하지 않는 과거 점수는 만들지 않는다.
     legacy_stars = data.get('legacy_cosmetic_stars', 0)
     if version in (0, 1, 2) and 'legacy_cosmetic_stars' not in data:
         legacy_stars = min(18, len(badges) * 3 // 2)
@@ -169,7 +164,7 @@ def _normalized(data: dict) -> dict:
     cosmetic_stars = max(sum(entry['stars'] for entry in result['star_records'].values()), legacy_stars)
     for kind, (threshold, choices) in COSMETICS.items():
         chosen = cosmetics.get(kind, 'default')
-        # A broken cosmetic selection cannot grant abilities or unlock a reward.
+        # 손상된 외형 선택으로 보상이나 능력을 해금하지 않는다.
         if chosen in choices and (chosen == 'default' or cosmetic_stars >= threshold):
             result['cosmetics'][kind] = chosen
     for flag in ('intro_seen', 'tutorial_seen'):
@@ -189,8 +184,7 @@ def _normalized(data: dict) -> dict:
     records = data.get('records', {})
     if not isinstance(records, dict):
         raise SaveFormatError('기록 목록을 읽을 수 없어요.')
-    # Validate every nesting level before accepting a file: JSON can parse while
-    # a damaged record would otherwise crash the next end-of-run settlement.
+    # JSON 구문이 정상이어도 다음 정산이 실패할 수 있어 중첩 기록까지 검사한다.
     for controller, modes in records.items():
         if not isinstance(controller, str) or not controller or not isinstance(modes, dict):
             raise SaveFormatError('플레이어 기록 구조가 올바르지 않아요.')
@@ -266,7 +260,7 @@ class Campaign:
         return len(set(self.data['badges']))
 
     def memory_regions(self, memory_id: int) -> list[bool]:
-        """Derive four permanent picture regions from first-completed rooms."""
+        """최초 완료한 방으로 기억 그림의 영구 공개 영역 네 개를 계산한다."""
         if type(memory_id) is not int or not 1 <= memory_id <= 3:
             raise ValueError('memory_id must be an integer in 1..3')
         first_stage = (memory_id - 1) * 4 + 1
@@ -291,7 +285,7 @@ class Campaign:
 
     @staticmethod
     def _affection_contribution(component: int, source_maximum: int) -> int:
-        """Normalise every metric to a comparable 0–100 room contribution."""
+        """항목별 최대 점수가 다른 점수를 방당 0~100으로 정규화한다."""
         return (2 * component * AFFECTION_PER_STAGE + source_maximum) // (2 * source_maximum)
 
     def friendship_scores(self) -> dict:
@@ -305,7 +299,7 @@ class Campaign:
         return {friend_id: AFFECTION_PER_STAGE * 12 for friend_id in FRIENDS}
 
     def remember_friend_run(self, level: dict, outcome: dict) -> bool:
-        """Replace this room's representative relationship memory only."""
+        """이 방의 대표 호감도 기록만 교체한다."""
         if outcome.get('status') != 'COMPLETE':
             return False
         stage = _stage_number(level.get('stage', level.get('id')))
@@ -334,13 +328,13 @@ class Campaign:
         return likes.choose_memory(self.data['likes'], replace)
 
     def warmth_memories(self) -> list[int]:
-        """Rooms whose warmth was recovered, including existing save badges."""
+        """완료 이력과 온기 배지를 모두 가진 방을 반환한다."""
         badges = set(self.data['badges'])
         return [stage for stage in range(1, 13)
                 if self.completed(stage) and f'stage_{stage:02d}:rich' in badges]
 
     def extended_ending_unlocked(self) -> bool:
-        """Compatibility name for the main rules' best ending selection."""
+        """기존 호출과 호환하기 위한 베스트 엔딩 선택 여부."""
         return self.selected_ending() == 'happy_all'
 
     def selected_ending(self) -> str | None:
@@ -350,11 +344,11 @@ class Campaign:
         return self.data['narrative']['active_ending']
 
     def released_variants(self) -> tuple[int, ...]:
-        """Read the displayed world's last activated ending, not a pending choice."""
+        """미확정 선택 대신 마지막으로 활성화한 엔딩의 쉼터 모습을 반환한다."""
         return ending_released_variants(self.active_ending())
 
     def record_ending(self, ending_id: str, activate: bool = False) -> bool:
-        """Record a validated ending ID after the app has checked its selection."""
+        """검증된 엔딩의 감상 이력을 기록하고 요청한 경우에만 쉼터 상태를 활성화한다."""
         if ending_id not in likes.ENDING_IDS:
             raise ValueError('Unknown ending ID')
         changed = False
@@ -440,7 +434,7 @@ class Campaign:
             return {**empty, 'eligible': False, 'already_settled': False,
                     'practice_mode': True, 'score': score, 'new_collection': new_collection}
         before_cosmetics = {f'{k}:{v}' for k in COSMETICS for v in self.unlocked_cosmetics(k)}
-        # Build updates in a copy: a malformed record cannot partially pay rewards.
+        # 복사본에서 정산해 손상된 기록이 일부 보상만 지급하는 일을 막는다.
         updated = deepcopy(self.data)
         records = updated['records'].setdefault(controller, {}).setdefault(mode, {}).setdefault(config_hash, {})
         stage_key = f'stage_{stage:02d}'
@@ -476,8 +470,7 @@ class Campaign:
                 }
                 result['new_stars'] = score['stars'] - old_count
                 result['best_star_improved'] = True
-            # First completion becomes the first representative memory.
-            # Later attempts are only applied after the player chooses replace.
+            # 첫 성공은 대표 기록으로 등록하고 이후 기록은 명시적으로 교체할 때만 반영한다.
             if stage_key not in updated['friend_memories']:
                 updated['friend_memories'][stage_key] = {
                     key: score[key] for key in ('warmth', 'speed', 'courage', 'total', 'stars')
@@ -505,11 +498,7 @@ class Campaign:
 
 
 class SaveStore:
-    """Atomic primary + previous-good .bak. Memory is never rolled back on error.
-
-    Corrupt files are copied aside before recovery writes. Future versions and
-    concurrent disk changes block writing, preventing accidental data destruction.
-    """
+    """정상 원본과 이전 백업을 원자적으로 저장한다. 손상 원본을 보존하고 미래 버전·외부 변경은 쓰기를 막는다."""
     def __init__(self, path: Path):
         self.path = Path(path)
         self.backup_path = self.path.with_name(self.path.name + '.bak')
@@ -589,7 +578,7 @@ class SaveStore:
                 self.error = '기존 저장 파일을 보존하기 위해 저장을 멈췄어요.'
             return False
         try:
-            # Validate a copy; never normalize away in-memory rewards on failure.
+            # 복사본을 검증해 저장 실패가 메모리의 진행·보상을 되돌리지 않게 한다.
             normalized = Campaign(campaign.data)
             raw = (json.dumps(normalized.data, ensure_ascii=False, indent=2, allow_nan=False) + '\n').encode('utf-8')
             current = self.path.read_bytes() if self.path.exists() else None
