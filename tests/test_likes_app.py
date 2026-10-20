@@ -128,16 +128,66 @@ def test_new_memory_story_can_continue_directly_to_the_next_room(app):
     assert app.scene == 'briefing'
 
 
-def test_partial_picture_reveal_returns_home_without_dialogue(app):
+@pytest.mark.parametrize('input_method', ['enter', 'click'])
+def test_partial_picture_reveal_waits_for_next_room_input_without_dialogue(app, input_method):
     app.campaign.data['completed'] = [1]
     app.campaign.data['photos'] = [1]
+    before = deepcopy(app.campaign.data)
     app.start_memory(1)
     assert app.dialogues == []
+    app.draw()
+    buttons = {c['id']: c for c in app.controls}
+    assert buttons['story_finish_next']['label'] == '다음 방으로'
+    assert buttons['story_finish_next']['disabled']
+    app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_RETURN, mod=0))
+    assert app.scene == 'story'
     app.advance(1.9)
     assert app.scene == 'story'
+    app.draw()
     app.advance(.1)
-    assert app.scene == 'home'
+    app.draw()
+    buttons = {c['id']: c for c in app.controls}
+    assert len(buttons) == len(app.controls)
+    assert app.scene == 'story'
+    assert not buttons['story_finish_next']['disabled']
+    assert buttons['story_finish_home']['rect'].x < buttons['story_finish_next']['rect'].x
+    assert app.controls[app.focus]['id'] == 'story_finish_next'
+    assert 'story_next' not in buttons
+    app.advance(10.)
+    assert app.scene == 'story' and app.campaign.data == before
+    if input_method == 'enter':
+        app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_RETURN, mod=0))
+    else:
+        app.handle_event(pygame.event.Event(
+            pygame.MOUSEBUTTONDOWN, pos=buttons['story_finish_next']['rect'].center, button=1))
+    assert app.scene == 'briefing' and app.stage == 2
+    assert app.campaign.data == before
     assert app.campaign.memory_progress() == [1, 0, 0]
+
+
+@pytest.mark.parametrize('stage', range(1, 13))
+@pytest.mark.parametrize('new_ending', [False, True])
+def test_recleared_result_goes_to_next_room_and_keeps_last_room_ending(app, stage, new_ending):
+    configure_preview(app, 'normal')
+    app.campaign.record_ending('normal', activate=True)
+    app.stage = stage
+    app.last_outcome = {'status': 'COMPLETE', 'banked': 4, 'carried': 4, 'ticks_used': 10}
+    app.last_reward = {'first_complete': False, 'new_ending': new_ending}
+    app.transition('result')
+    before = deepcopy(app.campaign.data)
+    app.draw()
+    buttons = {c['id']: c for c in app.controls}
+    target = 'next_stage' if stage < 12 else 'ending'
+    assert buttons[target]['label'] == ('다음 방으로' if stage < 12 else '엔딩 보기')
+    assert ('ending' if stage < 12 else 'next_stage') not in buttons
+    assert 'view_memory' not in buttons
+    assert app.controls[app.focus]['id'] == target
+    app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_RETURN, mod=0))
+    if stage < 12:
+        assert app.scene == 'briefing' and app.stage == stage + 1
+    else:
+        assert app.scene == 'story' and app.story_kind == 'ending_intro'
+    assert app.campaign.data == before
 
 
 def test_result_retry_returns_to_the_same_room_briefing(app):

@@ -360,7 +360,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         _background(surface, assets, ctx=ctx)
         _header(surface, assets, '쉼터', '',
                 f'완료 {len(completed)} / 12 · 별 {int(ctx.get("total_stars", 0))} / 36')
-        _lanterns(surface, assets, completed, (662, 124, 575, 65))
+        _lanterns(surface, assets, completed, (750, 100, 500, 65))
         for memory_id in range(1, 4):
             regions = _regions(ctx, memory_id)
             r = pygame.Rect(38+(memory_id-1)*184, 126, 170, 108)
@@ -370,13 +370,13 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
                  (r.centerx, r.bottom-19), size=15, anchor='center')
             ui.control(f'memory:{memory_id}', r, f'기억 {memory_id}', custom=True)
         if completed:
-            ui.control('toggle_home_view', (1004,205,233,38),
+            ui.control('toggle_home_view', (1070,170,170,38),
                        '현재 쉼터' if old_view else '처음 쉼터')
         if len(completed) == 12:
             _chip(surface, assets, f'수집 배지 {ctx.get("warmth_count",0)} / 12',
-                  (662,205,322,38), size=17)
-            ui.control('ending',(1004,253,233,40),'현재 엔딩 보기',
-                       disabled=not ctx.get('selected_ending'))
+                  (790,30,220,39), size=17)
+            # ui.control('ending',(1004,253,233,40),'현재 엔딩 보기',
+            #            disabled=not ctx.get('selected_ending'))
         _overlay(surface,(0,560,W,160),alpha=190)
         note = '귀환 조건: 아이템 1개 + 온기 4점 이상 · 귀환점에서 E'
         if completed and max(completed) in LOBBY_ITEMS:
@@ -565,8 +565,8 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         elif success:
             if reward.get('first_complete'):
                 ident,label='view_memory','기억 공개'
-            elif reward.get('new_ending'):
-                ident,label='ending','엔딩 보기'
+            # elif reward.get('new_ending'):
+            #     ident,label='ending','엔딩 보기'
             elif stage==12:
                 ident,label='ending','엔딩 보기'
             else:
@@ -633,12 +633,28 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
                         progress=float(ctx.get('reveal_progress',1)),
                         item_kind=ctx.get('item_kind'),elapsed=scene_time)
             text(surface,assets,_memory_label(memory_id,regions),(38,27),size=25,bold=True)
-            ready=float(ctx.get('reveal_progress',1))>=1
-            if ready and not ctx.get('replay') and stage<12:
-                ui.control('story_finish_next',(826,636,190,40),'다음 방으로')
-                ui.control('story_finish_home',(1034,636,204,40),'쉼터로',primary=True)
+            ready = float(ctx.get('reveal_progress', 1)) >= 1
+            if not ctx.get('replay') and stage < 12:
+                ui.control(
+                    'story_finish_home', (826,636,190,40), '쉼터로'
+                )
+                ui.control(
+                    'story_finish_next', (1034,636,204,40),
+                    '다음 방으로',
+                    primary=True,
+                    disabled=not ready,
+                )
             else:
-                ui.control('story_next',(1034,636,204,40),'계속',primary=True)
+                label = (
+                    '엔딩 보기'
+                    if not ctx.get('replay') and stage == 12
+                    else '계속'
+                )
+                ui.control(
+                    'story_next', (1034,636,204,40), label,
+                    primary=True,
+                    disabled=not ready, # 기억 공개 연출이 끝나면 버튼이 누를 수 있게
+                )
         elif kind == 'prologue':
             _prologue_picture(surface, assets)
             ui.control('story_next',(1034,619,204,45),'계속',primary=True)

@@ -153,7 +153,7 @@ def test_last_room_reveals_the_last_picture_before_choosing_any_ending(app):
     assert gameplay_progress(app) == before
 
 
-def test_replacing_pending_representative_refreshes_the_result_ending_action(app):
+def test_replacing_pending_representative_unlocks_ending_without_interrupting_next_room(app):
     state = likes.empty_state()
     for stage in range(1, 13):
         likes.offer_memory(state, sample_record(stage, (30, 17, 10) if stage == 1 else (42, 17, 10)))
@@ -169,8 +169,14 @@ def test_replacing_pending_representative_refreshes_the_result_ending_action(app
     assert app.scene == 'result' and app.last_reward['new_ending']
     assert app.campaign.selected_ending() == 'ghost_a'
     assert app.campaign.active_ending() is None
-    assert not controls(app)['ending']['disabled']
-    click(app, 'ending')
+    result_buttons = controls(app)
+    assert 'ending' not in result_buttons
+    assert not result_buttons['next_stage']['disabled']
+    click(app, 'next_stage')
+    assert app.scene == 'briefing' and app.stage == 2
+    app.dispatch('likes')
+    assert not controls(app)['show_ending']['disabled']
+    click(app, 'show_ending')
     finish_resolution(app)
     assert app.ending_id == 'ghost_a' and app.campaign.released_variants() == (0,)
 
