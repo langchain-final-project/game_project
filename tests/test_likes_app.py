@@ -190,6 +190,33 @@ def test_recleared_result_goes_to_next_room_and_keeps_last_room_ending(app, stag
     assert app.campaign.data == before
 
 
+@pytest.mark.parametrize('stage', [1, 4])
+@pytest.mark.parametrize('input_method', ['enter', 'space', 'click'])
+def test_memory_home_button_respects_selection_and_preserves_progress(app, stage, input_method):
+    app.campaign.data['completed'] = list(range(1, stage + 1))
+    app.campaign.data['photos'] = list(range(1, stage + 1))
+    before = deepcopy(app.campaign.data)
+    app.start_memory(stage)
+    app.draw()
+    app.advance(2.)
+    app.draw()
+    assert app.controls[app.focus]['id'] == 'story_finish_next'
+
+    app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_LEFT, mod=0))
+    app.draw()
+    selected = app.controls[app.focus]
+    assert selected['id'] == 'story_finish_home'
+    if input_method == 'click':
+        app.handle_event(pygame.event.Event(
+            pygame.MOUSEBUTTONDOWN, pos=selected['rect'].center, button=1))
+    else:
+        key = pygame.K_RETURN if input_method == 'enter' else pygame.K_SPACE
+        app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=key, mod=0))
+    assert app.scene == 'home'
+    assert app.stage == stage
+    assert app.campaign.data == before
+
+
 def test_result_retry_returns_to_the_same_room_briefing(app):
     complete(app)
 
