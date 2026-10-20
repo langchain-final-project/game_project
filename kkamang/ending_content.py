@@ -1,4 +1,4 @@
-"""여섯 엔딩의 PNG 경로, 한 문장 내레이션, 해방된 고양이 표시 순서를 정의한다."""
+"""여섯 엔딩과 낮·밤 진입 PNG, 한 문장 내레이션, 해방된 고양이 표시 순서를 정의한다."""
 ENDING_CONTENT = {
     'happy_all': {'title': '아무도 남겨두지 않은 아침', 'subtitle': '베스트',
                   'lines': [('', '저주에서 풀려나 다시 고양이가 된 세 친구와 함께, 까망이는 저택에서 오래오래 행복하게 살았답니다.')]},
@@ -16,6 +16,8 @@ ENDING_CONTENT = {
 # 제작 메모와 무언 동작은 내레이션으로 표시하지 않는다.
 for _ident, _ending in ENDING_CONTENT.items():
     _ending['art'] = f'ending_{_ident}.png'
+    _ending['intro_art'] = ('ending_intro_day.png' if _ident in ('happy_all', 'normal')
+                            else 'ending_intro_night.png')
 
 
 def released_variants(ending_id):

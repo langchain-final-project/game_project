@@ -28,15 +28,12 @@ def recover_warmth(campaign):
 
 
 def finish_silent_resolution(app, ending_id):
-    assert app.scene == 'story' and app.story_kind == 'garden'
+    assert app.scene == 'story' and app.story_kind == 'ending_intro'
     assert app.dialogues == []
     previous_active = app.campaign.active_ending()
-    app.advance(3.2)
-    if released_variants(ending_id):
-        assert app.scene == 'story' and app.story_kind == 'liberation'
-        assert app.campaign.active_ending() == previous_active
-        assert app.dialogues == []
-        app.advance(4.)
+    app.advance(8.)
+    assert app.scene == 'story' and app.campaign.active_ending() == previous_active
+    app.finish_story()
     assert app.scene == 'ending'
     assert app.ending_art_only
     assert app.ending_id == ending_id

@@ -190,9 +190,7 @@ class AppIntegrationTests(unittest.TestCase):
                 self.app.dispatch('story_skip')
                 if stage == 12:
                     self.assert_rendered('story')
-                    self.assertEqual(self.app.story_kind, 'garden')
-                    self.app.dispatch('story_skip')
-                    self.assertEqual(self.app.story_kind, 'liberation')
+                    self.assertEqual(self.app.story_kind, 'ending_intro')
                     self.app.dispatch('story_skip')
                     self.assert_rendered('ending')
                 else:

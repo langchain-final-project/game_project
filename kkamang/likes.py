@@ -200,7 +200,7 @@ def select_ending(state, completed):
     high = [ident for ident, value in affection.items() if value >= HIGH_AFFECTION]
     if len(high) == 3:
         return 'happy_all'
-    if sum(state['best_stars'].values()) == 0:
+    if not high:
         return 'sad'
     if len(high) == 1:
         return CHARACTER_ENDINGS[high[0]]

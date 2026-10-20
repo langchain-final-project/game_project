@@ -14,7 +14,7 @@ import numpy as np
 import pygame
 import pytest
 
-from kkamang.ui import memories
+from kkamang.ui import memories, menus
 from kkamang.ui.illustration import cat, cat_frame, shelter
 
 
@@ -153,9 +153,10 @@ def test_present_day_endings_do_not_repaint_the_past_storm():
     completed=list(range(1,13));cosmetics={'scarf':'peach','rug':'leaves'}
     before=deepcopy((completed,cosmetics))
     surface=pygame.Surface((1280,720))
-    for kind in ('prologue','garden','liberation','basic_end','true_end'):
-        memories.draw_cinematic(surface,kind,4.,completed=completed,
-                                 cosmetics=cosmetics,released=True)
+    from kkamang.ui.theme import Assets
+    assets = Assets()
+    for name in ('prologue.png', 'ending_intro_day.png', 'ending_intro_night.png'):
+        menus._story_picture(surface, assets, name)
     assert (completed,cosmetics)==before
     np.testing.assert_array_equal(pixels(memories.memory_original(3)),original)
 
@@ -213,7 +214,8 @@ def test_game_art_renders_in_a_fresh_process_without_numpy(tmp_path):
         importlib.util.find_spec=without_numpy_spec
         import pygame
         from pathlib import Path
-        from kkamang.ui.memories import draw_memory, memory_original, memory_region_mask, draw_cinematic
+        from kkamang.ui.memories import draw_memory, memory_original, memory_region_mask
+        from kkamang.ui.menus import _story_picture
         from kkamang.app import GameApp
         app=GameApp(save_path=Path(sys.argv[1]),headless=True,no_audio=True)
         try:
@@ -236,8 +238,8 @@ def test_game_art_renders_in_a_fresh_process_without_numpy(tmp_path):
                                 assert frame.get_at((x,y)).a==255
                                 if labels.get_at((x,y)).r>region+1:
                                     assert frame.get_at((x,y))[:3]==empty.get_at((x,y))[:3]
-            for kind in ('prologue','garden','liberation','basic_end','true_end'):
-                draw_cinematic(app.canvas,kind,3.2)
+            for name in ('prologue.png', 'ending_intro_day.png', 'ending_intro_night.png'):
+                _story_picture(app.canvas, app.assets, name)
             app.campaign.data['completed']=list(range(1,13))
             app.start_memory(12)
             app.scene_elapsed=1.

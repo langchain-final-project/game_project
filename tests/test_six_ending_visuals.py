@@ -43,34 +43,8 @@ def test_lobby_restores_only_the_selected_friend_and_keeps_other_ghosts(ending,e
     assert pygame.image.tobytes(surface,'RGB')==pygame.image.tobytes(legacy,'RGB')
 
 
-@pytest.mark.parametrize('ending,expected',ENDINGS)
-def test_completed_liberation_restores_the_target_and_leaves_other_two_as_ghosts(ending,expected):
-    with patch.object(memories,'resident_cat',wraps=memories.resident_cat) as alive, \
-         patch.object(memories,'ghost',wraps=memories.ghost) as spectral, \
-         patch.object(memories,'_cinematic_fixtures',wraps=memories._cinematic_fixtures) as room:
-        memories.draw_cinematic(canvas(),'liberation',4.,released=True,released_variants=expected)
-    assert called_variants(alive,4)==expected
-    assert called_variants(spectral,5)==tuple(n for n in range(3) if n not in expected)
-    assert room.call_args.kwargs['dawn'] is (len(expected)==3)
 
 
-@pytest.mark.parametrize('variants',((0,1,2),(0,),(1,),(2,),()))
-def test_garden_draws_current_residents_and_liberation_starts_with_three_ghosts(variants):
-    with patch.object(memories,'resident_cat',wraps=memories.resident_cat) as alive, \
-         patch.object(memories,'ghost',wraps=memories.ghost) as spectral:
-        memories.draw_cinematic(canvas(),'garden',1.,released_variants=variants)
-    assert called_variants(alive,4)==variants
-    assert called_variants(spectral,5)==tuple(n for n in range(3) if n not in variants)
-    with patch.object(memories,'resident_cat',wraps=memories.resident_cat) as alive, \
-         patch.object(memories,'ghost',wraps=memories.ghost) as spectral:
-        memories.draw_cinematic(canvas(),'liberation',0.,released_variants=variants)
-    assert not alive.called
-    assert called_variants(spectral,5)==(0,1,2)
-    with patch.object(memories,'resident_cat',wraps=memories.resident_cat) as alive, \
-         patch.object(memories,'ghost',wraps=memories.ghost) as spectral:
-        memories.draw_cinematic(canvas(),'liberation',1.6,released_variants=variants)
-    assert called_variants(alive,4)==variants
-    assert called_variants(spectral,5)==(0,1,2)
 
 
 def test_sad_lobby_hides_all_friends_but_keeps_the_player():
@@ -97,12 +71,6 @@ def test_comparison_before_stays_ghostly_and_legacy_release_still_restores_all()
     assert called_variants(alive,4)==(0,1,2)
 
 
-def test_explicit_best_ending_has_four_sleepers_and_no_ghosts():
-    with patch.object(memories,'_sleeping',wraps=memories._sleeping) as asleep, \
-         patch.object(memories,'ghost',wraps=memories.ghost) as spectral:
-        memories.draw_cinematic(canvas(),'true_end',4.,released_variants=(0,1,2))
-    assert called_variants(asleep,2)==(0,2,None,1)
-    assert not spectral.called
 
 
 @pytest.mark.parametrize('ending,expected',ENDINGS)

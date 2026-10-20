@@ -3,9 +3,9 @@ from . import likes
 
 PREVIEWS = ('overview', 'choice', *likes.ENDING_IDS)
 SAMPLES = {
-    'happy_all': (48, 20, 15), 'sad': (0, 25, 15),
+    'happy_all': (48, 20, 15), 'sad': (30, 10, 10),
     'ghost_a': (60, 5, 5), 'ghost_b': (24, 25, 5),
-    'ghost_c': (30, 5, 15), 'normal': (30, 10, 10),
+    'ghost_c': (30, 5, 15), 'normal': (48, 20, 5),
 }
 
 

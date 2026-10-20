@@ -169,7 +169,7 @@ def test_prologue_uses_its_png_without_procedural_or_dialogue_portraits(story_ga
     game = story_game
     original = deepcopy(game.campaign.data)
     game.start_prologue()
-    with patch.object(menus, 'draw_cinematic', wraps=menus.draw_cinematic) as cinematic, \
+    with patch.object(menus, '_ending_intro_picture', wraps=menus._ending_intro_picture) as cinematic, \
             patch.object(menus, '_prologue_picture', wraps=menus._prologue_picture) as picture, \
             patch.object(menus, 'draw_story_character') as portrait, \
             patch.object(menus, 'draw_story_item') as item:

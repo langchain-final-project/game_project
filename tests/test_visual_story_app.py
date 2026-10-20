@@ -142,7 +142,7 @@ def test_normal_ending_uses_png_and_one_narration_without_altering_records(app):
     original_likes = deepcopy(app.campaign.data['likes'])
     original_records = deepcopy(app.campaign.data['records'])
     app.start_ending()
-    assert app.scene == 'story' and app.story_kind == 'garden'
+    assert app.scene == 'story' and app.story_kind == 'ending_intro'
     assert app.ending_id == 'normal' and app.context()['dialogue'] is None
     app.finish_story()
     assert app.scene == 'ending' and app.ending_art_only
@@ -164,11 +164,11 @@ def test_best_affection_on_first_journey_releases_all_without_rich_badges(app):
     assert app.campaign.warmth_memories() == []
     app.start_memory(12)
     app.finish_story()
-    assert app.story_kind == 'garden' and app.ending_id == 'happy_all'
-    app.advance(CINEMATIC_DURATIONS['garden'])
-    assert app.story_kind == 'liberation' and app.dialogues == []
+    assert app.story_kind == 'ending_intro' and app.ending_id == 'happy_all'
+    app.advance(8.)
+    assert app.story_kind == 'ending_intro' and app.dialogues == []
     assert app.campaign.active_ending() is None
-    app.advance(CINEMATIC_DURATIONS['liberation'])
+    app.finish_story()
     assert app.scene == 'ending' and app.dialogues == story.EXTENDED_ENDING
     assert app.ending_art_only and app.context()['released']
     assert app.context()['released_variants'] == (0, 1, 2)
@@ -188,7 +188,7 @@ def test_rich_badges_and_legacy_flags_do_not_auto_release_on_home_entry(app):
     assert app.context()['released_variants'] == ()
     assert app.campaign.selected_ending() == 'normal'
     app.dispatch('show_ending')
-    assert app.story_kind == 'garden' and app.ending_id == 'normal'
+    assert app.story_kind == 'ending_intro' and app.ending_id == 'normal'
     app.finish_story()
     assert app.scene == 'ending' and app.campaign.active_ending() == 'normal'
     app.finish_story()
@@ -210,8 +210,7 @@ def test_pending_representative_choice_still_blocks_ending(app):
 def test_save_failure_during_release_keeps_progress_and_retry_target(app):
     complete_all(app.campaign, ending='happy_all')
     app.start_ending()
-    app.finish_story()
-    assert app.story_kind == 'liberation'
+    assert app.story_kind == 'ending_intro'
     before_completed = list(app.campaign.data['completed'])
     with patch.object(app.store, '_atomic_write', side_effect=OSError('disk full')):
         app.finish_story()
@@ -274,9 +273,7 @@ def test_real_menu_controls_follow_silent_resolution_then_main_art_and_afterword
 
     app.advance(2.)
     click('story_next')
-    assert app.story_kind == 'garden' and app.context()['silent']
-    click('story_skip')
-    assert app.story_kind == 'liberation' and app.context()['dialogue'] is None
+    assert app.story_kind == 'ending_intro' and app.context()['silent']
     click('story_skip')
     assert app.scene == 'ending' and app.ending_art_only and len(app.dialogues) == 1
     click('ending_continue')

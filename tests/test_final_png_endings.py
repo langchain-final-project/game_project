@@ -38,8 +38,8 @@ def app(tmp_path):
 
 def finish_resolution(app):
     while app.scene == 'story':
-        assert app.story_kind in ('garden', 'liberation')
-        app.advance(CINEMATIC_DURATIONS[app.story_kind])
+        assert app.story_kind == 'ending_intro'
+        app.finish_story()
     assert app.scene == 'ending' and app.ending_art_only
 
 
@@ -49,7 +49,7 @@ def test_each_ending_has_the_approved_narrator_and_keeps_its_png_after_continue(
     configure_preview(app, ending_id)
     finish_resolution(app)
     before = deepcopy(app.campaign.data)
-    with patch.object(menus, 'draw_cinematic') as procedural, \
+    with patch.object(menus, '_ending_intro_picture') as procedural, \
          patch.object(menus, '_ending_picture', wraps=menus._ending_picture) as picture:
         app.draw()
         assert picture.call_args.args[2] == ENDING_CONTENT[ending_id]['art']
@@ -150,7 +150,7 @@ def test_first_ending_save_load_and_replay_keep_png_and_active_lobby(app, ending
         restored.start_ending(replay=True)
         assert restored.scene == 'ending' and restored.ending_art_only
         assert restored.ending_id == ending_id
-        with patch.object(menus, 'draw_cinematic') as procedural, \
+        with patch.object(menus, '_ending_intro_picture') as procedural, \
              patch.object(menus, '_ending_picture', wraps=menus._ending_picture) as picture:
             restored.draw()
             restored.next_dialogue()
@@ -198,7 +198,7 @@ def test_required_story_pngs_fail_explicitly_without_decorative_fallback(tmp_pat
     expected = FileNotFoundError if failure == 'missing' else pygame.error
     with patch.dict(menus._COVER_CACHE, clear=True), \
          patch.object(assets, 'image', side_effect=AssertionError('decorative fallback')), \
-         patch.object(menus, 'draw_cinematic') as procedural, \
+         patch.object(menus, '_ending_intro_picture') as procedural, \
          pytest.raises(expected):
         if kind == 'ending':
             menus._ending_picture(pygame.Surface((1280, 720)), assets, name)
