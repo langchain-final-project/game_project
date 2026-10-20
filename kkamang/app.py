@@ -255,7 +255,7 @@ class GameApp:
 
     def next_dialogue(self):
 
-        # 첫 클리어의 기억 화면에서는 Enter·Space로 다음 방에 갑니다.
+        # 기억 화면의 Enter·Space는 현재 선택한 버튼을 실행합니다.
         if (
             self.scene == 'story'
             and self.story_kind == 'memory'
@@ -264,6 +264,14 @@ class GameApp:
             if self.scene_elapsed < MEMORY_REVEAL_SECONDS:
                 return
 
+            if 0 <= self.focus < len(self.controls):
+                selected = self.controls[self.focus]
+                if selected['id'] in ('story_finish_home', 'story_finish_next', 'story_skip'):
+                    if not selected.get('disabled'):
+                        self.dispatch(selected['id'])
+                    return
+
+            # 아직 화면을 그리지 않았거나 마지막 방의 '엔딩 보기'인 경우입니다.
             self.dispatch('story_finish_next')
             return
 
