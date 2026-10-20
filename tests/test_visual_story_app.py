@@ -75,15 +75,22 @@ def test_legacy_photo_does_not_suppress_first_completed_region(app):
     assert context['memory_progress'] == [1, 0, 0]
 
 
-def test_partial_reveal_returns_home_after_two_seconds_without_awarding_again(app):
+def test_partial_reveal_waits_for_enter_then_opens_next_room_without_awarding_again(app):
     settle(app.campaign, 1)
     before = deepcopy(app.campaign.data)
     app.start_memory(1)
+    app.draw()
     app.advance(1.99)
     assert app.scene == 'story'
     assert app.context()['reveal_progress'] == pytest.approx(.995)
     app.advance(.02)
-    assert app.scene == 'home' and app.scene_elapsed == 0
+    app.draw()
+    assert app.scene == 'story' and app.context()['reveal_progress'] == 1.
+    assert app.controls[app.focus]['id'] == 'story_finish_next'
+    app.advance(10.)
+    assert app.scene == 'story' and app.campaign.data == before
+    app.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_RETURN, mod=0))
+    assert app.scene == 'briefing' and app.stage == 2
     assert app.campaign.data == before
 
 
@@ -100,7 +107,7 @@ def test_completed_picture_and_album_replay_wait_for_user(app):
     assert app.context()['regions'] == [True] * 4
     assert app.context()['previous_regions'] == [True, True, True, False]
     app.next_dialogue()
-    assert app.scene == 'home'
+    assert app.scene == 'briefing' and app.stage == 5
     app.start_memory(3, replay=True)
     app.advance(10.)
     assert app.scene == 'story' and app.context()['replay']

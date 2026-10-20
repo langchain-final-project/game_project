@@ -254,6 +254,19 @@ class GameApp:
             self._start_cinematic('ending_intro')
 
     def next_dialogue(self):
+
+        # 첫 클리어의 기억 화면에서는 Enter·Space로 다음 방에 갑니다.
+        if (
+            self.scene == 'story'
+            and self.story_kind == 'memory'
+            and not self.replaying_story
+        ):
+            if self.scene_elapsed < MEMORY_REVEAL_SECONDS:
+                return
+
+            self.dispatch('story_finish_next')
+            return
+
         if self.scene == 'ending':
             if self.ending_art_only and self.dialogues:
                 self.ending_art_only = False
@@ -403,7 +416,7 @@ class GameApp:
                 return
             if self.scene == 'result' and (self.last_reward or {}).get('first_complete'):
                 self.start_memory()
-            elif self.stage == 12 or (self.last_reward or {}).get('new_ending'):
+            elif self.stage == 12:
                 self.start_ending()
             else:
                 self.prepare(self.stage+1)
@@ -792,15 +805,21 @@ class GameApp:
 
         if self.scene == 'story':
             if self.story_kind == 'memory':
+                # 기억 공개가 끝나면 활성화된 '다음 방으로'를 기본 선택합니다.
+                if (
+                    not self.replaying_story
+                    and self.scene_elapsed - dt < MEMORY_REVEAL_SECONDS <= self.scene_elapsed
+                ):
+                    self.needs_focus = True
                 complete = self.campaign.memory_complete(self.memory_selected)
                 if (not self.replaying_story and complete
                         and self.scene_elapsed >= MEMORY_REVEAL_SECONDS
                         and not self.memory_completion_sound_played):
                     self.memory_completion_sound_played = True
                     self.audio.play('memory_complete')
-                if (not self.replaying_story and not complete
-                        and self.scene_elapsed >= MEMORY_REVEAL_SECONDS):
-                    self.finish_story()
+                # if (not self.replaying_story and not complete
+                #         and self.scene_elapsed >= MEMORY_REVEAL_SECONDS):
+                #     self.finish_story()
             elif self.scene_elapsed >= CINEMATIC_DURATIONS.get(self.story_kind, float('inf')):
                 self.finish_story()
             return
@@ -975,7 +994,10 @@ class GameApp:
                 preferred={'result':['view_memory','ending','show_ending','next_stage','retry'], 'pause':['resume'],
                     'memory_choice':['memory_keep'], 'likes':['home'],
                     'settings':['back'], 'briefing':['start'], 'rooms':[f'stage:{min(12,len(self.campaign.data["completed"])+1)}'],
-                    'home':['explore'], 'friends':['back'], 'story':['story_finish_home','story_next'], 'ending':['ending_continue'],
+                    'home':['explore'], 'friends':['back'],
+                    # 기억 화면의 기본 포인터: 다음 방 → 계속/엔딩 → 쉼터 순서입니다.
+                    'story':['story_finish_next','story_next','story_finish_home'],
+                    'ending':['ending_continue'],
                     'tutorial':['tutorial_done'], 'confirm':['confirm_no'], 'save_error':['save_retry'],
                     'album':[f'memory:{self.memory_selected}',f'photo:{self.photo_selected}'],
                     'appearance':(['collection_favorite','collection_close'] if self.collection_detail else
