@@ -1,4 +1,4 @@
-# 같은 모델의 공식·보조 평가를 수행하고 귀환·별 단계·점수와 재생 기록을 한 형식으로 저장합니다.
+# 공식·보조 평가의 귀환·별·점수와 실제 재생·고정 기준 상태의 행동 확률을 기록합니다.
 from __future__ import annotations
 
 import argparse
@@ -10,9 +10,78 @@ from statistics import mean
 from time import perf_counter
 
 import numpy as np
+import torch
 
 from rl.common import (GRAPH_METRICS, build_config, evaluation_cases, isolated_action_rng,
                        load_model, make_env, validate_run, write_csv, write_json)
+
+
+ACTION_PROBABILITY_KEYS = ('p_up', 'p_down', 'p_left', 'p_right', 'p_interact', 'p_wait')
+
+
+def policy_record(model, observation, snapshot):
+    """A2C의 행동 추첨 없이 현재 입력에 대한 6개 행동 확률을 조회합니다."""
+    policy = model.policy
+    was_training = policy.training
+    try:
+        policy.set_training_mode(False)
+        with torch.no_grad():
+            tensor, _ = policy.obs_to_tensor(observation)
+            probabilities = policy.get_distribution(tensor).distribution.probs[0].cpu().tolist()
+    finally:
+        policy.set_training_mode(was_training)
+    return {
+        # 좌표만 같아도 시간·수집 상태는 다를 수 있어 전체 입력의 해시를 함께 비교합니다.
+        'observation_hash': hashlib.sha256(np.asarray(observation, dtype='<f4').tobytes()).hexdigest(),
+        'tick': snapshot['tick'], 'remaining_ticks': snapshot['remaining_ticks'],
+        'x': snapshot['position'][0], 'y': snapshot['position'][1],
+        'warmth': snapshot['carried'], 'quest_collected': snapshot['quest']['collected'],
+        'courage': snapshot['courage'], 'greedy_action': int(np.argmax(probabilities)),
+        **dict(zip(ACTION_PROBABILITY_KEYS, probabilities)),
+    }
+
+
+def annotate_replay(model, env, replay):
+    """대표 재생의 원래 행동열을 다시 실행해 행동 직전 상태의 확률을 붙입니다."""
+    with isolated_action_rng():
+        observation, info = env.reset(seed=replay['seed'])
+        for frame in replay['frames']:
+            frame['decision'] = policy_record(model, observation, info['snapshot'])
+            # 원래 행동을 그대로 실행합니다. 정책 행동을 새로 추첨하지 않습니다.
+            observation, _, _, _, info = env.step(frame['action'])
+
+
+def record_state_probes(model, output_dir, *, config, training_seed, model_steps, record_scalar=None):
+    """Stage 1의 동일 입력을 실제 경로로 재구성해 체크포인트 간 확률을 비교합니다."""
+    if config['environment']['name'] != 'MansionEnv' or config['environment']['stage'] != 1:
+        return  # 다른 환경에는 해당 환경에서 검증한 기준 경로가 필요합니다.
+    # 이 행동열은 진단 상태를 만드는 용도이며 학습 경험이나 평가 성공률에는 넣지 않습니다.
+    actions = [3] * 7 + [4] + [2] * 7
+    probes = {0: ('start', 3), 6: ('before_quest', 3), 7: ('on_quest', 4),
+              8: ('quest_collected', 2), 14: ('before_exit', 2), 15: ('on_exit', 4)}
+    rows = []
+    env = make_env(config)
+    try:
+        with isolated_action_rng():
+            seed = config['evaluation']['deterministic_seeds'][0]
+            observation, info = env.reset(seed=seed)
+            for step in range(len(actions) + 1):
+                if step in probes:
+                    name, expected = probes[step]
+                    row = {'training_seed': training_seed, 'model_steps': model_steps,
+                           'probe': name, 'evaluation_seed': seed, 'expected_action': expected,
+                           **policy_record(model, observation, info['snapshot'])}
+                    rows.append(row)
+                    if record_scalar is not None:
+                        for key in ACTION_PROBABILITY_KEYS:
+                            record_scalar(f'probe/{name}/{key}', row[key])
+                if step < len(actions):
+                    observation, _, terminated, truncated, info = env.step(actions[step])
+                    if terminated or truncated:
+                        break
+    finally:
+        env.close()
+    write_csv(Path(output_dir) / 'state_probes.csv', rows)
 
 
 def rollout_episode(model, env, *, seed, deterministic=True, action_seed=None, config=None):
@@ -118,7 +187,7 @@ def evaluate_model(model, output_dir: Path, *, training_seed: int, model_steps: 
     output_dir.mkdir(parents=True, exist_ok=True)
     env = make_env(config)
     started = perf_counter()
-    rows, trajectories, saved_kinds = [], set(), set()
+    rows, trajectories, saved_kinds, decisions = [], set(), set(), []
     identity = {'algorithm': config['algorithm'], 'training_seed': training_seed,
                 'model_steps': model_steps, 'evaluation_mode': mode, 'deterministic': deterministic}
     try:
@@ -136,8 +205,13 @@ def evaluate_model(model, output_dir: Path, *, training_seed: int, model_steps: 
             trajectories.add(hashlib.sha256(bytes(replay['actions'])).hexdigest())
             kind = 'success' if row['success'] else 'failure'
             if kind not in saved_kinds:
+                annotate_replay(model, env, replay)
                 replay.update(identity, model_path=model_path)
                 write_json(output_dir / 'replays' / f'{kind}.json', replay)
+                decisions.extend({**identity, 'representative_kind': kind, 'evaluation_seed': seed,
+                                  'action_seed': replay['action_seed'], 'step_before': step,
+                                  **frame['decision'], 'chosen_action': frame['action']}
+                                 for step, frame in enumerate(replay['frames']))
                 saved_kinds.add(kind)
     finally:
         env.close()
@@ -155,6 +229,8 @@ def evaluate_model(model, output_dir: Path, *, training_seed: int, model_steps: 
         'return_pass': metrics['success_rate'] >= evaluation['success_rate_threshold'],
     }
     write_csv(output_dir / 'episodes.csv', rows)
+    # 대표 성공·실패의 모든 행동을 저장해 같은 경로의 중복 기록을 줄입니다.
+    write_csv(output_dir / 'action_probabilities.csv', decisions)
     write_json(output_dir / 'summary.json', summary)
     write_csv(output_dir / 'summary.csv', [{key: value for key, value in summary.items()
                                            if not isinstance(value, (dict, list))}])
@@ -162,7 +238,7 @@ def evaluate_model(model, output_dir: Path, *, training_seed: int, model_steps: 
 
 
 def evaluate_both(model, output_dir, *, training_seed, model_steps, model_path=None,
-                  smoke=False, config=None):
+                  smoke=False, config=None, record_scalar=None):
     config = build_config() if config is None else config
     summaries = []
     for case in evaluation_cases(config, smoke=smoke):
@@ -175,6 +251,8 @@ def evaluate_both(model, output_dir, *, training_seed, model_steps, model_path=N
               f"성공률={summary['success_rate']:.0%}, 별1+={summary['at_least_one_star_rate']:.0%}, "
               f"별2+={summary['at_least_two_star_rate']:.0%}, 별3={summary['three_star_rate']:.0%}, "
               f"평균 점수={summary['mean_score']:.1f}", flush=True)
+    record_state_probes(model, output_dir, config=config, training_seed=training_seed,
+                        model_steps=model_steps, record_scalar=record_scalar)
     return summaries
 
 
@@ -218,7 +296,8 @@ def evaluate_run(run_dir: Path) -> list[dict]:
             batch = evaluate_both(model, root / f'step_{steps:07d}',
                                   training_seed=metadata['training_seed'], model_steps=steps,
                                   model_path=str(path.resolve()), config=config,
-                                  smoke=config.get('execution', {}).get('run_kind') == 'smoke')
+                                  smoke=config.get('execution', {}).get('run_kind') == 'smoke',
+                                  record_scalar=lambda tag, value: writer.add_scalar(tag, value, steps))
             summaries.extend(batch)
             log_evaluation(batch, lambda tag, value: writer.add_scalar(tag, value, steps))
         report['status'] = 'complete'

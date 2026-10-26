@@ -84,7 +84,7 @@ GRAPH_METRICS = (
 # --seed만 바꾸기, 보상은 reward.py, 나머지 실행 설정은 여기서 관리 하기
 CONFIG = {
     "schema_version": SCHEMA_VERSION,
-    "experiment": "stage1_a2c_baseline",
+    "experiment": "stage1_a2c_baseline_diagnostics",
     "algorithm": "A2C",
     "environment": {
         "name": "MansionEnv",
@@ -111,7 +111,7 @@ CONFIG = {
         "device": "cpu",
         "torch_threads": 1,
         "total_timesteps": 1000000,
-        "checkpoints": [100000, 300000, 500000, 700000, 1000000],
+        "checkpoints": list(range(50000, 1000001, 50000)),
     },
     "evaluation": EVALUATION_CONFIG,
 }

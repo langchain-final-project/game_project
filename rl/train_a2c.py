@@ -141,7 +141,8 @@ def train(seed: int, *, smoke: bool = False, output_root: Path | None = None, co
             evaluation_start = time.perf_counter()
             summaries = evaluate_both(model, run_dir / "evaluation" / f"step_{steps:07d}",
                                       training_seed=seed, model_steps=steps, smoke=smoke,
-                                      model_path=str(path.resolve()), config=config)
+                                      model_path=str(path.resolve()), config=config,
+                                      record_scalar=logger.record)
             log_evaluation(summaries, logger.record)
             logger.dump(step=steps)
             evaluation_seconds += time.perf_counter() - evaluation_start
