@@ -28,3 +28,5 @@ validation/runtime_replay_results.json
 coverage.xml
 htmlcov/
 
+# 1스테이지 강화학습 보고서
+STAGE1_A2C_EXPERIMENT_REPORT.md

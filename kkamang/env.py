@@ -206,7 +206,7 @@ class MansionEnv(gym.Env):
 
     def __init__(self, stage: int | str = 1, *, config: dict | None = None,
                  mode: str = 'basic', randomize_phase: bool = False,
-                 safety_coefficient: float = 0.0,
+                 safety_coefficient: float = 0.1,
                  max_episode_steps: int | None = None,
                  render_mode: str | None = None,
                  expected_observation_version: str = OBSERVATION_VERSION):
@@ -255,23 +255,72 @@ class MansionEnv(gym.Env):
             raise RuntimeError('call reset() before stepping a new or finished episode')
         if isinstance(action, (bool, np.bool_)) or not self.action_space.contains(action):
             raise ValueError(f'action must be an integer from 0 through 5, got {action!r}')
+
+        # 행동 전 상태: 이번 행동으로 무엇을 새로 얻었는지 비교
+        before = self.core.snapshot()
         result = self.core.step(int(action))
+        after = result.snapshot
         self._steps += 1
+
         terminated = bool(result.terminated)
-        truncated = bool(not terminated and self.max_episode_steps is not None
-                         and self._steps >= self.max_episode_steps)
+        truncated = bool(
+            not terminated
+            and self.max_episode_steps is not None
+            and self._steps >= self.max_episode_steps
+        )
         self._finished = terminated or truncated
+
+        # 1. 필수 물건을 처음 획득하면 +1
+        quest_reward = float(
+            not before['quest']['collected']
+            and after['quest']['collected']
+        )
+
+        # 2. 처음 모은 온기 4점까지만, 1점당 +0.1
+        warmth_gain = max(
+            0,
+            min(after['carried'], 4) - min(before['carried'], 4),
+        )
+        warmth_reward = 0.1 * warmth_gain
+
+        # 3. 성공 또는 게임 규칙에 따른 실패 보상
+        success_reward = 0.0
+        failure_reward = 0.0
         outcome = result.outcome
-        utility = 0.0
+
         if terminated and outcome is not None:
-            utility = 2.0 * (outcome['status'] == 'COMPLETE') + outcome['banked'] / 14.0
-        damage_events = sum(event['type'] == 'damage' for event in result.events)
-        penalty = self.safety_coefficient * damage_events
-        info = self._info(result.snapshot, result.events)
-        info['reward_terms'] = {'terminal_utility': utility, 'damage_penalty': penalty}
+            if outcome['status'] == 'COMPLETE':
+                success_reward = 10.0 + outcome['score']['total'] / 100.0
+            elif (
+                outcome['status'] == 'FAILED'
+                and outcome['reason'] in ('courage', 'timeout')
+            ):
+                failure_reward = -2.0
+
+        # 4. 실제 피해만 차감한다. 보호 중 접촉에는 차감하지 않는다.
+        damage_count = sum(
+            event['type'] == 'damage'
+            for event in result.events
+        )
+        damage_reward = -self.safety_coefficient * damage_count
+
+        # 각 항목은 부호를 포함한 보상이다.
+        reward_terms = {
+            'quest': quest_reward,
+            'warmth': warmth_reward,
+            'success': success_reward,
+            'failure': failure_reward,
+            'damage': damage_reward,
+        }
+        reward = float(sum(reward_terms.values()))
+
+        info = self._info(after, result.events)
+        info['reward_terms'] = reward_terms
+
         if truncated:
             info['truncation_reason'] = 'external_step_limit'
-        return self.encode(result.snapshot), float(utility - penalty), terminated, truncated, info
+
+        return self.encode(after), reward, terminated, truncated, info
 
     def render(self):
         if self.render_mode != 'ansi':
