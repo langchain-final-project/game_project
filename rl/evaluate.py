@@ -14,6 +14,7 @@ import torch
 
 from rl.common import (GRAPH_METRICS, build_config, evaluation_cases, isolated_action_rng,
                        load_model, make_env, validate_run, write_csv, write_json)
+from rl.observation import INTERACTION_READY_SIZE
 
 
 ACTION_PROBABILITY_KEYS = ('p_up', 'p_down', 'p_left', 'p_right', 'p_interact', 'p_wait')
@@ -37,6 +38,8 @@ def policy_record(model, observation, snapshot):
         'x': snapshot['position'][0], 'y': snapshot['position'][1],
         'warmth': snapshot['carried'], 'quest_collected': snapshot['quest']['collected'],
         'courage': snapshot['courage'], 'greedy_action': int(np.argmax(probabilities)),
+        **({'interaction_ready': float(observation[-1])}
+           if np.asarray(observation).shape == (INTERACTION_READY_SIZE,) else {}),
         **dict(zip(ACTION_PROBABILITY_KEYS, probabilities)),
     }
 

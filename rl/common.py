@@ -25,12 +25,15 @@ from kkamang.env import (
     REALTIME_OBSERVATION_VERSION,
 )
 from rl.reward import ProposedReward, REWARD_CONFIG, REWARD_VERSION
+from rl.observation import (InteractionReadyObservation, INTERACTION_READY_SIZE,
+                            INTERACTION_READY_VERSION)
 from kkamang.realtime import PHYSICS_HZ, FRAMES_PER_TICK
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_VERSION = 1
 # 학습·환경의 동작을 바꾸면 이 버전을 올림. 파일 해시는 실행 당시 코드를 추적할 때만 사용
-BASELINE_VERSION = "stage1_a2c_v1"
+BASELINE_VERSION = "stage1_a2c_score20_lr0003_nsteps20_interaction_ready_v1"
+BASE_OBSERVATION_BASELINE_VERSION = "stage1_a2c_score20_lr0003_nsteps20_v1"
 ENVIRONMENTS = {"MansionEnv": MansionEnv, "RealtimeMansionEnv": RealtimeMansionEnv}
 COMPARISON_PACKAGES = ("gymnasium", "numpy", "torch", "stable-baselines3")
 GAME_SOURCES = (
@@ -84,7 +87,7 @@ GRAPH_METRICS = (
 # --seed만 바꾸기, 보상은 reward.py, 나머지 실행 설정은 여기서 관리 하기
 CONFIG = {
     "schema_version": SCHEMA_VERSION,
-    "experiment": "stage1_a2c_baseline_diagnostics",
+    "experiment": "stage1_a2c_score20_lr0003_nsteps20_interaction_ready_v1",
     "algorithm": "A2C",
     "environment": {
         "name": "MansionEnv",
@@ -92,14 +95,15 @@ CONFIG = {
         "mode": "basic",
         "randomize_phase": False,
         "max_episode_steps": None,
+        "interaction_ready": True,
     },
     "a2c": {
         "policy": "MlpPolicy",
         "net_arch": {"pi": [64, 64], "vf": [64, 64]},
         "activation": "Tanh",
         "n_envs": 4,
-        "learning_rate": 0.0007,
-        "n_steps": 5,
+        "learning_rate": 0.0003,
+        "n_steps": 20,
         "gamma": 0.99,
         "gae_lambda": 1.0,
         "ent_coef": 0.01,
@@ -117,10 +121,21 @@ CONFIG = {
 }
 
 
-def environment_contract(name):
+def environment_contract(name, *, interaction_ready=False):
     """환경 종류에서 관측 차원·버전·행동 단위를 자동으로 가져옵니다."""
     if name not in ENVIRONMENTS:
         raise ValueError(f"지원하지 않는 환경입니다: {name}")
+    if type(interaction_ready) is not bool:
+        raise ValueError("interaction_ready는 bool이어야 합니다.")
+    if interaction_ready:
+        if name != "MansionEnv":
+            raise ValueError("interaction_ready 실험은 격자 MansionEnv에서만 지원합니다.")
+        return {
+            "observation_size": INTERACTION_READY_SIZE,
+            "observation_version": INTERACTION_READY_VERSION,
+            "action_count": 6,
+            "action_unit": "one_world_tick",
+        }
     realtime = name == "RealtimeMansionEnv"
     return {
         "observation_size": REALTIME_OBSERVATION_SIZE if realtime else OBSERVATION_SIZE,
@@ -135,7 +150,10 @@ def environment_contract(name):
 def build_config():
     """관측 계약과 보상은 실제 코드에서 가져와 설정값이 따로 어긋나지 않게 합니다."""
     config = deepcopy(CONFIG)
-    config["environment"].update(environment_contract(config["environment"]["name"]))
+    settings = config["environment"]
+    settings.update(environment_contract(
+        settings["name"], interaction_ready=settings.get("interaction_ready", False),
+    ))
     config["reward"] = {"version": REWARD_VERSION, **deepcopy(REWARD_CONFIG)}
     return config
 
@@ -145,7 +163,9 @@ def validate_config(config):
     if config.get("schema_version") != SCHEMA_VERSION:
         raise ValueError("지원하지 않는 설정 형식입니다. 공통 초기 설정을 사용하세요.")
     env = config["environment"]
-    for key, value in environment_contract(env["name"]).items():
+    for key, value in environment_contract(
+        env["name"], interaction_ready=env.get("interaction_ready", False),
+    ).items():
         if env.get(key) != value:
             raise ValueError(f"환경의 관측·행동 계약이 다릅니다: {key}")
     if config["reward"] != {"version": REWARD_VERSION, **REWARD_CONFIG}:
@@ -232,6 +252,8 @@ def make_env(config=None):
         max_episode_steps=settings["max_episode_steps"],
         safety_coefficient=0.0,
     )
+    if settings.get("interaction_ready", False):
+        env = InteractionReadyObservation(env)
     return ProposedReward(env)
 
 
@@ -318,6 +340,7 @@ def runtime_metadata(config=None):
         "requirements-a2c.txt",
         "data/levels/observation_contract.json",
         "data/levels/realtime_observation_contract.json",
+        "data/levels/interaction_ready_observation_contract.json",
     ]
     env = make_env(config)
     try:
@@ -331,9 +354,14 @@ def runtime_metadata(config=None):
         }
     finally:
         env.close()
+    # 直前の620次元対照実験も、その保存設定で引き続き検証できます。
+    baseline_version = BASELINE_VERSION
+    if (config["experiment"] == BASE_OBSERVATION_BASELINE_VERSION
+            and not config["environment"].get("interaction_ready", False)):
+        baseline_version = BASE_OBSERVATION_BASELINE_VERSION
     return {
         "schema_version": SCHEMA_VERSION,
-        "baseline_version": BASELINE_VERSION,
+        "baseline_version": baseline_version,
         "algorithm": config["algorithm"],
         "config_digest": config_digest(config),
         "git_commit": commit,

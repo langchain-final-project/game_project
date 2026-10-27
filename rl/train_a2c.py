@@ -152,7 +152,7 @@ def train(seed: int, *, smoke: bool = False, output_root: Path | None = None, co
         evaluate_checkpoint(initial, 0)
         for target in targets:
             training_start = time.perf_counter()
-            # n_envs × n_steps의 배수에서 끝냅니다. 현재 기준은 4 × 5 = 20입니다.
+            # n_envs × n_steps의 배수에서 끝냅니다.
             # reset_num_timesteps=False로 누적 스텝·환경 상태·모델을 이어갑니다. 학습률은 고정입니다.
             try:
                 model.learn(total_timesteps=target - model.num_timesteps,

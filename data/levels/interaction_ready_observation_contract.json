@@ -1,0 +1,31 @@
+{
+  "status": "implemented",
+  "observation_version": "vector_v5_invincibility_interaction_ready_v1",
+  "base_contract": "observation_contract.json",
+  "dtype": "float32",
+  "shape": [621],
+  "bounds": [0, 1],
+  "fields": [
+    {
+      "name": "base_observation",
+      "offset": 0,
+      "length": 620,
+      "meaning": "Unchanged vector_v5_invincibility observation"
+    },
+    {
+      "name": "interaction_ready",
+      "offset": 620,
+      "length": 1,
+      "normalization": "0/1",
+      "meaning": "Current-state E can request quest collection, unopened shortcut activation, or return with quest and warmth conditions met"
+    }
+  ],
+  "rules": [
+    "Enabled only by environment.interaction_ready=true in grid MansionEnv experiments",
+    "Terminal snapshots encode 0; nonterminal external truncation retains state-derived readiness",
+    "Exit branch takes priority over quest and shortcut branches, matching GameCore",
+    "Derived from current state; does not predict success after damage or time processing",
+    "Action availability, game transitions, reward and termination are unchanged",
+    "Base grid 620 and realtime 623 observation contracts remain unchanged"
+  ]
+}
