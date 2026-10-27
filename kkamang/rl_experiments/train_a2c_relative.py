@@ -58,7 +58,7 @@ def main():
             policy="MlpPolicy",
             env=vec_env,
             learning_rate=0.0007,
-            n_steps=5,
+            n_steps=20,
             gamma=0.99,
             gae_lambda=1.0,
             ent_coef=0.01,
@@ -81,7 +81,7 @@ def main():
 
         # 본 실험은 위에서 새로 생성한 모델로 시작한다.
         run_dir = (
-            Path("reports/local/stage1_a2c_v2_relative")
+            Path("reports/local/stage1_a2c_relative_100")
             / f"seed_{args.seed}"
         )
         run_dir.mkdir(parents=True, exist_ok=True)
@@ -97,7 +97,7 @@ def main():
             print_every=10_000,
         )
 
-        for target in (100_000, 300_000, 500_000):
+        for target in (100_000, 200_000, 300_000, 400_000, 500_000):
             additional_steps = target - model.num_timesteps
 
             model.learn(
