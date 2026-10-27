@@ -14,7 +14,7 @@ from .levels import MAGNET_DURATION_TICKS, INVINCIBILITY_DURATION_TICKS, load_le
 from .realtime import RealtimeGameCore, REALTIME_OBSERVATION_VERSION, FRAMES_PER_TICK
 
 OBSERVATION_SIZE = 620
-REALTIME_OBSERVATION_SIZE = 623
+REALTIME_OBSERVATION_SIZE = 630
 TIME_BOUND = 512
 
 
@@ -169,7 +169,7 @@ def encode_observation(snapshot: dict) -> np.ndarray:
 
 
 def encode_realtime_observation(snapshot: dict) -> np.ndarray:
-    """격자 관측에 실제 몸 중심과 세계 시계 위상을 추가한다."""
+    """격자 관측에 연속 몸체 좌표·세계 위상·추격형 정지를 추가한다."""
     motion = snapshot['motion']
     position = motion['position']
     if not isinstance(position, (list, tuple)) or len(position) != 2:
@@ -188,14 +188,39 @@ def encode_realtime_observation(snapshot: dict) -> np.ndarray:
         raise ValueError('motion phase must match its physics frame')
     if [int(np.floor(round(value, 10) + .5)) for value in position] != snapshot['position']:
         raise ValueError('occupied cell must match the continuous center')
+    ghost_centers = motion['ghost_positions']
+    expected_ids = {ghost['id'] for ghost in snapshot['ghosts']}
+    if set(ghost_centers) != expected_ids:
+        raise ValueError('continuous ghost slots must match the active patrol IDs')
+    centers = [ghost_centers.get(ident) for ident in ('A', 'B')]
+    chaser_active = snapshot['chaser'] is not None and snapshot['chaser']['active']
+    if (motion['chaser_position'] is not None) != chaser_active:
+        raise ValueError('continuous chaser position must match its active state')
+    centers.append(motion['chaser_position'])
+    continuous = []
+    for center in centers:
+        if center is None:
+            continuous.extend((0., 0.))
+            continue
+        if not isinstance(center, (list, tuple)) or len(center) != 2:
+            raise ValueError('continuous ghost position must have two coordinates')
+        for value, ceiling in zip(center, (15, 8)):
+            if (isinstance(value, (bool, np.bool_)) or not isinstance(value, (int, float))
+                    or not np.isfinite(value) or not 0 <= value <= ceiling):
+                raise ValueError('continuous ghost position must be finite and inside the map')
+            continuous.append(value / ceiling)
+    stunned = motion['chaser_stunned']
+    if type(stunned) is not bool or (stunned and not chaser_active):
+        raise ValueError('chaser stun must be boolean and requires an active chaser')
     return np.concatenate((encode_observation(snapshot),
-                           np.array([*values, phase], dtype=np.float32)))
+                           np.array([*values, phase, *continuous, int(stunned)], dtype=np.float32)))
 
 
 class MansionEnv(gym.Env):
     """여섯 행동의 격자 탐사 환경. 게임 시간 소진은 종료, max_episode_steps는 실험용 중단이다.
 
-    종료 보상은 2 × 완료 여부 + 반납 온기 / 14이며, safety_coefficient는 실제 피해마다 차감한다.
+    필수 물건 첫 획득 +1, 온기 첫 4점은 점당 +0.1, 성공은 10 + 점수/100,
+    목숨·시간 실패는 -2이며 safety_coefficient는 실제 피해마다 차감한다.
     """
 
     metadata = {'render_modes': ['ansi']}

@@ -56,12 +56,17 @@ def test_human_core_and_ai_env_equal_for_rich_route(stage):
     routes=json.loads((ROOT/'validation/reference_routes.json').read_text())['routes']
     route=next(r for r in routes if r['level_id']==f'stage_{stage:02}' and r['target']==14)
     env=MansionEnv(stage);g=GameCore(load_level(stage));env.reset(seed=0)
+    rewards=[]
     for a in route['actions']:
         human=g.step(a);obs,reward,term,trunc,info=env.step(a)
         assert info['snapshot']==human.snapshot and term==human.terminated and not trunc
         np.testing.assert_array_equal(obs,encode_observation(human.snapshot))
-        if not term: assert reward==0
-    assert reward==3 and human.outcome['quest_collected']
+        rewards.append(reward)
+    # A complete, damage-free rich route earns the quest bonus once (+1),
+    # only the first four warmth points (+0.4), and its final score bonus.
+    assert sum(rewards[:-1])==pytest.approx(1.4)
+    assert reward==pytest.approx(10+human.outcome['score']['total']/100)
+    assert human.outcome['quest_collected']
     assert human.outcome['damage_count']==0
 
 @pytest.mark.parametrize('field',['exit','gate','heat'])

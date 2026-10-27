@@ -273,6 +273,7 @@ def draw_field(
         glow(surface, rr.center, 60)
 
     ghost_facings = ghost_facings or {}
+    motion = s.get('motion')
     for g in s['ghosts']:
         pos = list(g['position'])
         direction = ghost_facings.get(g['id'], movement_direction(pos, g['next_position']))
@@ -280,7 +281,10 @@ def draw_field(
         # 유령의 화면 위치만 보간하며 코어의 위치는 바꾸지 않는다.
         previous_ghost = next((old for old in previous['ghosts']
                                if old['id'] == g['id']), None) if previous else None
-        if previous_ghost is not None:
+        if motion is not None:
+            pos = list(motion['ghost_positions'][g['id']])
+            direction = movement_direction(pos, g['position'], direction)
+        elif previous_ghost is not None:
             old = previous_ghost['position']
             direction = movement_direction(old, g['position'], direction)
             pos = [
@@ -311,7 +315,10 @@ def draw_field(
         )
 
         # 이미 활성화되어 있던 같은 추격형 유령만 이전 위치에서 보간한다.
-        if (
+        if motion is not None:
+            pos = list(motion['chaser_position'])
+            direction = movement_direction(pos, chaser['position'], direction)
+        elif (
             previous_chaser is not None
             and previous_chaser['active']
             and previous_chaser['id'] == chaser['id']

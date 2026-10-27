@@ -66,6 +66,9 @@ def test_bobbing_moves_only_the_rendered_image():
 
 
 def test_field_keeps_all_three_ids_and_directions_separate_when_draws_are_deferred(app):
+    # This fixture exercises the grid renderer's previous-position fallback.
+    app.movement_mode = 'grid'
+    app.start_run()
     state = app.core._state
     state['ghosts'][0]['position'] = [8, 2]
     state['ghosts'][1]['position'] = [13, 6]
@@ -93,10 +96,13 @@ def test_chaser_retains_last_direction_during_contact_stun_and_pause(app):
     app.core._motion_position = [11, 1]
     state['quest']['collected'] = True
     state['chaser'].update(active=True, position=[12, 2], countdown=1)
+    app.core._chaser_origin = [12, 2]
     app.advance(.3)
     assert app.ghost_facings['C'] == 'up'
     app.advance(.3)
     assert app.ghost_facings['C'] == 'left'
+    assert state['damage_count'] == 0
+    app.advance(.2)
     assert state['chaser']['countdown'] == 4
     app.advance(.3)
     assert state['chaser']['countdown'] == 3

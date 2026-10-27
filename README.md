@@ -195,10 +195,10 @@ GAME_PROJECT_TEAM/
 | 환경 | `RealtimeMansionEnv` | `MansionEnv` |
 | 코어 | `RealtimeGameCore` | `GameCore` |
 | 한 행동 | 1/60초 이동 프레임 | 세계 틱 1회 |
-| 관측 | 623차원 `vector_v6_realtime` | 620차원 `vector_v5_invincibility` |
+| 관측 | 630차원 `vector_v9_realtime_corner` | 620차원 `vector_v5_invincibility` |
 | 공통 | `Discrete(6)`, `Box(0,1)`, `float32` | 동일 |
 
-행동은 위 0·아래 1·왼쪽 2·오른쪽 3·상호작용 4·대기 5입니다. 관측의 정확한 슬롯·정규화는 `data/levels/observation_contract.json`, `realtime_observation_contract.json`에 있습니다. 기본 620차원은 벽·닫힌 문·귀환점·플레이어·시간·온기·순찰 경로와 위상·샛문·필수 물건·추격·자석·무적 상태를 포함합니다. 실시간 환경은 소수점 위치 2개와 세계 틱 진행률 1개를 추가합니다. 620차원 모델을 623차원 환경에 그대로 연결할 수 없습니다.
+행동은 위 0·아래 1·왼쪽 2·오른쪽 3·상호작용 4·대기 5입니다. 관측의 정확한 슬롯·정규화는 `data/levels/observation_contract.json`, `realtime_observation_contract.json`에 있습니다. 기본 620차원은 벽·닫힌 문·귀환점·플레이어·시간·온기·순찰 경로와 위상·샛문·필수 물건·추격·자석·무적 상태를 포함합니다. 실시간 환경은 고양이 연속 좌표 2개·세계 틱 진행률 1개·A/B/C 유령 연속 좌표 6개·추격형 정지 여부 1개를 추가합니다. 접촉은 1/60초마다 몸체 원의 상대 이동 경로로 검사하고, 화면도 같은 좌표를 사용합니다. 현재 접촉 반지름은 고양이·유령 A/C 0.32칸, 유령 B 0.42칸입니다. 추격형은 접촉 위치에서 정지한 뒤 남은 직선 이동을 마치고 재추격합니다. 모서리에서 이동이 막히면 옆으로 0.4칸 이내의 통로와 안전한 이동 경로를 확인하고, 기존 속도로 조금씩 정렬한 뒤 입력 방향으로 진행합니다. 한 프레임에는 한 축으로만 움직이며, 벽 정면·대기·상호작용에는 보정하지 않습니다. 기존 격자 모델 및 v6/v7/v8 실시간 모델은 새 이동 규칙에 맞춰 재학습해야 합니다.
 
 ```python
 from kkamang.env import RealtimeMansionEnv

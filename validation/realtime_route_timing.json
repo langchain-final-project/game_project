@@ -1,0 +1,13 @@
+{
+  "observation_version": "vector_v9_realtime_corner",
+  "source": "reference_routes.json",
+  "purpose": "Realtime completion witnesses with physical body contact. These are not no-contact certificates or learned-policy scores.",
+  "default": {"initial_wait_frames": 0, "interaction_frames": 18},
+  "movement_frames": 18,
+  "overrides": [
+    {"level_id": "stage_07", "target": 14, "initial_wait_frames": 0, "interaction_frames": 1},
+    {"level_id": "stage_09", "target": 4, "initial_wait_frames": 17, "interaction_frames": 18},
+    {"level_id": "stage_09", "target": 10, "initial_wait_frames": 17, "interaction_frames": 18},
+    {"level_id": "stage_09", "target": 14, "initial_wait_frames": 17, "interaction_frames": 18}
+  ]
+}

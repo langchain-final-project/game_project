@@ -18,17 +18,32 @@ from kkamang.app import GameApp
 from kkamang.core import Action
 from kkamang.env import RealtimeMansionEnv, encode_realtime_observation
 from kkamang.levels import load_level
-from kkamang.realtime import (FRAME_SECONDS, FRAMES_PER_TICK, PLAYER_RADIUS,
+from kkamang.realtime import (CORNER_ASSIST_DISTANCE, FRAME_SECONDS, FRAMES_PER_TICK,
+                              GHOST_B_CONTACT_RADIUS, GHOST_CONTACT_RADIUS,
+                              PLAYER_CONTACT_RADIUS, PLAYER_RADIUS,
                               RealtimeGameCore, REALTIME_OBSERVATION_VERSION)
 
 ROOT = Path(__file__).resolve().parents[1]
 ROUTES = json.loads((ROOT / 'validation/reference_routes.json').read_text(encoding='utf-8'))['routes']
+REALTIME_TIMING = json.loads((ROOT / 'validation/realtime_route_timing.json').read_text(encoding='utf-8'))
+
+
+def route_timing(route):
+    return next((entry for entry in REALTIME_TIMING['overrides']
+                 if entry['level_id'] == route['level_id'] and entry['target'] == route['target']),
+                REALTIME_TIMING['default'])
 
 
 def place(game, position):
     """테스트용 위치 설정이며 실제 게임의 순간 이동 기능이 아니다."""
     game._motion_position = list(position)
     game._state['position'] = [math.floor(value + .5) for value in position]
+
+
+def place_chaser(game, position, **values):
+    game._state['chaser'].update(active=True, position=list(position), **values)
+    game._chaser_origin = list(position)
+    game._chaser_stunned = False
 
 
 @pytest.fixture
@@ -200,30 +215,35 @@ def test_contact_between_ticks_damages_once_and_stuns_chaser():
     game = RealtimeGameCore(load_level(11))
     game._state['ghosts'] = []
     game._state['quest']['collected'] = True
-    game._state['chaser'].update(active=True, position=[13, 1], countdown=1)
+    place_chaser(game, [13, 1], countdown=1)
     place(game, [12, 1])
-    result = game.advance(Action.RIGHT, .15)
+    result = game.advance(Action.RIGHT, FRAME_SECONDS * 6)
+    assert result.snapshot['courage'] == 3
+    result = game.step(Action.RIGHT)
     assert result.snapshot['courage'] == 2
     assert result.snapshot['protection'] == 3
     assert result.snapshot['chaser']['countdown'] == 4
-    game.advance(Action.WAIT, .1)
+    game.advance(Action.WAIT, FRAME_SECONDS * 10)
     assert game.snapshot()['damage_count'] == 1
     assert game.snapshot()['chaser']['countdown'] == 4
-    game.advance(Action.WAIT, .05)
+    game.step(Action.WAIT)
     assert game.snapshot()['chaser']['countdown'] == 3
     assert game.snapshot()['protection'] == 2
 
 
-def test_patrol_swap_on_world_boundary_is_still_a_contact():
+def test_destination_cell_arrival_waits_for_actual_body_contact_in_realtime():
     game = RealtimeGameCore(load_level(11))
     game._state['ghosts'] = [dict(id='A', position=[13, 1], route=[[13, 1], [12, 1]],
                                   route_index=0, direction=1, countdown=1,
                                   ticks_per_move=1, next_position=[12, 1])]
-    place(game, [12.49, 1])
+    game._ghost_origins = {'A': [13, 1]}
+    place(game, [12.3, 1])
     game.advance(Action.WAIT, FRAME_SECONDS * 17)
     result = game.step(Action.RIGHT)
+    assert not any(event['type'] == 'contact' for event in result.events)
+    result = game.step(Action.RIGHT)
     contact = next(event for event in result.events if event['type'] == 'contact')
-    assert contact['contacts'][0]['kind'] == 'swap'
+    assert contact['contacts'][0]['kind'] == 'body'
     assert result.snapshot['courage'] == 2
 
 
@@ -231,7 +251,8 @@ def test_invincibility_pickup_protects_same_frame_and_keeps_chaser_stun():
     game = RealtimeGameCore(load_level(11))
     game._state['ghosts'] = []
     game._state['quest']['collected'] = True
-    game._state['chaser'].update(active=True, position=[14, 6], countdown=1)
+    place_chaser(game, [14, 6], countdown=1)
+    game._chaser_origin = [14.2, 6.]  # Keep contact aligned with the pickup frame.
     place(game, [13, 6])
     result = game.advance(Action.RIGHT, .15)
     assert result.snapshot['invincibility']['collected']
@@ -241,7 +262,7 @@ def test_invincibility_pickup_protects_same_frame_and_keeps_chaser_stun():
     assert result.snapshot['chaser']['countdown'] == 4
     assert any(event['type'] == 'contact' and event['item_invincible']
                for event in result.events)
-    game.advance(Action.WAIT, .15)
+    game.advance(Action.WAIT, FRAME_SECONDS * 9)
     assert game.snapshot()['invincibility']['remaining_ticks'] == 9
     game.advance(Action.WAIT, 2.7)
     assert game.snapshot()['invincibility']['remaining_ticks'] == 0
@@ -284,7 +305,7 @@ def test_active_magnet_still_allows_direct_rich_heat_collection_in_realtime():
 def test_realtime_env_observation_contract_and_gym_checker(stage):
     env = RealtimeMansionEnv(stage)
     obs, info = env.reset(seed=42)
-    assert obs.shape == (623,)
+    assert obs.shape == (630,)
     assert obs.dtype == np.float32 and env.observation_space.contains(obs)
     assert info['observation_version'] == REALTIME_OBSERVATION_VERSION
     check_env(env, skip_render_check=True)
@@ -412,11 +433,15 @@ def test_countdown_display_is_smooth_and_read_only_across_pause(tmp_path, moveme
 
 @pytest.mark.parametrize('route', ROUTES,
                          ids=lambda route: f"{route['level_id']}-target{route['target']}")
-def test_existing_geometric_routes_still_allow_completion_in_realtime(route):
-    # 자유 이동에서는 접촉 시점이 달라질 수 있으므로 격자 경로의 무접촉 보장은 재사용하지 않는다.
+def test_retimed_geometric_routes_allow_completion_with_realtime_body_contact(route):
+    # Keep grid witnesses intact; realtime has its own frame timings, not a
+    # no-contact guarantee or a change to the stage layout/difficulty settings.
     game = RealtimeGameCore(load_level(route['level_id']))
+    timing = route_timing(route)
+    game.advance(Action.WAIT, timing['initial_wait_frames'] * FRAME_SECONDS)
     for action in route['actions']:
-        result = game.advance(action, .3)
+        frames = timing['interaction_frames'] if action == Action.INTERACT else REALTIME_TIMING['movement_frames']
+        result = game.advance(action, frames * FRAME_SECONDS)
         if result.terminated:
             break
     assert result.terminated
@@ -433,10 +458,13 @@ def test_default_controller_completes_and_saves_all_twelve_stages(app):
         app.start_run()
         route = next(route for route in ROUTES
                      if route['level_id'] == f'stage_{stage:02}' and route['target'] == 14)
+        timing = route_timing(route)
+        app.advance(timing['initial_wait_frames'] * FRAME_SECONDS)
         for action in route['actions']:
             value = mapping.get(action, pygame.K_SPACE)
             key(app, pygame.KEYDOWN, value)
-            app.advance(.3)
+            frames = timing['interaction_frames'] if action == Action.INTERACT else REALTIME_TIMING['movement_frames']
+            app.advance(frames * FRAME_SECONDS)
             key(app, pygame.KEYUP, value)
         assert app.last_outcome['status'] == 'COMPLETE'
         assert app.last_outcome['banked'] == 14
@@ -458,7 +486,7 @@ def test_ghosts_still_animate_turns_along_cardinal_segments(app, kind):
         state['ghosts'] = []
         place(app.core, [11, 1])
         state['quest']['collected'] = True
-        state['chaser'].update(active=True, position=[12, 2], countdown=1)
+        place_chaser(app.core, [12, 2], countdown=1)
 
     def foot():
         with patch('kkamang.ui.field.ghost') as draw:
@@ -521,9 +549,14 @@ def test_contract_file_matches_encoder_and_grid_planners_reject_free_movement():
     env = RealtimeMansionEnv()
     obs, _ = env.reset(seed=42)
     assert contract['observation_version'] == env.observation_version
+    assert REALTIME_TIMING['observation_version'] == env.observation_version
     assert contract['shape'] == list(obs.shape)
     assert contract['frames_per_world_tick'] == FRAMES_PER_TICK
     assert contract['player_half_extent_tiles'] == PLAYER_RADIUS
+    assert contract['corner_assist_max_offset_tiles'] == CORNER_ASSIST_DISTANCE
+    assert contract['player_contact_radius_tiles'] == PLAYER_CONTACT_RADIUS
+    assert contract['ghost_contact_radius_tiles'] == GHOST_CONTACT_RADIUS
+    assert contract['ghost_B_contact_radius_tiles'] == GHOST_B_CONTACT_RADIUS
     for operation in (lambda: TimedGreedyPolicy(env.core),
                       lambda: find_path(env.core, (2, 1)), lambda: plan(env.core)):
         with pytest.raises(ValueError, match='grid'):

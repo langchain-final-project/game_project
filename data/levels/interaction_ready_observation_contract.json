@@ -26,6 +26,6 @@
     "Exit branch takes priority over quest and shortcut branches, matching GameCore",
     "Derived from current state; does not predict success after damage or time processing",
     "Action availability, game transitions, reward and termination are unchanged",
-    "Base grid 620 and realtime 623 observation contracts remain unchanged"
+    "Base grid 620 is unchanged; realtime observations have a separately versioned contract"
   ]
 }

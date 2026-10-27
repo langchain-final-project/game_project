@@ -1,20 +1,25 @@
 {
   "status": "implemented",
-  "observation_version": "vector_v6_realtime",
+  "observation_version": "vector_v9_realtime_corner",
   "dtype": "float32",
-  "shape": [623],
+  "shape": [630],
   "bounds": [0, 1],
   "base_contract": "observation_contract.json",
   "base_prefix_length": 620,
   "base_semantics_overrides": [
     "position is the occupied cell: floor(continuous center + 0.5)",
     "pickup, contact and interaction are checked every physics frame",
-    "ghosts, protection and item countdowns advance only on world ticks",
+    "ghost destinations, protection and item countdowns advance only on world ticks; ghost physical centers advance on physics frames",
+    "ghost and chaser position in the base prefix are destination cells, not contact centers",
     "an item picked up between world ticks is active immediately and first decremented on the next world tick"
   ],
   "additional_fields": [
     {"name": "continuous_center", "offset": 620, "length": 2, "normalization": "x/15,y/8"},
-    {"name": "world_phase", "offset": 622, "length": 1, "normalization": "(physics_frame % 18)/18"}
+    {"name": "world_phase", "offset": 622, "length": 1, "normalization": "(physics_frame % 18)/18"},
+    {"name": "patrol_A_continuous_center", "offset": 623, "length": 2, "normalization": "x/15,y/8; absent patrol is zero"},
+    {"name": "patrol_B_continuous_center", "offset": 625, "length": 2, "normalization": "x/15,y/8; absent patrol is zero"},
+    {"name": "chaser_continuous_center", "offset": 627, "length": 2, "normalization": "x/15,y/8; inactive or absent chaser is zero"},
+    {"name": "chaser_stunned", "offset": 629, "length": 1, "normalization": "boolean"}
   ],
   "action_enum": {"UP": 0, "DOWN": 1, "LEFT": 2, "RIGHT": 3, "INTERACT": 4, "WAIT": 5},
   "action_seconds": 0.016666666666666666,
@@ -22,12 +27,23 @@
   "world_tick_seconds": 0.3,
   "movement_tiles_per_frame": 0.05555555555555555,
   "player_half_extent_tiles": 0.28,
+  "corner_assist_max_offset_tiles": 0.4,
+  "player_contact_radius_tiles": 0.32,
+  "ghost_contact_radius_tiles": 0.32,
+  "ghost_B_contact_radius_tiles": 0.42,
   "rules": [
     "latest direction applies on the next physics frame, even between cell centers",
     "movement is cardinal and body bounds cannot cross a wall or closed gate",
+    "when forward movement is fully blocked and a clear lane is within 0.4 tiles sideways, move toward that lane at normal speed before following the input direction",
+    "corner assistance validates the full sideways path and forward exit; WAIT and INTERACT do not assist, and no additional state or observation fields are required",
+    "contact uses swept circles between consecutive physics centers, including tangency; grid-cell equality is not a realtime contact criterion",
+    "ghost B has a larger contact radius to match its wider displayed body; A and C keep the original radius",
+    "rendering uses the same physical centers as contact; sprite padding, tail, hat and bobbing do not change collision bodies",
+    "new chaser contact freezes its physical center, even while the player is invincible; countdown 4 waits through the next three world ticks and resumes on the fourth",
+    "a stunned chaser finishes its interrupted cardinal segment before planning another turn",
     "INTERACT and WAIT occupy one physics frame without translating the cat",
     "external max_episode_steps counts physics frames",
     "desktop and RealtimeMansionEnv use the same RealtimeGameCore",
-    "legacy grid policies and 620-float models are incompatible with this contract"
+    "legacy grid policies, 620-float models and v6/v7/v8 realtime models are incompatible with this contract"
   ]
 }
