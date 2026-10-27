@@ -3,9 +3,11 @@ from __future__ import annotations
 
 import gymnasium as gym
 
-REWARD_VERSION = "stage1_collection_return_score20_warmthcap14_v3"
+REWARD_VERSION = "stage1_collection_return_score20_warmthReward"
 REWARD_CONFIG = {
     "quest": 1.0, "warmth_per_point": 0.1, "warmth_cap": 14, # 4, 8, 14, 
+    "surplus_warmth_per_point": 0.3, #목표를 넘긴 5~14점에서 1점당 + 0.4
+    "star_bonus": 2.0,  # 별 하나 당 추가 +2.0
     "success": 10.0, "score_divisor": 20.0,
     "failure": -2.0, "damage": -0.1,
 }
@@ -37,7 +39,9 @@ class ProposedReward(gym.Wrapper):
         # 3→6점 획득도 처음 4점 중 남은 1점만 보상, 총 중간 온기 보상은 +0.4
         increase = min(now["carried"], cfg["warmth_cap"]) - min(
             self.previous["carried"], cfg["warmth_cap"])
-        terms["warmth_reward"] = cfg["warmth_per_point"] * increase
+        surplus_increase = ( max(0, min(now["carried"], cfg["warmth_cap"]) - now["target"])
+            - max(0, min(self.previous["carried"], cfg["warmth_cap"]) - self.previous["target"]))
+        terms["warmth_reward"] = cfg["warmth_per_point"] * increase + cfg["surplus_warmth_per_point"] * surplus_increase
         if now["carried"] >= now["target"] and self.warmth_step is None:
             self.warmth_step = self.steps
         conditions = now["quest"]["collected"] and now["carried"] >= now["target"]
@@ -47,7 +51,7 @@ class ProposedReward(gym.Wrapper):
         outcome = info["outcome"] or {}
         # 귀환 요청·문 도착이 아닌, 피해와 시간 처리를 마친 최종 게임 결과를 사용
         if terminated and outcome.get("status") == "COMPLETE":
-            terms["success_reward"] = cfg["success"] + outcome["score"]["total"] / cfg["score_divisor"]
+            terms["success_reward"] = cfg["success"] + outcome["score"]["total"] / cfg["score_divisor"] + cfg["star_bonus"] * outcome["score"]["stars"]
         elif terminated and outcome.get("status") == "FAILED" and outcome.get("reason") in ("timeout", "courage"):
             terms["failure_penalty"] = cfg["failure"]
         terms["damage_penalty"] = cfg["damage"] * sum(e["type"] == "damage" for e in events)
