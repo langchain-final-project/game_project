@@ -87,7 +87,7 @@ GRAPH_METRICS = (
 # --seed만 바꾸기, 보상은 reward.py, 나머지 실행 설정은 여기서 관리 하기
 CONFIG = {
     "schema_version": SCHEMA_VERSION,
-    "experiment": "stage1_a2c_score20_lr0002_nsteps20_warmthCap4",
+    "experiment": "stage1_a2c_score20_lr0002_nsteps20_warmthCap14",
     "algorithm": "A2C",
     "environment": {
         "name": "MansionEnv",
