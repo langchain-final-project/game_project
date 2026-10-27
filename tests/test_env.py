@@ -139,7 +139,7 @@ class EnvironmentTests(unittest.TestCase):
     def test_game_timeout_is_terminal_external_cutoff_is_truncation(self):
         config = load_level(1)
         config['time_budget_ticks'] = 1
-        config['star_fast_ticks'] = 0
+        config['star_fast_ticks'] = 0   # 빠른 클리어 점수 기준
         timeout = MansionEnv(config=config)
         timeout.reset(seed=0)
         _, reward, terminated, truncated, info = timeout.step(5)
@@ -147,7 +147,7 @@ class EnvironmentTests(unittest.TestCase):
         self.assertFalse(truncated)
         self.assertEqual(info['outcome']['reason'], 'timeout')
         self.assertEqual(info['outcome']['banked'], 0)
-        self.assertEqual(reward, 0)
+        self.assertEqual(reward, -2) # 게임의 제한 시간 끝 (원래 0에서 -2로 변경)
         cutoff = MansionEnv(1, max_episode_steps=1)
         cutoff.reset(seed=0)
         _, reward, terminated, truncated, info = cutoff.step(5)
@@ -156,7 +156,7 @@ class EnvironmentTests(unittest.TestCase):
         self.assertIsNone(info['outcome'])
         self.assertFalse(info['snapshot']['terminal'])
         self.assertEqual(info['truncation_reason'], 'external_step_limit')
-        self.assertEqual(reward, 0)
+        self.assertEqual(reward, 0) # 실험을 위해 외부에서 중단했을 경우 실패 벌점 없기 때문에 0
         with self.assertRaises(RuntimeError):
             cutoff.step(5)
 
@@ -169,24 +169,50 @@ class EnvironmentTests(unittest.TestCase):
         env.reset(seed=0)
         _, reward, _, _, info = env.step(3)
         self.assertEqual(info['snapshot']['courage'], 2)
-        self.assertAlmostEqual(reward, -0.1)
+        self.assertAlmostEqual(reward, 0.0)
 
         _, reward, _, _, info = env.step(3)
         self.assertEqual(info['snapshot']['courage'], 2)
-        self.assertEqual(reward, 0)
+        self.assertEqual(reward, 0.1)
 
-    def test_banked_reward_not_collection_reward_and_no_progression(self):
+    # "수집 중 보상 0"인 규칙을 검사하는 함수
+    # def test_banked_reward_not_collection_reward_and_no_progression(self):
+    #     env = MansionEnv(1)
+    #     _, info = env.reset(seed=0)
+    #     policy = TimedGreedyPolicy(core=env.core)
+    #     done = False
+    #     while not done:
+    #         _, reward, terminated, truncated, info = env.step(policy.action(info['snapshot']))
+    #         done = terminated or truncated
+    #         if not done:
+    #             self.assertEqual(reward, 0)
+    #     self.assertEqual(info['outcome']['status'], 'COMPLETE')
+    #     self.assertEqual(reward, 2 + info['outcome']['banked']/14)
+    #     self.assertEqual(info['controller'], 'ai')
+    #     self.assertNotIn('campaign', vars(env))
+
+    def test_collection_and_success_rewards_and_no_progression(self):
         env = MansionEnv(1)
-        _, info = env.reset(seed=0)
-        policy = TimedGreedyPolicy(core=env.core)
-        done = False
-        while not done:
-            _, reward, terminated, truncated, info = env.step(policy.action(info['snapshot']))
-            done = terminated or truncated
-            if not done:
-                self.assertEqual(reward, 0)
+        env.reset(seed=0)
+
+        # 오른쪽 7번 → 수건 획득 → 왼쪽 7번 → 귀환
+        actions = [3] * 7 + [4] + [2] * 7 + [4]
+        rewards = []
+
+        for index, action in enumerate(actions):
+            _, reward, terminated, truncated, info = env.step(action)
+            rewards.append(reward)
+
+            self.assertFalse(truncated)
+            self.assertEqual(terminated, index == len(actions) - 1)
+
         self.assertEqual(info['outcome']['status'], 'COMPLETE')
-        self.assertEqual(reward, 2 + info['outcome']['banked']/14)
+        self.assertEqual(info['outcome']['score']['total'], 40)
+        self.assertAlmostEqual(sum(rewards[:7]), 0.4)
+        self.assertAlmostEqual(rewards[7], 1.0)
+        self.assertAlmostEqual(rewards[-1], 10.4)
+        self.assertAlmostEqual(sum(rewards), 11.8)
+
         self.assertEqual(info['controller'], 'ai')
         self.assertNotIn('campaign', vars(env))
 
@@ -226,7 +252,7 @@ class EnvironmentTests(unittest.TestCase):
         np.testing.assert_allclose(before[610:615], [1, 0, magnet_x / 15, magnet_y / 8, 0])
         for action in (1, 1, 1, 3, 3):
             active, reward, _, _, info = env.step(action)
-        self.assertEqual(reward, 0)
+        self.assertEqual(reward, 0.2)
         self.assertEqual(info['snapshot']['carried'], 2)
         self.assertEqual(active[611], 1)
         self.assertAlmostEqual(active[614], 12 / 13)
