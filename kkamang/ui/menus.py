@@ -325,6 +325,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
     level = _level(ctx)
     mode = ctx.get('mode', data.get('settings', {}).get('mode', 'basic'))
     mode_label = '여유 모드' if mode == 'relaxed' else '기본 모드'
+    mode_change_label = '기본 모드로' if mode == 'relaxed' else '여유 모드로'
 
     if screen == 'title':
         _background(surface, assets,ctx=ctx,actors=False)
@@ -472,7 +473,7 @@ def render_menu(surface, assets, screen, ctx, focus=0, mouse=(-1,-1)):
         _chip(surface,assets,'멈춰 있어도 탐사 시간은 흘러요',(888,568,327,32),fill=(228,217,196),color=INK,size=15)
         ui.control('back',(38,630,165,39),'방 선택으로')
         ui.control('tutorial',(218,630,202,39),'조작 다시 보기')
-        ui.control('mode',(866,630,172,39),mode_label+' 변경')
+        ui.control('mode',(866,630,172,39),mode_change_label+' 변경')
         ui.control('start',(1052,630,189,39),'탐사 시작',primary=True)
         briefing_note = ('여유 모드는 연습 전용이에요 · 별 · 호감도 · 진행 기록이 남지 않아요'
                          if mode == 'relaxed' else

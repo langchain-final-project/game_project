@@ -20,16 +20,52 @@ class RealtimeGameCore(GameCore):
         self._frame_remainder = 0.
         self._distance = 0.
         self._moving = False
+
+        self._ghost_origins = {
+            ghost['id']: list(ghost['position'])
+            for ghost in self._state['ghosts']
+        }
+        chaser = self._state['chaser']
+        self._chaser_origin = (
+            list(chaser['position']) if chaser is not None else None
+        )
+
         return self.snapshot()
 
     def snapshot(self):
         snapshot = super().snapshot()
+        frame = getattr(self, '_frames', 0)
+        phase = frame % FRAMES_PER_TICK / FRAMES_PER_TICK
+        origins = getattr(self, '_ghost_origins', {})
+        ghost_positions = {}
+
+        for ghost in snapshot['ghosts']:
+            origin = origins.get(ghost['id'], ghost['position'])
+            ghost_positions[ghost['id']] = [
+                origin[axis] + (ghost['position'][axis] - origin[axis]) * phase
+                for axis in (0, 1)
+            ]
+
+        chaser_position = None
+        chaser = snapshot.get('chaser')
+
+        if chaser is not None and chaser['active']:
+            origin = getattr(self, '_chaser_origin', None)
+            if origin is None:
+                origin = chaser['position']
+            chaser_position = [
+                origin[axis] + (chaser['position'][axis] - origin[axis]) * phase
+                for axis in (0, 1)
+            ]
+
         snapshot['motion'] = {
             'position': list(getattr(self, '_motion_position', snapshot['position'])),
-            'frame': getattr(self, '_frames', 0),
-            'phase': getattr(self, '_frames', 0) % FRAMES_PER_TICK / FRAMES_PER_TICK,
+            'frame': frame,
+            'phase': phase,
             'moving': getattr(self, '_moving', False),
             'distance': getattr(self, '_distance', 0.),
+            'ghost_positions': ghost_positions,
+            'chaser_position': chaser_position,
         }
         return snapshot
 

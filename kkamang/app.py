@@ -25,6 +25,10 @@ from .ui.collection import move_focus as collection_focus
 SIZE = (1280, 720)
 MEMORY_REVEAL_SECONDS = 2.
 CINEMATIC_DURATIONS = {'prologue': 3.6}
+VOLUME_SLIDERS = {
+    'music': pygame.Rect(504, 199, 279, 25),
+    'sfx': pygame.Rect(504, 271, 279, 25),
+}
 
 class GameApp:
     def __init__(self, save_path=None, headless=False, no_audio=False, size=SIZE, seed=0,
@@ -104,6 +108,7 @@ class GameApp:
         self.save_return = 'home'
         self.home_view = 'current'
         self.mouse = (-1,-1)
+        self.volume_drag_name = None
         self.viewport = pygame.Rect(0,0,*size)
         self.shake_timer = 0.
         self.last_replay_error = None
@@ -736,6 +741,27 @@ class GameApp:
             self.toast_timer = 2.
 
         return result
+
+    def _start_volume_drag(self):
+        if self.scene not in ('settings', 'pause'):
+            return False
+
+        for name, rect in VOLUME_SLIDERS.items():
+            if rect.collidepoint(self.mouse):
+                self.volume_drag_name = name
+                self._set_volume_from_slider()
+                return True
+
+        return False
+
+    def _set_volume_from_slider(self):
+        rect = VOLUME_SLIDERS[self.volume_drag_name]
+        slider_value = (self.mouse[0] - rect.left) / rect.width
+        slider_value = round(max(0.0, min(1.0, slider_value)), 2)
+
+        settings = self.campaign.data['settings']
+        settings[self.volume_drag_name] = slider_value
+        self.audio.configure(settings)
     
     def handle_event(self, event):
         if event.type == pygame.QUIT:
@@ -749,7 +775,7 @@ class GameApp:
         if event.type == pygame.VIDEORESIZE:
             self.window=pygame.display.set_mode((max(800,event.w),max(450,event.h)),pygame.RESIZABLE)
             return
-        if event.type in (pygame.MOUSEMOTION,pygame.MOUSEBUTTONDOWN):
+        if event.type in (pygame.MOUSEMOTION,pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP):
             self.mouse=self.to_canvas(event.pos)
         if self.scene == 'game':
             if (
@@ -770,6 +796,17 @@ class GameApp:
                 self._perform_action(action)
 
             return
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if self._start_volume_drag():
+                return
+        elif event.type == pygame.MOUSEMOTION and self.volume_drag_name is not None:
+            self._set_volume_from_slider()
+            return
+        elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            if self.volume_drag_name is not None:
+                self._set_volume_from_slider()
+                self.volume_drag_name = None
+                return
         
         if event.type == pygame.MOUSEMOTION:
             for i,button in enumerate(self.controls):

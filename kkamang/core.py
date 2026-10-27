@@ -296,6 +296,45 @@ class GameCore:
                     "from": old_position,
                     "to": list(chaser["position"]),
                 })
+
+    # 충돌 검사 함수
+    def _ghost_contacts(self, previous_position, previous_ghosts, previous_chaser):
+        state = self._state
+        contacts = []
+
+        for old_ghost, ghost in zip(previous_ghosts, state["ghosts"]):
+            final_overlap = state["position"] == ghost["position"]
+            swap = (
+                state["position"] == old_ghost
+                and previous_position == ghost["position"]
+            )
+
+            if final_overlap or swap:
+                contacts.append({
+                    "ghost_id": ghost["id"],
+                    "kind": "overlap" if final_overlap else "swap",
+                })
+
+        chaser = state["chaser"]
+
+        if chaser is not None and chaser["active"]:
+            final_overlap = state["position"] == chaser["position"]
+            swap = (
+                previous_chaser is not None
+                and state["position"] == previous_chaser
+                and previous_position == chaser["position"]
+            )
+
+            if final_overlap or swap:
+                contacts.append({
+                    "ghost_id": chaser["id"],
+                    "kind": "overlap" if final_overlap else "swap",
+                })
+
+                if previous_chaser != previous_position:
+                    chaser["countdown"] = 4
+
+        return contacts
     
     def step(self, action: int) -> StepResult:
         return self._transition(action)
@@ -387,35 +426,15 @@ class GameCore:
                 ghost["countdown"] = ghost["ticks_per_move"]
             ghost["position"] = list(ghost["route"][ghost["route_index"]])
             ghost["next_position"] = list(ghost["route"][(ghost["route_index"] + ghost["direction"]) % len(ghost["route"])])
+        
         if advance_world:
             self._update_chaser(events)
-        contacts = []
-        for old_ghost, ghost in zip(previous_ghosts, state["ghosts"]):
-            final_overlap = state["position"] == ghost["position"]
-            swap = state["position"] == old_ghost and previous_position == ghost["position"]
-            if final_overlap or swap:
-                contacts.append({"ghost_id": ghost["id"], "kind": "overlap" if final_overlap else "swap"})
-        
-        # 추격형도 순찰형과 같은 겹침·자리 교환 충돌 기준을 쓴다.
-        if chaser is not None and chaser["active"]:
-            final_overlap = state["position"] == chaser["position"]
-
-            swap = (
-                previous_chaser is not None
-                and state["position"] == previous_chaser
-                and previous_position == chaser["position"]
-            )
-
-            if final_overlap or swap:
-                contacts.append({
-                    "ghost_id": chaser["id"],
-                    "kind": "overlap" if final_overlap else "swap",
-                })
-
-                # 이전 위치가 떨어져 있던 새 접촉에만 추격형의 정지를 적용한다.
-                if previous_chaser != previous_position:
-                    # 다음 3틱은 정지하고 4번째 틱에 다시 움직인다.
-                    chaser["countdown"] = 4
+            
+        contacts = self._ghost_contacts(
+            previous_position,
+            previous_ghosts,
+            previous_chaser,
+        )
         
         if contacts:
             events.append({"type": "contact", "ghost_ids": [contact["ghost_id"] for contact in contacts],

@@ -5,7 +5,7 @@ import gymnasium as gym
 
 REWARD_VERSION = "stage1_collection_return_score20_v2"
 REWARD_CONFIG = {
-    "quest": 1.0, "warmth_per_point": 0.1, "warmth_cap": 4,
+    "quest": 1.0, "warmth_per_point": 0.1, "warmth_cap": 4, # 4, 8, 14, 
     "success": 10.0, "score_divisor": 20.0,
     "failure": -2.0, "damage": -0.1,
 }
