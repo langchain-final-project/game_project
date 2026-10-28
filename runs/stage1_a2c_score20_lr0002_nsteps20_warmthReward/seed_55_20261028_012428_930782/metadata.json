@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "baseline_version": "stage1_a2c_score20_lr0003_nsteps20_interaction_ready_v1",
+  "algorithm": "A2C",
+  "config_digest": "7a57eff3f640ca307271aab5335f5ddde46effd82f68c7a3a799674c1fadd19a",
+  "git_commit": "1f1d52cb06060ec2b58cce8ef22f30c379edee62",
+  "source_hashes": {
+    "kkamang/core.py": "a679c354c208d70f5dd14be680c487171e1cfc2a6d783b5a4b0ce3d61122c636",
+    "kkamang/env.py": "1834bbf141897ea1e2a32ba67cc51d85c1f743028e225ed7979b963eaa2f8b42",
+    "kkamang/levels.py": "cb046653ac1cabd8f202bd5e47a6dad096eea8318970d97997b45d896aa4f7bf",
+    "kkamang/realtime.py": "11c70c1bbe1b5dcf95faeb6bc35228bd8906d4c65e47d055c6fcb938115cd3e6",
+    "kkamang/scoring.py": "3985b077e0ddbe2d2dd03b3c5ac115992da586c9370543c9426298af8f12962e",
+    "rl/reward.py": "ae3f9b3009658126ed4fc2be1bd6d66a15be5652485e7c441d35988aa33cad69",
+    "rl\\common.py": "57d1cd571df6afc1017531d4e5e9b9d485faaa91f8baf97d0af30de53737c5bf",
+    "rl\\evaluate.py": "56695ba1595e9ac99157e8adf159bbe423b4d523b8883b7faad01162fd7cf33e",
+    "rl\\observation.py": "93a651ffbdb72a41aa91e681eb07fafdacdf69efbe6641c6af22815898812935",
+    "rl\\reward.py": "ae3f9b3009658126ed4fc2be1bd6d66a15be5652485e7c441d35988aa33cad69",
+    "rl\\train_a2c.py": "1180d29ae8d96b064a1a8ce6dd28e37c0266e0b7554f550c0cca4a58aa98f228",
+    "requirements-a2c.txt": "1454c4f18c3ff8e35e39ba87ca3a890909cf830aefd3baa2e8ae8f81a630da25",
+    "data/levels/observation_contract.json": "07620eb63fe54964049991658eb7ad58dd61a703e541c5e8ef474cd8d9f72f77",
+    "data/levels/realtime_observation_contract.json": "6d4540c5a4ac1dac4e9318c10deeec63c9267e2c335e806b13b0448b62349135",
+    "data/levels/interaction_ready_observation_contract.json": "0e1de1682c58d4174efe776cb7342ee41a34a8289a0ce6f263dbae03099fd15a"
+  },
+  "versions": {
+    "gymnasium": "1.4.0",
+    "numpy": "2.3.5",
+    "pygame-ce": "2.5.8",
+    "stable-baselines3": "2.9.2",
+    "torch": "2.14.1",
+    "tensorboard": "2.21.0",
+    "pillow": "13.0.0"
+  },
+  "python": "3.12.6",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "simulation": {
+    "action_unit": "one_world_tick",
+    "tick_seconds": 0.3,
+    "physics_hz": null,
+    "frames_per_tick": null
+  },
+  "executable": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\.venv\\Scripts\\python.exe",
+  "config_hash": "e409ace041024e4be8f779a7670c7657e0e68f6075d3b3da9b809042270b6ce6",
+  "observation_version": "vector_v5_invincibility_interaction_ready_v1",
+  "training_seed": 55,
+  "started_at": "2026-10-28T01:24:28.930782+09:00",
+  "status": "complete",
+  "completed_timesteps": 1000000,
+  "total_timesteps": 1000000,
+  "training_seconds": 397.65347630064934,
+  "elapsed_seconds": 518.8052106001414,
+  "evaluation_seconds": 119.56235699960962,
+  "finished_at": "2026-10-28T01:33:07.838515+09:00"
+}

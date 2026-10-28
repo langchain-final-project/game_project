@@ -36,7 +36,7 @@ class ProposedReward(gym.Wrapper):
         if now["quest"]["collected"] and not self.previous["quest"]["collected"]:
             terms["quest_reward"] = cfg["quest"]
             self.quest_step = self.steps
-        # 3→6점 획득도 처음 4점 중 남은 1점만 보상, 총 중간 온기 보상은 +0.4
+        # 3→6점 획득도 처음 4점 중 남은 1점만 보상
         increase = min(now["carried"], cfg["warmth_cap"]) - min(
             self.previous["carried"], cfg["warmth_cap"])
         surplus_increase = ( max(0, min(now["carried"], cfg["warmth_cap"]) - now["target"])

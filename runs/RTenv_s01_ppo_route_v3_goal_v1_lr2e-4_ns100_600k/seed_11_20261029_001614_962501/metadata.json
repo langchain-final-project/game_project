@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "baseline_version": "ppo_realtime_stage1_route_v3_goal_v1",
+  "algorithm": "PPO",
+  "config_digest": "f6e301635f4e6fe923a8381a3dbf0ad009aebb45109be9aee3a398873f2740cc",
+  "source_hashes": {
+    "kkamang/env.py": "1834bbf141897ea1e2a32ba67cc51d85c1f743028e225ed7979b963eaa2f8b42",
+    "kkamang/core.py": "a679c354c208d70f5dd14be680c487171e1cfc2a6d783b5a4b0ce3d61122c636",
+    "kkamang/realtime.py": "11c70c1bbe1b5dcf95faeb6bc35228bd8906d4c65e47d055c6fcb938115cd3e6",
+    "kkamang/levels.py": "cb046653ac1cabd8f202bd5e47a6dad096eea8318970d97997b45d896aa4f7bf",
+    "kkamang/scoring.py": "3985b077e0ddbe2d2dd03b3c5ac115992da586c9370543c9426298af8f12962e",
+    "rl/curriculum_route.py": "0f2c69bf9ef8fb4ffa19c3a4f8285451cffad77e0047ead26b0dc70624488e8a",
+    "rl/task_goal_observation.py": "d3e2c11925892ed494bafde46fe7084559a0e5318e5830c9f5d36a16a3913f5e",
+    "rl/observation.py": "93a651ffbdb72a41aa91e681eb07fafdacdf69efbe6641c6af22815898812935",
+    "rl/ppo_common.py": "81c629e02b852de45789b5b75f1737f698b35cc8cb52565b8124c77cfca38c70",
+    "rl/ppo_reward.py": "ede7b78d189b5bad4cdcd4d800b0c69f792e5ea6319875a1d48cd767bc40e28f",
+    "rl/train_ppo.py": "1ec0a7f55fa25f642140cabffb2b1476f86768d58f706505c89a3c23b7e5ebd9",
+    "rl/evaluate_ppo.py": "44b9397ab451d8ee4221be8326713c94326e32156f6b4b6e32c423f326359781",
+    "rl/watch_ppo.py": "a61001194977d17bdc18a8a9bfe736a83ed916fbd7a8a9587356037c2ba935fb",
+    "data/levels/realtime_observation_contract.json": "6d4540c5a4ac1dac4e9318c10deeec63c9267e2c335e806b13b0448b62349135"
+  },
+  "versions": {
+    "gymnasium": "1.4.0",
+    "numpy": "2.3.5",
+    "pygame-ce": "2.5.8",
+    "stable-baselines3": "2.9.2",
+    "torch": "2.14.1",
+    "tensorboard": "2.21.0",
+    "pillow": "13.0.0"
+  },
+  "python": "3.12.6",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "executable": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\.venv\\Scripts\\python.exe",
+  "config_hash": "e409ace041024e4be8f779a7670c7657e0e68f6075d3b3da9b809042270b6ce6",
+  "observation_version": "vector_v9_realtime_corner_task_goal_v1",
+  "simulation": {
+    "action_unit": "physics_frame",
+    "physics_hz": 60,
+    "frames_per_tick": 18,
+    "tick_seconds": 0.3
+  },
+  "training_seed": 11,
+  "started_at": "2026-10-29T00:16:14.962501+09:00",
+  "status": "complete",
+  "completed_timesteps": 600000,
+  "total_timesteps": 600000,
+  "training_seconds": 345.2853739997372,
+  "training_episodes": {
+    "completed_timesteps": 600000,
+    "episodes": 2092,
+    "successes": 1887,
+    "full_start_episodes": 465,
+    "full_start_successes": 335,
+    "frontiers": {
+      "0": 0,
+      "2": 0,
+      "1": 0,
+      "3": 0
+    }
+  },
+  "elapsed_seconds": 647.0181919001043,
+  "evaluation_seconds": 300.3457498992793,
+  "finished_at": "2026-10-29T00:27:02.039299+09:00"
+}

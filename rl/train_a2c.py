@@ -43,7 +43,8 @@ class TrainingLog(BaseCallback):
             episode = info.get("rl_episode")
             if episode is None:
                 continue
-            row = {"total_timesteps": self.num_timesteps, "env_rank": rank, **episode}
+            row = {"total_timesteps": self.num_timesteps, "env_rank": rank, **episode, "curriculum_start": info.get("curriculum_start", -1),
+                "curriculum_frontier": info.get("curriculum_frontier", -1),}
             if self.writer is None:
                 self.writer = csv.DictWriter(self.handle, fieldnames=list(row))
                 self.writer.writeheader()
@@ -123,7 +124,7 @@ def train(seed: int, *, smoke: bool = False, output_root: Path | None = None, co
     try:
         torch.set_num_threads(a2c["torch_threads"])
         torch.use_deterministic_algorithms(True)
-        env = DummyVecEnv([lambda: Monitor(make_env(config)) for _ in range(a2c["n_envs"])])
+        env = DummyVecEnv([lambda: Monitor(make_env(config, training=True)) for _ in range(a2c["n_envs"])])
         activations = {"Tanh": torch.nn.Tanh, "ReLU": torch.nn.ReLU}
         if a2c["activation"] not in activations:
             raise ValueError('지원하는 활성화 함수는 Tanh 또는 ReLU입니다.')

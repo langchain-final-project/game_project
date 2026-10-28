@@ -29,11 +29,18 @@ from rl.observation import (InteractionReadyObservation, INTERACTION_READY_SIZE,
                             INTERACTION_READY_VERSION)
 from kkamang.realtime import PHYSICS_HZ, FRAMES_PER_TICK
 
+from rl.curriculum_route import Stage1RouteCurriculum
+from rl.task_goal_observation import (
+    TaskGoalObservation,
+    TASK_GOAL_SIZE,
+    TASK_GOAL_VERSION,
+)
+
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_VERSION = 1
 # 학습·환경의 동작을 바꾸면 이 버전을 올림. 파일 해시는 실행 당시 코드를 추적할 때만 사용
 BASELINE_VERSION = "stage1_a2c_score20_lr0003_nsteps20_interaction_ready_v1"
-BASE_OBSERVATION_BASELINE_VERSION = "stage1_a2c_score20_lr0003_nsteps20_v1"
+BASE_OBSERVATION_BASELINE_VERSION = "realtime_stage1_a2c_baseline_v1"
 ENVIRONMENTS = {"MansionEnv": MansionEnv, "RealtimeMansionEnv": RealtimeMansionEnv}
 COMPARISON_PACKAGES = ("gymnasium", "numpy", "torch", "stable-baselines3")
 GAME_SOURCES = (
@@ -87,15 +94,17 @@ GRAPH_METRICS = (
 # --seed만 바꾸기, 보상은 reward.py, 나머지 실행 설정은 여기서 관리 하기
 CONFIG = {
     "schema_version": SCHEMA_VERSION,
-    "experiment": "stage1_a2c_score20_lr0002_nsteps20_warmthReward",
+    "experiment": "RTenv_s01_a2c_route_v3_goal_v1_pilot600k",
     "algorithm": "A2C",
+    "curriculum": "stage1_route_v3",
     "environment": {
-        "name": "MansionEnv",
+        "name": "RealtimeMansionEnv",
         "stage": 1,
         "mode": "basic",
         "randomize_phase": False,
         "max_episode_steps": None,
-        "interaction_ready": True,
+        "interaction_ready": False,
+        "goal_features": True,
     },
     "a2c": {
         "policy": "MlpPolicy",
@@ -103,8 +112,8 @@ CONFIG = {
         "activation": "Tanh",
         "n_envs": 4,
         "learning_rate": 0.0002,
-        "n_steps": 20,
-        "gamma": 0.99,
+        "n_steps": 100,
+        "gamma": 0.9994,
         "gae_lambda": 1.0,
         "ent_coef": 0.01,
         "vf_coef": 0.5,
@@ -114,19 +123,34 @@ CONFIG = {
         "normalize_advantage": False,
         "device": "cpu",
         "torch_threads": 1,
-        "total_timesteps": 1000000,
-        "checkpoints": list(range(50000, 1000001, 50000)),
+        "total_timesteps": 600000,
+        "checkpoints": [300000, 600000],
     },
     "evaluation": EVALUATION_CONFIG,
 }
 
 
-def environment_contract(name, *, interaction_ready=False):
+def environment_contract(name, *, interaction_ready=False,  goal_features=False):
     """환경 종류에서 관측 차원·버전·행동 단위를 자동으로 가져옵니다."""
     if name not in ENVIRONMENTS:
         raise ValueError(f"지원하지 않는 환경입니다: {name}")
     if type(interaction_ready) is not bool:
         raise ValueError("interaction_ready는 bool이어야 합니다.")
+    if type(goal_features) is not bool:
+        raise ValueError("goal_features는 bool이어야 합니다.")
+
+    if goal_features:
+        if name != "RealtimeMansionEnv" or interaction_ready:
+            raise ValueError(
+                "goal_features는 interaction_ready=False인 "
+                "RealtimeMansionEnv에서 사용하세요."
+            )
+        return {
+            "observation_size": TASK_GOAL_SIZE,
+            "observation_version": TASK_GOAL_VERSION,
+            "action_count": 6,
+            "action_unit": "physics_frame",
+        }
     if interaction_ready:
         if name != "MansionEnv":
             raise ValueError("interaction_ready 실험은 격자 MansionEnv에서만 지원합니다.")
@@ -152,7 +176,7 @@ def build_config():
     config = deepcopy(CONFIG)
     settings = config["environment"]
     settings.update(environment_contract(
-        settings["name"], interaction_ready=settings.get("interaction_ready", False),
+        settings["name"], interaction_ready=settings.get("interaction_ready", False),goal_features=settings.get("goal_features", False),
     ))
     config["reward"] = {"version": REWARD_VERSION, **deepcopy(REWARD_CONFIG)}
     return config
@@ -164,7 +188,7 @@ def validate_config(config):
         raise ValueError("지원하지 않는 설정 형식입니다. 공통 초기 설정을 사용하세요.")
     env = config["environment"]
     for key, value in environment_contract(
-        env["name"], interaction_ready=env.get("interaction_ready", False),
+        env["name"], interaction_ready=env.get("interaction_ready", False), goal_features=env.get("goal_features", False),
     ).items():
         if env.get(key) != value:
             raise ValueError(f"환경의 관측·행동 계약이 다릅니다: {key}")
@@ -240,7 +264,7 @@ def evaluation_cases(config=None, smoke=False):
     ]
 
 
-def make_env(config=None):
+def make_env(config=None, *, training=False):
     """학습·평가·재생이 같은 설정으로 환경을 만들고, 기본은 격자 Stage 1"""
     config = config or build_config()
     validate_config(config)
@@ -254,6 +278,11 @@ def make_env(config=None):
     )
     if settings.get("interaction_ready", False):
         env = InteractionReadyObservation(env)
+
+    if training and config.get("curriculum") == "stage1_route_v3":
+        env = Stage1RouteCurriculum(env)
+    if settings.get("goal_features", False):
+        env = TaskGoalObservation(env)
     return ProposedReward(env)
 
 

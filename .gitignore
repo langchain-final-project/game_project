@@ -2,7 +2,8 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .venv/
-runs/
+runs/ppo_smoke
+runs/ppo_star_smoke
 build/
 dist/
 *.log

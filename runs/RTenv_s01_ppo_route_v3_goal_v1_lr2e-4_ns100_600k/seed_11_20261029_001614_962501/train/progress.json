@@ -1,0 +1,13 @@
+{
+  "completed_timesteps": 600000,
+  "episodes": 2092,
+  "successes": 1887,
+  "full_start_episodes": 465,
+  "full_start_successes": 335,
+  "frontiers": {
+    "0": 0,
+    "2": 0,
+    "1": 0,
+    "3": 0
+  }
+}

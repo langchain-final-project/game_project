@@ -1,0 +1,22 @@
+{
+  "completed_timesteps": 200000,
+  "episodes": 777,
+  "successes": 777,
+  "full_start_episodes": 777,
+  "full_start_successes": 777,
+  "frontiers": {
+    "0": 0,
+    "3": 0,
+    "1": 0,
+    "2": 0
+  },
+  "cumulative_timesteps": 800000,
+  "curriculum": null,
+  "warmth_goal": 7,
+  "at_least_one_star_count": 0,
+  "at_least_two_star_count": 0,
+  "three_star_count": 0,
+  "warmth_goal_met_count": 0,
+  "early_return_count": 777,
+  "mean_warmth": 4.0
+}

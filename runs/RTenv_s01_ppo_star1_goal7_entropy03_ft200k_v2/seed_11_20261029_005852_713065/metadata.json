@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "baseline_version": "ppo_star_goal7_entropy_comparison_v2",
+  "algorithm": "PPO",
+  "config_digest": "3085e58d53cde888c7fce8d6c829f4ed1d4f74620d8f79275ff6a23544dff07f",
+  "source_hashes": {
+    "kkamang/env.py": "1834bbf141897ea1e2a32ba67cc51d85c1f743028e225ed7979b963eaa2f8b42",
+    "kkamang/core.py": "a679c354c208d70f5dd14be680c487171e1cfc2a6d783b5a4b0ce3d61122c636",
+    "kkamang/realtime.py": "11c70c1bbe1b5dcf95faeb6bc35228bd8906d4c65e47d055c6fcb938115cd3e6",
+    "kkamang/levels.py": "cb046653ac1cabd8f202bd5e47a6dad096eea8318970d97997b45d896aa4f7bf",
+    "kkamang/scoring.py": "3985b077e0ddbe2d2dd03b3c5ac115992da586c9370543c9426298af8f12962e",
+    "rl/observation.py": "93a651ffbdb72a41aa91e681eb07fafdacdf69efbe6641c6af22815898812935",
+    "rl/task_goal_observation.py": "d3e2c11925892ed494bafde46fe7084559a0e5318e5830c9f5d36a16a3913f5e",
+    "rl/ppo_reward.py": "ede7b78d189b5bad4cdcd4d800b0c69f792e5ea6319875a1d48cd767bc40e28f",
+    "rl/ppo_common.py": "81c629e02b852de45789b5b75f1737f698b35cc8cb52565b8124c77cfca38c70",
+    "rl/ppo_star_observation.py": "c7b2d803c96106be731a6af33fec4febd1e206ec48f28fd5f109134743f8cc48",
+    "rl/ppo_stars_common.py": "4dba050060a88bd71553d0fed6051bad97780802e55f3cb56a6cd2e90581e2c4",
+    "rl/train_ppo_stars.py": "4e14e487d7f7a377d7f9ff49c6cdc7e2de8e32d372ff1724ba99b95ddfd91657",
+    "rl/evaluate_ppo_stars.py": "c69304d5591908f9e0631046b2d642e0b380ba3d7e554b4cf3f89d4d8dca6144",
+    "rl/watch_ppo_stars.py": "a1b5f81ba26eb205bf81e5a2c3e6aa66ac97f88e571f663a3568387379fa7ea7"
+  },
+  "versions": {
+    "gymnasium": "1.4.0",
+    "numpy": "2.3.5",
+    "pygame-ce": "2.5.8",
+    "stable-baselines3": "2.9.2",
+    "torch": "2.14.1",
+    "tensorboard": "2.21.0",
+    "pillow": "13.0.0"
+  },
+  "python": "3.12.6",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "executable": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\.venv\\Scripts\\python.exe",
+  "config_hash": "e409ace041024e4be8f779a7670c7657e0e68f6075d3b3da9b809042270b6ce6",
+  "observation_version": "vector_v9_realtime_corner_task_goal_v1_star_goal7_v1",
+  "simulation": {
+    "action_unit": "physics_frame",
+    "physics_hz": 60,
+    "frames_per_tick": 18,
+    "tick_seconds": 0.3
+  },
+  "training_seed": 11,
+  "started_at": "2026-10-29T00:58:52.713065+09:00",
+  "status": "complete",
+  "completed_timesteps": 200000,
+  "total_timesteps": 200000,
+  "cumulative_completed_timesteps": 800000,
+  "initial_model": {
+    "path": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\runs\\RTenv_s01_ppo_route_v3_goal_v1_lr2e-4_ns100_600k\\seed_11_20261029_001614_962501\\final_model.zip",
+    "sha256": "2ae7193c5fa5ddaf52e1c2ab84074070020cd6526932ea7c1308001f2c9831d0",
+    "config_sha256": "159bf61fcd91e4aa5a9cbf25f956e6533624c82a6b8ba8aba3d2eea244196fe3",
+    "source_model_timesteps": 600000,
+    "source_cumulative_timesteps": 600000,
+    "source_training_seed": 11,
+    "source_observation_version": "vector_v9_realtime_corner_task_goal_v1",
+    "new_observation_version": "vector_v9_realtime_corner_task_goal_v1_star_goal7_v1",
+    "optimizer_state_retained": true
+  },
+  "checkpoint_results": {
+    "0": {
+      "deterministic": {
+        "success_rate": 1.0,
+        "at_least_one_star_rate": 0.0,
+        "mean_score": 40,
+        "mean_warmth": 4,
+        "warmth_goal_rate": 0.0,
+        "early_return_rate": 1.0,
+        "star_training_pass": false
+      },
+      "stochastic": {
+        "success_rate": 1.0,
+        "at_least_one_star_rate": 0.0,
+        "mean_score": 40,
+        "mean_warmth": 4,
+        "warmth_goal_rate": 0.0,
+        "early_return_rate": 1.0,
+        "star_training_pass": false
+      }
+    },
+    "50000": {
+      "deterministic": {
+        "success_rate": 1.0,
+        "at_least_one_star_rate": 0.0,
+        "mean_score": 40,
+        "mean_warmth": 4,
+        "warmth_goal_rate": 0.0,
+        "early_return_rate": 1.0,
+        "star_training_pass": false
+      },
+      "stochastic": {
+        "success_rate": 1.0,
+        "at_least_one_star_rate": 0.0,
+        "mean_score": 40,
+        "mean_warmth": 4,
+        "warmth_goal_rate": 0.0,
+        "early_return_rate": 1.0,
+        "star_training_pass": false
+      }
+    },
+    "100000": {
+      "deterministic": {
+        "success_rate": 1.0,
+        "at_least_one_star_rate": 0.0,
+        "mean_score": 40,
+        "mean_warmth": 4,
+        "warmth_goal_rate": 0.0,
+        "early_return_rate": 1.0,
+        "star_training_pass": false
+      },
+      "stochastic": {
+        "success_rate": 1.0,
+        "at_least_one_star_rate": 0.0,
+        "mean_score": 40,
+        "mean_warmth": 4,
+        "warmth_goal_rate": 0.0,
+        "early_return_rate": 1.0,
+        "star_training_pass": false
+      }
+    },
+    "150000": {
+      "deterministic": {
+        "success_rate": 0.0,
+        "at_least_one_star_rate": 0.0,
+        "mean_score": 0,
+        "mean_warmth": 4,
+        "warmth_goal_rate": 0.0,
+        "early_return_rate": 0.0,
+        "star_training_pass": false
+      },
+      "stochastic": {
+        "success_rate": 1.0,
+        "at_least_one_star_rate": 0.0,
+        "mean_score": 40,
+        "mean_warmth": 4,
+        "warmth_goal_rate": 0.0,
+        "early_return_rate": 1.0,
+        "star_training_pass": false
+      }
+    },
+    "200000": {
+      "deterministic": {
+        "success_rate": 1.0,
+        "at_least_one_star_rate": 0.0,
+        "mean_score": 40,
+        "mean_warmth": 4,
+        "warmth_goal_rate": 0.0,
+        "early_return_rate": 1.0,
+        "star_training_pass": false
+      },
+      "stochastic": {
+        "success_rate": 1.0,
+        "at_least_one_star_rate": 0.0,
+        "mean_score": 40,
+        "mean_warmth": 4,
+        "warmth_goal_rate": 0.0,
+        "early_return_rate": 1.0,
+        "star_training_pass": false
+      }
+    }
+  },
+  "training_seconds": 118.86173669993877,
+  "training_episodes": {
+    "completed_timesteps": 200000,
+    "episodes": 777,
+    "successes": 777,
+    "full_start_episodes": 777,
+    "full_start_successes": 777,
+    "frontiers": {
+      "0": 0,
+      "3": 0,
+      "1": 0,
+      "2": 0
+    },
+    "cumulative_timesteps": 800000,
+    "curriculum": null,
+    "warmth_goal": 7,
+    "at_least_one_star_count": 0,
+    "at_least_two_star_count": 0,
+    "three_star_count": 0,
+    "warmth_goal_met_count": 0,
+    "early_return_count": 777,
+    "mean_warmth": 4.0
+  },
+  "evaluation_seconds": 143.65523899998516,
+  "elapsed_seconds": 262.73246810026467,
+  "finished_at": "2026-10-29T01:03:15.426159+09:00"
+}
