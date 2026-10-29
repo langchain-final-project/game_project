@@ -1,92 +1,172 @@
-# PPO 전용 보상. 첫 비교는 기존 A2C의 수치와 동일하게 시작한다.
-from __future__ import annotations
+### reset()에서 기준 상태 초기화, step()에서 보상 계산
 
 from copy import deepcopy
+
 import gymnasium as gym
 
-REWARD_VERSION = "ppo_collection_return_score20_v1"
-REWARD_CONFIG = {
-    "quest": 1.0, "warmth_per_point": 0.1, "warmth_cap": 14,
-    "surplus_warmth_per_point": 0.3,  # 기본 0.1과 더해 초과 온기는 점당 +0.4
-    "star_bonus": 2.0,  # 별 하나 당 추가 +2.0
-    "success": 10.0, "score_divisor": 20.0,
-    "failure": -2.0, "damage": -0.1,
-}
-TERM_NAMES = ("quest_reward", "warmth_reward", "success_reward",
-              "failure_penalty", "damage_penalty")
+from rl.ppo_config import REWARD_CONFIG, REWARD_VERSION
+
+
+# 매 스텝의 보상과 에피소드 누적 보상을 기록할 항목입니다.
+REWARD_TERM_NAMES = (
+    "quest_reward",
+    "warmth_reward",
+    "success_reward",
+    "failure_penalty",
+    "damage_penalty",
+)
 
 
 class PPOReward(gym.Wrapper):
-    """게임 판정은 원본에 맡기며, 저장된 PPO 보상 설정으로 재생할 수 있다."""
+    """기본 환경 보상을 PPO 전용 보상으로 대체합니다."""
 
-    def __init__(self, env, *, reward_config=None, reward_version=REWARD_VERSION):
+    def __init__(self, env):
         super().__init__(env)
-        self.reward_config = deepcopy(REWARD_CONFIG if reward_config is None else reward_config)
-        self.reward_version = reward_version
 
-    def reset(self, **kwargs):
-        obs, info = self.env.reset(**kwargs)
-        self.previous = info["snapshot"]
-        self.totals = dict.fromkeys(TERM_NAMES, 0.0)
-        self.steps = self.blocked = self.ineffective_interact = self.waits = 0
-        self.quest_step = self.warmth_step = self.conditions_met_step = None
+        # 원본 설정과 분리된 복사본을 사용합니다.
+        self.reward_config = deepcopy(REWARD_CONFIG)
+        self.reward_version = REWARD_VERSION
+
+    def _warmth_value(self, snapshot):
+        """현재 보유 온기에 해당하는 보상 기준값을 계산합니다."""
+        cfg = self.reward_config
+
+        warmth = min(snapshot["carried"], cfg["warmth_cap"])
+        surplus = max(0, warmth - snapshot["target"])
+
+        return (
+            cfg["warmth_per_point"] * warmth
+            + cfg["surplus_warmth_per_point"] * surplus
+        )
+
+    def reset(self, *, seed=None, options=None):
+        obs, info = self.env.reset(seed=seed, options=options)
+        snapshot = info["snapshot"]
+
+        # 시작 상태를 기준으로 새로 얻은 것만 계산합니다.
+        self._previous_quest = snapshot["quest"]["collected"]
+        self._previous_warmth_value = self._warmth_value(snapshot)
+
+        self._steps = 0
+        self._totals = dict.fromkeys(REWARD_TERM_NAMES, 0.0)
+
         return obs, info
 
     def step(self, action):
-        # 원래 보상을 더하면 성공 보상이 중복되므로 의도적으로 사용하지 않음
-        obs, _original_reward, terminated, truncated, info = self.env.step(action)
-        now, events = info["snapshot"], info["events"]
-        self.steps += 1
-        terms = dict.fromkeys(TERM_NAMES, 0.0)
-        cfg = self.reward_config
-        if now["quest"]["collected"] and not self.previous["quest"]["collected"]:
-            terms["quest_reward"] = cfg["quest"]
-            self.quest_step = self.steps
-        # 기본 수집분과 목표 초과분을 각각 계산한다.
-        increase = min(now["carried"], cfg["warmth_cap"]) - min(
-            self.previous["carried"], cfg["warmth_cap"])
-        surplus_increase = ( max(0, min(now["carried"], cfg["warmth_cap"]) - now["target"])
-            - max(0, min(self.previous["carried"], cfg["warmth_cap"]) - self.previous["target"]))
-        terms["warmth_reward"] = cfg["warmth_per_point"] * increase + cfg["surplus_warmth_per_point"] * surplus_increase
-        if now["carried"] >= now["target"] and self.warmth_step is None:
-            self.warmth_step = self.steps
-        conditions = now["quest"]["collected"] and now["carried"] >= now["target"]
-        if conditions and self.conditions_met_step is None:
-            self.conditions_met_step = self.steps
+        # 기본 환경 보상은 사용하지 않습니다.
+        obs, _original_reward, terminated, truncated, info = (
+            self.env.step(action)
+        )
 
+        snapshot = info["snapshot"]
+        events = info["events"]
         outcome = info["outcome"] or {}
-        # 귀환 요청·문 도착이 아닌, 피해와 시간 처리를 마친 최종 게임 결과를 사용
+        cfg = self.reward_config
+
+        self._steps += 1
+        terms = dict.fromkeys(REWARD_TERM_NAMES, 0.0)
+
+        # 1. 필수 물건을 이번 행동에서 새로 얻었을 때만 지급합니다.
+        if (
+            snapshot["quest"]["collected"]
+            and not self._previous_quest
+        ):
+            terms["quest_reward"] = cfg["quest"]
+
+        # 2. 보유 온기의 변화에 해당하는 보상을 계산합니다.
+        warmth_value = self._warmth_value(snapshot)
+
+        terms["warmth_reward"] = (
+            warmth_value - self._previous_warmth_value
+        )
+
+        # 3. 게임 코어의 최종 성공 결과를 확인합니다.
         if terminated and outcome.get("status") == "COMPLETE":
-            terms["success_reward"] = cfg["success"] + outcome["score"]["total"] / cfg["score_divisor"] + cfg["star_bonus"] * outcome["score"]["stars"]
-        elif terminated and outcome.get("status") == "FAILED" and outcome.get("reason") in ("timeout", "courage"):
+            score = outcome["score"]
+
+            terms["success_reward"] = (
+                cfg["success"]
+                + score["total"] / cfg["score_divisor"]
+                + cfg["star_bonus"] * score["stars"]
+            )
+
+        # 4. 게임 자체의 시간 초과·용기 소진에만 벌점을 줍니다.
+        elif (
+            terminated
+            and outcome.get("status") == "FAILED"
+            and outcome.get("reason") in ("timeout", "courage")
+        ):
             terms["failure_penalty"] = cfg["failure"]
-        terms["damage_penalty"] = cfg["damage"] * sum(e["type"] == "damage" for e in events)
 
-        self.blocked += sum(e["type"] == "blocked" for e in events)
-        effective_e = any(e["type"] in ("quest_collect", "open", "return") for e in events)
-        self.ineffective_interact += int(int(action) == 4 and not effective_e)
-        self.waits += int(int(action) == 5)
+        # 5. 단순 접촉이 아닌 실제 피해 이벤트를 셉니다.
+        damage_count = sum(
+            event["type"] == "damage"
+            for event in events
+        )
+
+        terms["damage_penalty"] = cfg["damage"] * damage_count
+
+        reward = float(sum(terms.values()))
+
+        # 에피소드 전체의 항목별 보상을 누적합니다.
         for name, value in terms.items():
-            self.totals[name] += value
-        info["reward_terms"] = terms
-        info["reward_version"] = self.reward_version
-        self.previous = now
+            self._totals[name] += value
 
+        # 다음 행동에서 비교할 기준을 갱신합니다.
+        self._previous_quest = snapshot["quest"]["collected"]
+        self._previous_warmth_value = warmth_value
+
+        info = {
+            **info,
+            "reward_terms": terms,
+            "reward_version": self.reward_version,
+        }
+
+        # 종료 또는 외부 중단 시 최종 통계를 남깁니다.
         if terminated or truncated:
             score = outcome.get("score", {})
-            success = outcome.get("status") == "COMPLETE"
+
             info["rl_episode"] = {
-                "success": success, "score": score.get("total", 0),
+                "success": (
+                    terminated
+                    and outcome.get("status") == "COMPLETE"
+                ),
+                "status": outcome.get(
+                    "status",
+                    "TRUNCATED" if truncated else "UNKNOWN",
+                ),
+                "reason": outcome.get(
+                    "reason",
+                    info.get("truncation_reason", "unknown"),
+                ),
+                "score": score.get("total", 0),
                 "stars": score.get("stars", 0),
-                "perfect": success and score.get("total", 0) == 100,
-                "quest_collected": now["quest"]["collected"], "warmth": now["carried"],
-                "steps": self.steps, "reason": outcome.get("reason", info.get("truncation_reason", "unknown")),
-                "status": outcome.get("status", "TRUNCATED"),
-                "quest_step": self.quest_step, "warmth_step": self.warmth_step,
-                "conditions_met": bool(conditions), "conditions_met_step": self.conditions_met_step,
-                "blocked": self.blocked, "ineffective_interact": self.ineffective_interact,
-                "waits": self.waits, "damage_count": now["damage_count"],
-                "remaining_ticks": now["remaining_ticks"], "courage": now["courage"],
-                "return": sum(self.totals.values()), **self.totals,
+                "quest_collected": snapshot["quest"]["collected"],
+                "warmth": snapshot["carried"],
+                "conditions_met": bool(
+                    snapshot["quest"]["collected"]
+                    and snapshot["carried"] >= snapshot["target"]
+                ),
+                "damage_count": snapshot["damage_count"],
+                "remaining_ticks": snapshot["remaining_ticks"],
+                "courage": snapshot["courage"],
+                "steps": self._steps,
+                "terminated": bool(terminated),
+                "truncated": bool(truncated),
+                "return": float(sum(self._totals.values())),
+                **self._totals,
             }
-        return obs, float(sum(terms.values())), terminated, truncated, info
+
+        return obs, reward, terminated, truncated, info
+
+"""
+| 기록 이름 | 발생 조건 | 보상 |
+|---|---|---:|
+| `quest_reward` | 필수 물건을 새로 획득 | `+1.0` |
+| `warmth_reward` | 목표 온기까지 수집 | 온기 1점당 `+0.1` |
+| `warmth_reward` | 목표 온기를 초과해 수집 | 초과 온기 1점당 합계 `+0.4` |
+| `success_reward` | 최종 결과가 `COMPLETE` | `10 + 게임 점수 / 20 + 별 개수 × 2` |
+| `failure_penalty` | 시간 초과 또는 용기 소진 | `-2.0` |
+| `damage_penalty` | 실제 피해 발생 | 피해 1회당 `-0.1` |
+
+"""

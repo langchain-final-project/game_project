@@ -375,23 +375,17 @@ class GameCore:
                     "to": list(destination),
                 })
 
-        elif chosen == Action.INTERACT:
-            if state["position"] == state["exit"]:
-                if state['carried'] >= state['target'] and state['quest']['collected']:
-                    requested_return = True
-                else:
-                    events.append({'type':'return_blocked', 'missing_quest':not state['quest']['collected'], 'missing_heat':max(0,state['target']-state['carried'])})
-            else:
-                if state['position'] == state['quest']['position'] and not state['quest']['collected']:
-                    state['quest']['collected'] = True
-                    events.append({'type':'quest_collect', 'name':state['quest']['name']})
-                for shortcut in state["shortcuts"]:
-                    if not shortcut["opened"] and shortcut["terminal"] == state["position"]:
-                        shortcut["opened"] = True
-                        events.append({"type": "open", "shortcut_id": shortcut["id"],
-                                       "gate": list(shortcut["gate"]),
-                                       "position": list(state["position"])})
-                        break
+        # 격자 이동과 실시간 이동 모두 현재 칸에 도착하면 E 없이 처리한다.
+        if state['position'] == state['quest']['position'] and not state['quest']['collected']:
+            state['quest']['collected'] = True
+            events.append({'type':'quest_collect', 'name':state['quest']['name']})
+        for shortcut in state["shortcuts"]:
+            if not shortcut["opened"] and shortcut["terminal"] == state["position"]:
+                shortcut["opened"] = True
+                events.append({"type": "open", "shortcut_id": shortcut["id"],
+                               "gate": list(shortcut["gate"]),
+                               "position": list(state["position"])})
+                break
 
         invincibility = state["invincibility"]
         if (invincibility is not None and not invincibility["collected"]
@@ -412,6 +406,11 @@ class GameCore:
         magnetic = magnet is not None and magnet["remaining_ticks"] > 0
         if magnetic or state["position"] != previous_position:
             self._collect_warmth(events, magnetic=magnetic)
+        # 같은 이동에서 획득한 온기도 귀환 조건에 반영한다. 최종 피해 판정은 아래에서 유지한다.
+        if state["position"] == state["exit"]:
+            requested_return = state['carried'] >= state['target'] and state['quest']['collected']
+            if chosen == Action.INTERACT and not requested_return:
+                events.append({'type':'return_blocked', 'missing_quest':not state['quest']['collected'], 'missing_heat':max(0,state['target']-state['carried'])})
         # 자석은 획득 틱을 포함해 13틱 지속하며 대기·막힌 이동도 세계 진행 시 한 틱이다.
         if magnetic and advance_world:
             magnet["remaining_ticks"] -= 1
