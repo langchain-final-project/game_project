@@ -1,0 +1,38 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>까망이와 유령 저택 · PPO 적용</title><style>
+@font-face{font-family:Malgun;src:url('file:///C:/Windows/Fonts/malgun.ttf');font-weight:400}
+@font-face{font-family:Malgun;src:url('file:///C:/Windows/Fonts/malgunbd.ttf');font-weight:700}
+@page slides{size:1600px 900px;margin:0}
+@page notes{size:A4 portrait;margin:0}
+*{box-sizing:border-box}html,body{margin:0;padding:0;font-family:Malgun,sans-serif;color:#f5f0e6}
+body{-webkit-print-color-adjust:exact;print-color-adjust:exact;background:#151322}
+.slide{page:slides;width:1600px;height:900px;padding:44px 72px 40px;position:relative;overflow:hidden;break-after:page;background:#1c192b}
+.slide:before{content:'';position:absolute;width:420px;height:420px;border:1px solid #3b334d;border-radius:50%;right:-160px;top:-240px}
+.eyebrow{color:#dfbd79;font-size:17px;letter-spacing:2px;font-weight:700;margin:0 0 18px}
+.slide h1{font-size:51px;letter-spacing:-2px;margin:0 0 12px;line-height:1.3;font-weight:700}
+.subtitle{font-size:23px;color:#c3bacc;margin:0;line-height:1.5}
+.footer{position:absolute;bottom:26px;left:72px;right:72px;display:flex;justify-content:space-between;border-top:1px solid #443a50;padding-top:12px;font-size:14px;color:#b5a8bf}
+.mainrow{display:grid;grid-template-columns:580px 1fr;gap:44px;margin-top:32px;align-items:start}
+.card{background:#292337;border:1px solid #483b55;border-radius:20px;padding:28px}
+.big{font-size:100px;line-height:1;color:#e9c382;font-weight:700;letter-spacing:-6px}.big small{font-size:26px;letter-spacing:-1px;color:#f5f0e6;margin-left:18px}
+.statrows{margin-top:18px}.statrow{display:flex;justify-content:space-between;border-bottom:1px solid #483d54;padding:12px 0;font-size:24px}
+.statrow strong{color:#a8c8b0}.muted{color:#c7b9d0}.fine{font-size:17px;line-height:1.65;color:#c5b9cf;margin:18px 0 0}
+.game{width:100%;height:auto;border-radius:16px;border:1px solid #55445d;display:block}.caption{font-size:16px;line-height:1.6;color:#bcaec5;margin:12px 0 0}
+.flow{display:flex;align-items:center;gap:14px;margin-top:27px}.flow .node{flex:1;text-align:center;padding:20px 8px;border-radius:13px;background:#352a42;border:1px solid #5a4667;font-size:22px;font-weight:700}
+.flow .arrow{font-size:25px;color:#dfbd79}.flow .node span{display:block;font-size:15px;color:#cbbbd4;margin-top:5px;font-weight:400}
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:37px}.cards3 .card{height:377px;padding:28px}
+.kicker{font-size:16px;letter-spacing:2px;color:#a8c8b0;margin:0 0 15px}.card h2{font-size:32px;line-height:1.4;margin:0 0 22px}.card p{font-size:22px;line-height:1.75;margin:0 0 12px}.gold{color:#e9c382}.sage{color:#a8c8b0}.pink{color:#f0b1b4}
+.route{margin-top:29px;background:#efe5ce;border-radius:16px;padding:24px;color:#382c43;font-size:23px;text-align:center;font-weight:700}.route .sep{padding:0 20px;color:#9e7551}
+.s2note{font-size:18px;color:#ccbed5;margin:20px 0}.results{display:grid;grid-template-columns:785px 1fr;gap:32px;margin-top:34px}.results .card{padding:24px}
+table{border-collapse:collapse;width:100%;font-size:22px}th{text-align:right;color:#c6b7d0;font-size:18px;padding:14px 10px;border-bottom:1px solid #685271}td{text-align:right;padding:20px 10px;border-bottom:1px solid #4c3c5b;font-weight:700}th:first-child,td:first-child{text-align:left}td:first-child{font-size:20px}.selected td{color:#e9c382}.new td{color:#acd0b4}
+.table-note{font-size:16px;color:#c2b4cd;line-height:1.75;margin:15px 0 0}.progress{margin-top:20px;font-size:21px}.bars{margin-top:10px;display:flex;gap:12px;align-items:center}.barbg{background:#4a3a56;border-radius:9px;height:15px;flex:1}.bar{background:#b39ac7;height:15px;border-radius:9px}.bar.goldbar{background:#e9c382}.label{min-width:75px;font-size:18px}.v{width:50px;text-align:right;font-size:20px;font-weight:700}
+.callout{border-left:4px solid #e9c382;padding:13px 18px;background:#35283e;border-radius:0 12px 12px 0;margin-top:20px;font-size:21px;line-height:1.7}.bottom-note{font-size:17px;line-height:1.75;color:#c7b8d0;margin-top:22px}.results .game{margin-top:0}
+.note{page:notes;width:794px;height:1122px;background:#fffdf8;color:#30283a;padding:52px 54px 44px;position:relative;overflow:hidden;break-after:page;font-size:14px;line-height:1.7}
+.note .eyebrow{font-size:11px;color:#906d3c;margin-bottom:12px}.note h1{font-size:29px;line-height:1.35;margin:0 0 11px;letter-spacing:-1px}.note h2{font-size:17px;color:#563d67;margin:23px 0 8px}.note p{margin:8px 0}.note ul{padding-left:19px;margin:8px 0}.note li{margin:5px 0}.note .script{background:#f0e9f4;border-left:4px solid #8d6aa3;padding:17px 19px;font-size:14px;line-height:1.9;border-radius:0 10px 10px 0}.note .mini{font-size:12px;color:#6c5c75;line-height:1.7}.note table{font-size:12px;margin-top:10px}.note th{color:#594463;font-size:12px;background:#f0e9f4;text-align:left;padding:8px}.note td{font-weight:400;text-align:left;padding:8px;border-bottom:1px solid #e2d9e6;font-size:12px}.note td:first-child{font-size:12px}.note code{font-family:Malgun,sans-serif;font-size:11px;background:#eee8f0;padding:2px 4px;overflow-wrap:anywhere}.note a{color:#68517c}.notef{position:absolute;bottom:28px;left:54px;right:54px;display:flex;justify-content:space-between;border-top:1px solid #ded5e2;padding-top:9px;font-size:10px;color:#75677e}.note .qa p{font-size:13px;line-height:1.7;margin:5px 0 12px}.note .qa strong{color:#4e365f}.note .box{background:#f5f0e6;padding:12px 15px;border-radius:9px;font-size:13px}
+@media screen{.slide,.note{margin:0 auto 20px}.preview .slide{margin:0}.preview{overflow:hidden}}
+</style></head><body class="preview">
+<section class="slide"><p class="eyebrow">02 &nbsp; LEARNING DESIGN</p><h1>별 3개를 향해, 부분 행동을 연결하다</h1><p class="subtitle">성공 경험이 부족한 문제를 보상 설계와 단계별 복습으로 풀었습니다.</p>
+<div class="cards3"><div class="card"><div class="kicker">REWARD</div><h2>무엇을 잘했다고<br>알려줄 것인가?</h2><p><span class="gold">수집 · 목표 접근 · 별 획득</span>에<br>긍정적인 피드백</p><p><span class="pink">시간 낭비 · 벽막힘 · 피해</span>에는<br>비용 부여</p><p class="fine">게임 점수와 학습 보상은 구분</p></div>
+<div class="card"><div class="kicker">CURRICULUM</div><h2>쉬운 과제부터<br>전체 플레이로</h2><p>물건 획득을 짧게 연습한 뒤<br>자석 · 물건 연결 과제로 확장</p><p>기존 행동을 함께 복습하며<br><span class="gold">추가 수집 · 귀환까지 연결</span></p><p class="fine">중간 시작 상태와 실제 시작점 평가를 구분</p></div>
+<div class="card"><div class="kicker">PPO / ACTOR–CRITIC</div><h2>경험으로 배우고<br>작게 갱신하기</h2><p>정책망: 다음 행동을 선택<br>가치망: 앞으로의 보상을 예측</p><p><span class="gold">Clipping</span>으로 한 번의 갱신에서<br>정책이 크게 바뀌는 것을 제한</p><p class="fine">Stable-Baselines3 PPO에 게임용 정책 연결</p></div></div>
+<div class="route">초반 온기 · 자석<span class="sep">→</span>물건 획득<span class="sep">→</span>추가 온기<span class="sep">→</span>출구 귀환</div>
+<p class="s2note">코드가 목표 순서와 경유지를 안내하고, 실제 이동·대기 행동은 PPO 정책이 선택합니다.</p><div class="footer"><span>까망이와 유령 저택 · PPO 적용</span><span>2026.11.01 &nbsp; / &nbsp; 02</span></div></section></body></html>

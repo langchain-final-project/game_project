@@ -1,0 +1,19 @@
+{
+  "status": "COMPLETE",
+  "reason": "returned",
+  "banked": 14,
+  "carried": 14,
+  "damage_count": 1,
+  "remaining_courage": 2,
+  "quest_collected": true,
+  "ticks_used": 18,
+  "remaining_ticks": 62,
+  "score": {
+    "warmth": 60,
+    "speed": 25,
+    "courage": 10,
+    "total": 95,
+    "stars": 3,
+    "next_star_points": 0
+  }
+}

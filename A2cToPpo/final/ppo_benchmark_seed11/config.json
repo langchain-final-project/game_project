@@ -1,0 +1,211 @@
+{
+  "experiment": "A2C_PPO_continuation",
+  "algorithm": "PPO",
+  "initialization": "A2C_pretrained_weights",
+  "source_environment_config": {
+    "schema_version": 1,
+    "experiment": "native_all_stages_single_a2c_v1",
+    "environment": {
+      "stages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "mode": "basic",
+      "action_repeat": 18,
+      "randomize_phase": false,
+      "auto_interaction": true,
+      "max_policy_steps": null
+    },
+    "a2c": {
+      "learning_rate": 0.0002,
+      "n_steps": 32,
+      "n_envs": 4,
+      "gamma": 0.997002999,
+      "gae_lambda": 1.0,
+      "ent_coef": 0.03,
+      "vf_coef": 0.5,
+      "max_grad_norm": 0.5,
+      "use_rms_prop": false,
+      "normalize_advantage": true,
+      "device": "cpu",
+      "torch_threads": 1,
+      "net_arch": {
+        "pi": [
+          128,
+          128
+        ],
+        "vf": [
+          128,
+          128
+        ]
+      }
+    },
+    "policy": {
+      "logit_bound": 4.0,
+      "features_version": "small_map_layernorm_tanh_v1",
+      "safeguards_are_unvalidated_hypotheses": true
+    },
+    "reward": {
+      "quest": 0.05,
+      "pickup_per_value": 0.05,
+      "score_scale": 1.0,
+      "highscore_bonus": 1.0,
+      "failure": -1.0,
+      "damage": -0.02,
+      "wall_stall": -0.001,
+      "potential_scale": 0.2,
+      "novelty_per_state": 0.01,
+      "novelty_cap": 0.2
+    },
+    "training": {
+      "seed": 11,
+      "total_steps": 10000000,
+      "stage_interval_steps": 250000,
+      "eval_every_steps": 100000,
+      "progress_every_updates": 25,
+      "checkpoint_every_steps": 100000,
+      "entropy_adaptation": {
+        "enabled": true,
+        "min": 0.01,
+        "max": 0.1,
+        "target": 0.35,
+        "interval_updates": 100
+      }
+    },
+    "evaluation": {
+      "episodes": 5,
+      "seed": 10000,
+      "final_episodes": 40,
+      "final_seed_sets": [
+        70000000,
+        80000000
+      ],
+      "required_star3_rate": 0.9,
+      "modes": [
+        "greedy",
+        "stochastic"
+      ],
+      "score_thresholds": [
+        40,
+        45,
+        65,
+        85
+      ]
+    }
+  },
+  "training": {
+    "seed": 11,
+    "physical_frames": 300000,
+    "n_envs": 4,
+    "torch_threads": 1,
+    "evaluation_interval_frames": 100000,
+    "progress_interval_frames": 25000,
+    "stages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ]
+  },
+  "common_updates": {
+    "gamma": 0.997002999,
+    "gae_lambda": 1.0,
+    "vf_coef": 0.5,
+    "max_grad_norm": 0.5,
+    "normalize_advantage": true,
+    "learning_rate": 5e-05,
+    "ent_coef": 0.005,
+    "n_steps": 128
+  },
+  "algorithm_updates": {
+    "batch_size": 128,
+    "n_epochs": 4,
+    "clip_range": 0.1,
+    "target_kl": 0.02
+  },
+  "evaluation": {
+    "stages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "periodic_stochastic_episodes": 50,
+    "periodic_deterministic_episodes": 1,
+    "periodic_seed_base": 10000,
+    "final_stochastic_episodes": 100,
+    "final_deterministic_episodes": 10,
+    "final_seed_base": 30000,
+    "action_seed_offset": 50000000,
+    "target_success_rate": 0.9,
+    "target_three_star_rate": 0.9,
+    "protected_baseline_rate": 0.8,
+    "maximum_stage_drop": 0.1,
+    "protected_metrics": [
+      "success_rate",
+      "three_star_rate",
+      "quest_rate"
+    ],
+    "require_all_stages_passed_for_adoption": true
+  },
+  "source": {
+    "archive_sha256": "dcedde567abdd11fd521945e99bdb61f9b777f067b370ad2c85177e883c62243",
+    "algorithm": "PPO",
+    "initialization": "A2C_pretrained_weights",
+    "source_checkpoint": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\A2cToPpo\\runs\\seed_11_20261101_161343_544404\\models\\baseline_model.zip",
+    "source_sha256": "2b7387396de5b757dceb39598b807448f0e43fcc8fdd51fc0b839eae1d7d4f19",
+    "source_decision_steps": 6200068,
+    "original_hyperparameters": {
+      "learning_rate": 0.0002,
+      "ent_coef": 0.04440147804067449
+    },
+    "physical_frames": 0,
+    "shared_hyperparameters": {
+      "gamma": 0.997002999,
+      "gae_lambda": 1.0,
+      "vf_coef": 0.5,
+      "max_grad_norm": 0.5,
+      "normalize_advantage": true,
+      "learning_rate": 5e-05,
+      "ent_coef": 0.005,
+      "n_steps": 128
+    },
+    "algorithm_updates": {
+      "batch_size": 128,
+      "n_epochs": 4,
+      "clip_range": 0.1,
+      "target_kl": 0.02
+    }
+  },
+  "units": {
+    "budget": "aggregate_physical_frames",
+    "sb3_num_timesteps": "aggregate_action_decisions",
+    "action_repeat": 18
+  }
+}

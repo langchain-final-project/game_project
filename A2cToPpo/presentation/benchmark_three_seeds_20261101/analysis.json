@@ -1,0 +1,207 @@
+{
+  "profile": "benchmark",
+  "stages": [
+    1,
+    2,
+    5,
+    6,
+    7,
+    8,
+    11,
+    12
+  ],
+  "training_seeds": [
+    11,
+    22,
+    33
+  ],
+  "primary_model_role": "last",
+  "initialization": "A2C_pretrained_weights",
+  "statistics": [
+    {
+      "algorithm": "A2C",
+      "model_role": "last",
+      "metric": "success_rate",
+      "training_seed_count": 3,
+      "mean": 0.98375,
+      "sample_std": 0.0033071891388307306
+    },
+    {
+      "algorithm": "A2C",
+      "model_role": "last",
+      "metric": "three_star_rate",
+      "training_seed_count": 3,
+      "mean": 0.9758333333333333,
+      "sample_std": 0.0019094065395649411
+    },
+    {
+      "algorithm": "A2C",
+      "model_role": "last",
+      "metric": "mean_score",
+      "training_seed_count": 3,
+      "mean": 93.94500000000001,
+      "sample_std": 0.2753208355718832
+    },
+    {
+      "algorithm": "A2C",
+      "model_role": "last",
+      "metric": "mean_stars",
+      "training_seed_count": 3,
+      "mean": 2.9433333333333334,
+      "sample_std": 0.008322910148099263
+    },
+    {
+      "algorithm": "A2C",
+      "model_role": "last",
+      "metric": "mean_damage",
+      "training_seed_count": 3,
+      "mean": 0.23500000000000001,
+      "sample_std": 0.0049999999999999906
+    },
+    {
+      "algorithm": "PPO",
+      "model_role": "last",
+      "metric": "success_rate",
+      "training_seed_count": 3,
+      "mean": 0.9816666666666667,
+      "sample_std": 0.011273124382057274
+    },
+    {
+      "algorithm": "PPO",
+      "model_role": "last",
+      "metric": "three_star_rate",
+      "training_seed_count": 3,
+      "mean": 0.9683333333333333,
+      "sample_std": 0.014595233240114129
+    },
+    {
+      "algorithm": "PPO",
+      "model_role": "last",
+      "metric": "mean_score",
+      "training_seed_count": 3,
+      "mean": 93.6875,
+      "sample_std": 1.214011943928068
+    },
+    {
+      "algorithm": "PPO",
+      "model_role": "last",
+      "metric": "mean_stars",
+      "training_seed_count": 3,
+      "mean": 2.9316666666666666,
+      "sample_std": 0.03708801468578942
+    },
+    {
+      "algorithm": "PPO",
+      "model_role": "last",
+      "metric": "mean_damage",
+      "training_seed_count": 3,
+      "mean": 0.24958333333333332,
+      "sample_std": 0.028840437467787004
+    },
+    {
+      "algorithm": "A2C",
+      "model_role": "candidate",
+      "metric": "success_rate",
+      "training_seed_count": 3,
+      "mean": 0.9841666666666666,
+      "sample_std": 0.0038188130791298944
+    },
+    {
+      "algorithm": "A2C",
+      "model_role": "candidate",
+      "metric": "three_star_rate",
+      "training_seed_count": 3,
+      "mean": 0.9762500000000001,
+      "sample_std": 0.0021650635094611144
+    },
+    {
+      "algorithm": "A2C",
+      "model_role": "candidate",
+      "metric": "mean_score",
+      "training_seed_count": 3,
+      "mean": 93.96708333333333,
+      "sample_std": 0.3030504633445272
+    },
+    {
+      "algorithm": "A2C",
+      "model_role": "candidate",
+      "metric": "mean_stars",
+      "training_seed_count": 3,
+      "mean": 2.944583333333333,
+      "sample_std": 0.009709316831442634
+    },
+    {
+      "algorithm": "A2C",
+      "model_role": "candidate",
+      "metric": "mean_damage",
+      "training_seed_count": 3,
+      "mean": 0.23625000000000002,
+      "sample_std": 0.0033071891388307202
+    },
+    {
+      "algorithm": "PPO",
+      "model_role": "candidate",
+      "metric": "success_rate",
+      "training_seed_count": 3,
+      "mean": 0.9825,
+      "sample_std": 0.012311072252245144
+    },
+    {
+      "algorithm": "PPO",
+      "model_role": "candidate",
+      "metric": "three_star_rate",
+      "training_seed_count": 3,
+      "mean": 0.9708333333333333,
+      "sample_std": 0.011342214657346819
+    },
+    {
+      "algorithm": "PPO",
+      "model_role": "candidate",
+      "metric": "mean_score",
+      "training_seed_count": 3,
+      "mean": 93.75041666666667,
+      "sample_std": 1.2583560290447793
+    },
+    {
+      "algorithm": "PPO",
+      "model_role": "candidate",
+      "metric": "mean_stars",
+      "training_seed_count": 3,
+      "mean": 2.9358333333333335,
+      "sample_std": 0.03588900713774797
+    },
+    {
+      "algorithm": "PPO",
+      "model_role": "candidate",
+      "metric": "mean_damage",
+      "training_seed_count": 3,
+      "mean": 0.24416666666666667,
+      "sample_std": 0.018722201615550816
+    }
+  ],
+  "selected_demo_model": {
+    "seed": 11,
+    "algorithm": "PPO",
+    "model_role": "candidate",
+    "episodes": 800,
+    "requested_physical_frames": 300000,
+    "actual_training_frames": 302739,
+    "decision_steps": 16896,
+    "candidate_training_frames": 302739,
+    "success_rate": 0.9925,
+    "three_star_rate": 0.98125,
+    "mean_score": 94.8225,
+    "mean_stars": 2.96625,
+    "mean_damage": 0.22875
+  },
+  "common_updates": {
+    "gamma": 0.997002999,
+    "gae_lambda": 1.0,
+    "vf_coef": 0.5,
+    "max_grad_norm": 0.5,
+    "normalize_advantage": true,
+    "learning_rate": 5e-05,
+    "ent_coef": 0.005,
+    "n_steps": 128
+  }
+}

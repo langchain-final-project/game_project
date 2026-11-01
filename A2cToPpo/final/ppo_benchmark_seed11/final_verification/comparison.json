@@ -1,0 +1,72 @@
+{
+  "algorithm": "PPO",
+  "adoption": {
+    "accepted": false,
+    "checks": {
+      "preservation": true,
+      "improves_over_baseline": true,
+      "all_stage_targets": false
+    },
+    "preservation_guard": {
+      "passed": true,
+      "regressions": []
+    },
+    "failed_checks": [
+      "all_stage_targets"
+    ]
+  },
+  "preservation_guard": {
+    "passed": true,
+    "regressions": []
+  },
+  "baseline": {
+    "episodes": 1200,
+    "success_rate": 0.6575,
+    "three_star_rate": 0.6483333333333333,
+    "mean_stars": 1.9633333333333334,
+    "mean_score": 62.70916666666667,
+    "quest_rate": 0.9583333333333334,
+    "mean_warmth": 13.4725,
+    "mean_damage": 0.44,
+    "mean_physical_frames": 1145.2633333333333,
+    "mean_decisions": 63.943333333333335
+  },
+  "candidate": {
+    "episodes": 1200,
+    "success_rate": 0.6616666666666666,
+    "three_star_rate": 0.6541666666666667,
+    "mean_stars": 1.9775,
+    "mean_score": 63.215,
+    "quest_rate": 0.98,
+    "mean_warmth": 13.588333333333333,
+    "mean_damage": 0.375,
+    "mean_physical_frames": 1142.7066666666667,
+    "mean_decisions": 63.79666666666667
+  },
+  "last": {
+    "episodes": 1200,
+    "success_rate": 0.6616666666666666,
+    "three_star_rate": 0.6541666666666667,
+    "mean_stars": 1.9775,
+    "mean_score": 63.215,
+    "quest_rate": 0.98,
+    "mean_warmth": 13.588333333333333,
+    "mean_damage": 0.375,
+    "mean_physical_frames": 1142.7066666666667,
+    "mean_decisions": 63.79666666666667
+  },
+  "adopted": {
+    "episodes": 1200,
+    "success_rate": 0.6575,
+    "three_star_rate": 0.6483333333333333,
+    "mean_stars": 1.9633333333333334,
+    "mean_score": 62.70916666666667,
+    "quest_rate": 0.9583333333333334,
+    "mean_warmth": 13.4725,
+    "mean_damage": 0.44,
+    "mean_physical_frames": 1145.2633333333333,
+    "mean_decisions": 63.943333333333335
+  },
+  "candidate_all_stages_passed": false,
+  "all_stages_passed": false
+}

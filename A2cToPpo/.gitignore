@@ -1,0 +1,6 @@
+_vendor/
+runs/
+practice_states/
+.pytest_tmp/
+__pycache__/
+*.pyc

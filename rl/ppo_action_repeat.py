@@ -41,6 +41,7 @@ class ActionRepeat(gym.Wrapper):
             "physical_frames": 0,
             "decision_steps": 0,
             "repeat_trace": [],
+            "blocked_move_frames": 0,
         }
 
     def step(self, action):
@@ -53,6 +54,7 @@ class ActionRepeat(gym.Wrapper):
         terms = defaultdict(float)
         events = []
         trace = []
+        blocked_frames = 0
 
         for _ in range(self.repeat):
             obs, reward, terminated, truncated, info = (
@@ -61,6 +63,8 @@ class ActionRepeat(gym.Wrapper):
 
             reward_sum += float(reward)
             self.physical_frames += 1
+            blocked_move = bool(info.get("blocked_move", False))
+            blocked_frames += int(blocked_move)
 
             for name, value in info.get("reward_terms", {}).items():
                 terms[name] += float(value)
@@ -78,6 +82,9 @@ class ActionRepeat(gym.Wrapper):
                 "goal_phase": info.get("goal_phase"),
                 "warmth": snapshot["carried"],
                 "quest_collected": snapshot["quest"]["collected"],
+                "blocked_move": blocked_move,
+                "stagnant": bool(info.get("stagnant", False)),
+                "local_loop": bool(info.get("local_loop", False)),
             })
 
             if terminated or truncated:
@@ -94,6 +101,7 @@ class ActionRepeat(gym.Wrapper):
             "physical_frames": self.physical_frames,
             "decision_steps": self.decisions,
             "repeat_trace": trace,
+            "blocked_move_frames": blocked_frames,
         }
 
         if "rl_episode" in info:
