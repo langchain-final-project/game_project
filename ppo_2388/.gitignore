@@ -1,0 +1,11 @@
+# 새 학습은 로컬에 저장하고, Git에는 trained_snapshot 공유본을 보관합니다.
+runs/
+__pycache__/
+*.py[cod]
+.venv/
+
+# 상위 저장소의 replays/ 제외 규칙보다 아래 공유 재생 자료를 우선합니다.
+!shared_snapshot/replays/
+!shared_snapshot/replays/**
+!trained_snapshot/evaluation/**/replays/
+!trained_snapshot/evaluation/**/replays/**

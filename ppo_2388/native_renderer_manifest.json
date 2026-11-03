@@ -1,0 +1,66 @@
+{
+  "scope": "Original renderer and assets with documented automatic-interaction hint correction in copied renderer; original project unchanged.",
+  "sha256": {
+    "assets/art/Essential_item.png": "7ebc5a20265e3ec8b28a40e926f3fcbe00dbb2bc3a4379ada01c3a2b8f13fbec",
+    "assets/art/character/a.png": "b98aadb065faf04b570b7c4e9961fbf53bd2a103b8d1b9bb8a852ad8bde0c292",
+    "assets/art/character/b.png": "2dcd056c481be2a2648ffb9336d2a98ad89c3168067977708243071cbf3dafd4",
+    "assets/art/character/c.png": "073a38e785086272682c120d625fe9cd1a67e4bc6768ec0b8ac1e63c7d0d3a26",
+    "assets/art/character/kkamang.png": "c3e671bdcb60b7ad0e90a8b5ba781046944a8032586d936ddb6527de1489d525",
+    "assets/art/map/map.png": "dd152cff724d4f33d4b98a65037cfcdf01f330eaa88fc003a14d35e544a8a7a8",
+    "assets/art/map/wall_flowers.png": "ce4f84a7b7f0338db605fbd1306c1bfab130bc2cb1f34cbd27f7c67233f59e3a",
+    "assets/art/map/wall_vine.png": "c98d623cc3e156ab87e4c2629704a75a0e675c9ec2bd780690fba74dd5d92425",
+    "assets/art/map/warmth.png": "2d2cd79baef66ad38e3692a9ac9524e83589ffa3d0e19e4537efdf23376f2577",
+    "assets/fonts/NotoSansKR-Bold.ttf": "0049d657bc4fba0690575078f27990eee5529645d294f1e7450c6ab23bdec3ab",
+    "assets/fonts/NotoSansKR-Regular.ttf": "dd6d1e051ac43e9d80531bcf1e968fe4d8f3770973de42ad4c10e4482f3d6047",
+    "assets/fonts/OFL.txt": "1c05c68c34f9708415aada51f17e1b0092d2cea709bf4a94cd38114f9e73d7d9",
+    "assets/icons/items/invincibility_item.png": "bf18e2319c466e7e645dc744da230bf327f14e3c49a1da0558909fa6990a07a4",
+    "assets/icons/items/magnet_item.png": "80499ac0d4b8f48b8c248a6e3dee4a66b1b6475d01fb3888a0968f74bbecf2d9",
+    "assets/provenance/art/user_art_manifest.json": "ebad3c7e6901ea173c36ba38429a35589428ec6b027a8e8e1b77b3648089abda",
+    "kkamang/ui/__init__.py": "fcd85523dabf394167d522eedec2ced20622b3f247579862d5dc61d85320b65b",
+    "kkamang/ui/cat_sprites.py": "e9d720f45ddbbb78739c3efb025f5fc3c0660851e29acc00df39f7f2027c50a9",
+    "kkamang/ui/field.py": "279a37ff46e3f6589181f62c7151267c3e50d579f21222b81c04d65f372bd551",
+    "kkamang/ui/ghost_sprites.py": "ac8ee3da3dff285e7a2ea47becce12f4cd01959a775c72e4b70bffe7c9ff1f36",
+    "kkamang/ui/illustration.py": "ef1989a6c4540d063add55eb9c05048708c66c0512aee96951c8fa7679097dba",
+    "kkamang/ui/map_sprites.py": "55ad2de31a18d1d946998d4410d4bd61924556c5d91fdcc48c1ea2d62138022a",
+    "kkamang/ui/theme.py": "30e66780fba96818c28d3842a1e02d0d4ca54a72be494b6cbb7d75562b055acc"
+  },
+  "original_sha256": {
+    "kkamang/ui/field.py": "2e2e88cf5e27ac5efa75f92b9717cfd4c3cb9aca84e05e2a9052a49c7ac621ff"
+  },
+  "display_only_overrides": {
+    "kkamang/ui/field.py": "In auto-interaction mode show automatic collection/return/shortcut hints instead of manual E prompts. Core, physics, rewards and policy unchanged."
+  },
+  "distribution_scope": "A2C 학습·평가·실제 맵 관람용. 원본 게임 전체 메뉴 배포는 포함하지 않습니다.",
+  "excluded_unused_menu_assets": {
+    "assets/art/character/resident_bosong.png": {
+      "sha256": "84e92a8fe07e4f8801b0c5bd131a5677dff4ee045d12c92cc5e5dce1319dc7e6",
+      "bytes": 989361,
+      "reason": "현재 RL 학습·평가·실제 맵 관람에서 호출하지 않는 로비·메뉴 그림"
+    },
+    "assets/art/character/resident_ipari.png": {
+      "sha256": "9fe017c1b0d143bcdc7dd0467740f266f81d8d1c198b96befcbcc962589bd506",
+      "bytes": 1622115,
+      "reason": "현재 RL 학습·평가·실제 맵 관람에서 호출하지 않는 로비·메뉴 그림"
+    },
+    "assets/art/character/resident_dore.png": {
+      "sha256": "f8acac3aa33f71425669af49cc9de1b6c2af78d438fd6e8198380bd4535fb4b8",
+      "bytes": 1245494,
+      "reason": "현재 RL 학습·평가·실제 맵 관람에서 호출하지 않는 로비·메뉴 그림"
+    },
+    "assets/art/character/kkamang_wait.png": {
+      "sha256": "e2a564c1ab915924c0a9db5c9fedb570be1659d3212a60126c62efb78caca45c",
+      "bytes": 1027314,
+      "reason": "현재 RL 학습·평가·실제 맵 관람에서 호출하지 않는 로비·메뉴 그림"
+    },
+    "assets/art/map/lantern_frame.png": {
+      "sha256": "cee3281ca65dea146a812ea8b53baf74b0f25c4d90677363b5ae33931d430ffc",
+      "bytes": 382767,
+      "reason": "현재 RL 학습·평가·실제 맵 관람에서 호출하지 않는 로비·메뉴 그림"
+    },
+    "assets/art/map/lantern_off.png": {
+      "sha256": "48e79e9920b2161f2bb532afcfc46f1ccc754e210664961fbe47897faa8325fe",
+      "bytes": 36236,
+      "reason": "현재 RL 학습·평가·실제 맵 관람에서 호출하지 않는 로비·메뉴 그림"
+    }
+  }
+}

@@ -1,0 +1,730 @@
+{
+  "label": "round_080",
+  "steps": 8007808,
+  "updates": 625600,
+  "checkpoint": "checkpoints/round_080_step_0008007808.zip",
+  "checkpoint_sha256": "7e19b78b067139ced9554f0fea7d46bedad2f7610d7a5efa533d208299b74295",
+  "metrics": {
+    "greedy": {
+      "1": {
+        "stage": 1,
+        "episodes": 1,
+        "mean_score": 94.0,
+        "return_rate": 1.0,
+        "score40_rate": 1.0,
+        "star1_rate": 1.0,
+        "star2_rate": 1.0,
+        "star3_rate": 1.0,
+        "quest_rate": 1.0,
+        "mean_warmth": 13.0,
+        "mean_damage_count": 0.0,
+        "mean_policy_steps": 32.0,
+        "mean_physical_frames": 564.0,
+        "mean_wall_stall_decisions": 0.0,
+        "mean_visited_cells": 25.0,
+        "entropy": 0.3790025398484431,
+        "mean_max_action_probability": 0.8347179125994444,
+        "score_distribution": {
+          "94": 1
+        },
+        "reasons": {
+          "returned": 1
+        },
+        "replay": "evaluation/round_080/greedy/replays/stage_01_greedy.json"
+      },
+      "2": {
+        "stage": 2,
+        "episodes": 1,
+        "mean_score": 100.0,
+        "return_rate": 1.0,
+        "score40_rate": 1.0,
+        "star1_rate": 1.0,
+        "star2_rate": 1.0,
+        "star3_rate": 1.0,
+        "quest_rate": 1.0,
+        "mean_warmth": 14.0,
+        "mean_damage_count": 0.0,
+        "mean_policy_steps": 25.0,
+        "mean_physical_frames": 442.0,
+        "mean_wall_stall_decisions": 2.0,
+        "mean_visited_cells": 21.0,
+        "entropy": 0.43540550269186495,
+        "mean_max_action_probability": 0.8044049787521362,
+        "score_distribution": {
+          "100": 1
+        },
+        "reasons": {
+          "returned": 1
+        },
+        "replay": "evaluation/round_080/greedy/replays/stage_02_greedy.json"
+      },
+      "3": {
+        "stage": 3,
+        "episodes": 1,
+        "mean_score": 100.0,
+        "return_rate": 1.0,
+        "score40_rate": 1.0,
+        "star1_rate": 1.0,
+        "star2_rate": 1.0,
+        "star3_rate": 1.0,
+        "quest_rate": 1.0,
+        "mean_warmth": 14.0,
+        "mean_damage_count": 0.0,
+        "mean_policy_steps": 66.0,
+        "mean_physical_frames": 1180.0,
+        "mean_wall_stall_decisions": 0.0,
+        "mean_visited_cells": 51.0,
+        "entropy": 0.4394922507080165,
+        "mean_max_action_probability": 0.8319158829522856,
+        "score_distribution": {
+          "100": 1
+        },
+        "reasons": {
+          "returned": 1
+        },
+        "replay": "evaluation/round_080/greedy/replays/stage_03_greedy.json"
+      },
+      "4": {
+        "stage": 4,
+        "episodes": 1,
+        "mean_score": 85.0,
+        "return_rate": 1.0,
+        "score40_rate": 1.0,
+        "star1_rate": 1.0,
+        "star2_rate": 1.0,
+        "star3_rate": 1.0,
+        "quest_rate": 1.0,
+        "mean_warmth": 14.0,
+        "mean_damage_count": 1.0,
+        "mean_policy_steps": 83.0,
+        "mean_physical_frames": 1482.0,
+        "mean_wall_stall_decisions": 3.0,
+        "mean_visited_cells": 50.0,
+        "entropy": 0.37108990799141933,
+        "mean_max_action_probability": 0.866417213017682,
+        "score_distribution": {
+          "85": 1
+        },
+        "reasons": {
+          "returned": 1
+        },
+        "replay": "evaluation/round_080/greedy/replays/stage_04_greedy.json"
+      },
+      "5": {
+        "stage": 5,
+        "episodes": 1,
+        "mean_score": 94.0,
+        "return_rate": 1.0,
+        "score40_rate": 1.0,
+        "star1_rate": 1.0,
+        "star2_rate": 1.0,
+        "star3_rate": 1.0,
+        "quest_rate": 1.0,
+        "mean_warmth": 13.0,
+        "mean_damage_count": 0.0,
+        "mean_policy_steps": 51.0,
+        "mean_physical_frames": 906.0,
+        "mean_wall_stall_decisions": 0.0,
+        "mean_visited_cells": 43.0,
+        "entropy": 0.3473571318329549,
+        "mean_max_action_probability": 0.860027502564823,
+        "score_distribution": {
+          "94": 1
+        },
+        "reasons": {
+          "returned": 1
+        },
+        "replay": "evaluation/round_080/greedy/replays/stage_05_greedy.json"
+      },
+      "6": {
+        "stage": 6,
+        "episodes": 1,
+        "mean_score": 76.0,
+        "return_rate": 1.0,
+        "score40_rate": 1.0,
+        "star1_rate": 1.0,
+        "star2_rate": 1.0,
+        "star3_rate": 0.0,
+        "quest_rate": 1.0,
+        "mean_warmth": 10.0,
+        "mean_damage_count": 0.0,
+        "mean_policy_steps": 45.0,
+        "mean_physical_frames": 802.0,
+        "mean_wall_stall_decisions": 1.0,
+        "mean_visited_cells": 37.0,
+        "entropy": 0.4762601113981671,
+        "mean_max_action_probability": 0.8174259854687584,
+        "score_distribution": {
+          "76": 1
+        },
+        "reasons": {
+          "returned": 1
+        },
+        "replay": "evaluation/round_080/greedy/replays/stage_06_greedy.json"
+      },
+      "7": {
+        "stage": 7,
+        "episodes": 1,
+        "mean_score": 94.0,
+        "return_rate": 1.0,
+        "score40_rate": 1.0,
+        "star1_rate": 1.0,
+        "star2_rate": 1.0,
+        "star3_rate": 1.0,
+        "quest_rate": 1.0,
+        "mean_warmth": 13.0,
+        "mean_damage_count": 0.0,
+        "mean_policy_steps": 42.0,
+        "mean_physical_frames": 748.0,
+        "mean_wall_stall_decisions": 0.0,
+        "mean_visited_cells": 42.0,
+        "entropy": 0.3978621240350462,
+        "mean_max_action_probability": 0.8504646803651538,
+        "score_distribution": {
+          "94": 1
+        },
+        "reasons": {
+          "returned": 1
+        },
+        "replay": "evaluation/round_080/greedy/replays/stage_07_greedy.json"
+      },
+      "8": {
+        "stage": 8,
+        "episodes": 1,
+        "mean_score": 100.0,
+        "return_rate": 1.0,
+        "score40_rate": 1.0,
+        "star1_rate": 1.0,
+        "star2_rate": 1.0,
+        "star3_rate": 1.0,
+        "quest_rate": 1.0,
+        "mean_warmth": 14.0,
+        "mean_damage_count": 0.0,
+        "mean_policy_steps": 46.0,
+        "mean_physical_frames": 820.0,
+        "mean_wall_stall_decisions": 0.0,
+        "mean_visited_cells": 43.0,
+        "entropy": 0.3464457363943043,
+        "mean_max_action_probability": 0.8582847675551539,
+        "score_distribution": {
+          "100": 1
+        },
+        "reasons": {
+          "returned": 1
+        },
+        "replay": "evaluation/round_080/greedy/replays/stage_08_greedy.json"
+      },
+      "9": {
+        "stage": 9,
+        "episodes": 1,
+        "mean_score": 0.0,
+        "return_rate": 0.0,
+        "score40_rate": 0.0,
+        "star1_rate": 0.0,
+        "star2_rate": 0.0,
+        "star3_rate": 0.0,
+        "quest_rate": 1.0,
+        "mean_warmth": 14.0,
+        "mean_damage_count": 3.0,
+        "mean_policy_steps": 89.0,
+        "mean_physical_frames": 1590.0,
+        "mean_wall_stall_decisions": 3.0,
+        "mean_visited_cells": 40.0,
+        "entropy": 0.9045162039777536,
+        "mean_max_action_probability": 0.6093393992841913,
+        "score_distribution": {
+          "0": 1
+        },
+        "reasons": {
+          "courage": 1
+        },
+        "replay": "evaluation/round_080/greedy/replays/stage_09_greedy.json"
+      },
+      "10": {
+        "stage": 10,
+        "episodes": 1,
+        "mean_score": 89.0,
+        "return_rate": 1.0,
+        "score40_rate": 1.0,
+        "star1_rate": 1.0,
+        "star2_rate": 1.0,
+        "star3_rate": 1.0,
+        "quest_rate": 1.0,
+        "mean_warmth": 13.0,
+        "mean_damage_count": 1.0,
+        "mean_policy_steps": 54.0,
+        "mean_physical_frames": 964.0,
+        "mean_wall_stall_decisions": 0.0,
+        "mean_visited_cells": 46.0,
+        "entropy": 0.2586598150018189,
+        "mean_max_action_probability": 0.9125836646115338,
+        "score_distribution": {
+          "89": 1
+        },
+        "reasons": {
+          "returned": 1
+        },
+        "replay": "evaluation/round_080/greedy/replays/stage_10_greedy.json"
+      },
+      "11": {
+        "stage": 11,
+        "episodes": 1,
+        "mean_score": 82.0,
+        "return_rate": 1.0,
+        "score40_rate": 1.0,
+        "star1_rate": 1.0,
+        "star2_rate": 1.0,
+        "star3_rate": 0.0,
+        "quest_rate": 1.0,
+        "mean_warmth": 11.0,
+        "mean_damage_count": 0.0,
+        "mean_policy_steps": 64.0,
+        "mean_physical_frames": 1144.0,
+        "mean_wall_stall_decisions": 1.0,
+        "mean_visited_cells": 46.0,
+        "entropy": 0.40623507273267023,
+        "mean_max_action_probability": 0.8448910103179514,
+        "score_distribution": {
+          "82": 1
+        },
+        "reasons": {
+          "returned": 1
+        },
+        "replay": "evaluation/round_080/greedy/replays/stage_11_greedy.json"
+      },
+      "12": {
+        "stage": 12,
+        "episodes": 1,
+        "mean_score": 80.0,
+        "return_rate": 1.0,
+        "score40_rate": 1.0,
+        "star1_rate": 1.0,
+        "star2_rate": 1.0,
+        "star3_rate": 0.0,
+        "quest_rate": 1.0,
+        "mean_warmth": 12.0,
+        "mean_damage_count": 1.0,
+        "mean_policy_steps": 54.0,
+        "mean_physical_frames": 964.0,
+        "mean_wall_stall_decisions": 0.0,
+        "mean_visited_cells": 45.0,
+        "entropy": 0.3755428397131187,
+        "mean_max_action_probability": 0.8758498038406726,
+        "score_distribution": {
+          "80": 1
+        },
+        "reasons": {
+          "returned": 1
+        },
+        "replay": "evaluation/round_080/greedy/replays/stage_12_greedy.json"
+      }
+    },
+    "stochastic": {
+      "1": {
+        "stage": 1,
+        "episodes": 20,
+        "mean_score": 90.25,
+        "return_rate": 0.95,
+        "score40_rate": 0.95,
+        "star1_rate": 0.95,
+        "star2_rate": 0.95,
+        "star3_rate": 0.95,
+        "quest_rate": 0.95,
+        "mean_warmth": 12.9,
+        "mean_damage_count": 0.0,
+        "mean_policy_steps": 43.95,
+        "mean_physical_frames": 781.0,
+        "mean_wall_stall_decisions": 2.85,
+        "mean_visited_cells": 25.75,
+        "entropy": 0.4525104195443199,
+        "mean_max_action_probability": 0.8159467332124439,
+        "score_distribution": {
+          "94": 15,
+          "0": 1,
+          "95": 1,
+          "100": 3
+        },
+        "reasons": {
+          "returned": 19,
+          "timeout": 1
+        },
+        "replay": "evaluation/round_080/stochastic/replays/stage_01_stochastic.json"
+      },
+      "2": {
+        "stage": 2,
+        "episodes": 20,
+        "mean_score": 82.85,
+        "return_rate": 0.95,
+        "score40_rate": 0.95,
+        "star1_rate": 0.95,
+        "star2_rate": 0.9,
+        "star3_rate": 0.7,
+        "quest_rate": 1.0,
+        "mean_warmth": 12.35,
+        "mean_damage_count": 0.45,
+        "mean_policy_steps": 32.5,
+        "mean_physical_frames": 575.7,
+        "mean_wall_stall_decisions": 2.25,
+        "mean_visited_cells": 21.65,
+        "entropy": 0.4582996885077311,
+        "mean_max_action_probability": 0.8086321299351179,
+        "score_distribution": {
+          "90": 1,
+          "94": 8,
+          "55": 1,
+          "100": 1,
+          "76": 4,
+          "89": 4,
+          "0": 1
+        },
+        "reasons": {
+          "returned": 19,
+          "courage": 1
+        },
+        "replay": "evaluation/round_080/stochastic/replays/stage_02_stochastic.json"
+      },
+      "3": {
+        "stage": 3,
+        "episodes": 20,
+        "mean_score": 89.4,
+        "return_rate": 0.95,
+        "score40_rate": 0.95,
+        "star1_rate": 0.95,
+        "star2_rate": 0.95,
+        "star3_rate": 0.95,
+        "quest_rate": 0.95,
+        "mean_warmth": 13.6,
+        "mean_damage_count": 0.4,
+        "mean_policy_steps": 75.75,
+        "mean_physical_frames": 1353.3,
+        "mean_wall_stall_decisions": 1.6,
+        "mean_visited_cells": 49.9,
+        "entropy": 0.46840148944124926,
+        "mean_max_action_probability": 0.8155406486476608,
+        "score_distribution": {
+          "100": 4,
+          "93": 6,
+          "97": 1,
+          "95": 1,
+          "94": 1,
+          "91": 3,
+          "0": 1,
+          "89": 1,
+          "90": 1,
+          "92": 1
+        },
+        "reasons": {
+          "returned": 19,
+          "timeout": 1
+        },
+        "replay": "evaluation/round_080/stochastic/replays/stage_03_stochastic.json"
+      },
+      "4": {
+        "stage": 4,
+        "episodes": 20,
+        "mean_score": 53.85,
+        "return_rate": 0.65,
+        "score40_rate": 0.65,
+        "star1_rate": 0.65,
+        "star2_rate": 0.65,
+        "star3_rate": 0.35,
+        "quest_rate": 0.8,
+        "mean_warmth": 13.5,
+        "mean_damage_count": 0.85,
+        "mean_policy_steps": 90.7,
+        "mean_physical_frames": 1626.4,
+        "mean_wall_stall_decisions": 2.6,
+        "mean_visited_cells": 46.45,
+        "entropy": 0.4284114468136295,
+        "mean_max_action_probability": 0.8393649087259761,
+        "score_distribution": {
+          "94": 1,
+          "0": 7,
+          "78": 3,
+          "90": 1,
+          "76": 1,
+          "69": 1,
+          "86": 1,
+          "88": 1,
+          "81": 1,
+          "85": 1,
+          "87": 2
+        },
+        "reasons": {
+          "returned": 13,
+          "timeout": 7
+        },
+        "replay": "evaluation/round_080/stochastic/replays/stage_04_stochastic.json"
+      },
+      "5": {
+        "stage": 5,
+        "episodes": 20,
+        "mean_score": 92.9,
+        "return_rate": 1.0,
+        "score40_rate": 1.0,
+        "star1_rate": 1.0,
+        "star2_rate": 1.0,
+        "star3_rate": 1.0,
+        "quest_rate": 1.0,
+        "mean_warmth": 12.9,
+        "mean_damage_count": 0.1,
+        "mean_policy_steps": 53.2,
+        "mean_physical_frames": 948.1,
+        "mean_wall_stall_decisions": 0.3,
+        "mean_visited_cells": 43.8,
+        "entropy": 0.323379393018383,
+        "mean_max_action_probability": 0.880258696055726,
+        "score_distribution": {
+          "94": 14,
+          "88": 3,
+          "89": 2,
+          "100": 1
+        },
+        "reasons": {
+          "returned": 20
+        },
+        "replay": "evaluation/round_080/stochastic/replays/stage_05_stochastic.json"
+      },
+      "6": {
+        "stage": 6,
+        "episodes": 20,
+        "mean_score": 58.5,
+        "return_rate": 0.7,
+        "score40_rate": 0.7,
+        "star1_rate": 0.7,
+        "star2_rate": 0.7,
+        "star3_rate": 0.35,
+        "quest_rate": 0.9,
+        "mean_warmth": 11.8,
+        "mean_damage_count": 1.25,
+        "mean_policy_steps": 60.2,
+        "mean_physical_frames": 1073.45,
+        "mean_wall_stall_decisions": 3.6,
+        "mean_visited_cells": 40.85,
+        "entropy": 0.577333026390795,
+        "mean_max_action_probability": 0.7804812729309167,
+        "score_distribution": {
+          "90": 1,
+          "76": 2,
+          "0": 6,
+          "79": 1,
+          "75": 1,
+          "83": 1,
+          "71": 2,
+          "100": 1,
+          "85": 1,
+          "89": 1,
+          "86": 1,
+          "94": 1,
+          "95": 1
+        },
+        "reasons": {
+          "returned": 14,
+          "courage": 5,
+          "timeout": 1
+        },
+        "replay": "evaluation/round_080/stochastic/replays/stage_06_stochastic.json"
+      },
+      "7": {
+        "stage": 7,
+        "episodes": 20,
+        "mean_score": 92.05,
+        "return_rate": 1.0,
+        "score40_rate": 1.0,
+        "star1_rate": 1.0,
+        "star2_rate": 1.0,
+        "star3_rate": 0.85,
+        "quest_rate": 1.0,
+        "mean_warmth": 12.95,
+        "mean_damage_count": 0.25,
+        "mean_policy_steps": 51.15,
+        "mean_physical_frames": 910.45,
+        "mean_wall_stall_decisions": 0.85,
+        "mean_visited_cells": 42.35,
+        "entropy": 0.42911471844626226,
+        "mean_max_action_probability": 0.8361786793141771,
+        "score_distribution": {
+          "94": 16,
+          "83": 1,
+          "81": 1,
+          "84": 1,
+          "89": 1
+        },
+        "reasons": {
+          "returned": 20
+        },
+        "replay": "evaluation/round_080/stochastic/replays/stage_07_stochastic.json"
+      },
+      "8": {
+        "stage": 8,
+        "episodes": 20,
+        "mean_score": 97.2,
+        "return_rate": 1.0,
+        "score40_rate": 1.0,
+        "star1_rate": 1.0,
+        "star2_rate": 1.0,
+        "star3_rate": 1.0,
+        "quest_rate": 1.0,
+        "mean_warmth": 13.8,
+        "mean_damage_count": 0.25,
+        "mean_policy_steps": 50.7,
+        "mean_physical_frames": 902.35,
+        "mean_wall_stall_decisions": 0.8,
+        "mean_visited_cells": 44.2,
+        "entropy": 0.39243990600134815,
+        "mean_max_action_probability": 0.8475352844601788,
+        "score_distribution": {
+          "95": 4,
+          "94": 4,
+          "100": 10,
+          "99": 1,
+          "89": 1
+        },
+        "reasons": {
+          "returned": 20
+        },
+        "replay": "evaluation/round_080/stochastic/replays/stage_08_stochastic.json"
+      },
+      "9": {
+        "stage": 9,
+        "episodes": 20,
+        "mean_score": 8.05,
+        "return_rate": 0.1,
+        "score40_rate": 0.1,
+        "star1_rate": 0.1,
+        "star2_rate": 0.1,
+        "star3_rate": 0.05,
+        "quest_rate": 0.9,
+        "mean_warmth": 13.15,
+        "mean_damage_count": 2.4,
+        "mean_policy_steps": 76.95,
+        "mean_physical_frames": 1378.1,
+        "mean_wall_stall_decisions": 5.85,
+        "mean_visited_cells": 42.55,
+        "entropy": 0.7279541863163641,
+        "mean_max_action_probability": 0.6999647125088603,
+        "score_distribution": {
+          "0": 18,
+          "85": 1,
+          "76": 1
+        },
+        "reasons": {
+          "courage": 11,
+          "timeout": 7,
+          "returned": 2
+        },
+        "replay": "evaluation/round_080/stochastic/replays/stage_09_stochastic.json"
+      },
+      "10": {
+        "stage": 10,
+        "episodes": 20,
+        "mean_score": 91.05,
+        "return_rate": 1.0,
+        "score40_rate": 1.0,
+        "star1_rate": 1.0,
+        "star2_rate": 0.95,
+        "star3_rate": 0.95,
+        "quest_rate": 1.0,
+        "mean_warmth": 12.8,
+        "mean_damage_count": 0.35,
+        "mean_policy_steps": 62.35,
+        "mean_physical_frames": 1112.05,
+        "mean_wall_stall_decisions": 1.45,
+        "mean_visited_cells": 46.95,
+        "entropy": 0.3031978830500971,
+        "mean_max_action_probability": 0.8888765598595764,
+        "score_distribution": {
+          "89": 5,
+          "100": 2,
+          "94": 11,
+          "54": 1,
+          "88": 1
+        },
+        "reasons": {
+          "returned": 20
+        },
+        "replay": "evaluation/round_080/stochastic/replays/stage_10_stochastic.json"
+      },
+      "11": {
+        "stage": 11,
+        "episodes": 20,
+        "mean_score": 67.45,
+        "return_rate": 0.9,
+        "score40_rate": 0.9,
+        "star1_rate": 0.9,
+        "star2_rate": 0.8,
+        "star3_rate": 0.0,
+        "quest_rate": 0.95,
+        "mean_warmth": 11.15,
+        "mean_damage_count": 0.8,
+        "mean_policy_steps": 68.5,
+        "mean_physical_frames": 1224.4,
+        "mean_wall_stall_decisions": 3.5,
+        "mean_visited_cells": 44.1,
+        "entropy": 0.4599417111326526,
+        "mean_max_action_probability": 0.8299375142711792,
+        "score_distribution": {
+          "77": 3,
+          "67": 1,
+          "59": 1,
+          "0": 2,
+          "71": 1,
+          "70": 1,
+          "81": 3,
+          "82": 4,
+          "62": 1,
+          "69": 1,
+          "76": 1,
+          "73": 1
+        },
+        "reasons": {
+          "returned": 18,
+          "courage": 1,
+          "timeout": 1
+        },
+        "replay": "evaluation/round_080/stochastic/replays/stage_11_stochastic.json"
+      },
+      "12": {
+        "stage": 12,
+        "episodes": 20,
+        "mean_score": 63.1,
+        "return_rate": 0.9,
+        "score40_rate": 0.9,
+        "star1_rate": 0.85,
+        "star2_rate": 0.7,
+        "star3_rate": 0.05,
+        "quest_rate": 1.0,
+        "mean_warmth": 11.0,
+        "mean_damage_count": 1.15,
+        "mean_policy_steps": 58.95,
+        "mean_physical_frames": 1053.35,
+        "mean_wall_stall_decisions": 0.85,
+        "mean_visited_cells": 43.9,
+        "entropy": 0.4203619468464272,
+        "mean_max_action_probability": 0.8595822491920834,
+        "score_distribution": {
+          "71": 2,
+          "77": 1,
+          "80": 1,
+          "74": 2,
+          "0": 2,
+          "63": 3,
+          "67": 1,
+          "66": 2,
+          "69": 1,
+          "81": 1,
+          "78": 1,
+          "85": 1,
+          "44": 1,
+          "70": 1
+        },
+        "reasons": {
+          "returned": 18,
+          "courage": 2
+        },
+        "replay": "evaluation/round_080/stochastic/replays/stage_12_stochastic.json"
+      }
+    }
+  },
+  "scope": "development G1/S20; native original starts; fixed ghost phase"
+}

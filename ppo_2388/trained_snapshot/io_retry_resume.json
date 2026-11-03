@@ -1,0 +1,90 @@
+{
+  "patch": "windows_file_lock_retry_v1",
+  "created_at_kst": "2026-11-02T23:25:39.446462+09:00",
+  "original_run": "runs/seed_11_20261102_230005_281926",
+  "original_metadata_sha256": "b7eef86bc5a7611e515f7e562ec04ad8f9d6256e1950d798211fe1921a77e586",
+  "original_error": "PermissionError: [WinError 5] 액세스가 거부되었습니다: 'C:\\\\Users\\\\gkoh\\\\.vscode\\\\KDT\\\\game_project\\\\ppo_2388\\\\runs\\\\seed_11_20261102_230005_281926\\\\live.json.tmp' -> 'C:\\\\Users\\\\gkoh\\\\.vscode\\\\KDT\\\\game_project\\\\ppo_2388\\\\runs\\\\seed_11_20261102_230005_281926\\\\live.json'",
+  "steps": 96128,
+  "updates": 7500,
+  "checkpoint": "resume_A.zip",
+  "checkpoint_sha256": "858a3effa88477de48135f03953a245497164e66b1468819bc970d001568a512",
+  "configuration_sha256": "f8936b76b064a855d51d9e82377038fb0276e66c60f7c4e0dc1da77675044d5e",
+  "source_changes": {
+    "a2c_game/evaluation.py": {
+      "before": "b24e21598dceeb53ac246d1824adadd8053b8144df7fdd0d89d9bd5e0962472c",
+      "after": "dc9659c7125d3dba9a867544306ae3d0aeef912ffe6dee137aadefe239070f01"
+    },
+    "a2c_game/file_io.py": {
+      "before": null,
+      "after": "c2d2d67f60b11bb6d2979bf02a7a2f5c5ad3625c911046d293c866eb5e9eae3f"
+    },
+    "a2c_game/fresh_training.py": {
+      "before": "aa7c8ba83c744d1cc0643ca0e6e61ffba738c8acab3c09751d17593ceaf87359",
+      "after": "4067eb051ba0606dfbf8c483e66d72c708567f5508924838ec8d449a17e20a4b"
+    },
+    "a2c_game/runtime.py": {
+      "before": "b60c7ead03a02e5b77e2e036b5a77c5a4ab18821c2643a21bb65bca50b012474",
+      "after": "6828d52ed96a853cfca6f56fbc9d0a774bae7ad92efab65e9bedea9dcd2edc89"
+    },
+    "a2c_game/train.py": {
+      "before": "be7d7774aaa69872e9f32407b45b49cd8540789ad29ead8f11142688f5d61ed2",
+      "after": "06f277fda82e7c2413a41513d2c71bd2c743e3514341c0491d26a8ca31e332c5"
+    }
+  },
+  "original_source_hashes": {
+    "a2c_game/__init__.py": "b6e257a4038f26b65d36fcf6615c43f4f4353c082a1a431462fb9837fd7ea668",
+    "a2c_game/config.py": "83e9e53b1f5f148b301a7d0b3836293eea637a7a7fba3a45728a0a5f3aa3e929",
+    "a2c_game/dashboard.py": "3aa0191cbf22ee6ed2fa2ce4e6f6b1ea62a06221a806d2c04fc4549cf3c21447",
+    "a2c_game/display_units.py": "234403a3700800a2491a6c3d8145a556bf3eb5a0e24fe103162fb830564b5956",
+    "a2c_game/distance.py": "a0d298fb69f48bb2ec6a3a65a31572db0f27d7f9c7102d64769529fa3dede7ed",
+    "a2c_game/environment.py": "550a30df32ddfb5de9c217eac73fab669dd27a5b3a620cd8ad616c191005ce5c",
+    "a2c_game/evaluation.py": "b24e21598dceeb53ac246d1824adadd8053b8144df7fdd0d89d9bd5e0962472c",
+    "a2c_game/fresh_training.py": "aa7c8ba83c744d1cc0643ca0e6e61ffba738c8acab3c09751d17593ceaf87359",
+    "a2c_game/learning_utils.py": "84890bf5afe267be8b3c41ed9ccde361cca02748fe86183d62ac4e5395ffdc6f",
+    "a2c_game/navigation_observation.py": "de01fda1e76146e5cd4e3526b5703e74c79545b687d6af465a3ef0c6dced6d79",
+    "a2c_game/observation.py": "049ccab715192489e1c3634a31ae6c629d950f9f048cd908cb00b467a158e3e0",
+    "a2c_game/paths.py": "e1c53e31e2b548640cc2e6dd144e660e22d630947f70397d2ae81cada59911ce",
+    "a2c_game/play.py": "7f7baee7964e34561e47a7187df1631dbc9cafd6e05fb03b3e3dfc2bba1da714",
+    "a2c_game/policy.py": "71eb93a1f1bb41f9f37df707fa0ba033c3461b9f06cfec3ecec6ed404b9d8302",
+    "a2c_game/refinement.py": "2d5d3e715e900bdbf2819de945a9d780e14d31f43f5bd9a1dab0ed36f4d5f5cb",
+    "a2c_game/rollout_core.py": "83a367d746fda101b733aeef9d5495fa4c7864c2e305eb1c7d099e3ba543e3a4",
+    "a2c_game/runtime.py": "b60c7ead03a02e5b77e2e036b5a77c5a4ab18821c2643a21bb65bca50b012474",
+    "a2c_game/team.py": "8e4f8e9aff3a2fbdf7882ad83f692fc835b143fb4d54b9ffe1dc89ef660eef44",
+    "a2c_game/train.py": "be7d7774aaa69872e9f32407b45b49cd8540789ad29ead8f11142688f5d61ed2",
+    "a2c_game/visual.py": "4b2ee66b50f7a68cf8f6c3d98009296b2022f171ede278d7633e1e24d7cc6427",
+    "game_source/data/levels/compact_observation_contract.json": "a96486392162c4377d5493eb773509fc18a0b78abf02848ac5ce8c1363f482a1",
+    "game_source/data/levels/index.json": "f5d3a523e7a1b06642f0c74469beb164434fe937baff9e0aa93a6c841670529d",
+    "game_source/data/levels/interaction_ready_observation_contract.json": "f532cbb7fe69bcb3f56fdc1fbf62531010f17f685d57e865ef5b47413c6dc345",
+    "game_source/data/levels/level.schema.json": "a4baa406d58fe5888aa5a1210e44ab351a73c41003a5a4eab8d1f125f05c089a",
+    "game_source/data/levels/navigation_observation_contract.json": "01cb72817b6f133d39e7846b9bd40e20079e671a1c0cc33fc9751ab6cfc9a018",
+    "game_source/data/levels/observation_contract.json": "8026422d09a3b77a059be301ad62f6285d630f9a3cbac803dfaaa16f1df91a95",
+    "game_source/data/levels/realtime_action_repeat_contract.json": "9b795d08a2b38a15aa6deb6975951ce49f59e9b2b7c085e9178896b51e8da9c6",
+    "game_source/data/levels/realtime_interaction_ready_observation_contract.json": "a50ad485d50819b9a39cd08bbe74b3bae90d65345e832d6bbc7464f5272cc62e",
+    "game_source/data/levels/realtime_observation_contract.json": "1a73c90727995eb7c399dfb1b9ea9cc48c52671d63b594378fcc83eebb0f4fab",
+    "game_source/data/levels/stage_01.json": "0cb17d48bd67ee22ee40275cbc3e89e848c17acef5fb9274680de3810717be47",
+    "game_source/data/levels/stage_02.json": "d9700d0c6472f58920d5aea38d8aabe67c5b66cff27e6fdbac285995b60ccc03",
+    "game_source/data/levels/stage_03.json": "ed4aded3b03bda166015cd389010ccf7ade56f3f8b15bc2084c1ba1ee207acfc",
+    "game_source/data/levels/stage_04.json": "fa96c2e038bc99496305b1eb9731ceb04e3072ee0fb6d44d0bff79b0355326fb",
+    "game_source/data/levels/stage_05.json": "6eb2eebbd3609df47e9f4dd4960a71b25eff8b31facf17e02dd8355cb307b794",
+    "game_source/data/levels/stage_06.json": "fdba9c7eb0ff453c2fffa09b843b2545cd6cf046b1f7b13432240cb7e14fae2b",
+    "game_source/data/levels/stage_07.json": "bcf1446a02f355fda24c8c4023f736b573dd31b235a1e20034d9e5d8eddb4108",
+    "game_source/data/levels/stage_08.json": "c5df9d587ab1499f9cec2081ddeef5118e7be21011295623ff42731ffa1d5549",
+    "game_source/data/levels/stage_09.json": "cef2ff8ff699483858f62bf1a911eaa63c8547d323ad33580fbe47f23d3ed598",
+    "game_source/data/levels/stage_10.json": "48b01e16d5efbfd6ec562d1107a623c30452d2f3ca499f5a8bd84661bb0964f2",
+    "game_source/data/levels/stage_11.json": "101d35f10b1e616c60ff242924cab80ad11c83545ea566dd8c650e4cfba70d9d",
+    "game_source/data/levels/stage_12.json": "1b7be6a0f714c4e88a48da5a2f38a31f3f78f705e08e1f4ff7a6eae34e130297",
+    "game_source/kkamang/__init__.py": "b85be6622a0d93d5c1d9de4f0867c40299d2cd2c60804225c661a0dff146c5d3",
+    "game_source/kkamang/core.py": "47190d6c3c9e1c57f69137968adb2b7bf5133c1b049a194bc3c05bda2bb2a479",
+    "game_source/kkamang/ending_content.py": "0c133f0df86b6099259675f3bffa2841e0053e49900d3d7523df36539dacf9c2",
+    "game_source/kkamang/env.py": "c15da2f8e3436068ff0f052b202b111d244aefb694d3a25077a79780c18deef5",
+    "game_source/kkamang/levels.py": "a45314c04f21a390912e20e6004fbcc31d86dd7d9eb7f8f08eb144e618661539",
+    "game_source/kkamang/paths.py": "cc83fb8e1ed8523b775749b3bab7fcff4d23220595b2886db94b79b8db5c337b",
+    "game_source/kkamang/realtime.py": "d2700b0a3c4967d4cf44b12f6314e0198ee548b23cc63a17f80195013b28c831",
+    "game_source/kkamang/scoring.py": "27b498927c12f44f6e8b459f22c9aef9c28f1353ab1eb77a466d3deabbaeddd1",
+    "game_source/kkamang/story.py": "8885484c20d03b880f5230b6fc09f1c2ac699adbc88374c7de166c090b7629e0",
+    "game_source_manifest.json": "d6ef6de7d4151f36b15bc4988479dd6bef99597f3a9913762ab09d5efc1b15fe",
+    "requirements.txt": "91386ea7d4a012b6ffb488b768ef147eb058f253e2d09d5a44cb0137b7759d93",
+    "run.py": "20df856b7d6e81ead346f856a8289e7221cff8c16e7501905bc31e47bd085f33"
+  },
+  "training_updates_added": 0
+}

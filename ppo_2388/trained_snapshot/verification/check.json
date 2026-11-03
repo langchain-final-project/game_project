@@ -1,0 +1,25 @@
+{
+  "status": "passed",
+  "input_dimensions": 2388,
+  "checked_stages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "steps": 10000000,
+  "updates": 781240,
+  "training_updates_added": 0,
+  "fresh_initialization": "fresh_random_parameters_and_empty_Adam",
+  "checkpoint_sha256_before": "e21b21bd51ce1a13fba762f1c402050eab01ef86f4164325dc87926f26edcac6",
+  "checkpoint_sha256_after": "e21b21bd51ce1a13fba762f1c402050eab01ef86f4164325dc87926f26edcac6",
+  "empty_Adam": false
+}

@@ -1,0 +1,13 @@
+﻿stage,mode,episode,seed,action_seed,score,game_return,star1,star2,star3,score40,quest_collected,warmth,damage_count,policy_steps,physical_frames,wall_stall_decisions,visited_cells,reason,native_status,evaluation_return
+1,greedy,0,20000,1010000,100,True,True,True,True,True,True,14,0,31,550,6,23,returned,COMPLETE,1.9970007501250475
+2,greedy,0,30000,2010000,100,True,True,True,True,True,True,14,0,23,406,0,21,returned,COMPLETE,1.9970007501250475
+3,greedy,0,40000,3010000,100,True,True,True,True,True,True,14,0,60,1068,2,48,returned,COMPLETE,1.9983331943904032
+4,greedy,0,50000,4010000,100,True,True,True,True,True,True,14,0,59,1050,1,44,returned,COMPLETE,1.9983331943904032
+5,greedy,0,60000,5010000,100,True,True,True,True,True,True,14,0,46,820,0,42,returned,COMPLETE,1.9970007501250475
+6,greedy,0,70000,6010000,94,True,True,True,True,True,True,13,0,43,766,0,40,returned,COMPLETE,1.937090727621296
+7,greedy,0,80000,7010000,94,True,True,True,True,True,True,13,0,40,712,0,39,returned,COMPLETE,1.937090727621296
+8,greedy,0,90000,8010000,95,True,True,True,True,True,True,14,1,47,838,0,41,returned,COMPLETE,1.9470757313719211
+9,greedy,0,100000,9010000,0,False,False,False,False,False,False,8,0,100,1800,31,30,timeout,FAILED,-0.9971692631674088
+10,greedy,0,110000,10010000,100,True,True,True,True,True,True,14,0,58,1036,0,44,returned,COMPLETE,1.9970007501250475
+11,greedy,0,120000,11010000,82,True,True,True,False,True,True,11,0,64,1147,0,39,returned,COMPLETE,0.8183608200000003
+12,greedy,0,130000,12010000,76,True,True,True,False,True,True,11,0,56,1003,3,40,returned,COMPLETE,0.7584807600000004

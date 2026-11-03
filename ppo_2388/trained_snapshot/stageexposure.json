@@ -1,0 +1,86 @@
+{
+  "1": {
+    "learner_steps": 394978,
+    "physical_frames": 7027631,
+    "episodes": 10549,
+    "returns": 9982,
+    "highscores": 9131
+  },
+  "2": {
+    "learner_steps": 384305,
+    "physical_frames": 6814743,
+    "episodes": 13022,
+    "returns": 12230,
+    "highscores": 11655
+  },
+  "3": {
+    "learner_steps": 894686,
+    "physical_frames": 16031589,
+    "episodes": 11447,
+    "returns": 7473,
+    "highscores": 6920
+  },
+  "4": {
+    "learner_steps": 928235,
+    "physical_frames": 16619365,
+    "episodes": 12118,
+    "returns": 8434,
+    "highscores": 7697
+  },
+  "5": {
+    "learner_steps": 540468,
+    "physical_frames": 9648976,
+    "episodes": 9787,
+    "returns": 8200,
+    "highscores": 7825
+  },
+  "6": {
+    "learner_steps": 571426,
+    "physical_frames": 10196307,
+    "episodes": 11226,
+    "returns": 9652,
+    "highscores": 8899
+  },
+  "7": {
+    "learner_steps": 682667,
+    "physical_frames": 12179836,
+    "episodes": 13088,
+    "returns": 11518,
+    "highscores": 10191
+  },
+  "8": {
+    "learner_steps": 588884,
+    "physical_frames": 10504398,
+    "episodes": 11785,
+    "returns": 10558,
+    "highscores": 9195
+  },
+  "9": {
+    "learner_steps": 1429910,
+    "physical_frames": 25702942,
+    "episodes": 15143,
+    "returns": 99,
+    "highscores": 19
+  },
+  "10": {
+    "learner_steps": 1338191,
+    "physical_frames": 24009764,
+    "episodes": 15749,
+    "returns": 3281,
+    "highscores": 2402
+  },
+  "11": {
+    "learner_steps": 1160007,
+    "physical_frames": 20798114,
+    "episodes": 14959,
+    "returns": 3432,
+    "highscores": 113
+  },
+  "12": {
+    "learner_steps": 1086243,
+    "physical_frames": 19479715,
+    "episodes": 16207,
+    "returns": 3125,
+    "highscores": 13
+  }
+}

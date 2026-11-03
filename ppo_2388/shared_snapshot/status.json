@@ -1,0 +1,26 @@
+{
+  "algorithm": "A2C",
+  "steps": 9999996,
+  "updates": 78124,
+  "total_steps": 10000000,
+  "stage_pool": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "status": "complete_not_passed",
+  "goal_achieved": false,
+  "latest_checkpoint": "model.zip",
+  "best_checkpoint": "model.zip",
+  "selected_steps": 9709436,
+  "run_name": "공유 선정 모델"
+}

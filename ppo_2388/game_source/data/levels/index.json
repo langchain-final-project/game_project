@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "levels": [
+    {
+      "id": "stage_01",
+      "name": "젖은 현관",
+      "file": "stage_01.json"
+    },
+    {
+      "id": "stage_02",
+      "name": "긴 복도",
+      "file": "stage_02.json"
+    },
+    {
+      "id": "stage_03",
+      "name": "액자 회랑",
+      "file": "stage_03.json"
+    },
+    {
+      "id": "stage_04",
+      "name": "작은 서재",
+      "file": "stage_04.json"
+    },
+    {
+      "id": "stage_05",
+      "name": "서재 뒤 샛길",
+      "file": "stage_05.json"
+    },
+    {
+      "id": "stage_06",
+      "name": "온실 외곽",
+      "file": "stage_06.json"
+    },
+    {
+      "id": "stage_07",
+      "name": "음악실",
+      "file": "stage_07.json"
+    },
+    {
+      "id": "stage_08",
+      "name": "식탁 옆 회랑",
+      "file": "stage_08.json"
+    },
+    {
+      "id": "stage_09",
+      "name": "두 갈래 응접실",
+      "file": "stage_09.json"
+    },
+    {
+      "id": "stage_10",
+      "name": "유리 회랑",
+      "file": "stage_10.json"
+    },
+    {
+      "id": "stage_11",
+      "name": "시계 아래 복도",
+      "file": "stage_11.json"
+    },
+    {
+      "id": "stage_12",
+      "name": "정원 앞 홀",
+      "file": "stage_12.json"
+    }
+  ]
+}
