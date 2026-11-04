@@ -1,0 +1,36 @@
+{
+  "scope": "greedy, 8M to 10M policy steps, 21 saved evaluations",
+  "sources": {
+    "ppo_2388\\shared_snapshot\\evaluation\\history.jsonl": "610cdb3b0a99c05bff17331f5f0c5b688bf0bcca88e5d15c746eedbc3f23ed08",
+    "ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\history.jsonl": "87a11b42711a0ec5be01b0f3ea8ddf7f7d8e4a53612bcd0988c375a81296462b"
+  },
+  "observations": {
+    "A2C": {
+      "late_greedy_evaluations": 21,
+      "late_passed_maps_min": 11,
+      "late_passed_maps_max": 12,
+      "stage9_greedy_return_count": 21,
+      "stage9_training_exposure": {
+        "learner_steps": 1207383,
+        "physical_frames": 21604445,
+        "episodes": 17544,
+        "returns": 12625,
+        "highscores": 10386
+      }
+    },
+    "PPO": {
+      "late_greedy_evaluations": 21,
+      "late_passed_maps_min": 3,
+      "late_passed_maps_max": 9,
+      "stage9_greedy_return_count": 0,
+      "stage9_training_exposure": {
+        "learner_steps": 1429910,
+        "physical_frames": 25702942,
+        "episodes": 15143,
+        "returns": 99,
+        "highscores": 19
+      }
+    }
+  },
+  "causal_attribution_confirmed": false
+}

@@ -1,0 +1,52 @@
+{
+  "metric": "greedy evaluation: maps returned with score >= 85 out of 12",
+  "training_seed": 11,
+  "episodes_per_stage_per_checkpoint": 1,
+  "fixed_native_ghost_phase": true,
+  "source_files": {
+    "ppo_2388\\shared_snapshot\\evaluation\\history.jsonl": "610cdb3b0a99c05bff17331f5f0c5b688bf0bcca88e5d15c746eedbc3f23ed08",
+    "ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\history.jsonl": "87a11b42711a0ec5be01b0f3ea8ddf7f7d8e4a53612bcd0988c375a81296462b"
+  },
+  "evaluation_points": {
+    "A2C": 101,
+    "PPO": 101
+  },
+  "comparison_models": {
+    "A2C": {
+      "algorithm": "A2C",
+      "steps": 9709436,
+      "evaluation_label": "round_097",
+      "passed_maps": 12,
+      "returned_maps": 12,
+      "mean_score": 97.41666666666667
+    },
+    "PPO": {
+      "algorithm": "PPO",
+      "steps": 9609344,
+      "evaluation_label": "round_096",
+      "passed_maps": 9,
+      "returned_maps": 11,
+      "mean_score": 86.75
+    }
+  },
+  "last_evaluations": {
+    "A2C": {
+      "algorithm": "A2C",
+      "steps": 9999996,
+      "evaluation_label": "round_100",
+      "passed_maps": 12,
+      "returned_maps": 12,
+      "mean_score": 97.41666666666667
+    },
+    "PPO": {
+      "algorithm": "PPO",
+      "steps": 10000000,
+      "evaluation_label": "round_100",
+      "passed_maps": 5,
+      "returned_maps": 8,
+      "mean_score": 60.416666666666664
+    }
+  },
+  "smoothing": false,
+  "seed_average_or_uncertainty_band": false
+}

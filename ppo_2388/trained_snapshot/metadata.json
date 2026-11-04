@@ -1,0 +1,745 @@
+{
+  "version": "shared_native_game_ppo_v1",
+  "algorithm": "PPO",
+  "single_policy": true,
+  "initialization": "fresh_random_parameters_and_empty_Adam",
+  "teacher_actions": false,
+  "injected_game_states": false,
+  "frozen_prefix": false,
+  "status": "paused",
+  "steps": 10000000,
+  "updates": 781240,
+  "rollout_updates": 78124,
+  "total_steps": 10000000,
+  "seed": 11,
+  "config_sha256": "f8936b76b064a855d51d9e82377038fb0276e66c60f7c4e0dc1da77675044d5e",
+  "source_hashes": {
+    "a2c_game/__init__.py": "b6e257a4038f26b65d36fcf6615c43f4f4353c082a1a431462fb9837fd7ea668",
+    "a2c_game/config.py": "83e9e53b1f5f148b301a7d0b3836293eea637a7a7fba3a45728a0a5f3aa3e929",
+    "a2c_game/dashboard.py": "3aa0191cbf22ee6ed2fa2ce4e6f6b1ea62a06221a806d2c04fc4549cf3c21447",
+    "a2c_game/display_units.py": "234403a3700800a2491a6c3d8145a556bf3eb5a0e24fe103162fb830564b5956",
+    "a2c_game/distance.py": "a0d298fb69f48bb2ec6a3a65a31572db0f27d7f9c7102d64769529fa3dede7ed",
+    "a2c_game/environment.py": "550a30df32ddfb5de9c217eac73fab669dd27a5b3a620cd8ad616c191005ce5c",
+    "a2c_game/evaluation.py": "dc9659c7125d3dba9a867544306ae3d0aeef912ffe6dee137aadefe239070f01",
+    "a2c_game/file_io.py": "c2d2d67f60b11bb6d2979bf02a7a2f5c5ad3625c911046d293c866eb5e9eae3f",
+    "a2c_game/fresh_training.py": "4067eb051ba0606dfbf8c483e66d72c708567f5508924838ec8d449a17e20a4b",
+    "a2c_game/learning_utils.py": "84890bf5afe267be8b3c41ed9ccde361cca02748fe86183d62ac4e5395ffdc6f",
+    "a2c_game/navigation_observation.py": "de01fda1e76146e5cd4e3526b5703e74c79545b687d6af465a3ef0c6dced6d79",
+    "a2c_game/observation.py": "049ccab715192489e1c3634a31ae6c629d950f9f048cd908cb00b467a158e3e0",
+    "a2c_game/paths.py": "e1c53e31e2b548640cc2e6dd144e660e22d630947f70397d2ae81cada59911ce",
+    "a2c_game/play.py": "7f7baee7964e34561e47a7187df1631dbc9cafd6e05fb03b3e3dfc2bba1da714",
+    "a2c_game/policy.py": "71eb93a1f1bb41f9f37df707fa0ba033c3461b9f06cfec3ecec6ed404b9d8302",
+    "a2c_game/refinement.py": "2d5d3e715e900bdbf2819de945a9d780e14d31f43f5bd9a1dab0ed36f4d5f5cb",
+    "a2c_game/rollout_core.py": "83a367d746fda101b733aeef9d5495fa4c7864c2e305eb1c7d099e3ba543e3a4",
+    "a2c_game/runtime.py": "6828d52ed96a853cfca6f56fbc9d0a774bae7ad92efab65e9bedea9dcd2edc89",
+    "a2c_game/team.py": "8e4f8e9aff3a2fbdf7882ad83f692fc835b143fb4d54b9ffe1dc89ef660eef44",
+    "a2c_game/train.py": "06f277fda82e7c2413a41513d2c71bd2c743e3514341c0491d26a8ca31e332c5",
+    "a2c_game/visual.py": "4b2ee66b50f7a68cf8f6c3d98009296b2022f171ede278d7633e1e24d7cc6427",
+    "game_source/data/levels/compact_observation_contract.json": "a96486392162c4377d5493eb773509fc18a0b78abf02848ac5ce8c1363f482a1",
+    "game_source/data/levels/index.json": "f5d3a523e7a1b06642f0c74469beb164434fe937baff9e0aa93a6c841670529d",
+    "game_source/data/levels/interaction_ready_observation_contract.json": "f532cbb7fe69bcb3f56fdc1fbf62531010f17f685d57e865ef5b47413c6dc345",
+    "game_source/data/levels/level.schema.json": "a4baa406d58fe5888aa5a1210e44ab351a73c41003a5a4eab8d1f125f05c089a",
+    "game_source/data/levels/navigation_observation_contract.json": "01cb72817b6f133d39e7846b9bd40e20079e671a1c0cc33fc9751ab6cfc9a018",
+    "game_source/data/levels/observation_contract.json": "8026422d09a3b77a059be301ad62f6285d630f9a3cbac803dfaaa16f1df91a95",
+    "game_source/data/levels/realtime_action_repeat_contract.json": "9b795d08a2b38a15aa6deb6975951ce49f59e9b2b7c085e9178896b51e8da9c6",
+    "game_source/data/levels/realtime_interaction_ready_observation_contract.json": "a50ad485d50819b9a39cd08bbe74b3bae90d65345e832d6bbc7464f5272cc62e",
+    "game_source/data/levels/realtime_observation_contract.json": "1a73c90727995eb7c399dfb1b9ea9cc48c52671d63b594378fcc83eebb0f4fab",
+    "game_source/data/levels/stage_01.json": "0cb17d48bd67ee22ee40275cbc3e89e848c17acef5fb9274680de3810717be47",
+    "game_source/data/levels/stage_02.json": "d9700d0c6472f58920d5aea38d8aabe67c5b66cff27e6fdbac285995b60ccc03",
+    "game_source/data/levels/stage_03.json": "ed4aded3b03bda166015cd389010ccf7ade56f3f8b15bc2084c1ba1ee207acfc",
+    "game_source/data/levels/stage_04.json": "fa96c2e038bc99496305b1eb9731ceb04e3072ee0fb6d44d0bff79b0355326fb",
+    "game_source/data/levels/stage_05.json": "6eb2eebbd3609df47e9f4dd4960a71b25eff8b31facf17e02dd8355cb307b794",
+    "game_source/data/levels/stage_06.json": "fdba9c7eb0ff453c2fffa09b843b2545cd6cf046b1f7b13432240cb7e14fae2b",
+    "game_source/data/levels/stage_07.json": "bcf1446a02f355fda24c8c4023f736b573dd31b235a1e20034d9e5d8eddb4108",
+    "game_source/data/levels/stage_08.json": "c5df9d587ab1499f9cec2081ddeef5118e7be21011295623ff42731ffa1d5549",
+    "game_source/data/levels/stage_09.json": "cef2ff8ff699483858f62bf1a911eaa63c8547d323ad33580fbe47f23d3ed598",
+    "game_source/data/levels/stage_10.json": "48b01e16d5efbfd6ec562d1107a623c30452d2f3ca499f5a8bd84661bb0964f2",
+    "game_source/data/levels/stage_11.json": "101d35f10b1e616c60ff242924cab80ad11c83545ea566dd8c650e4cfba70d9d",
+    "game_source/data/levels/stage_12.json": "1b7be6a0f714c4e88a48da5a2f38a31f3f78f705e08e1f4ff7a6eae34e130297",
+    "game_source/kkamang/__init__.py": "b85be6622a0d93d5c1d9de4f0867c40299d2cd2c60804225c661a0dff146c5d3",
+    "game_source/kkamang/core.py": "47190d6c3c9e1c57f69137968adb2b7bf5133c1b049a194bc3c05bda2bb2a479",
+    "game_source/kkamang/ending_content.py": "0c133f0df86b6099259675f3bffa2841e0053e49900d3d7523df36539dacf9c2",
+    "game_source/kkamang/env.py": "c15da2f8e3436068ff0f052b202b111d244aefb694d3a25077a79780c18deef5",
+    "game_source/kkamang/levels.py": "a45314c04f21a390912e20e6004fbcc31d86dd7d9eb7f8f08eb144e618661539",
+    "game_source/kkamang/paths.py": "cc83fb8e1ed8523b775749b3bab7fcff4d23220595b2886db94b79b8db5c337b",
+    "game_source/kkamang/realtime.py": "d2700b0a3c4967d4cf44b12f6314e0198ee548b23cc63a17f80195013b28c831",
+    "game_source/kkamang/scoring.py": "27b498927c12f44f6e8b459f22c9aef9c28f1353ab1eb77a466d3deabbaeddd1",
+    "game_source/kkamang/story.py": "8885484c20d03b880f5230b6fc09f1c2ac699adbc88374c7de166c090b7629e0",
+    "game_source_manifest.json": "d6ef6de7d4151f36b15bc4988479dd6bef99597f3a9913762ab09d5efc1b15fe",
+    "requirements.txt": "91386ea7d4a012b6ffb488b768ef147eb058f253e2d09d5a44cb0137b7759d93",
+    "run.py": "20df856b7d6e81ead346f856a8289e7221cff8c16e7501905bc31e47bd085f33"
+  },
+  "resume_checkpoint": "resume_B.zip",
+  "checkpoint_sha256": "e21b21bd51ce1a13fba762f1c402050eab01ef86f4164325dc87926f26edcac6",
+  "resume_count": 101,
+  "stage_pool": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "best": {
+    "steps": 8708480,
+    "updates": 680340,
+    "checkpoint": "checkpoints/round_087_step_0008708480.zip",
+    "checkpoint_sha256": "e87f2cd45207b09e9af35a485c405bc8a3fbac462d6caa32eca75a01e7c696aa",
+    "label": "round_087",
+    "rank": [
+      8,
+      8,
+      0.0,
+      0.0,
+      0.0,
+      0.1,
+      0.95,
+      0.95,
+      0.95,
+      0.95,
+      0.95,
+      1.0,
+      1.0,
+      1.0,
+      0.0,
+      0.35,
+      0.55,
+      0.7,
+      0.95,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      72.8875,
+      71.41666666666667
+    ],
+    "sha256": "e87f2cd45207b09e9af35a485c405bc8a3fbac462d6caa32eca75a01e7c696aa"
+  },
+  "evaluations": [],
+  "next_eval_steps": 100000,
+  "pending_evaluation": null,
+  "final_validation": null,
+  "goal_achieved": false,
+  "entropy_coef": 0.03019250689129494,
+  "fresh_version": "fresh_2388_all12_v1",
+  "reward_profile": "return_progress_guard",
+  "stage_exposure_scope": "this fresh experiment from zero",
+  "stage_exposure": {
+    "1": {
+      "learner_steps": 394978,
+      "physical_frames": 7027631,
+      "episodes": 10549,
+      "returns": 9982,
+      "highscores": 9131
+    },
+    "2": {
+      "learner_steps": 384305,
+      "physical_frames": 6814743,
+      "episodes": 13022,
+      "returns": 12230,
+      "highscores": 11655
+    },
+    "3": {
+      "learner_steps": 894686,
+      "physical_frames": 16031589,
+      "episodes": 11447,
+      "returns": 7473,
+      "highscores": 6920
+    },
+    "4": {
+      "learner_steps": 928235,
+      "physical_frames": 16619365,
+      "episodes": 12118,
+      "returns": 8434,
+      "highscores": 7697
+    },
+    "5": {
+      "learner_steps": 540468,
+      "physical_frames": 9648976,
+      "episodes": 9787,
+      "returns": 8200,
+      "highscores": 7825
+    },
+    "6": {
+      "learner_steps": 571426,
+      "physical_frames": 10196307,
+      "episodes": 11226,
+      "returns": 9652,
+      "highscores": 8899
+    },
+    "7": {
+      "learner_steps": 682667,
+      "physical_frames": 12179836,
+      "episodes": 13088,
+      "returns": 11518,
+      "highscores": 10191
+    },
+    "8": {
+      "learner_steps": 588884,
+      "physical_frames": 10504398,
+      "episodes": 11785,
+      "returns": 10558,
+      "highscores": 9195
+    },
+    "9": {
+      "learner_steps": 1429910,
+      "physical_frames": 25702942,
+      "episodes": 15143,
+      "returns": 99,
+      "highscores": 19
+    },
+    "10": {
+      "learner_steps": 1338191,
+      "physical_frames": 24009764,
+      "episodes": 15749,
+      "returns": 3281,
+      "highscores": 2402
+    },
+    "11": {
+      "learner_steps": 1160007,
+      "physical_frames": 20798114,
+      "episodes": 14959,
+      "returns": 3432,
+      "highscores": 113
+    },
+    "12": {
+      "learner_steps": 1086243,
+      "physical_frames": 19479715,
+      "episodes": 16207,
+      "returns": 3125,
+      "highscores": 13
+    }
+  },
+  "versions": {
+    "stable-baselines3": "2.9.2",
+    "torch": "2.14.1",
+    "gymnasium": "1.4.0",
+    "numpy": "2.3.5"
+  },
+  "resume_restores_weights_adam_counters": true,
+  "resume_restores_native_episode_and_rng": false,
+  "fresh_status": "complete_not_passed",
+  "logged_entropy_changes": 84,
+  "invocation_elapsed_seconds": 257.25,
+  "discarded_rollout_decisions": 128,
+  "entropy_ema": 0.5439238923148266,
+  "entropy_checked_update": 780930,
+  "entropy_changes": [
+    {
+      "steps": 12800,
+      "entropy": 1.5529668316841125,
+      "before": 0.03,
+      "after": 0.0294
+    },
+    {
+      "steps": 25600,
+      "entropy": 1.5039937735420232,
+      "before": 0.0294,
+      "after": 0.028811999999999997
+    },
+    {
+      "steps": 38400,
+      "entropy": 1.4807191545630094,
+      "before": 0.028811999999999997,
+      "after": 0.028235759999999995
+    },
+    {
+      "steps": 51200,
+      "entropy": 1.4656225259598632,
+      "before": 0.028235759999999995,
+      "after": 0.027671044799999996
+    },
+    {
+      "steps": 64000,
+      "entropy": 1.4899868374517942,
+      "before": 0.027671044799999996,
+      "after": 0.027117623903999997
+    },
+    {
+      "steps": 76800,
+      "entropy": 1.4628874022794651,
+      "before": 0.027117623903999997,
+      "after": 0.026575271425919995
+    },
+    {
+      "steps": 89600,
+      "entropy": 1.391893825084753,
+      "before": 0.026575271425919995,
+      "after": 0.026043765997401595
+    },
+    {
+      "steps": 103424,
+      "entropy": 1.4456966737169923,
+      "before": 0.026043765997401595,
+      "after": 0.02552289067745356
+    },
+    {
+      "steps": 116224,
+      "entropy": 1.4303919169950934,
+      "before": 0.02552289067745356,
+      "after": 0.02501243286390449
+    },
+    {
+      "steps": 129024,
+      "entropy": 1.4156460819966008,
+      "before": 0.02501243286390449,
+      "after": 0.0245121842066264
+    },
+    {
+      "steps": 141824,
+      "entropy": 1.4410524585233628,
+      "before": 0.0245121842066264,
+      "after": 0.02402194052249387
+    },
+    {
+      "steps": 154624,
+      "entropy": 1.4378314166620485,
+      "before": 0.02402194052249387,
+      "after": 0.023541501712043993
+    },
+    {
+      "steps": 167424,
+      "entropy": 1.4079844189572193,
+      "before": 0.023541501712043993,
+      "after": 0.023070671677803113
+    },
+    {
+      "steps": 180224,
+      "entropy": 1.3234433347605536,
+      "before": 0.023070671677803113,
+      "after": 0.02260925824424705
+    },
+    {
+      "steps": 193024,
+      "entropy": 1.3410269706063995,
+      "before": 0.02260925824424705,
+      "after": 0.02215707307936211
+    },
+    {
+      "steps": 206720,
+      "entropy": 1.3014652564474825,
+      "before": 0.02215707307936211,
+      "after": 0.02171393161777487
+    },
+    {
+      "steps": 219520,
+      "entropy": 1.2349925154230301,
+      "before": 0.02171393161777487,
+      "after": 0.02127965298541937
+    },
+    {
+      "steps": 232320,
+      "entropy": 1.2258036321970645,
+      "before": 0.02127965298541937,
+      "after": 0.02085405992571098
+    },
+    {
+      "steps": 245120,
+      "entropy": 1.185359200077477,
+      "before": 0.02085405992571098,
+      "after": 0.020436978727196763
+    },
+    {
+      "steps": 257920,
+      "entropy": 1.1185084167047012,
+      "before": 0.020436978727196763,
+      "after": 0.020028239152652828
+    },
+    {
+      "steps": 270720,
+      "entropy": 1.0306344575641093,
+      "before": 0.020028239152652828,
+      "after": 0.019627674369599772
+    },
+    {
+      "steps": 283520,
+      "entropy": 1.0270701485413125,
+      "before": 0.019627674369599772,
+      "after": 0.019235120882207777
+    },
+    {
+      "steps": 296320,
+      "entropy": 1.0593835557444382,
+      "before": 0.019235120882207777,
+      "after": 0.01885041846456362
+    },
+    {
+      "steps": 310016,
+      "entropy": 1.1739883880113644,
+      "before": 0.01885041846456362,
+      "after": 0.018473410095272348
+    },
+    {
+      "steps": 322816,
+      "entropy": 1.2415533287231988,
+      "before": 0.018473410095272348,
+      "after": 0.0181039418933669
+    },
+    {
+      "steps": 335616,
+      "entropy": 1.2503368087106779,
+      "before": 0.0181039418933669,
+      "after": 0.01774186305549956
+    },
+    {
+      "steps": 348416,
+      "entropy": 1.2254835979649896,
+      "before": 0.01774186305549956,
+      "after": 0.01738702579438957
+    },
+    {
+      "steps": 361216,
+      "entropy": 1.0727788894313854,
+      "before": 0.01738702579438957,
+      "after": 0.01703928527850178
+    },
+    {
+      "steps": 374016,
+      "entropy": 0.9119774374720576,
+      "before": 0.01703928527850178,
+      "after": 0.016698499572931742
+    },
+    {
+      "steps": 386816,
+      "entropy": 0.9724826603634238,
+      "before": 0.016698499572931742,
+      "after": 0.01636452958147311
+    },
+    {
+      "steps": 399616,
+      "entropy": 0.9323968715274795,
+      "before": 0.01636452958147311,
+      "after": 0.016037238989843647
+    },
+    {
+      "steps": 413312,
+      "entropy": 0.9725408899004547,
+      "before": 0.016037238989843647,
+      "after": 0.015716494210046773
+    },
+    {
+      "steps": 426112,
+      "entropy": 0.8984852391286079,
+      "before": 0.015716494210046773,
+      "after": 0.015402164325845838
+    },
+    {
+      "steps": 438912,
+      "entropy": 0.8302875270935165,
+      "before": 0.015402164325845838,
+      "after": 0.01509412103932892
+    },
+    {
+      "steps": 464512,
+      "entropy": 0.7591884983421637,
+      "before": 0.01509412103932892,
+      "after": 0.014792238618542342
+    },
+    {
+      "steps": 477312,
+      "entropy": 0.7082004453448243,
+      "before": 0.014792238618542342,
+      "after": 0.014496393846171494
+    },
+    {
+      "steps": 516608,
+      "entropy": 0.7550340406549055,
+      "before": 0.014496393846171494,
+      "after": 0.014206465969248063
+    },
+    {
+      "steps": 555008,
+      "entropy": 0.7025287775550453,
+      "before": 0.014206465969248063,
+      "after": 0.013922336649863101
+    },
+    {
+      "steps": 567808,
+      "entropy": 0.833566604842928,
+      "before": 0.013922336649863101,
+      "after": 0.01364388991686584
+    },
+    {
+      "steps": 580608,
+      "entropy": 0.750488673833669,
+      "before": 0.01364388991686584,
+      "after": 0.013371012118528522
+    },
+    {
+      "steps": 619904,
+      "entropy": 0.7258179105162039,
+      "before": 0.013371012118528522,
+      "after": 0.013103591876157951
+    },
+    {
+      "steps": 736000,
+      "entropy": 0.7067301052533741,
+      "before": 0.013103591876157951,
+      "after": 0.012841520038634792
+    },
+    {
+      "steps": 1290880,
+      "entropy": 0.7022316277364364,
+      "before": 0.012841520038634792,
+      "after": 0.012584689637862096
+    },
+    {
+      "steps": 1665664,
+      "entropy": 0.7114242793589453,
+      "before": 0.012584689637862096,
+      "after": 0.012332995845104854
+    },
+    {
+      "steps": 1897856,
+      "entropy": 0.3488351081104615,
+      "before": 0.012332995845104854,
+      "after": 0.015416244806381067
+    },
+    {
+      "steps": 1975552,
+      "entropy": 0.7142587190241292,
+      "before": 0.015416244806381067,
+      "after": 0.015107919910253445
+    },
+    {
+      "steps": 1988352,
+      "entropy": 0.7105695782081117,
+      "before": 0.015107919910253445,
+      "after": 0.014805761512048375
+    },
+    {
+      "steps": 2298240,
+      "entropy": 0.7229377736519178,
+      "before": 0.014805761512048375,
+      "after": 0.014509646281807407
+    },
+    {
+      "steps": 2324736,
+      "entropy": 0.7193936357968511,
+      "before": 0.014509646281807407,
+      "after": 0.014219453356171257
+    },
+    {
+      "steps": 2492032,
+      "entropy": 0.7790260926002561,
+      "before": 0.014219453356171257,
+      "after": 0.013935064289047831
+    },
+    {
+      "steps": 2673024,
+      "entropy": 0.34810579284669513,
+      "before": 0.013935064289047831,
+      "after": 0.01741883036130979
+    },
+    {
+      "steps": 2918912,
+      "entropy": 0.7469985477946075,
+      "before": 0.01741883036130979,
+      "after": 0.017070453754083594
+    },
+    {
+      "steps": 2931712,
+      "entropy": 0.7660618152463278,
+      "before": 0.017070453754083594,
+      "after": 0.016729044679001923
+    },
+    {
+      "steps": 2944512,
+      "entropy": 0.7926405218121885,
+      "before": 0.016729044679001923,
+      "after": 0.016394463785421885
+    },
+    {
+      "steps": 3086208,
+      "entropy": 0.7387730773500275,
+      "before": 0.016394463785421885,
+      "after": 0.01606657450971345
+    },
+    {
+      "steps": 3099008,
+      "entropy": 0.8037676864322327,
+      "before": 0.01606657450971345,
+      "after": 0.01574524301951918
+    },
+    {
+      "steps": 3112704,
+      "entropy": 0.7217685998560353,
+      "before": 0.01574524301951918,
+      "after": 0.015430338159128797
+    },
+    {
+      "steps": 3125504,
+      "entropy": 0.7005583914529211,
+      "before": 0.015430338159128797,
+      "after": 0.015121731395946221
+    },
+    {
+      "steps": 3176704,
+      "entropy": 0.747417657720488,
+      "before": 0.015121731395946221,
+      "after": 0.014819296768027297
+    },
+    {
+      "steps": 3577088,
+      "entropy": 0.7043933398474328,
+      "before": 0.014819296768027297,
+      "after": 0.014522910832666752
+    },
+    {
+      "steps": 3745280,
+      "entropy": 0.7077578715323433,
+      "before": 0.014522910832666752,
+      "after": 0.014232452616013417
+    },
+    {
+      "steps": 4003072,
+      "entropy": 0.7055046198518091,
+      "before": 0.014232452616013417,
+      "after": 0.013947803563693148
+    },
+    {
+      "steps": 4016768,
+      "entropy": 0.8187757945549343,
+      "before": 0.013947803563693148,
+      "after": 0.013668847492419284
+    },
+    {
+      "steps": 4727040,
+      "entropy": 0.303551750314444,
+      "before": 0.013668847492419284,
+      "after": 0.017086059365524105
+    },
+    {
+      "steps": 4739840,
+      "entropy": 0.31780266356411885,
+      "before": 0.017086059365524105,
+      "after": 0.02135757420690513
+    },
+    {
+      "steps": 4752640,
+      "entropy": 0.33646860962291547,
+      "before": 0.02135757420690513,
+      "after": 0.02669696775863141
+    },
+    {
+      "steps": 4817536,
+      "entropy": 0.7053052857474063,
+      "before": 0.02669696775863141,
+      "after": 0.02616302840345878
+    },
+    {
+      "steps": 4920832,
+      "entropy": 0.7115850718731087,
+      "before": 0.02616302840345878,
+      "after": 0.025639767835389606
+    },
+    {
+      "steps": 5075328,
+      "entropy": 0.747114495430908,
+      "before": 0.025639767835389606,
+      "after": 0.025126972478681814
+    },
+    {
+      "steps": 5088128,
+      "entropy": 0.7340459923976225,
+      "before": 0.025126972478681814,
+      "after": 0.02462443302910818
+    },
+    {
+      "steps": 5294720,
+      "entropy": 0.7325676087522108,
+      "before": 0.02462443302910818,
+      "after": 0.024131944368526014
+    },
+    {
+      "steps": 5308416,
+      "entropy": 0.7114314727592217,
+      "before": 0.024131944368526014,
+      "after": 0.023649305481155493
+    },
+    {
+      "steps": 5372416,
+      "entropy": 0.8110538241938179,
+      "before": 0.023649305481155493,
+      "after": 0.023176319371532382
+    },
+    {
+      "steps": 5385216,
+      "entropy": 0.7706091463001425,
+      "before": 0.023176319371532382,
+      "after": 0.022712792984101733
+    },
+    {
+      "steps": 5398016,
+      "entropy": 0.7078605498845666,
+      "before": 0.022712792984101733,
+      "after": 0.0222585371244197
+    },
+    {
+      "steps": 5604608,
+      "entropy": 0.7059115476578317,
+      "before": 0.0222585371244197,
+      "after": 0.021813366381931303
+    },
+    {
+      "steps": 5682304,
+      "entropy": 0.7475161513297286,
+      "before": 0.021813366381931303,
+      "after": 0.021377099054292678
+    },
+    {
+      "steps": 6805760,
+      "entropy": 0.7000930700908644,
+      "before": 0.021377099054292678,
+      "after": 0.020949557073206823
+    },
+    {
+      "steps": 7051648,
+      "entropy": 0.7454303455457151,
+      "before": 0.020949557073206823,
+      "after": 0.020530565931742687
+    },
+    {
+      "steps": 7180544,
+      "entropy": 0.7078832870837919,
+      "before": 0.020530565931742687,
+      "after": 0.020119954613107834
+    },
+    {
+      "steps": 7516928,
+      "entropy": 0.7536122516888062,
+      "before": 0.020119954613107834,
+      "after": 0.019717555520845677
+    },
+    {
+      "steps": 7529728,
+      "entropy": 0.7607610107010215,
+      "before": 0.019717555520845677,
+      "after": 0.019323204410428764
+    },
+    {
+      "steps": 8097408,
+      "entropy": 0.347838684934285,
+      "before": 0.019323204410428764,
+      "after": 0.024154005513035953
+    },
+    {
+      "steps": 8898176,
+      "entropy": 0.3472768331431852,
+      "before": 0.024154005513035953,
+      "after": 0.03019250689129494
+    }
+  ],
+  "resumed_from": "runs\\seed_11_20261102_230005_281926",
+  "source_patch": "windows_file_lock_retry_v1",
+  "next_checkpoint_steps": 10100000
+}

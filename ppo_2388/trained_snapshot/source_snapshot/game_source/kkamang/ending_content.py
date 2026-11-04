@@ -1,0 +1,30 @@
+"""여섯 엔딩과 낮·밤 진입 PNG, 한 문장 내레이션, 해방된 고양이 표시 순서를 정의한다."""
+ENDING_CONTENT = {
+    'happy_all': {'title': '아무도 남겨두지 않은 아침', 'subtitle': '베스트',
+                  'lines': [('', '저주에서 풀려나 다시 고양이가 된 세 친구와 함께, 까망이는 저택에서 오래오래 행복하게 살았답니다.')]},
+    'sad': {'title': '돌아와도, 아무도', 'subtitle': '새드',
+            'lines': [('', '까망이가 돌아온 저택에는, 친구들의 작은 흔적만 조용히 남아 있었답니다.')]},
+    'ghost_a': {'title': '너에게 남긴 온도', 'subtitle': '보송 · 온기',
+                'lines': [('', '까망이는 고양이로 돌아온 보송이와 벽난로의 온기를 나누며, 저택에서 오래오래 행복하게 살았답니다.')]},
+    'ghost_b': {'title': '늦지 않은 약속', 'subtitle': '도레 · 속도',
+                'lines': [('', '까망이는 고양이로 돌아온 도레와 저택을 떠나, 나란히 달리며 세상 곳곳으로 즐거운 여행을 이어 갔답니다.')]},
+    'ghost_c': {'title': '함께 살아갈 계절', 'subtitle': '이파리 · 생명',
+                'lines': [('', '까망이는 고양이로 돌아온 이파리와 마을에서 가장 아름다운 정원을 가꾸며, 꽃향기 가득한 여유로운 나날을 보냈답니다.')]},
+    'normal': {'title': '네 자리는 여기', 'subtitle': '노멀',
+               'lines': [('', '저주는 아직 풀리지 않았지만, 까망이는 세 유령 친구와 함께 저택에서 따뜻한 나날을 보냈답니다.')]},
+}
+# 제작 메모와 무언 동작은 내레이션으로 표시하지 않는다.
+for _ident, _ending in ENDING_CONTENT.items():
+    _ending['art'] = f'ending_{_ident}.png'
+    _ending['intro_art'] = ('ending_intro_day.png' if _ident in ('happy_all', 'normal')
+                            else 'ending_intro_night.png')
+
+
+def released_variants(ending_id):
+    """엔딩을 쉼터 그림 순서로 변환한다. 보송 0, 이파리 1, 도레 2."""
+    return {
+        'happy_all': (0, 1, 2),
+        'ghost_a': (0,),
+        'ghost_b': (2,),
+        'ghost_c': (1,),
+    }.get(ending_id, ())

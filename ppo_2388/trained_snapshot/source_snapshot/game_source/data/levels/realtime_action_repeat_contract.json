@@ -1,0 +1,44 @@
+{
+  "status": "implemented",
+  "contract_version": "realtime_action_repeat_v1",
+  "environment": "RealtimeMansionEnv",
+  "base_contract": "realtime_interaction_ready_observation_contract.json",
+  "observation_shape": [
+    631
+  ],
+  "action_unit": "physics_frame_repeat",
+  "default_action_repeat": 6,
+  "physics_hz": 60,
+  "default_policy_hz": 10,
+  "frames_per_world_tick": 18,
+  "reward_aggregation": "discounted_physics_frames",
+  "frame_discount": "gamma_policy ** (1 / action_repeat)",
+  "policy_reward": "sum(gamma_frame ** i * frame_reward[i] for i in range(executed_frames))",
+  "episode_units": {
+    "steps": "policy decisions",
+    "policy_steps": "policy decisions",
+    "physical_frames": "executed physics frames",
+    "quest_step": "physics frame of first quest collection",
+    "warmth_step": "physics frame of first target warmth collection",
+    "conditions_met_step": "physics frame of first complete return conditions",
+    "return": "sum of undiscounted physical-frame rewards",
+    "learner_return": "sum of returned policy-step rewards"
+  },
+  "replay_units": {
+    "actions": "one selected action per policy decision",
+    "decisions": "policy decisions and their executed frame ranges",
+    "frames": "one record per executed physics frame",
+    "action_selected": "true only on the first physical frame of a policy decision"
+  },
+  "rules": [
+    "a selected action is held for action_repeat physics frames",
+    "physics, movement, pickups, interactions and contact checks still execute every 1/60 second",
+    "world timers advance once per 18 physics frames",
+    "terminate or truncate immediately without executing the remaining repeated frames",
+    "compute ProposedReward once per physical frame before aggregating the policy reward",
+    "aggregate events and raw reward terms from all executed frames",
+    "preserve raw episode returns separately from rewards returned to the learner",
+    "external max_episode_steps counts physics frames and must be a multiple of action_repeat in common training configurations",
+    "action repetition changes policy control frequency and does not guarantee a proportional wall-clock speedup"
+  ]
+}

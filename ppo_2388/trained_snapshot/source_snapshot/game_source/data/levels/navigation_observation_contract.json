@@ -1,0 +1,56 @@
+{
+  "observation_version": "vector_v9_realtime_corner_interaction_ready_v1_navigation_v1",
+  "shape": [
+    643
+  ],
+  "dtype": "float32",
+  "bounds": [
+    0,
+    1
+  ],
+  "base": {
+    "contract": "realtime_interaction_ready_observation_contract.json",
+    "length": 631
+  },
+  "added_fields": [
+    {
+      "offset": 631,
+      "length": 4,
+      "name": "can_move_up_down_left_right",
+      "meaning": "Non-mutating immediate physics-frame movement availability; not whole-cell reachability"
+    },
+    {
+      "offset": 635,
+      "length": 2,
+      "name": "exit_delta"
+    },
+    {
+      "offset": 637,
+      "length": 2,
+      "name": "pending_quest_delta"
+    },
+    {
+      "offset": 639,
+      "length": 2,
+      "name": "nearest_remaining_warmth_delta"
+    },
+    {
+      "offset": 641,
+      "length": 1,
+      "name": "warmth_present"
+    },
+    {
+      "offset": 642,
+      "length": 1,
+      "name": "quest_pending"
+    }
+  ],
+  "relative_normalization": "0.5 + (target - continuous_player_center) / (2 * axis_ceiling), axis ceilings [15,8]; absent target uses [0.5,0.5]",
+  "target_selection": "Nearest uncollected warmth by L1 distance; stable original item order for ties",
+  "rules": [
+    "State-derived features only; no planned actions, action masking, reward or transition changes",
+    "Base E-readiness slot remains 0 in automatic mode",
+    "Training, gating, evaluation and replay use the same wrapper",
+    "Resolve current unwrapped core on every encoding, including curriculum cache restoration"
+  ]
+}

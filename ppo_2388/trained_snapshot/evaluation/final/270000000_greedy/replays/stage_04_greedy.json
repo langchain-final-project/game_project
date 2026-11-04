@@ -1,0 +1,9120 @@
+{
+  "schema_version": 1,
+  "stage": 4,
+  "mode": "greedy",
+  "steps": 8708480,
+  "seed": 270040000,
+  "action_seed": 274000000,
+  "checkpoint": "selected_model.zip",
+  "original_native_start": true,
+  "selection": "first_episode_unfiltered",
+  "score": 95,
+  "native_outcome": {
+    "status": "COMPLETE",
+    "reason": "returned",
+    "banked": 14,
+    "carried": 14,
+    "damage_count": 1,
+    "remaining_courage": 2,
+    "quest_collected": true,
+    "ticks_used": 58,
+    "remaining_ticks": 42,
+    "score": {
+      "warmth": 60,
+      "speed": 25,
+      "courage": 10,
+      "total": 95,
+      "stars": 3,
+      "next_star_points": 0
+    }
+  },
+  "frames": [
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        1.0,
+        1.0
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            3.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": true
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": true
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 3,
+      "carried": 0,
+      "target": 4,
+      "remaining_ticks": 100,
+      "initial_ticks": 100,
+      "tick": 0,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": null,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        2.0,
+        1.0
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            3.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": true
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": true
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 3,
+      "carried": 1,
+      "target": 4,
+      "remaining_ticks": 99,
+      "initial_ticks": 100,
+      "tick": 1,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 3,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        2.0,
+        2.0
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            3.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": true
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": true
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 3,
+      "carried": 1,
+      "target": 4,
+      "remaining_ticks": 98,
+      "initial_ticks": 100,
+      "tick": 2,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 1,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        2.0,
+        3.0
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": true
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": true
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 3,
+      "carried": 1,
+      "target": 4,
+      "remaining_ticks": 97,
+      "initial_ticks": 100,
+      "tick": 3,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 1,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        3.0,
+        3.0
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": true
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": true
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 3,
+      "carried": 2,
+      "target": 4,
+      "remaining_ticks": 96,
+      "initial_ticks": 100,
+      "tick": 4,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 3,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        3.0,
+        4.0
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": true
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": true
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 3,
+      "carried": 2,
+      "target": 4,
+      "remaining_ticks": 95,
+      "initial_ticks": 100,
+      "tick": 5,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 1,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        4.0,
+        4.0
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": true
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": true
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 3,
+      "carried": 2,
+      "target": 4,
+      "remaining_ticks": 94,
+      "initial_ticks": 100,
+      "tick": 6,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 3,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        4.0,
+        5.0
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            4.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": true
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": true
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 3,
+      "carried": 3,
+      "target": 4,
+      "remaining_ticks": 93,
+      "initial_ticks": 100,
+      "tick": 7,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 1,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        4.0,
+        6.0
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            4.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": true
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": true
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 3,
+      "carried": 3,
+      "target": 4,
+      "remaining_ticks": 92,
+      "initial_ticks": 100,
+      "tick": 8,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 1,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        5.0,
+        6.0
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            3.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": true
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": true
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 3,
+      "carried": 3,
+      "target": 4,
+      "remaining_ticks": 91,
+      "initial_ticks": 100,
+      "tick": 9,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 3,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        6.0,
+        6.0
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            3.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": true
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": true
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 3,
+      "carried": 4,
+      "target": 4,
+      "remaining_ticks": 90,
+      "initial_ticks": 100,
+      "tick": 10,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 3,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        7.0,
+        6.0
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": true
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": true
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 3,
+      "carried": 4,
+      "target": 4,
+      "remaining_ticks": 89,
+      "initial_ticks": 100,
+      "tick": 11,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 3,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        7.0,
+        5.0
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": true
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": true
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 3,
+      "carried": 4,
+      "target": 4,
+      "remaining_ticks": 88,
+      "initial_ticks": 100,
+      "tick": 12,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 0,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        8.0,
+        5.0
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": true
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": true
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 3,
+      "carried": 4,
+      "target": 4,
+      "remaining_ticks": 87,
+      "initial_ticks": 100,
+      "tick": 13,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 3,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        8.0,
+        4.0
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": true
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 7,
+      "target": 4,
+      "remaining_ticks": 86,
+      "initial_ticks": 100,
+      "tick": 14,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 0,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        8.0,
+        3.0
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            4.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 10,
+      "target": 4,
+      "remaining_ticks": 85,
+      "initial_ticks": 100,
+      "tick": 15,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 0,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        8.0,
+        2.0
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            4.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 10,
+      "target": 4,
+      "remaining_ticks": 84,
+      "initial_ticks": 100,
+      "tick": 16,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 0,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        8.0,
+        1.0
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            3.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 11,
+      "target": 4,
+      "remaining_ticks": 83,
+      "initial_ticks": 100,
+      "tick": 17,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 0,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        8.0,
+        0.78
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            3.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 11,
+      "target": 4,
+      "remaining_ticks": 82,
+      "initial_ticks": 100,
+      "tick": 18,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 0,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        8.0,
+        1.7800000000000005
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 11,
+      "target": 4,
+      "remaining_ticks": 81,
+      "initial_ticks": 100,
+      "tick": 19,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 1,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        9.0,
+        1.7800000000000005
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 11,
+      "target": 4,
+      "remaining_ticks": 80,
+      "initial_ticks": 100,
+      "tick": 20,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 3,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        9.0,
+        0.78
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 11,
+      "target": 4,
+      "remaining_ticks": 79,
+      "initial_ticks": 100,
+      "tick": 21,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 0,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        10.0,
+        0.78
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 11,
+      "target": 4,
+      "remaining_ticks": 78,
+      "initial_ticks": 100,
+      "tick": 22,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 3,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        11.0,
+        0.78
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            4.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 12,
+      "target": 4,
+      "remaining_ticks": 77,
+      "initial_ticks": 100,
+      "tick": 23,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 3,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        11.0,
+        1.7800000000000005
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            4.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 12,
+      "target": 4,
+      "remaining_ticks": 76,
+      "initial_ticks": 100,
+      "tick": 24,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 1,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        11.0,
+        2.7799999999999976
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            3.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 12,
+      "target": 4,
+      "remaining_ticks": 75,
+      "initial_ticks": 100,
+      "tick": 25,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 1,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        11.0,
+        3.779999999999994
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            3.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 12,
+      "target": 4,
+      "remaining_ticks": 74,
+      "initial_ticks": 100,
+      "tick": 26,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 1,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        11.0,
+        4.7799999999999905
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 12,
+      "target": 4,
+      "remaining_ticks": 73,
+      "initial_ticks": 100,
+      "tick": 27,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 1,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        11.0,
+        5.779999999999987
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "kind": "patrol"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": false
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 12,
+      "target": 4,
+      "remaining_ticks": 72,
+      "initial_ticks": 100,
+      "tick": 28,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 1,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        11.0,
+        6.779999999999983
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            13.0,
+            1.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 12,
+      "target": 4,
+      "remaining_ticks": 71,
+      "initial_ticks": 100,
+      "tick": 29,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 1,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        12.0,
+        6.779999999999983
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            13.0,
+            1.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 12,
+      "target": 4,
+      "remaining_ticks": 70,
+      "initial_ticks": 100,
+      "tick": 30,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 3,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        13.0,
+        6.779999999999983
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            4.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            13.0,
+            1.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 12,
+      "target": 4,
+      "remaining_ticks": 69,
+      "initial_ticks": 100,
+      "tick": 31,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 3,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        13.0,
+        5.779999999999987
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            4.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            13.0,
+            1.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 13,
+      "target": 4,
+      "remaining_ticks": 68,
+      "initial_ticks": 100,
+      "tick": 32,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 0,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        13.0,
+        4.7799999999999905
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            3.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            13.0,
+            1.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 13,
+      "target": 4,
+      "remaining_ticks": 67,
+      "initial_ticks": 100,
+      "tick": 33,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 0,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        13.0,
+        3.779999999999994
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            3.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            13.0,
+            1.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": true
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 13,
+      "target": 4,
+      "remaining_ticks": 66,
+      "initial_ticks": 100,
+      "tick": 34,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 0,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        13.0,
+        2.7799999999999976
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            13.0,
+            2.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 65,
+      "initial_ticks": 100,
+      "tick": 35,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 0,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        12.0,
+        2.7799999999999976
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            13.0,
+            2.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 64,
+      "initial_ticks": 100,
+      "tick": 36,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 2,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        12.0,
+        1.7800000000000002
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 63,
+      "initial_ticks": 100,
+      "tick": 37,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 0,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        12.0,
+        0.7799999999999998
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 62,
+      "initial_ticks": 100,
+      "tick": 38,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 0,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        11.0,
+        0.7799999999999998
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            4.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            13.0,
+            2.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 61,
+      "initial_ticks": 100,
+      "tick": 39,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 2,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        10.0,
+        0.7799999999999998
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            4.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            13.0,
+            2.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 60,
+      "initial_ticks": 100,
+      "tick": 40,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 2,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        9.0,
+        0.7799999999999998
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            3.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            13.0,
+            1.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 59,
+      "initial_ticks": 100,
+      "tick": 41,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 2,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        8.0,
+        0.7799999999999998
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            3.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            13.0,
+            1.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 58,
+      "initial_ticks": 100,
+      "tick": 42,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 2,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        7.0,
+        0.7799999999999998
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            12.0,
+            1.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 57,
+      "initial_ticks": 100,
+      "tick": 43,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 2,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        6.0,
+        0.7799999999999998
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            12.0,
+            1.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 56,
+      "initial_ticks": 100,
+      "tick": 44,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 2,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        6.0,
+        1.7800000000000002
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 55,
+      "initial_ticks": 100,
+      "tick": 45,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 1,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        6.0,
+        2.7799999999999976
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 54,
+      "initial_ticks": 100,
+      "tick": 46,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 1,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        6.0,
+        3.779999999999994
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            4.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            11.0,
+            2.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 53,
+      "initial_ticks": 100,
+      "tick": 47,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 1,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        6.0,
+        4.7799999999999905
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            4.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            11.0,
+            2.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 52,
+      "initial_ticks": 100,
+      "tick": 48,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 1,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        6.0,
+        5.779999999999987
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            3.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            10.0,
+            2.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 51,
+      "initial_ticks": 100,
+      "tick": 49,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 1,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        5.0,
+        5.779999999999987
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            3.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            10.0,
+            2.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 50,
+      "initial_ticks": 100,
+      "tick": 50,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 2,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        4.0,
+        5.779999999999987
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            9.0,
+            2.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 49,
+      "initial_ticks": 100,
+      "tick": 51,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 2,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        3.0,
+        5.779999999999987
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            9.0,
+            2.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 48,
+      "initial_ticks": 100,
+      "tick": 52,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 2,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        3.0,
+        4.7799999999999905
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            9.0,
+            3.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 47,
+      "initial_ticks": 100,
+      "tick": 53,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 0,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        3.0,
+        3.779999999999994
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            9.0,
+            3.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 46,
+      "initial_ticks": 100,
+      "tick": 54,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 0,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        3.0,
+        2.7799999999999976
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            4.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            9.0,
+            4.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 45,
+      "initial_ticks": 100,
+      "tick": 55,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 0,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        3.0,
+        1.7800000000000002
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            4.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            9.0,
+            4.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 44,
+      "initial_ticks": 100,
+      "tick": 56,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 0,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        2.0,
+        1.7800000000000002
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            3.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            9.0,
+            5.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 43,
+      "initial_ticks": 100,
+      "tick": 57,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 2,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        2.0,
+        0.7799999999999998
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.0,
+            3.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            9.0,
+            5.0
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 42,
+      "initial_ticks": 100,
+      "tick": 58,
+      "terminal": false,
+      "outcome": null,
+      "score": null,
+      "native_status": null,
+      "action": 0,
+      "magnet": null,
+      "invincibility": null
+    },
+    {
+      "stage": 4,
+      "grid": [
+        "################",
+        "#....#.........#",
+        "#....#.........#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#....#....#....#",
+        "#.........#....#",
+        "#.........#....#",
+        "################"
+      ],
+      "width": 16,
+      "height": 9,
+      "player": [
+        1.4444444444444442,
+        0.7799999999999998
+      ],
+      "ghosts": [
+        {
+          "id": "A",
+          "position": [
+            7.555555555555555,
+            3.0
+          ],
+          "kind": "patrol"
+        },
+        {
+          "id": "C",
+          "position": [
+            9.0,
+            5.555555555555555
+          ],
+          "kind": "chaser"
+        }
+      ],
+      "items": [
+        {
+          "id": "heat_00",
+          "position": [
+            2.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_01",
+          "position": [
+            3.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_02",
+          "position": [
+            4.0,
+            5.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_03",
+          "position": [
+            6.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_04",
+          "position": [
+            8.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_05",
+          "position": [
+            11.0,
+            1.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_06",
+          "position": [
+            13.0,
+            3.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_07",
+          "position": [
+            13.0,
+            6.0
+          ],
+          "value": 1,
+          "active": false
+        },
+        {
+          "id": "heat_08",
+          "position": [
+            8.0,
+            4.0
+          ],
+          "value": 3,
+          "active": false
+        },
+        {
+          "id": "heat_09",
+          "position": [
+            8.0,
+            3.0
+          ],
+          "value": 3,
+          "active": false
+        }
+      ],
+      "quest": {
+        "position": [
+          11.0,
+          7.0
+        ],
+        "collected": true
+      },
+      "exit": [
+        1.0,
+        1.0
+      ],
+      "shortcuts": [],
+      "courage": 2,
+      "carried": 14,
+      "target": 4,
+      "remaining_ticks": 42,
+      "initial_ticks": 100,
+      "tick": 58,
+      "terminal": true,
+      "outcome": {
+        "status": "COMPLETE",
+        "reason": "returned",
+        "banked": 14,
+        "carried": 14,
+        "damage_count": 1,
+        "remaining_courage": 2,
+        "quest_collected": true,
+        "ticks_used": 58,
+        "remaining_ticks": 42,
+        "score": {
+          "warmth": 60,
+          "speed": 25,
+          "courage": 10,
+          "total": 95,
+          "stars": 3,
+          "next_star_points": 0
+        }
+      },
+      "score": 95,
+      "native_status": "COMPLETE",
+      "action": 2,
+      "magnet": null,
+      "invincibility": null
+    }
+  ],
+  "sample_unit": "initial_state_then_every_policy_decision"
+}

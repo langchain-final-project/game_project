@@ -1,0 +1,719 @@
+{
+  "schema_version": 1,
+  "algorithm": "PPO",
+  "single_policy": true,
+  "original_native_start": true,
+  "steps": 9609344,
+  "updates": 750720,
+  "checkpoint": "checkpoints/round_096_step_0009609344.zip",
+  "mode": "greedy",
+  "seed": 10000,
+  "episodes_per_stage": 1,
+  "total_episodes": 12,
+  "per_stage": {
+    "1": {
+      "stage": 1,
+      "episodes": 1,
+      "mean_score": 100.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 1.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 14.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 31.0,
+      "mean_physical_frames": 550.0,
+      "mean_wall_stall_decisions": 6.0,
+      "mean_visited_cells": 23.0,
+      "entropy": 0.6417768090482681,
+      "mean_max_action_probability": 0.7449046873277233,
+      "score_distribution": {
+        "100": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_01_greedy.json"
+    },
+    "2": {
+      "stage": 2,
+      "episodes": 1,
+      "mean_score": 100.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 1.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 14.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 23.0,
+      "mean_physical_frames": 406.0,
+      "mean_wall_stall_decisions": 0.0,
+      "mean_visited_cells": 21.0,
+      "entropy": 0.4576619763089263,
+      "mean_max_action_probability": 0.8197045909321826,
+      "score_distribution": {
+        "100": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_02_greedy.json"
+    },
+    "3": {
+      "stage": 3,
+      "episodes": 1,
+      "mean_score": 100.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 1.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 14.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 60.0,
+      "mean_physical_frames": 1068.0,
+      "mean_wall_stall_decisions": 2.0,
+      "mean_visited_cells": 48.0,
+      "entropy": 0.3466950095569094,
+      "mean_max_action_probability": 0.8699409514665604,
+      "score_distribution": {
+        "100": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_03_greedy.json"
+    },
+    "4": {
+      "stage": 4,
+      "episodes": 1,
+      "mean_score": 100.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 1.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 14.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 59.0,
+      "mean_physical_frames": 1050.0,
+      "mean_wall_stall_decisions": 1.0,
+      "mean_visited_cells": 44.0,
+      "entropy": 0.3611402227780071,
+      "mean_max_action_probability": 0.8717663404295,
+      "score_distribution": {
+        "100": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_04_greedy.json"
+    },
+    "5": {
+      "stage": 5,
+      "episodes": 1,
+      "mean_score": 100.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 1.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 14.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 46.0,
+      "mean_physical_frames": 820.0,
+      "mean_wall_stall_decisions": 0.0,
+      "mean_visited_cells": 42.0,
+      "entropy": 0.27092074315347103,
+      "mean_max_action_probability": 0.9067528947539951,
+      "score_distribution": {
+        "100": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_05_greedy.json"
+    },
+    "6": {
+      "stage": 6,
+      "episodes": 1,
+      "mean_score": 94.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 1.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 13.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 43.0,
+      "mean_physical_frames": 766.0,
+      "mean_wall_stall_decisions": 0.0,
+      "mean_visited_cells": 40.0,
+      "entropy": 0.27713438931332773,
+      "mean_max_action_probability": 0.8935487395109132,
+      "score_distribution": {
+        "94": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_06_greedy.json"
+    },
+    "7": {
+      "stage": 7,
+      "episodes": 1,
+      "mean_score": 94.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 1.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 13.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 40.0,
+      "mean_physical_frames": 712.0,
+      "mean_wall_stall_decisions": 0.0,
+      "mean_visited_cells": 39.0,
+      "entropy": 0.34603058665525166,
+      "mean_max_action_probability": 0.861465609818697,
+      "score_distribution": {
+        "94": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_07_greedy.json"
+    },
+    "8": {
+      "stage": 8,
+      "episodes": 1,
+      "mean_score": 95.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 1.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 14.0,
+      "mean_damage_count": 1.0,
+      "mean_policy_steps": 47.0,
+      "mean_physical_frames": 838.0,
+      "mean_wall_stall_decisions": 0.0,
+      "mean_visited_cells": 41.0,
+      "entropy": 0.3422760938670724,
+      "mean_max_action_probability": 0.8566642270443288,
+      "score_distribution": {
+        "95": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_08_greedy.json"
+    },
+    "9": {
+      "stage": 9,
+      "episodes": 1,
+      "mean_score": 0.0,
+      "return_rate": 0.0,
+      "score40_rate": 0.0,
+      "star1_rate": 0.0,
+      "star2_rate": 0.0,
+      "star3_rate": 0.0,
+      "quest_rate": 0.0,
+      "mean_warmth": 8.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 100.0,
+      "mean_physical_frames": 1800.0,
+      "mean_wall_stall_decisions": 31.0,
+      "mean_visited_cells": 30.0,
+      "entropy": 0.8212052912637592,
+      "mean_max_action_probability": 0.6859064653515816,
+      "score_distribution": {
+        "0": 1
+      },
+      "reasons": {
+        "timeout": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_09_greedy.json"
+    },
+    "10": {
+      "stage": 10,
+      "episodes": 1,
+      "mean_score": 100.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 1.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 14.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 58.0,
+      "mean_physical_frames": 1036.0,
+      "mean_wall_stall_decisions": 0.0,
+      "mean_visited_cells": 44.0,
+      "entropy": 0.27297852275058115,
+      "mean_max_action_probability": 0.9119562660825664,
+      "score_distribution": {
+        "100": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_10_greedy.json"
+    },
+    "11": {
+      "stage": 11,
+      "episodes": 1,
+      "mean_score": 82.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 0.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 11.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 64.0,
+      "mean_physical_frames": 1147.0,
+      "mean_wall_stall_decisions": 0.0,
+      "mean_visited_cells": 39.0,
+      "entropy": 0.4842157833627425,
+      "mean_max_action_probability": 0.826143208425492,
+      "score_distribution": {
+        "82": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_11_greedy.json"
+    },
+    "12": {
+      "stage": 12,
+      "episodes": 1,
+      "mean_score": 76.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 0.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 11.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 56.0,
+      "mean_physical_frames": 1003.0,
+      "mean_wall_stall_decisions": 3.0,
+      "mean_visited_cells": 40.0,
+      "entropy": 0.3924050960756306,
+      "mean_max_action_probability": 0.8765537185328347,
+      "score_distribution": {
+        "76": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_12_greedy.json"
+    }
+  },
+  "macro": {
+    "mean_score": 86.75,
+    "return_rate": 0.9166666666666666,
+    "score40_rate": 0.9166666666666666,
+    "star1_rate": 0.9166666666666666,
+    "star2_rate": 0.9166666666666666,
+    "star3_rate": 0.75,
+    "quest_rate": 0.9166666666666666
+  },
+  "native_score_thresholds": [
+    40,
+    45,
+    65,
+    85
+  ],
+  "training_auxiliary_rewards_enabled": false,
+  "randomize_phase": false,
+  "greedy_repetitions_are_independent_training_seeds": false,
+  "history_rows": [
+    {
+      "steps": 9609344,
+      "updates": 750720,
+      "mode": "greedy",
+      "seed": 10000,
+      "checkpoint": "checkpoints/round_096_step_0009609344.zip",
+      "stage": 1,
+      "episodes": 1,
+      "mean_score": 100.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 1.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 14.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 31.0,
+      "mean_physical_frames": 550.0,
+      "mean_wall_stall_decisions": 6.0,
+      "mean_visited_cells": 23.0,
+      "entropy": 0.6417768090482681,
+      "mean_max_action_probability": 0.7449046873277233,
+      "score_distribution": {
+        "100": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_01_greedy.json"
+    },
+    {
+      "steps": 9609344,
+      "updates": 750720,
+      "mode": "greedy",
+      "seed": 10000,
+      "checkpoint": "checkpoints/round_096_step_0009609344.zip",
+      "stage": 2,
+      "episodes": 1,
+      "mean_score": 100.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 1.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 14.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 23.0,
+      "mean_physical_frames": 406.0,
+      "mean_wall_stall_decisions": 0.0,
+      "mean_visited_cells": 21.0,
+      "entropy": 0.4576619763089263,
+      "mean_max_action_probability": 0.8197045909321826,
+      "score_distribution": {
+        "100": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_02_greedy.json"
+    },
+    {
+      "steps": 9609344,
+      "updates": 750720,
+      "mode": "greedy",
+      "seed": 10000,
+      "checkpoint": "checkpoints/round_096_step_0009609344.zip",
+      "stage": 3,
+      "episodes": 1,
+      "mean_score": 100.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 1.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 14.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 60.0,
+      "mean_physical_frames": 1068.0,
+      "mean_wall_stall_decisions": 2.0,
+      "mean_visited_cells": 48.0,
+      "entropy": 0.3466950095569094,
+      "mean_max_action_probability": 0.8699409514665604,
+      "score_distribution": {
+        "100": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_03_greedy.json"
+    },
+    {
+      "steps": 9609344,
+      "updates": 750720,
+      "mode": "greedy",
+      "seed": 10000,
+      "checkpoint": "checkpoints/round_096_step_0009609344.zip",
+      "stage": 4,
+      "episodes": 1,
+      "mean_score": 100.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 1.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 14.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 59.0,
+      "mean_physical_frames": 1050.0,
+      "mean_wall_stall_decisions": 1.0,
+      "mean_visited_cells": 44.0,
+      "entropy": 0.3611402227780071,
+      "mean_max_action_probability": 0.8717663404295,
+      "score_distribution": {
+        "100": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_04_greedy.json"
+    },
+    {
+      "steps": 9609344,
+      "updates": 750720,
+      "mode": "greedy",
+      "seed": 10000,
+      "checkpoint": "checkpoints/round_096_step_0009609344.zip",
+      "stage": 5,
+      "episodes": 1,
+      "mean_score": 100.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 1.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 14.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 46.0,
+      "mean_physical_frames": 820.0,
+      "mean_wall_stall_decisions": 0.0,
+      "mean_visited_cells": 42.0,
+      "entropy": 0.27092074315347103,
+      "mean_max_action_probability": 0.9067528947539951,
+      "score_distribution": {
+        "100": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_05_greedy.json"
+    },
+    {
+      "steps": 9609344,
+      "updates": 750720,
+      "mode": "greedy",
+      "seed": 10000,
+      "checkpoint": "checkpoints/round_096_step_0009609344.zip",
+      "stage": 6,
+      "episodes": 1,
+      "mean_score": 94.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 1.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 13.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 43.0,
+      "mean_physical_frames": 766.0,
+      "mean_wall_stall_decisions": 0.0,
+      "mean_visited_cells": 40.0,
+      "entropy": 0.27713438931332773,
+      "mean_max_action_probability": 0.8935487395109132,
+      "score_distribution": {
+        "94": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_06_greedy.json"
+    },
+    {
+      "steps": 9609344,
+      "updates": 750720,
+      "mode": "greedy",
+      "seed": 10000,
+      "checkpoint": "checkpoints/round_096_step_0009609344.zip",
+      "stage": 7,
+      "episodes": 1,
+      "mean_score": 94.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 1.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 13.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 40.0,
+      "mean_physical_frames": 712.0,
+      "mean_wall_stall_decisions": 0.0,
+      "mean_visited_cells": 39.0,
+      "entropy": 0.34603058665525166,
+      "mean_max_action_probability": 0.861465609818697,
+      "score_distribution": {
+        "94": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_07_greedy.json"
+    },
+    {
+      "steps": 9609344,
+      "updates": 750720,
+      "mode": "greedy",
+      "seed": 10000,
+      "checkpoint": "checkpoints/round_096_step_0009609344.zip",
+      "stage": 8,
+      "episodes": 1,
+      "mean_score": 95.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 1.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 14.0,
+      "mean_damage_count": 1.0,
+      "mean_policy_steps": 47.0,
+      "mean_physical_frames": 838.0,
+      "mean_wall_stall_decisions": 0.0,
+      "mean_visited_cells": 41.0,
+      "entropy": 0.3422760938670724,
+      "mean_max_action_probability": 0.8566642270443288,
+      "score_distribution": {
+        "95": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_08_greedy.json"
+    },
+    {
+      "steps": 9609344,
+      "updates": 750720,
+      "mode": "greedy",
+      "seed": 10000,
+      "checkpoint": "checkpoints/round_096_step_0009609344.zip",
+      "stage": 9,
+      "episodes": 1,
+      "mean_score": 0.0,
+      "return_rate": 0.0,
+      "score40_rate": 0.0,
+      "star1_rate": 0.0,
+      "star2_rate": 0.0,
+      "star3_rate": 0.0,
+      "quest_rate": 0.0,
+      "mean_warmth": 8.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 100.0,
+      "mean_physical_frames": 1800.0,
+      "mean_wall_stall_decisions": 31.0,
+      "mean_visited_cells": 30.0,
+      "entropy": 0.8212052912637592,
+      "mean_max_action_probability": 0.6859064653515816,
+      "score_distribution": {
+        "0": 1
+      },
+      "reasons": {
+        "timeout": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_09_greedy.json"
+    },
+    {
+      "steps": 9609344,
+      "updates": 750720,
+      "mode": "greedy",
+      "seed": 10000,
+      "checkpoint": "checkpoints/round_096_step_0009609344.zip",
+      "stage": 10,
+      "episodes": 1,
+      "mean_score": 100.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 1.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 14.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 58.0,
+      "mean_physical_frames": 1036.0,
+      "mean_wall_stall_decisions": 0.0,
+      "mean_visited_cells": 44.0,
+      "entropy": 0.27297852275058115,
+      "mean_max_action_probability": 0.9119562660825664,
+      "score_distribution": {
+        "100": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_10_greedy.json"
+    },
+    {
+      "steps": 9609344,
+      "updates": 750720,
+      "mode": "greedy",
+      "seed": 10000,
+      "checkpoint": "checkpoints/round_096_step_0009609344.zip",
+      "stage": 11,
+      "episodes": 1,
+      "mean_score": 82.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 0.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 11.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 64.0,
+      "mean_physical_frames": 1147.0,
+      "mean_wall_stall_decisions": 0.0,
+      "mean_visited_cells": 39.0,
+      "entropy": 0.4842157833627425,
+      "mean_max_action_probability": 0.826143208425492,
+      "score_distribution": {
+        "82": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_11_greedy.json"
+    },
+    {
+      "steps": 9609344,
+      "updates": 750720,
+      "mode": "greedy",
+      "seed": 10000,
+      "checkpoint": "checkpoints/round_096_step_0009609344.zip",
+      "stage": 12,
+      "episodes": 1,
+      "mean_score": 76.0,
+      "return_rate": 1.0,
+      "score40_rate": 1.0,
+      "star1_rate": 1.0,
+      "star2_rate": 1.0,
+      "star3_rate": 0.0,
+      "quest_rate": 1.0,
+      "mean_warmth": 11.0,
+      "mean_damage_count": 0.0,
+      "mean_policy_steps": 56.0,
+      "mean_physical_frames": 1003.0,
+      "mean_wall_stall_decisions": 3.0,
+      "mean_visited_cells": 40.0,
+      "entropy": 0.3924050960756306,
+      "mean_max_action_probability": 0.8765537185328347,
+      "score_distribution": {
+        "76": 1
+      },
+      "reasons": {
+        "returned": 1
+      },
+      "replay": "C:\\Users\\gkoh\\.vscode\\KDT\\game_project\\ppo_2388\\runs\\seed_11_20261102_230005_281926_io_retry_v1\\evaluation\\round_096\\greedy\\replays\\stage_12_greedy.json"
+    }
+  ]
+}
